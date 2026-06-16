@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#2C1A14" />
+    <title>NOUS. — Branding, together.</title>
+    <meta name="description" content="NOUS. is a creative branding agency built on collaboration, human connection and bold, minimalist impact. We make brands that mean something." />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="NOUS. — Branding, together." />
+    <meta property="og:description" content="A creative branding agency built on collaboration and bold, minimalist impact." />
+    <meta property="og:type" content="website" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="is-loading">
+
+    <!-- ============== PRELOADER ============== -->
+    <div class="loader" id="loader" aria-hidden="true">
+        <div class="loader__inner">
+            <div class="loader__count"><span id="loaderCount">0</span><i>%</i></div>
+            <div class="loader__word">
+                <span class="loader__char">N</span>
+                <span class="loader__char">O</span>
+                <span class="loader__char">U</span>
+                <span class="loader__char">S</span>
+                <span class="loader__char loader__char--dot">.</span>
+            </div>
+        </div>
+        <svg class="loader__curtain" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <path id="loaderPath" d="M0,0 L100,0 L100,100 Q50,100 0,100 Z"></path>
+        </svg>
+    </div>
+
+    <!-- ============== CUSTOM CURSOR ============== -->
+    <div class="cursor" id="cursor" aria-hidden="true">
+        <div class="cursor__dot" id="cursorDot"></div>
+        <div class="cursor__ring" id="cursorRing">
+            <span class="cursor__label" id="cursorLabel"></span>
+        </div>
+    </div>
+
+    <!-- ============== NAV ============== -->
+    <header class="nav" id="nav">
+        <a href="#top" class="nav__logo" data-cursor="hover">
+            NOUS<span>.</span>
+        </a>
+        <nav class="nav__links" aria-label="Primary">
+            <a href="#work" class="nav__link" data-cursor="hover"><span>Work</span></a>
+            <a href="#manifesto" class="nav__link" data-cursor="hover"><span>Manifesto</span></a>
+            <a href="#services" class="nav__link" data-cursor="hover"><span>Services</span></a>
+            <a href="#contact" class="nav__link nav__link--cta" data-cursor="hover"><span>Let's talk</span></a>
+        </nav>
+        <button class="nav__burger" id="burger" aria-label="Toggle menu" data-cursor="hover">
+            <span></span><span></span>
+        </button>
+    </header>
+
+    <!-- ============== MOBILE MENU OVERLAY ============== -->
+    <div class="menu" id="menu" aria-hidden="true">
+        <ul class="menu__list">
+            <li><a href="#work" class="menu__item" data-cursor="hover"><em>01</em> Work</a></li>
+            <li><a href="#manifesto" class="menu__item" data-cursor="hover"><em>02</em> Manifesto</a></li>
+            <li><a href="#services" class="menu__item" data-cursor="hover"><em>03</em> Services</a></li>
+            <li><a href="#contact" class="menu__item" data-cursor="hover"><em>04</em> Contact</a></li>
+        </ul>
+        <div class="menu__foot">
+            <a href="mailto:hello@nous.studio" data-cursor="hover">hello@nous.studio</a>
+            <span>Paris — Worldwide</span>
+        </div>
+    </div>
+
+    <main id="top" class="content" data-scroll-container>
+
+        <!-- ============== HERO ============== -->
+        <section class="hero" id="hero">
+            <!-- interactive morphing blob -->
+            <div class="hero__blob" id="heroBlob" aria-hidden="true">
+                <svg viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="blobGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#FFDE4D" />
+                            <stop offset="100%" stop-color="#F4C430" />
+                        </linearGradient>
+                    </defs>
+                    <path id="blobPath" fill="url(#blobGrad)"
+                        d="M300,520 C420,520 520,420 520,300 C520,180 420,80 300,80 C180,80 80,180 80,300 C80,420 180,520 300,520 Z" />
+                </svg>
+                <div class="hero__star" id="heroStar">
+                    <svg viewBox="0 0 100 100"><path d="M50,0 C55,35 65,45 100,50 C65,55 55,65 50,100 C45,65 35,55 0,50 C35,45 45,35 50,0 Z"/></svg>
+                </div>
+            </div>
+
+            <div class="hero__inner">
+                <p class="hero__eyebrow"><span>Creative Branding Studio — Est. 2016</span></p>
+                <h1 class="hero__title">
+                    <span class="hero__line"><span class="hero__word">Brands</span> <span class="hero__word">that</span></span>
+                    <span class="hero__line"><span class="hero__word">mean</span> <span class="hero__word hero__word--accent">us<i>.</i></span></span>
+                </h1>
+                <div class="hero__meta">
+                    <p><span>We are <strong>NOUS.</strong> — a collective of designers, strategists and storytellers turning bold ideas into brands people belong to.</span></p>
+                    <a href="#work" class="btn-magnetic" data-cursor="hover" data-magnetic>
+                        <span class="btn-magnetic__fill"></span>
+                        <span class="btn-magnetic__label">See our work</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="hero__scroll" aria-hidden="true">
+                <span>Scroll</span>
+                <div class="hero__scroll-line"><i></i></div>
+            </div>
+
+            <!-- marquee -->
+            <div class="marquee" aria-hidden="true">
+                <div class="marquee__track">
+                    <span>Strategy</span><b>✳</b><span>Identity</span><b>✳</b><span>Motion</span><b>✳</b><span>Digital</span><b>✳</b>
+                    <span>Strategy</span><b>✳</b><span>Identity</span><b>✳</b><span>Motion</span><b>✳</b><span>Digital</span><b>✳</b>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============== MANIFESTO ============== -->
+        <section class="manifesto" id="manifesto">
+            <p class="section-tag"><span>(</span> 01 — Manifesto <span>)</span></p>
+            <h2 class="manifesto__text">
+                <span class="reveal-word">We</span> <span class="reveal-word">believe</span> <span class="reveal-word">the</span>
+                <span class="reveal-word">strongest</span> <span class="reveal-word">brands</span> <span class="reveal-word">aren't</span>
+                <span class="reveal-word">built</span> <span class="reveal-word">for</span> <span class="reveal-word">people</span>—
+                <span class="reveal-word reveal-word--accent">they're</span> <span class="reveal-word reveal-word--accent">built</span>
+                <span class="reveal-word reveal-word--accent">with</span> <span class="reveal-word reveal-word--accent">them.</span>
+                <span class="reveal-word">That</span> <span class="reveal-word">word,</span>
+                <span class="reveal-word">"<em>nous</em>",</span> <span class="reveal-word">means</span>
+                <span class="reveal-word">us.</span> <span class="reveal-word">Collaboration</span>
+                <span class="reveal-word">over</span> <span class="reveal-word">ego.</span>
+                <span class="reveal-word">Clarity</span> <span class="reveal-word">over</span> <span class="reveal-word">noise.</span>
+            </h2>
+        </section>
+
+        <!-- ============== SELECTED WORK (horizontal scroll) ============== -->
+        <section class="work" id="work">
+            <div class="work__head">
+                <p class="section-tag section-tag--dark"><span>(</span> 02 — Selected Work <span>)</span></p>
+                <h2 class="work__title line-reveal"><span>Recent chapters</span></h2>
+            </div>
+
+            <div class="work__viewport" id="workViewport">
+                <div class="work__track" id="workTrack">
+
+                    <article class="card" data-cursor="view" data-tilt>
+                        <div class="card__media" style="--c1:#F4C430;--c2:#2C1A14">
+                            <svg class="card__shape" viewBox="0 0 200 200"><circle cx="100" cy="100" r="70"/></svg>
+                            <span class="card__index">01</span>
+                        </div>
+                        <div class="card__info">
+                            <h3>Maison Verde</h3>
+                            <p>Identity · Packaging</p>
+                            <span class="card__year">2025</span>
+                        </div>
+                    </article>
+
+                    <article class="card" data-cursor="view" data-tilt>
+                        <div class="card__media" style="--c1:#2C1A14;--c2:#FFDE4D">
+                            <svg class="card__shape" viewBox="0 0 200 200"><rect x="40" y="40" width="120" height="120" rx="20"/></svg>
+                            <span class="card__index">02</span>
+                        </div>
+                        <div class="card__info">
+                            <h3>Orbit Audio</h3>
+                            <p>Strategy · Motion</p>
+                            <span class="card__year">2025</span>
+                        </div>
+                    </article>
+
+                    <article class="card" data-cursor="view" data-tilt>
+                        <div class="card__media" style="--c1:#FDFBF7;--c2:#4A3525">
+                            <svg class="card__shape" viewBox="0 0 200 200"><path d="M100,30 C150,30 170,80 170,100 C170,150 130,170 100,170 C50,170 30,130 30,100 C30,50 60,30 100,30 Z"/></svg>
+                            <span class="card__index">03</span>
+                        </div>
+                        <div class="card__info">
+                            <h3>Folk &amp; Field</h3>
+                            <p>Brand · Web</p>
+                            <span class="card__year">2024</span>
+                        </div>
+                    </article>
+
+                    <article class="card" data-cursor="view" data-tilt>
+                        <div class="card__media" style="--c1:#F4C430;--c2:#4A3525">
+                            <svg class="card__shape" viewBox="0 0 200 200"><path d="M100,20 L180,100 L100,180 L20,100 Z"/></svg>
+                            <span class="card__index">04</span>
+                        </div>
+                        <div class="card__info">
+                            <h3>Hôtel Lumière</h3>
+                            <p>Identity · Art Direction</p>
+                            <span class="card__year">2024</span>
+                        </div>
+                    </article>
+
+                    <article class="card" data-cursor="view" data-tilt>
+                        <div class="card__media" style="--c1:#2C1A14;--c2:#F4C430">
+                            <svg class="card__shape" viewBox="0 0 200 200"><path d="M50,30 C90,10 110,10 150,30 C170,70 170,130 150,170 C110,190 90,190 50,170 C30,130 30,70 50,30 Z"/></svg>
+                            <span class="card__index">05</span>
+                        </div>
+                        <div class="card__info">
+                            <h3>Terra Coffee</h3>
+                            <p>Naming · Packaging</p>
+                            <span class="card__year">2023</span>
+                        </div>
+                    </article>
+
+                    <a href="#contact" class="card card--cta" data-cursor="hover" data-magnetic>
+                        <span>Your brand<br/>next →</span>
+                    </a>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ============== SERVICES (accordion / bento) ============== -->
+        <section class="services" id="services">
+            <div class="services__head">
+                <p class="section-tag"><span>(</span> 03 — What we do <span>)</span></p>
+                <h2 class="services__title line-reveal"><span>A studio for the whole story.</span></h2>
+            </div>
+
+            <div class="accordion" id="accordion">
+                <div class="acc" data-acc>
+                    <button class="acc__head" data-cursor="hover">
+                        <span class="acc__num">A</span>
+                        <span class="acc__name">Brand Strategy</span>
+                        <span class="acc__icon" aria-hidden="true"></span>
+                    </button>
+                    <div class="acc__panel">
+                        <div class="acc__inner">
+                            <p>Positioning, naming, narrative and tone. We find the truth at the heart of a brand and give it a voice that carries.</p>
+                            <ul><li>Research</li><li>Positioning</li><li>Naming</li><li>Messaging</li></ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="acc" data-acc>
+                    <button class="acc__head" data-cursor="hover">
+                        <span class="acc__num">B</span>
+                        <span class="acc__name">Visual Identity</span>
+                        <span class="acc__icon" aria-hidden="true"></span>
+                    </button>
+                    <div class="acc__panel">
+                        <div class="acc__inner">
+                            <p>Logotypes, type systems, colour, art direction and the flexible toolkits that keep a brand alive across every surface.</p>
+                            <ul><li>Logo &amp; Marks</li><li>Type Systems</li><li>Guidelines</li><li>Packaging</li></ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="acc" data-acc>
+                    <button class="acc__head" data-cursor="hover">
+                        <span class="acc__num">C</span>
+                        <span class="acc__name">Motion &amp; Digital</span>
+                        <span class="acc__icon" aria-hidden="true"></span>
+                    </button>
+                    <div class="acc__panel">
+                        <div class="acc__inner">
+                            <p>Websites, campaigns and motion systems built to move. Immersive, fast and unmistakably yours.</p>
+                            <ul><li>Web Design</li><li>Development</li><li>Motion</li><li>Social</li></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============== STATS STRIP ============== -->
+        <section class="stats" aria-label="Studio numbers">
+            <div class="stat"><span class="stat__num" data-count="120">0</span><i>+</i><p>Brands launched</p></div>
+            <div class="stat"><span class="stat__num" data-count="9">0</span><p>Years together</p></div>
+            <div class="stat"><span class="stat__num" data-count="14">0</span><p>Awwwards &amp; awards</p></div>
+            <div class="stat"><span class="stat__num" data-count="100">0</span><i>%</i><p>Human-made</p></div>
+        </section>
+
+        <!-- ============== CONTACT ============== -->
+        <section class="contact" id="contact">
+            <div class="contact__bg" aria-hidden="true">
+                <svg viewBox="0 0 100 60" preserveAspectRatio="none"><path id="contactCurve" d="M0,20 Q50,-10 100,20 L100,60 L0,60 Z"/></svg>
+            </div>
+
+            <div class="contact__inner">
+                <p class="section-tag section-tag--light"><span>(</span> 04 — Footprint <span>)</span></p>
+                <h2 class="contact__title">
+                    <span class="reveal-word">Let's</span> <span class="reveal-word">make</span>
+                    <span class="reveal-word reveal-word--accent">something</span>
+                    <span class="reveal-word">together.</span>
+                </h2>
+
+                <form class="form" id="form" novalidate>
+                    <div class="form__row">
+                        <div class="field">
+                            <input type="text" id="name" name="name" required placeholder=" " data-cursor="text" />
+                            <label for="name">Your name</label>
+                            <span class="field__line"></span>
+                        </div>
+                        <div class="field">
+                            <input type="email" id="email" name="email" required placeholder=" " data-cursor="text" />
+                            <label for="email">Email</label>
+                            <span class="field__line"></span>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <textarea id="message" name="message" rows="1" required placeholder=" " data-cursor="text"></textarea>
+                        <label for="message">Tell us about your project</label>
+                        <span class="field__line"></span>
+                    </div>
+                    <button type="submit" class="btn-magnetic btn-magnetic--big" data-cursor="hover" data-magnetic>
+                        <span class="btn-magnetic__fill"></span>
+                        <span class="btn-magnetic__label" id="submitLabel">Send it over →</span>
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- ============== FOOTER ============== -->
+        <footer class="footer">
+            <div class="footer__big" aria-hidden="true">NOUS<span>.</span></div>
+            <div class="footer__grid">
+                <div class="footer__col">
+                    <span class="footer__label">Studio</span>
+                    <a href="mailto:hello@nous.studio" data-cursor="hover">hello@nous.studio</a>
+                    <a href="tel:+33100000000" data-cursor="hover">+33 1 00 00 00 00</a>
+                </div>
+                <div class="footer__col">
+                    <span class="footer__label">Social</span>
+                    <a href="#" data-cursor="hover">Instagram</a>
+                    <a href="#" data-cursor="hover">Behance</a>
+                    <a href="#" data-cursor="hover">LinkedIn</a>
+                </div>
+                <div class="footer__col">
+                    <span class="footer__label">Office</span>
+                    <p>12 Rue du Faubourg<br/>75011 Paris — FR</p>
+                </div>
+            </div>
+            <div class="footer__base">
+                <span>© <span id="year"></span> NOUS. Studio</span>
+                <span>Made with care, by us.</span>
+                <button class="footer__top" data-cursor="hover" id="toTop">Back to top ↑</button>
+            </div>
+        </footer>
+
+    </main>
+
+    <!-- Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
