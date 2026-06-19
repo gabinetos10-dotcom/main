@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>NOUS. — Studio de Branding &amp; Identité</title>
+<meta name="description" content="NOUS. est un studio de branding qui façonne des identités audacieuses : stratégie de marque, identité visuelle, design graphique.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ============ CUSTOM CURSOR ============ -->
+<div class="cursor" id="cursor">
+  <span class="cursor-label" id="cursorLabel"></span>
+</div>
+
+<!-- ============ LOADER ============ -->
+<div class="loader" id="loader">
+  <div class="loader-inner">
+    <div class="loader-word" aria-hidden="true">
+      <span>N</span><span>O</span><span>U</span><span>S</span><span class="dot">.</span>
+    </div>
+    <div class="loader-bar"><div class="loader-bar-fill" id="loaderFill"></div></div>
+    <div class="loader-count" id="loaderCount">0</div>
+  </div>
+</div>
+
+<!-- ============ NOISE / GRAIN OVERLAY ============ -->
+<div class="grain" aria-hidden="true"></div>
+
+<!-- ============ NAVIGATION ============ -->
+<header class="nav" id="nav">
+  <a href="#top" class="nav-logo">NOUS<span class="dot-yellow">.</span></a>
+  <nav class="nav-links">
+    <a href="#manifesto" data-cursor="view">Manifeste</a>
+    <a href="#expertise" data-cursor="view">Expertise</a>
+    <a href="#work" data-cursor="view">Projets</a>
+    <a href="#contact" data-cursor="view">Contact</a>
+  </nav>
+  <button class="nav-burger" id="navBurger" aria-label="Ouvrir le menu">
+    <span></span><span></span>
+  </button>
+</header>
+
+<!-- ============ MOBILE MENU ============ -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#manifesto">Manifeste</a>
+  <a href="#expertise">Expertise</a>
+  <a href="#work">Projets</a>
+  <a href="#contact">Contact</a>
+</div>
+
+<main id="top">
+
+  <!-- ============ HERO ============ -->
+  <section class="hero" id="hero">
+    <canvas id="heroCanvas" class="hero-canvas"></canvas>
+    <div class="hero-grid">
+      <p class="hero-kicker" data-reveal>Studio de branding — Paris</p>
+      <h1 class="hero-title">
+        <span class="line" data-reveal>On ne pense pas</span>
+        <span class="line" data-reveal>des marques.</span>
+        <span class="line accent" data-reveal>On les <em>incarne</em>.</span>
+      </h1>
+      <p class="hero-sub" data-reveal>
+        NOUS. est un collectif de stratèges, designers et artisans du visuel
+        qui transforme des intuitions en identités impossibles à ignorer.
+      </p>
+      <a href="#contact" class="cta-magnetic" data-cursor="cta">
+        <span class="cta-magnetic-inner">
+          <span>Démarrer un projet</span>
+          <svg viewBox="0 0 24 24" fill="none"><path d="M5 19L19 5M19 5H9M19 5V15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+      </a>
+    </div>
+    <div class="hero-scroll" aria-hidden="true">
+      <span>Scroll</span>
+      <div class="hero-scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- ============ MANIFESTO ============ -->
+  <section class="manifesto" id="manifesto">
+    <div class="manifesto-inner">
+      <span class="section-tag" data-reveal>01 — Manifeste</span>
+      <h2 class="manifesto-text" data-split>
+        Une marque n'est pas un logo posé sur un fond blanc. C'est une
+        tension, une voix, une présence qui dérange un peu et qui rassure
+        beaucoup. <span class="hl">NOUS.</span> construit cette tension —
+        avec méthode, avec instinct, sans jamais lisser ce qui doit rester
+        vivant.
+      </h2>
+      <div class="manifesto-stats">
+        <div class="stat" data-reveal>
+          <span class="stat-num" data-count="120">0</span>
+          <span class="stat-label">Marques façonnées</span>
+        </div>
+        <div class="stat" data-reveal>
+          <span class="stat-num" data-count="9">0</span>
+          <span class="stat-label">Années d'obsession</span>
+        </div>
+        <div class="stat" data-reveal>
+          <span class="stat-num" data-count="14">0</span>
+          <span class="stat-label">Pays touchés</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ EXPERTISE ============ -->
+  <section class="expertise" id="expertise">
+    <span class="section-tag" data-reveal>02 — Expertise</span>
+    <h2 class="section-title" data-reveal>Ce que <span class="hl">NOUS.</span> fait de mieux</h2>
+
+    <div class="expertise-list">
+      <article class="expertise-item" data-cursor="plus">
+        <div class="expertise-item-row">
+          <span class="expertise-index">01</span>
+          <h3>Stratégie de marque</h3>
+          <span class="expertise-arrow">→</span>
+        </div>
+        <p class="expertise-desc">
+          Positionnement, territoire de marque, narration. On creuse jusqu'à
+          trouver la vérité qui fera tenir tout le reste.
+        </p>
+      </article>
+
+      <article class="expertise-item" data-cursor="plus">
+        <div class="expertise-item-row">
+          <span class="expertise-index">02</span>
+          <h3>Identité visuelle</h3>
+          <span class="expertise-arrow">→</span>
+        </div>
+        <p class="expertise-desc">
+          Logotype, systèmes graphiques, charte. Une grammaire visuelle
+          pensée pour durer et pour surprendre.
+        </p>
+      </article>
+
+      <article class="expertise-item" data-cursor="plus">
+        <div class="expertise-item-row">
+          <span class="expertise-index">03</span>
+          <h3>Design graphique</h3>
+          <span class="expertise-arrow">→</span>
+        </div>
+        <p class="expertise-desc">
+          Print, motion, digital. Chaque support devient un terrain
+          d'expression cohérent avec l'ADN de la marque.
+        </p>
+      </article>
+
+      <article class="expertise-item" data-cursor="plus">
+        <div class="expertise-item-row">
+          <span class="expertise-index">04</span>
+          <h3>Direction artistique</h3>
+          <span class="expertise-arrow">→</span>
+        </div>
+        <p class="expertise-desc">
+          Photographie, vidéo, scénographie. On orchestre l'univers visuel
+          dans son ensemble, jusqu'au moindre détail.
+        </p>
+      </article>
+
+      <article class="expertise-item" data-cursor="plus">
+        <div class="expertise-item-row">
+          <span class="expertise-index">05</span>
+          <h3>Sites &amp; expériences</h3>
+          <span class="expertise-arrow">→</span>
+        </div>
+        <p class="expertise-desc">
+          Interfaces, interactions, motion design. Le digital comme
+          prolongement naturel et vivant de l'identité.
+        </p>
+      </article>
+    </div>
+  </section>
+
+  <!-- ============ WORK / PORTFOLIO ============ -->
+  <section class="work" id="work">
+    <span class="section-tag" data-reveal>03 — Projets</span>
+    <h2 class="section-title" data-reveal>Des marques <span class="hl">qui marquent</span></h2>
+
+    <div class="work-grid">
+      <article class="work-card" data-cursor="see" style="--c:#F4D823;">
+        <div class="work-card-media">
+          <div class="work-card-visual" data-visual="01"></div>
+        </div>
+        <div class="work-card-info">
+          <h3>Frondaison</h3>
+          <span>Identité &amp; packaging — Agroalimentaire</span>
+        </div>
+      </article>
+
+      <article class="work-card" data-cursor="see" style="--c:#F4D823;">
+        <div class="work-card-media">
+          <div class="work-card-visual" data-visual="02"></div>
+        </div>
+        <div class="work-card-info">
+          <h3>Maison Verre</h3>
+          <span>Branding &amp; site web — Hospitality</span>
+        </div>
+      </article>
+
+      <article class="work-card" data-cursor="see" style="--c:#F4D823;">
+        <div class="work-card-media">
+          <div class="work-card-visual" data-visual="03"></div>
+        </div>
+        <div class="work-card-info">
+          <h3>Studio Volt</h3>
+          <span>Stratégie &amp; identité — Tech / Énergie</span>
+        </div>
+      </article>
+
+      <article class="work-card" data-cursor="see" style="--c:#F4D823;">
+        <div class="work-card-media">
+          <div class="work-card-visual" data-visual="04"></div>
+        </div>
+        <div class="work-card-info">
+          <h3>Récolte</h3>
+          <span>Direction artistique — Retail</span>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ============ CONTACT / FOOTER ============ -->
+  <footer class="contact" id="contact">
+    <div class="contact-top">
+      <span class="section-tag light" data-reveal>04 — Contact</span>
+      <h2 class="contact-title" data-reveal>
+        Une idée. <br>
+        Une marque à <span class="hl-yellow">naître</span>.
+      </h2>
+
+      <form class="chat-form" id="chatForm" autocomplete="off">
+        <div class="chat-step active" data-step="1">
+          <label for="cf-name">D'abord, comment t'appelles-tu ?</label>
+          <div class="chat-input-row">
+            <input type="text" id="cf-name" name="name" placeholder="Ton prénom" required>
+            <button type="button" class="chat-next" data-next="2">↵</button>
+          </div>
+        </div>
+        <div class="chat-step" data-step="2">
+          <label for="cf-email">Ravi de te lire. Ton email pour qu'on réponde ?</label>
+          <div class="chat-input-row">
+            <input type="email" id="cf-email" name="email" placeholder="toi@exemple.com" required>
+            <button type="button" class="chat-next" data-next="3">↵</button>
+          </div>
+        </div>
+        <div class="chat-step" data-step="3">
+          <label for="cf-message">Et ton projet, raconte-nous tout.</label>
+          <div class="chat-input-row">
+            <textarea id="cf-message" name="message" placeholder="Une marque à créer, un site à réinventer…" required></textarea>
+            <button type="submit" class="chat-next">Envoyer</button>
+          </div>
+        </div>
+        <div class="chat-step chat-success" data-step="4">
+          <p>Message reçu, <span id="cf-namecheck">toi</span>. NOUS. revient vers toi très vite.</p>
+        </div>
+      </form>
+    </div>
+
+    <div class="contact-bottom">
+      <a href="#top" class="footer-logo">NOUS<span class="dot-yellow">.</span></a>
+      <div class="footer-links">
+        <a href="mailto:bonjour@wearenous.fr">bonjour@wearenous.fr</a>
+        <a href="tel:+33100000000">+33 1 00 00 00 00</a>
+      </div>
+      <div class="footer-social">
+        <a href="#" data-cursor="view">Instagram</a>
+        <a href="#" data-cursor="view">LinkedIn</a>
+        <a href="#" data-cursor="view">Behance</a>
+      </div>
+      <p class="footer-copy">© <span id="year"></span> NOUS. Studio — Tous droits réservés.</p>
+    </div>
+  </footer>
+
+</main>
+
+<script src="js/main.js" defer></script>
+</body>
+</html>
