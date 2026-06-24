@@ -229,61 +229,68 @@
   }
 
   // ===================================================================
-  //  WALL DISPLAY UNITS — warm wood + lit glass shelves with watches
+  //  WALL SHOWCASES — large curved glass display all along the walls
+  //  (follows the circular wall, so corners are inherently rounded)
   // ===================================================================
-  const wallUnitCount = 6;
-  for (let i=0;i<wallUnitCount;i++){
-    const a=(i/wallUnitCount)*Math.PI*2;
-    const px=Math.sin(a)*(ROOM_R-0.5), pz=Math.cos(a)*(ROOM_R-0.5);
-    const g=new THREE.Group();
+  const SC_R = 12.3;                  // glass front radius
+  const shelfYs = [1.5, 2.85, 4.2];   // three display levels
+  const wallShowcaseWatches = [];
 
-    // wood cabinet back
-    const cab=new THREE.Mesh(new THREE.BoxGeometry(3.2,4.4,0.35), matWood);
-    cab.position.y=2.6; g.add(cab);
+  // base cabinet running along the whole wall (white + blue plinth)
+  const scBase = new THREE.Mesh(new THREE.CylinderGeometry(SC_R+0.2, SC_R+0.35, 1.0, 96, 1, true), matWhite);
+  scBase.position.y=0.5; scBase.receiveShadow=true; scene.add(scBase);
+  const scPlinth = new THREE.Mesh(new THREE.CylinderGeometry(SC_R+0.25, SC_R+0.4, 0.3, 96, 1, true), matMidnight);
+  scPlinth.position.y=0.15; scene.add(scPlinth);
 
-    // 3 glowing glass shelves with watches
-    for (let s=0;s<3;s++){
-      const sy=1.6 + s*1.15;
-      const shelf=new THREE.Mesh(new THREE.BoxGeometry(3.0,0.05,0.45), matShelfGlow);
-      shelf.position.set(0,sy,0.22); g.add(shelf);
-      for (let w=0;w<3;w++){
-        const watch=makeWatch(w%2?matSilver:matGold);
-        watch.scale.set(1.3,1.3,1.3);
-        watch.position.set(-0.9+w*0.9, sy+0.28, 0.28);
-        g.add(watch);
-      }
+  // continuous curved glass front (the "rounded" vitrine wall)
+  const scGlass = new THREE.Mesh(new THREE.CylinderGeometry(SC_R, SC_R, 3.7, 96, 1, true), matGlass);
+  scGlass.position.y=2.85; scene.add(scGlass);
+  // gold trim rings top & bottom of the glass
+  [1.0, 4.7].forEach(y=>{
+    const ring=new THREE.Mesh(new THREE.TorusGeometry(SC_R, 0.04, 8, 96), matGold);
+    ring.rotation.x=Math.PI/2; ring.position.y=y; scene.add(ring);
+  });
+
+  // lit curved shelves + watches all the way around
+  shelfYs.forEach(sy=>{
+    const shelf=new THREE.Mesh(new THREE.RingGeometry(SC_R-0.05, SC_R+0.75, 96), matShelfGlow);
+    shelf.rotation.x=-Math.PI/2; shelf.position.y=sy; scene.add(shelf);
+    const n=22;
+    for (let w=0;w<n;w++){
+      const a=(w/n)*Math.PI*2;
+      const rr=SC_R+0.35;
+      const x=Math.cos(a)*rr, z=Math.sin(a)*rr;
+      const wt=makeWatch(w%2?matSilver:matGold);
+      wt.scale.set(1.45,1.45,1.45);
+      wt.position.set(x, sy+0.3, z);
+      wt.lookAt(0, sy+0.3, 0);
+      scene.add(wt);
+      wallShowcaseWatches.push(wt);
     }
-    // gold frame outline
-    const frame=new THREE.Mesh(new THREE.BoxGeometry(3.3,4.5,0.05),
-      new THREE.MeshStandardMaterial({ color:GOLD, roughness:0.35, metalness:1 }));
-    frame.position.set(0,2.6,0.18); g.add(frame);
-    const innerDark=new THREE.Mesh(new THREE.BoxGeometry(3.0,4.2,0.04),
-      new THREE.MeshStandardMaterial({ color:0xf2f1ec }));
-    frame.add(innerDark); innerDark.position.z=0.01;
-
-    g.position.set(px,0,pz);
-    g.lookAt(0,2.6,0);
-    scene.add(g);
-
-    // soft spot to light each unit
-    const sp=new THREE.SpotLight(WARM_WHITE, 6, 9, Math.PI/6, 0.5, 1.3);
-    sp.position.set(px*0.78, 6, pz*0.78);
-    sp.target.position.set(px, 2.6, pz);
+  });
+  // ring of soft spotlights washing the wall showcases (the jewelry-box glint)
+  for (let i=0;i<10;i++){
+    const a=(i/10)*Math.PI*2;
+    const sp=new THREE.SpotLight(WARM_WHITE, 4, 9, Math.PI/5, 0.5, 1.2);
+    sp.position.set(Math.cos(a)*(SC_R-1.5), 6.2, Math.sin(a)*(SC_R-1.5));
+    sp.target.position.set(Math.cos(a)*(SC_R+0.4), 2.8, Math.sin(a)*(SC_R+0.4));
     scene.add(sp); scene.add(sp.target);
   }
 
   // ===================================================================
-  //  DYNAMIC DIGITAL WALL SCREENS (brand visuals)
+  //  DIGITAL SCREENS — a ring of collection screens along the upper walls
   // ===================================================================
-  function makeAdTexture(){
+  function makeAdTexture(variant){
     const c=document.createElement('canvas'); c.width=512; c.height=768;
     const x=c.getContext('2d');
+    const palettes=[['#1c3a78','#0d1c40'],['#163a8c','#0a1430'],['#22468f','#101f44']];
+    const titles=[['NOUVELLE','COLLECTION'],['ÉDITION','LIMITÉE'],['HORLOGERIE','D’EXCEPTION']];
+    const p=palettes[variant%palettes.length], ti=titles[variant%titles.length];
     const grd=x.createLinearGradient(0,0,0,768);
-    grd.addColorStop(0,'#1c3a78'); grd.addColorStop(1,'#0d1c40');
+    grd.addColorStop(0,p[0]); grd.addColorStop(1,p[1]);
     x.fillStyle=grd; x.fillRect(0,0,512,768);
     x.fillStyle='#ffffff'; x.font='700 54px Arial'; x.textAlign='center';
-    x.fillText('NOUVELLE', 256, 120); x.fillText('COLLECTION', 256, 185);
-    // watch circle
+    x.fillText(ti[0], 256, 120); x.fillText(ti[1], 256, 185);
     x.strokeStyle='#c9a45c'; x.lineWidth=10;
     x.beginPath(); x.arc(256,420,120,0,Math.PI*2); x.stroke();
     x.fillStyle='#c9a45c'; x.beginPath(); x.arc(256,420,12,0,Math.PI*2); x.fill();
@@ -294,46 +301,75 @@
     x.fillStyle='#c9a45c'; x.fillText('PION', 330, 700);
     return new THREE.CanvasTexture(c);
   }
-  const adTex = makeAdTexture();
-  const screenAngles=[Math.PI*0.5, Math.PI*1.5, Math.PI];
+  const adTextures=[makeAdTexture(0), makeAdTexture(1), makeAdTexture(2)];
   const wallScreens=[];
-  screenAngles.forEach(a=>{
-    const px=Math.sin(a)*(ROOM_R-0.4), pz=Math.cos(a)*(ROOM_R-0.4);
-    const screen=new THREE.Mesh(new THREE.PlaneGeometry(2.2,3.3),
-      new THREE.MeshStandardMaterial({ map:adTex, emissive:0xffffff, emissiveMap:adTex, emissiveIntensity:0.85 }));
-    screen.position.set(px,3.4,pz); screen.lookAt(0,3.4,0);
+  const screenCount=8;   // many screens, all around the upper wall
+  for (let i=0;i<screenCount;i++){
+    const a=(i/screenCount)*Math.PI*2 + Math.PI/screenCount;
+    const px=Math.sin(a)*(ROOM_R-0.25), pz=Math.cos(a)*(ROOM_R-0.25);
+    // midnight backing panel
+    const back=new THREE.Mesh(new THREE.BoxGeometry(2.0,2.5,0.12), matMidnight);
+    back.position.set(px,5.6,pz); back.lookAt(0,5.6,0); scene.add(back);
+    // the screen itself
+    const tex=adTextures[i%adTextures.length];
+    const screen=new THREE.Mesh(new THREE.PlaneGeometry(1.6,2.2),
+      new THREE.MeshStandardMaterial({ map:tex, emissive:0xffffff, emissiveMap:tex, emissiveIntensity:0.85 }));
+    screen.position.set(px,5.6,pz); screen.lookAt(0,5.6,0); screen.translateZ(0.08);
     scene.add(screen);
-    const bez=new THREE.Mesh(new THREE.BoxGeometry(2.4,3.5,0.1), matMidnight);
-    bez.position.set(px,3.4,pz); bez.lookAt(0,3.4,0); bez.translateZ(-0.06);
+    // gold bezel
+    const bez=new THREE.Mesh(new THREE.BoxGeometry(1.74,2.34,0.05), matGold);
+    bez.position.set(px,5.6,pz); bez.lookAt(0,5.6,0); bez.translateZ(0.05);
     scene.add(bez);
     wallScreens.push(screen);
-  });
+  }
 
   // ===================================================================
   //  CENTRAL ROUND ISLAND — white counter, blue base, glass dome, tablets
   // ===================================================================
   const island=new THREE.Group();
-  const counter=new THREE.Mesh(new THREE.CylinderGeometry(3,3.15,1.0,64), matWhite);
-  counter.position.y=0.55; counter.castShadow=true; counter.receiveShadow=true; island.add(counter);
-  const blueBand=new THREE.Mesh(new THREE.CylinderGeometry(3.05,3.2,0.5,64), matMidnight);
-  blueBand.position.y=0.25; island.add(blueBand);
-  const topRim=new THREE.Mesh(new THREE.TorusGeometry(3,0.05,12,64), matGold);
-  topRim.rotation.x=Math.PI/2; topRim.position.y=1.05; island.add(topRim);
+  const HOLE=1.6;   // inner radius — the seller stands inside here
+  const OUT=3.1;    // outer radius
 
-  // glass dome display on top with watches on stands
-  const ped=new THREE.Mesh(new THREE.CylinderGeometry(1.3,1.4,0.18,48), matMidnight);
-  ped.position.y=1.12; island.add(ped);
-  const dome=new THREE.Mesh(new THREE.SphereGeometry(1.5,48,24,0,Math.PI*2,0,Math.PI/2), matGlass);
-  dome.position.y=1.1; island.add(dome);
+  // counter top (flat annulus with a central hole)
+  const cTop=new THREE.Mesh(new THREE.RingGeometry(HOLE, OUT, 80), matWhite);
+  cTop.rotation.x=-Math.PI/2; cTop.position.y=1.0; cTop.receiveShadow=true; island.add(cTop);
+  // outer skirt
+  const cOuter=new THREE.Mesh(new THREE.CylinderGeometry(OUT,OUT,1.0,80,1,true), matWhite);
+  cOuter.position.y=0.5; cOuter.castShadow=true; island.add(cOuter);
+  // inner skirt (wall of the hole the seller stands in)
+  const cInner=new THREE.Mesh(new THREE.CylinderGeometry(HOLE,HOLE,1.0,64,1,true),
+    new THREE.MeshStandardMaterial({ color:WHITE, roughness:0.5, side:THREE.DoubleSide }));
+  cInner.position.y=0.5; island.add(cInner);
+  // blue base band
+  const blueBand=new THREE.Mesh(new THREE.CylinderGeometry(OUT+0.05,OUT+0.2,0.5,80), matMidnight);
+  blueBand.position.y=0.25; island.add(blueBand);
+  // gold rims (outer & inner edges of the counter top)
+  const rimO=new THREE.Mesh(new THREE.TorusGeometry(OUT,0.05,12,80), matGold);
+  rimO.rotation.x=Math.PI/2; rimO.position.y=1.0; island.add(rimO);
+  const rimI=new THREE.Mesh(new THREE.TorusGeometry(HOLE,0.04,12,64), matGold);
+  rimI.rotation.x=Math.PI/2; rimI.position.y=1.0; island.add(rimI);
+  // raised platform inside the hole + LED underglow ring
+  const stage=new THREE.Mesh(new THREE.CylinderGeometry(HOLE-0.05,HOLE-0.05,0.12,48), matMidnight);
+  stage.position.y=0.06; island.add(stage);
+  const stageLed=new THREE.Mesh(new THREE.TorusGeometry(HOLE-0.05,0.04,8,64),
+    new THREE.MeshStandardMaterial({ color:0xffffff, emissive:0xbcd2ff, emissiveIntensity:1.6 }));
+  stageLed.rotation.x=Math.PI/2; stageLed.position.y=0.12; island.add(stageLed);
+
+  // watch display capsules embedded in the counter top (around the ring)
   const watchRing=new THREE.Group();
-  for (let i=0;i<6;i++){
-    const a=(i/6)*Math.PI*2;
-    const stand=new THREE.Mesh(new THREE.CylinderGeometry(0.08,0.12,0.22,16), matWhite);
-    stand.position.set(Math.cos(a)*0.75,1.32,Math.sin(a)*0.75); watchRing.add(stand);
+  const capsules=8;
+  for (let i=0;i<capsules;i++){
+    const a=(i/capsules)*Math.PI*2;
+    const r=(HOLE+OUT)/2;
+    const x=Math.cos(a)*r, z=Math.sin(a)*r;
+    const pad=new THREE.Mesh(new THREE.CylinderGeometry(0.3,0.3,0.05,28), matShelfGlow);
+    pad.position.set(x,1.03,z); watchRing.add(pad);
+    const gdome=new THREE.Mesh(new THREE.SphereGeometry(0.32,24,12,0,Math.PI*2,0,Math.PI/2), matGlass);
+    gdome.position.set(x,1.03,z); watchRing.add(gdome);
     const wt=makeWatch(i%2?matSilver:matGold);
-    wt.scale.set(1.4,1.4,1.4);
-    wt.position.set(Math.cos(a)*0.75,1.55,Math.sin(a)*0.75);
-    wt.rotation.y=-a; watchRing.add(wt);
+    wt.scale.set(1.3,1.3,1.3);
+    wt.position.set(x,1.2,z); wt.rotation.x=-0.5; wt.rotation.y=-a;
+    watchRing.add(wt);
   }
   island.add(watchRing);
 
@@ -533,7 +569,6 @@
   function animate(){
     requestAnimationFrame(animate);
     const dt=clock.getDelta(), t=clock.getElapsedTime();
-    watchRing.rotation.y += dt*0.3;
     showcases.forEach((s,i)=>{
       s.disc.material.emissiveIntensity = 0.8 + Math.sin(t*1.4+i)*0.3;
       s.watch.rotation.y += dt*0.4;
