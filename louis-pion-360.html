@@ -293,25 +293,22 @@
     return g;
   }
 
-  // Place a continuous ring of vitrines all along the wall
-  const VIT_COUNT=20, VIT_R=13.3;
-  const vitWidth=2*VIT_R*Math.sin(Math.PI/VIT_COUNT)-0.12; // chord minus a thin mullion gap
-  for (let i=0;i<VIT_COUNT;i++){
-    const a=(i/VIT_COUNT)*Math.PI*2;
-    const px=Math.sin(a)*VIT_R, pz=Math.cos(a)*VIT_R;
-    const v=makeVitrine(vitWidth);
-    v.position.set(px,0,pz);
-    v.lookAt(0,0,0);   // glass front (+Z) faces the center of the store
-    scene.add(v);
-  }
-  // accent spotlights washing the vitrines (jewelry-box glint)
-  for (let i=0;i<8;i++){
-    const a=(i/8)*Math.PI*2;
-    const sp=new THREE.SpotLight(WARM_WHITE, 5, 9, Math.PI/5, 0.5, 1.2);
-    sp.position.set(Math.sin(a)*(VIT_R-1.6), 6.2, Math.cos(a)*(VIT_R-1.6));
-    sp.target.position.set(Math.sin(a)*VIT_R, 2.6, Math.cos(a)*VIT_R);
-    scene.add(sp); scene.add(sp.target);
-  }
+  // Only a FEW vitrine clusters (not all around) — keeps the space open & airy.
+  const VIT_R=13.4, vitWidth=2.3;
+  const stepA=2*Math.asin((vitWidth+0.15)/(2*VIT_R)); // angular pitch between adjacent vitrines
+  const vitClusters=[0.0, Math.PI*0.7, Math.PI*1.35];  // 3 display zones around the store
+  vitClusters.forEach(c=>{
+    [-0.5,0.5].forEach(k=>{                             // 2 vitrines per cluster
+      const a=c + k*stepA;
+      const px=Math.sin(a)*VIT_R, pz=Math.cos(a)*VIT_R;
+      const v=makeVitrine(vitWidth);
+      v.position.set(px,0,pz); v.lookAt(0,0,0); scene.add(v);
+      const sp=new THREE.SpotLight(WARM_WHITE, 5, 9, Math.PI/5, 0.5, 1.2);
+      sp.position.set(px*0.85, 6, pz*0.85);
+      sp.target.position.set(px, 2.4, pz);
+      scene.add(sp); scene.add(sp.target);
+    });
+  });
 
   // ===================================================================
   //  DIGITAL SCREENS — a ring of collection screens along the upper walls
@@ -358,6 +355,53 @@
     scene.add(bez);
     wallScreens.push(screen);
   }
+
+  // --- LARGE PROMOTIONAL SCREENS on the open wall sections (airy zones) ---
+  function makePromoTexture(variant){
+    const c=document.createElement('canvas'); c.width=1024; c.height=640;
+    const x=c.getContext('2d');
+    const sets=[
+      { bg:['#1c3a78','#0a1430'], big:'-20%', sub:'SUR TOUTE LA COLLECTION' },
+      { bg:['#163a8c','#0d1c40'], big:'NOUVEAUTÉ', sub:'COLLECTION PRINTEMPS' },
+      { bg:['#22468f','#101f44'], big:'OFFRE', sub:'EXCLUSIVE EN BOUTIQUE' }
+    ];
+    const s=sets[variant%sets.length];
+    const grd=x.createLinearGradient(0,0,1024,640);
+    grd.addColorStop(0,s.bg[0]); grd.addColorStop(1,s.bg[1]);
+    x.fillStyle=grd; x.fillRect(0,0,1024,640);
+    // watch graphic on the right
+    x.strokeStyle='#c9a45c'; x.lineWidth=14;
+    x.beginPath(); x.arc(770,320,150,0,Math.PI*2); x.stroke();
+    x.strokeStyle='#fff'; x.lineWidth=8;
+    x.beginPath(); x.moveTo(770,320); x.lineTo(770,210); x.stroke();
+    x.beginPath(); x.moveTo(770,320); x.lineTo(855,320); x.stroke();
+    x.fillStyle='#c9a45c'; x.beginPath(); x.arc(770,320,16,0,Math.PI*2); x.fill();
+    // promo text
+    x.textAlign='left'; x.fillStyle='#fff'; x.font='800 130px Arial';
+    x.fillText(s.big, 70, 300);
+    x.fillStyle='#c9a45c'; x.font='700 40px Arial'; x.fillText(s.sub, 72, 370);
+    x.fillStyle='#fff'; x.font='700 44px Arial'; x.fillText('LOUIS', 72, 560);
+    x.fillStyle='#c9a45c'; x.fillText('PION', 210, 560);
+    return new THREE.CanvasTexture(c);
+  }
+  const promoTextures=[makePromoTexture(0), makePromoTexture(1), makePromoTexture(2)];
+  // open zones sit between the vitrine clusters (clusters at 0, 0.7π, 1.35π)
+  const promoAngles=[Math.PI*0.35, Math.PI*1.02, Math.PI*1.68];
+  promoAngles.forEach((a,i)=>{
+    const px=Math.sin(a)*(ROOM_R-0.2), pz=Math.cos(a)*(ROOM_R-0.2);
+    // midnight backing
+    const back=new THREE.Mesh(new THREE.BoxGeometry(4.4,2.7,0.14), matMidnight);
+    back.position.set(px,3.0,pz); back.lookAt(0,3.0,0); scene.add(back);
+    // big promo screen
+    const tex=promoTextures[i%promoTextures.length];
+    const screen=new THREE.Mesh(new THREE.PlaneGeometry(4.0,2.5),
+      new THREE.MeshStandardMaterial({ map:tex, emissive:0xffffff, emissiveMap:tex, emissiveIntensity:0.95 }));
+    screen.position.set(px,3.0,pz); screen.lookAt(0,3.0,0); screen.translateZ(0.09); scene.add(screen);
+    // gold bezel
+    const bez=new THREE.Mesh(new THREE.BoxGeometry(4.18,2.68,0.05), matGold);
+    bez.position.set(px,3.0,pz); bez.lookAt(0,3.0,0); bez.translateZ(0.06); scene.add(bez);
+    wallScreens.push(screen);
+  });
 
   // ===================================================================
   //  CENTRAL ROUND ISLAND — white counter, blue base, glass dome, tablets
