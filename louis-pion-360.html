@@ -229,51 +229,87 @@
   }
 
   // ===================================================================
-  //  WALL SHOWCASES — large curved glass display all along the walls
-  //  (follows the circular wall, so corners are inherently rounded)
+  //  WALL VITRINES — real, enclosed display cabinets all along the store
   // ===================================================================
-  const SC_R = 12.3;                  // glass front radius
-  const shelfYs = [1.5, 2.85, 4.2];   // three display levels
-  const wallShowcaseWatches = [];
-
-  // base cabinet running along the whole wall (white + blue plinth)
-  const scBase = new THREE.Mesh(new THREE.CylinderGeometry(SC_R+0.2, SC_R+0.35, 1.0, 96, 1, true), matWhite);
-  scBase.position.y=0.5; scBase.receiveShadow=true; scene.add(scBase);
-  const scPlinth = new THREE.Mesh(new THREE.CylinderGeometry(SC_R+0.25, SC_R+0.4, 0.3, 96, 1, true), matMidnight);
-  scPlinth.position.y=0.15; scene.add(scPlinth);
-
-  // continuous curved glass front (the "rounded" vitrine wall)
-  const scGlass = new THREE.Mesh(new THREE.CylinderGeometry(SC_R, SC_R, 3.7, 96, 1, true), matGlass);
-  scGlass.position.y=2.85; scene.add(scGlass);
-  // gold trim rings top & bottom of the glass
-  [1.0, 4.7].forEach(y=>{
-    const ring=new THREE.Mesh(new THREE.TorusGeometry(SC_R, 0.04, 8, 96), matGold);
-    ring.rotation.x=Math.PI/2; ring.position.y=y; scene.add(ring);
+  const matCabGlass = new THREE.MeshPhysicalMaterial({
+    color:0xcfe0ff, roughness:0.05, metalness:0,
+    transparent:true, opacity:0.15, reflectivity:0.5, side:THREE.DoubleSide
   });
 
-  // lit curved shelves + watches all the way around
-  shelfYs.forEach(sy=>{
-    const shelf=new THREE.Mesh(new THREE.RingGeometry(SC_R-0.05, SC_R+0.75, 96), matShelfGlow);
-    shelf.rotation.x=-Math.PI/2; shelf.position.y=sy; scene.add(shelf);
-    const n=22;
-    for (let w=0;w<n;w++){
-      const a=(w/n)*Math.PI*2;
-      const rr=SC_R+0.35;
-      const x=Math.cos(a)*rr, z=Math.sin(a)*rr;
-      const wt=makeWatch(w%2?matSilver:matGold);
-      wt.scale.set(1.45,1.45,1.45);
-      wt.position.set(x, sy+0.3, z);
-      wt.lookAt(0, sy+0.3, 0);
-      scene.add(wt);
-      wallShowcaseWatches.push(wt);
-    }
-  });
-  // ring of soft spotlights washing the wall showcases (the jewelry-box glint)
-  for (let i=0;i<10;i++){
-    const a=(i/10)*Math.PI*2;
-    const sp=new THREE.SpotLight(WARM_WHITE, 4, 9, Math.PI/5, 0.5, 1.2);
-    sp.position.set(Math.cos(a)*(SC_R-1.5), 6.2, Math.sin(a)*(SC_R-1.5));
-    sp.target.position.set(Math.cos(a)*(SC_R+0.4), 2.8, Math.sin(a)*(SC_R+0.4));
+  // Build ONE real vitrine: base cabinet + framed glass case + lit shelves + watches
+  function makeVitrine(width){
+    const g=new THREE.Group();
+    const D=0.8, baseH=1.0, caseH=2.7, topY=baseH+caseH;
+
+    // base cabinet (white) + midnight kick + gold trim
+    const base=new THREE.Mesh(new THREE.BoxGeometry(width, baseH, D), matWhite);
+    base.position.y=baseH/2; base.castShadow=true; base.receiveShadow=true; g.add(base);
+    const kick=new THREE.Mesh(new THREE.BoxGeometry(width+0.02, 0.18, D+0.02), matMidnight);
+    kick.position.y=0.09; g.add(kick);
+    const trim=new THREE.Mesh(new THREE.BoxGeometry(width+0.03, 0.05, D+0.03), matGold);
+    trim.position.y=baseH; g.add(trim);
+
+    // lit midnight back panel
+    const back=new THREE.Mesh(new THREE.BoxGeometry(width, caseH, 0.06), matMidnight);
+    back.position.set(0, baseH+caseH/2, -D/2+0.03); g.add(back);
+
+    // lit glass shelves + watches
+    const shelfYs=[baseH+0.55, baseH+1.45, baseH+2.3];
+    const per=Math.min(3, Math.max(2, Math.floor(width/1.1)));
+    shelfYs.forEach(sy=>{
+      const shelf=new THREE.Mesh(new THREE.BoxGeometry(width-0.1, 0.04, D-0.12), matShelfGlow);
+      shelf.position.set(0, sy, 0.02); g.add(shelf);
+      for (let w=0; w<per; w++){
+        const wx=-width/2 + width*((w+0.5)/per);
+        const wt=makeWatch(w%2?matSilver:matGold);
+        wt.scale.set(1.4,1.4,1.4);
+        wt.position.set(wx, sy+0.28, 0.05);
+        g.add(wt);
+      }
+    });
+
+    // glass enclosure (front + two sides + top)
+    const front=new THREE.Mesh(new THREE.PlaneGeometry(width, caseH), matCabGlass);
+    front.position.set(0, baseH+caseH/2, D/2); g.add(front);
+    const left=new THREE.Mesh(new THREE.PlaneGeometry(D, caseH), matCabGlass);
+    left.position.set(-width/2, baseH+caseH/2, 0); left.rotation.y=Math.PI/2; g.add(left);
+    const right=left.clone(); right.position.x=width/2; g.add(right);
+    const topPane=new THREE.Mesh(new THREE.PlaneGeometry(width, D), matCabGlass);
+    topPane.position.set(0, topY, 0); topPane.rotation.x=Math.PI/2; g.add(topPane);
+
+    // gold frame: vertical posts + top rails
+    const postGeo=new THREE.BoxGeometry(0.05, caseH, 0.05);
+    [[-width/2,-D/2],[width/2,-D/2],[-width/2,D/2],[width/2,D/2]].forEach(([x,z])=>{
+      const p=new THREE.Mesh(postGeo, matGold); p.position.set(x, baseH+caseH/2, z); g.add(p);
+    });
+    [ D/2,-D/2].forEach(z=>{
+      const r=new THREE.Mesh(new THREE.BoxGeometry(width+0.05,0.05,0.05), matGold);
+      r.position.set(0, topY, z); g.add(r);
+    });
+    [-width/2,width/2].forEach(x=>{
+      const r=new THREE.Mesh(new THREE.BoxGeometry(0.05,0.05,D+0.05), matGold);
+      r.position.set(x, topY, 0); g.add(r);
+    });
+    return g;
+  }
+
+  // Place a continuous ring of vitrines all along the wall
+  const VIT_COUNT=20, VIT_R=13.3;
+  const vitWidth=2*VIT_R*Math.sin(Math.PI/VIT_COUNT)-0.12; // chord minus a thin mullion gap
+  for (let i=0;i<VIT_COUNT;i++){
+    const a=(i/VIT_COUNT)*Math.PI*2;
+    const px=Math.sin(a)*VIT_R, pz=Math.cos(a)*VIT_R;
+    const v=makeVitrine(vitWidth);
+    v.position.set(px,0,pz);
+    v.lookAt(0,0,0);   // glass front (+Z) faces the center of the store
+    scene.add(v);
+  }
+  // accent spotlights washing the vitrines (jewelry-box glint)
+  for (let i=0;i<8;i++){
+    const a=(i/8)*Math.PI*2;
+    const sp=new THREE.SpotLight(WARM_WHITE, 5, 9, Math.PI/5, 0.5, 1.2);
+    sp.position.set(Math.sin(a)*(VIT_R-1.6), 6.2, Math.cos(a)*(VIT_R-1.6));
+    sp.target.position.set(Math.sin(a)*VIT_R, 2.6, Math.cos(a)*VIT_R);
     scene.add(sp); scene.add(sp.target);
   }
 
