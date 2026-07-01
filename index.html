@@ -3,51 +3,58 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>NOUS. — Studio de Branding &amp; Identité</title>
-<meta name="description" content="NOUS. est un studio de branding qui façonne des identités audacieuses : stratégie de marque, identité visuelle, design graphique et expériences digitales.">
+<title>NOUS. — Studio de Branding Urbain</title>
+<meta name="description" content="NOUS. est un studio de branding né de la rue : stratégie de marque, identité visuelle, design graphique et expériences digitales à l'énergie urbaine.">
 <meta name="theme-color" content="#0A0A0A">
-<meta property="og:title" content="NOUS. — Studio de Branding">
-<meta property="og:description" content="On ne pense pas des marques. On les incarne.">
+<meta property="og:title" content="NOUS. — Studio de Branding Urbain">
+<meta property="og:description" content="La rue parle. NOUS. traduit.">
 <meta property="og:type" content="website">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-<!-- ============ CUSTOM CURSOR (dot + ring) ============ -->
+<!-- ============ SPRAY TRAIL (paint follows the cursor) ============ -->
+<canvas id="sprayCanvas" class="spray-canvas" aria-hidden="true"></canvas>
+
+<!-- ============ CUSTOM CURSOR (spray cap) ============ -->
 <div class="cursor-ring" id="cursorRing"></div>
 <div class="cursor-dot" id="cursorDot"><span class="cursor-text" id="cursorText"></span></div>
 
-<!-- ============ GRAIN OVERLAY ============ -->
+<!-- ============ GRAIN / CONCRETE OVERLAY ============ -->
 <div class="grain" aria-hidden="true"></div>
 
-<!-- ============ LOADER ============ -->
+<!-- ============ LOADER — spray-tag reveal ============ -->
 <div class="loader" id="loader">
   <div class="loader-stage">
-    <div class="loader-word" aria-hidden="true">
-      <span>N</span><span>O</span><span>U</span><span>S</span><span class="dot">.</span>
-    </div>
+    <svg class="loader-tag-svg" viewBox="0 0 560 160" aria-hidden="true">
+      <!-- hand-styled "NOUS." strokes, drawn on load -->
+      <path class="tagline" d="M30 120 L30 45 L85 120 L85 45"/>
+      <path class="tagline" d="M130 82 a38 38 0 1 0 76 0 a38 38 0 1 0 -76 0"/>
+      <path class="tagline" d="M245 45 L245 100 a25 25 0 0 0 50 0 L295 45"/>
+      <path class="tagline" d="M400 55 a25 20 0 0 0 -48 5 c0 22 50 12 50 36 a25 20 0 0 1 -50 4"/>
+      <circle class="tagdot" cx="450" cy="118" r="10"/>
+    </svg>
     <div class="loader-meta">
-      <span class="loader-tag" id="loaderTag">Initialisation</span>
+      <span class="loader-tag" id="loaderTag">On secoue la bombe</span>
       <span class="loader-count" id="loaderCount">00</span>
     </div>
     <div class="loader-bar"><i id="loaderFill"></i></div>
   </div>
-  <!-- yellow panels that sweep away to reveal the page -->
   <div class="loader-reveal" aria-hidden="true">
     <span></span><span></span><span></span><span></span><span></span>
   </div>
 </div>
 
-<!-- ============ FIXED HEADER (black) ============ -->
+<!-- ============ HEADER (black) ============ -->
 <header class="header" id="header">
   <a href="#top" class="brand" data-cursor="link" data-cursor-label="Top">NOUS<span class="brand-dot">.</span></a>
   <nav class="nav">
     <a href="#manifesto" class="nav-link" data-cursor="link"><span>Manifeste</span></a>
     <a href="#expertise" class="nav-link" data-cursor="link"><span>Expertise</span></a>
-    <a href="#work" class="nav-link" data-cursor="link"><span>Projets</span></a>
+    <a href="#work" class="nav-link" data-cursor="link"><span>Murs</span></a>
     <a href="#contact" class="nav-link nav-cta" data-cursor="link"><span>Contact</span></a>
   </nav>
   <button class="burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
@@ -58,7 +65,7 @@
   <div class="menu-inner">
     <a href="#manifesto" data-i="01">Manifeste</a>
     <a href="#expertise" data-i="02">Expertise</a>
-    <a href="#work" data-i="03">Projets</a>
+    <a href="#work" data-i="03">Murs</a>
     <a href="#contact" data-i="04">Contact</a>
   </div>
 </div>
@@ -69,36 +76,38 @@
 
   <!-- ============ HERO ============ -->
   <section class="hero" id="hero">
-    <canvas id="metaCanvas" class="hero-canvas"></canvas>
+    <canvas id="heroCanvas" class="hero-canvas"></canvas>
+
+    <!-- sticker badges -->
+    <span class="sticker st-1" data-parallax="0.16" aria-hidden="true">100%<br>Fait main</span>
+    <span class="sticker st-2" data-parallax="-0.1" aria-hidden="true">Paris ✦ Monde</span>
+
     <div class="hero-content">
       <p class="hero-kicker" data-reveal>
-        <span class="kicker-dot"></span> Studio de branding — Paris &amp; partout
+        <span class="kicker-dot"></span> Studio de branding — né du bitume
       </p>
       <h1 class="hero-title">
-        <span class="line"><span data-char-line>On ne pense pas</span></span>
-        <span class="line"><span data-char-line>des marques.</span></span>
-        <span class="line accent"><span data-char-line>On les incarne.</span></span>
+        <span class="line"><span data-char-line>La rue parle.</span></span>
+        <span class="line accent"><span data-char-line>NOUS. traduit.</span></span>
       </h1>
       <div class="hero-bottom">
         <p class="hero-sub" data-reveal>
-          Collectif de stratèges, designers et artisans du visuel.
-          Nous transformons des intuitions en identités impossibles à ignorer.
+          Collectif de stratèges, designers et writers. On prend l'énergie
+          brute de la rue et on en fait des marques impossibles à ignorer.
         </p>
         <a href="#contact" class="magnetic btn" data-cursor="cta" data-magnetic>
           <span class="btn-fill"></span>
-          <span class="btn-label">
-            <span>Démarrer un projet</span>
-            <span aria-hidden="true">Démarrer un projet</span>
-          </span>
+          <span class="btn-label"><span>Taguer un projet</span><span aria-hidden="true">Taguer un projet</span></span>
           <svg class="btn-arrow" viewBox="0 0 24 24"><path d="M5 19L19 5M19 5H9M19 5V15" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
       </div>
     </div>
-    <div class="hero-scroll"><span>Scroll</span><i></i></div>
+    <div class="hero-scroll"><span>Descends</span><i></i></div>
   </section>
 
-  <!-- ============ MARQUEE ============ -->
+  <!-- ============ HAZARD MARQUEE ============ -->
   <section class="marquee" id="marquee">
+    <div class="hazard hazard-top" aria-hidden="true"></div>
     <div class="marquee-track" id="marqueeTrack">
       <span>Stratégie de marque</span><span class="star">✺</span>
       <span>Identité visuelle</span><span class="star">✺</span>
@@ -106,121 +115,129 @@
       <span>Direction artistique</span><span class="star">✺</span>
       <span>Expériences digitales</span><span class="star">✺</span>
     </div>
+    <div class="hazard hazard-bottom" aria-hidden="true"></div>
   </section>
 
   <!-- ============ MANIFESTO ============ -->
   <section class="manifesto" id="manifesto">
+    <svg class="tag-draw" viewBox="0 0 300 120" data-draw aria-hidden="true">
+      <path d="M20 90 Q60 20 110 70 T200 60 Q240 50 280 85" fill="none"/>
+    </svg>
     <div class="wrap">
       <span class="tag" data-reveal><i></i>01 — Manifeste</span>
       <h2 class="manifesto-text" data-words>
-        Une marque n'est pas un logo posé sur un fond blanc. C'est une tension,
-        une voix, une présence qui dérange un peu et rassure beaucoup.
-        NOUS. construit cette tension — avec méthode, avec instinct,
-        sans jamais lisser ce qui doit rester vivant.
+        Une marque n'est pas un logo propre sur un mur blanc. C'est un tag
+        qu'on n'efface pas, une voix qui résonne entre les immeubles.
+        NOUS. capte cette énergie — brute, directe, vivante — et la
+        transforme en identités qui tiennent la rue.
       </h2>
       <div class="stats">
-        <div class="stat" data-reveal><b data-count="120">0</b><span>Marques façonnées</span></div>
-        <div class="stat" data-reveal><b data-count="9">0</b><span>Années d'obsession</span></div>
-        <div class="stat" data-reveal><b data-count="14">0</b><span>Pays touchés</span></div>
+        <div class="stat" data-reveal><b data-count="120">0</b><span>Marques taguées</span></div>
+        <div class="stat" data-reveal><b data-count="9">0</b><span>Années de terrain</span></div>
+        <div class="stat" data-reveal><b data-count="14">0</b><span>Villes couvertes</span></div>
       </div>
     </div>
   </section>
 
   <!-- ============ EXPERTISE ============ -->
   <section class="expertise" id="expertise">
+    <div class="torn torn-top" aria-hidden="true"></div>
     <div class="wrap">
-      <span class="tag" data-reveal><i></i>02 — Expertise</span>
-      <h2 class="section-title" data-reveal data-scramble>Ce que NOUS. fait de mieux</h2>
+      <span class="tag light" data-reveal><i></i>02 — Expertise</span>
+      <h2 class="section-title light" data-reveal data-scramble>Notre terrain de jeu</h2>
     </div>
     <div class="acc wrap" id="acc">
       <article class="acc-row" data-cursor="plus">
         <div class="acc-head"><span class="acc-num">01</span><h3>Stratégie de marque</h3><span class="acc-plus"></span></div>
-        <div class="acc-body"><p>Positionnement, territoire de marque, narration. On creuse jusqu'à trouver la vérité qui fera tenir tout le reste.</p></div>
+        <div class="acc-body"><p>Positionnement, territoire, narration. On repère le bon spot avant de sortir la bombe : la vérité de marque qui fera tenir tout le reste.</p></div>
       </article>
       <article class="acc-row" data-cursor="plus">
         <div class="acc-head"><span class="acc-num">02</span><h3>Identité visuelle</h3><span class="acc-plus"></span></div>
-        <div class="acc-body"><p>Logotype, systèmes graphiques, charte. Une grammaire visuelle pensée pour durer et pour surprendre.</p></div>
+        <div class="acc-body"><p>Logotype, systèmes graphiques, charte. Un lettrage qui se reconnaît de loin, comme une signature sur un mur.</p></div>
       </article>
       <article class="acc-row" data-cursor="plus">
         <div class="acc-head"><span class="acc-num">03</span><h3>Design graphique</h3><span class="acc-plus"></span></div>
-        <div class="acc-body"><p>Print, motion, digital. Chaque support devient un terrain d'expression cohérent avec l'ADN de la marque.</p></div>
+        <div class="acc-body"><p>Print, motion, digital. Chaque support devient une surface d'expression — affiche, écran, textile, béton.</p></div>
       </article>
       <article class="acc-row" data-cursor="plus">
         <div class="acc-head"><span class="acc-num">04</span><h3>Direction artistique</h3><span class="acc-plus"></span></div>
-        <div class="acc-body"><p>Photographie, vidéo, scénographie. On orchestre l'univers visuel dans son ensemble, jusqu'au moindre détail.</p></div>
+        <div class="acc-body"><p>Photo, vidéo, scénographie. L'œil qui cadre la ville et met la marque en scène, du trottoir au flagship.</p></div>
       </article>
       <article class="acc-row" data-cursor="plus">
         <div class="acc-head"><span class="acc-num">05</span><h3>Sites &amp; expériences</h3><span class="acc-plus"></span></div>
-        <div class="acc-body"><p>Interfaces, interactions, motion design. Le digital comme prolongement naturel et vivant de l'identité.</p></div>
+        <div class="acc-body"><p>Interfaces, interactions, motion design. Le digital comme un mur infini où l'identité prend vie et bouge.</p></div>
       </article>
     </div>
+    <div class="torn torn-bottom" aria-hidden="true"></div>
   </section>
 
   <!-- ============ WORK ============ -->
   <section class="work" id="work">
+    <span class="sticker st-3" data-parallax="0.12" aria-hidden="true">Frais<br>du jour</span>
     <div class="wrap">
-      <span class="tag" data-reveal><i></i>03 — Projets</span>
-      <h2 class="section-title" data-reveal data-scramble>Des marques qui marquent</h2>
+      <span class="tag" data-reveal><i></i>03 — Murs</span>
+      <h2 class="section-title" data-reveal data-scramble>Des murs qui parlent</h2>
     </div>
     <div class="work-grid wrap">
       <article class="card" data-cursor="see" data-tilt>
-        <div class="card-media"><canvas class="card-canvas" data-grad="0"></canvas></div>
-        <div class="card-foot"><h3>Frondaison</h3><span>Identité &amp; packaging — Agroalimentaire</span><em>'24</em></div>
+        <div class="card-media"><canvas class="card-canvas" data-grad="0"></canvas><span class="card-stamp">Fresh</span></div>
+        <div class="card-foot"><h3>Blockparty</h3><span>Identité &amp; affiches — Festival hip-hop</span><em>'24</em></div>
       </article>
       <article class="card" data-cursor="see" data-tilt>
-        <div class="card-media"><canvas class="card-canvas" data-grad="1"></canvas></div>
-        <div class="card-foot"><h3>Maison Verre</h3><span>Branding &amp; site web — Hospitality</span><em>'24</em></div>
+        <div class="card-media"><canvas class="card-canvas" data-grad="1"></canvas><span class="card-stamp">Sold out</span></div>
+        <div class="card-foot"><h3>Ligne 13</h3><span>Branding &amp; retail — Streetwear</span><em>'24</em></div>
       </article>
       <article class="card" data-cursor="see" data-tilt>
-        <div class="card-media"><canvas class="card-canvas" data-grad="2"></canvas></div>
-        <div class="card-foot"><h3>Studio Volt</h3><span>Stratégie &amp; identité — Tech / Énergie</span><em>'23</em></div>
+        <div class="card-media"><canvas class="card-canvas" data-grad="2"></canvas><span class="card-stamp">Classic</span></div>
+        <div class="card-foot"><h3>Béton Café</h3><span>Identité &amp; lieu — Coffee shop urbain</span><em>'23</em></div>
       </article>
       <article class="card" data-cursor="see" data-tilt>
-        <div class="card-media"><canvas class="card-canvas" data-grad="3"></canvas></div>
-        <div class="card-foot"><h3>Récolte</h3><span>Direction artistique — Retail</span><em>'23</em></div>
+        <div class="card-media"><canvas class="card-canvas" data-grad="3"></canvas><span class="card-stamp">Collab</span></div>
+        <div class="card-foot"><h3>Vandale</h3><span>DA &amp; e-commerce — Sneakers custom</span><em>'23</em></div>
       </article>
     </div>
   </section>
 
-  <!-- ============ CONTACT / FOOTER (black, original shapes) ============ -->
+  <!-- ============ CONTACT / FOOTER (black, shapes) ============ -->
   <footer class="footer" id="contact">
-    <!-- Decorative animated SVG shapes -->
+    <div class="hazard hazard-top" aria-hidden="true"></div>
     <svg class="footer-shapes" viewBox="0 0 1200 600" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
       <circle class="sh sh-1" cx="120" cy="120" r="90"></circle>
       <path class="sh sh-2" d="M980 60 q120 60 0 160 q-120 -60 0 -160 Z"></path>
       <rect class="sh sh-3" x="1000" y="380" width="150" height="150" rx="30"></rect>
       <path class="sh sh-4" d="M60 480 L180 480 L120 560 Z"></path>
       <path class="sh sh-5" d="M520 30 C560 90 640 90 680 30" fill="none"></path>
+      <text class="sh sh-6" x="600" y="560">✦ NOUS ✦</text>
     </svg>
 
     <div class="footer-top">
       <span class="tag light" data-reveal><i></i>04 — Contact</span>
-      <h2 class="footer-title" data-reveal data-scramble>Une idée. Une marque à naître.</h2>
+      <h2 class="footer-title" data-reveal data-scramble>Un mur t'attend.</h2>
 
       <form class="chat" id="chat" autocomplete="off">
         <div class="chat-step is-active" data-step="1">
-          <label for="cf-name">D'abord, comment t'appelles-tu&nbsp;?</label>
+          <label for="cf-name">D'abord, c'est quoi ton blaze&nbsp;?</label>
           <div class="chat-row">
-            <input type="text" id="cf-name" name="name" placeholder="Ton prénom" required>
+            <input type="text" id="cf-name" name="name" placeholder="Ton prénom / ton tag" required>
             <button type="button" class="chat-go magnetic" data-next="2" data-magnetic data-cursor="cta">→</button>
           </div>
         </div>
         <div class="chat-step" data-step="2">
-          <label for="cf-email">Enchanté. Ton email pour qu'on revienne vers toi&nbsp;?</label>
+          <label for="cf-email">Bien vu. Ton email pour qu'on te réponde&nbsp;?</label>
           <div class="chat-row">
             <input type="email" id="cf-email" name="email" placeholder="toi@exemple.com" required>
             <button type="button" class="chat-go magnetic" data-next="3" data-magnetic data-cursor="cta">→</button>
           </div>
         </div>
         <div class="chat-step" data-step="3">
-          <label for="cf-message">Et ton projet, raconte-nous tout.</label>
+          <label for="cf-message">Balance ton projet, sans filtre.</label>
           <div class="chat-row">
-            <textarea id="cf-message" name="message" placeholder="Une marque à créer, un site à réinventer…" required></textarea>
+            <textarea id="cf-message" name="message" placeholder="Une marque à créer, un mur à réveiller…" required></textarea>
             <button type="submit" class="chat-go magnetic" data-magnetic data-cursor="cta">Envoyer</button>
           </div>
         </div>
         <div class="chat-step chat-done" data-step="4">
-          <p>Reçu, <span id="cf-namecheck">toi</span>. <br>NOUS. revient vers toi très vite. ✦</p>
+          <p>Reçu 5/5, <span id="cf-namecheck">toi</span>. <br>NOUS. repasse te voir très vite. ✦</p>
         </div>
       </form>
     </div>
@@ -238,7 +255,7 @@
         <a href="#" data-cursor="link">LinkedIn</a>
         <a href="#" data-cursor="link">Behance</a>
       </div>
-      <p class="footer-copy">© <span id="year"></span> NOUS. Studio — Façonné avec obsession.</p>
+      <p class="footer-copy">© <span id="year"></span> NOUS. Studio — Peint à la main, jamais au pochoir.</p>
     </div>
   </footer>
 
