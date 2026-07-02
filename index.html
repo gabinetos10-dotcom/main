@@ -1,0 +1,1198 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Loc'N'Joy — Location de voitures à la journée au cœur de Paris. Citadine électrique, sportive, SUV premium et cabriolet, réservés en 2 minutes.">
+<title>Loc'N'Joy — Location de voitures à la journée, Paris</title>
+</head>
+<body>
+<style>
+  /* ============ TOKENS ============ */
+  :root{
+    --blanc:#ffffff;
+    --craie:#f7f4f3;          /* off-white à biais chaud */
+    --noir:#0b0a0b;
+    --noir-2:#161216;
+    --rouge:#e10600;          /* rouge course */
+    --rouge-vif:#ff2e1f;      /* glow sur fond noir */
+    --rouge-sombre:#9c0400;
+    --asphalte:#6b6266;       /* texte secondaire, gris biaisé */
+    --ligne:#e9e1df;
+    --ligne-nuit:#2a2226;
+
+    --f-display:"Arial Narrow","Helvetica Neue Condensed","Roboto Condensed",Impact,"Arial Black",sans-serif;
+    --f-body:"Helvetica Neue",Helvetica,Arial,sans-serif;
+    --f-paris:Didot,"Didot LT STD","Bodoni MT","Playfair Display",Georgia,serif;
+    --f-mono:"SF Mono","IBM Plex Mono",Menlo,Consolas,"Courier New",monospace;
+
+    --header-h:72px;
+  }
+
+  html{scroll-padding-top:calc(var(--header-h) + 8px);}
+  @media (prefers-reduced-motion:no-preference){ html{scroll-behavior:smooth;} }
+
+  body{
+    margin:0;
+    background:var(--blanc);
+    color:var(--noir);
+    font-family:var(--f-body);
+    font-size:17px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  *,*::before,*::after{box-sizing:border-box;}
+  img,svg,canvas{max-width:100%;display:block;}
+  a{color:inherit;}
+  h1,h2,h3{text-wrap:balance;margin:0;}
+  p{margin:0;}
+  button{font:inherit;cursor:pointer;}
+  :focus-visible{outline:3px solid var(--rouge);outline-offset:3px;border-radius:2px;}
+
+  .wrap{max-width:1180px;margin-inline:auto;padding-inline:clamp(20px,4vw,48px);}
+
+  /* type utilitaire */
+  .eyebrow{
+    font-family:var(--f-mono);
+    font-size:12px;
+    letter-spacing:.32em;
+    text-transform:uppercase;
+    color:var(--rouge);
+    display:flex;align-items:center;gap:14px;
+    margin-bottom:18px;
+  }
+  .eyebrow::before{content:"";width:34px;height:2px;background:var(--rouge);flex:none;}
+  .h-display{
+    font-family:var(--f-display);
+    font-weight:900;
+    font-stretch:condensed;
+    text-transform:uppercase;
+    letter-spacing:.01em;
+    line-height:.95;
+  }
+  h2.h-display{font-size:clamp(34px,5vw,58px);}
+  .paris{font-family:var(--f-paris);font-style:italic;text-transform:none;letter-spacing:0;font-weight:400;}
+  .lede{color:var(--asphalte);max-width:58ch;}
+
+  /* bande damier — motif drapeau à damier */
+  .stripe{
+    height:14px;
+    background:
+      repeating-conic-gradient(var(--noir) 0% 25%, var(--blanc) 0% 50%) 0 0 / 28px 28px;
+    border-block:2px solid var(--noir);
+  }
+
+  /* révélation au défilement */
+  .rv{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s cubic-bezier(.22,.9,.3,1);}
+  .rv.in{opacity:1;transform:none;}
+  .rv-d1{transition-delay:.08s;} .rv-d2{transition-delay:.16s;} .rv-d3{transition-delay:.24s;}
+  @media (prefers-reduced-motion:reduce){
+    .rv{opacity:1;transform:none;transition:none;}
+  }
+
+  /* ============ HEADER ============ */
+  .site-header{
+    position:fixed;inset:0 0 auto 0;z-index:60;
+    height:var(--header-h);
+    display:flex;align-items:center;
+    color:var(--blanc);
+    transition:background .35s ease,color .35s ease,box-shadow .35s ease;
+  }
+  .site-header .wrap{width:100%;display:flex;align-items:center;justify-content:space-between;gap:24px;}
+  .site-header.scrolled{
+    background:rgba(255,255,255,.92);
+    -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+    color:var(--noir);
+    box-shadow:0 1px 0 var(--ligne),0 10px 30px rgba(11,10,11,.08);
+  }
+  .logo{
+    display:flex;align-items:baseline;gap:2px;
+    font-family:var(--f-display);font-weight:900;font-stretch:condensed;
+    font-size:26px;text-transform:uppercase;letter-spacing:.02em;
+    text-decoration:none;line-height:1;
+  }
+  .logo .n{color:var(--rouge);font-family:var(--f-paris);font-style:italic;font-size:30px;padding-inline:1px;position:relative;top:2px;}
+  .main-nav{display:flex;align-items:center;gap:8px;}
+  .main-nav a{
+    text-decoration:none;
+    font-family:var(--f-mono);font-size:12px;letter-spacing:.18em;text-transform:uppercase;
+    padding:10px 14px;position:relative;opacity:.85;
+    transition:opacity .2s ease;
+  }
+  .main-nav a::after{
+    content:"";position:absolute;left:14px;right:14px;bottom:6px;height:2px;
+    background:var(--rouge);transform:scaleX(0);transform-origin:left;
+    transition:transform .25s cubic-bezier(.22,.9,.3,1);
+  }
+  .main-nav a:hover{opacity:1;}
+  .main-nav a:hover::after{transform:scaleX(1);}
+  .nav-cta{
+    margin-left:10px;
+    background:var(--rouge);color:var(--blanc) !important;opacity:1 !important;
+    border-radius:2px;
+    transition:background .2s ease,transform .2s ease;
+  }
+  .nav-cta::after{display:none;}
+  .nav-cta:hover{background:var(--rouge-sombre);transform:translateY(-1px);}
+  .burger{
+    display:none;
+    background:none;border:0;padding:8px;color:inherit;
+  }
+  .burger svg{width:26px;height:26px;}
+  @media (max-width:820px){
+    .burger{display:block;}
+    .main-nav{
+      position:fixed;top:var(--header-h);right:0;left:0;
+      flex-direction:column;align-items:stretch;gap:0;
+      background:var(--noir);color:var(--blanc);
+      padding:10px 0 18px;
+      transform:translateY(-8px);opacity:0;visibility:hidden;pointer-events:none;
+      transition:transform .25s ease,opacity .25s ease,visibility 0s .25s;
+      border-bottom:3px solid var(--rouge);
+    }
+    .main-nav.open{transform:none;opacity:1;visibility:visible;pointer-events:auto;transition:transform .25s ease,opacity .25s ease;}
+    .main-nav a{padding:16px 28px;}
+    .main-nav a::after{display:none;}
+    .nav-cta{margin:10px 24px 0;text-align:center;}
+  }
+
+  /* ============ HERO ============ */
+  .hero{
+    position:relative;
+    background:var(--noir);
+    color:var(--blanc);
+    min-height:100svh;
+    display:flex;align-items:center;
+    overflow:hidden;
+    isolation:isolate;
+  }
+  .hero-canvas{position:absolute;inset:0;width:100%;height:100%;z-index:0;}
+  .hero-tower{
+    position:absolute;right:clamp(-40px,3vw,80px);bottom:0;z-index:1;
+    width:clamp(220px,30vw,420px);height:auto;
+    color:#151015;
+    filter:drop-shadow(-6px 0 24px rgba(225,6,0,.28));
+    pointer-events:none;
+  }
+  .hero-horizon{
+    position:absolute;left:0;right:0;bottom:0;height:3px;z-index:2;
+    background:linear-gradient(90deg,transparent,var(--rouge) 18%,var(--rouge-vif) 50%,var(--rouge) 82%,transparent);
+    box-shadow:0 0 26px 4px rgba(255,46,31,.45);
+  }
+  .hero-inner{position:relative;z-index:3;padding-block:140px 120px;width:100%;}
+  .hero-kicker{
+    font-family:var(--f-mono);font-size:12px;letter-spacing:.34em;text-transform:uppercase;
+    color:var(--rouge-vif);display:flex;align-items:center;gap:14px;margin-bottom:26px;
+  }
+  .hero-kicker::before{content:"";width:44px;height:2px;background:var(--rouge);}
+  .hero h1{
+    font-family:var(--f-display);font-weight:900;font-stretch:condensed;text-transform:uppercase;
+    font-size:clamp(46px,8.4vw,110px);line-height:.92;letter-spacing:.005em;
+    max-width:11ch;
+  }
+  .hero h1 .paris{color:var(--rouge-vif);display:inline-block;padding-right:.08em;}
+  .hero-sub{
+    margin-top:28px;max-width:52ch;
+    color:rgba(255,255,255,.72);font-size:18px;
+  }
+  .hero-actions{margin-top:42px;display:flex;flex-wrap:wrap;gap:18px;align-items:center;}
+  .btn{
+    display:inline-flex;align-items:center;gap:12px;
+    font-family:var(--f-display);font-weight:900;font-stretch:condensed;
+    text-transform:uppercase;letter-spacing:.08em;font-size:17px;
+    text-decoration:none;border:0;border-radius:2px;
+    padding:17px 30px;
+    transition:transform .2s cubic-bezier(.22,.9,.3,1),box-shadow .2s ease,background .2s ease,color .2s ease;
+  }
+  .btn-red{background:var(--rouge);color:var(--blanc);box-shadow:0 8px 30px rgba(225,6,0,.35);}
+  .btn-red:hover{background:var(--rouge-sombre);transform:translateY(-2px);box-shadow:0 14px 38px rgba(225,6,0,.45);}
+  .btn-red:active{transform:translateY(0);}
+  .btn-ghost{background:transparent;color:var(--blanc);box-shadow:inset 0 0 0 2px rgba(255,255,255,.35);}
+  .btn-ghost:hover{box-shadow:inset 0 0 0 2px var(--rouge-vif);color:var(--rouge-vif);transform:translateY(-2px);}
+  .btn .chev{transition:transform .2s ease;}
+  .btn:hover .chev{transform:translateX(4px);}
+  .hero-meta{
+    margin-top:64px;display:flex;flex-wrap:wrap;gap:0;
+    border-top:1px solid var(--ligne-nuit);
+    max-width:640px;
+  }
+  .hero-meta div{
+    padding:18px 28px 0 0;margin-right:28px;
+    font-family:var(--f-mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+    color:rgba(255,255,255,.55);
+  }
+  .hero-meta strong{
+    display:block;color:var(--blanc);
+    font-family:var(--f-display);font-weight:900;font-stretch:condensed;
+    font-size:30px;letter-spacing:.02em;margin-bottom:2px;
+    font-variant-numeric:tabular-nums;
+  }
+  .hero-meta strong .u{color:var(--rouge-vif);font-size:18px;}
+
+  /* ============ SECTIONS COMMUNES ============ */
+  .section{padding-block:clamp(72px,9vw,128px);}
+  .section-head{margin-bottom:clamp(40px,5vw,64px);}
+  .section-head .lede{margin-top:18px;}
+
+  /* ============ À PROPOS ============ */
+  #apropos{background:var(--blanc);}
+  .about-grid{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:2px;
+    background:var(--ligne);border:2px solid var(--noir);
+  }
+  @media (max-width:860px){.about-grid{grid-template-columns:1fr;}}
+  .about-card{
+    background:var(--blanc);padding:34px 30px 38px;position:relative;overflow:hidden;
+    transition:transform .25s ease;
+  }
+  .about-card::before{
+    content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--rouge);
+    transform:scaleY(0);transform-origin:top;transition:transform .3s cubic-bezier(.22,.9,.3,1);
+  }
+  .about-card:hover::before{transform:scaleY(1);}
+  .about-card:hover{transform:translateY(-4px);}
+  .about-card .pict{width:46px;height:46px;color:var(--rouge);margin-bottom:20px;}
+  .about-card h3{
+    font-family:var(--f-display);font-weight:900;font-stretch:condensed;text-transform:uppercase;
+    font-size:23px;letter-spacing:.03em;margin-bottom:12px;
+  }
+  .about-card p{color:var(--asphalte);font-size:15.5px;}
+  .about-quote{
+    margin:64px 0 0;padding:0;
+    font-family:var(--f-paris);font-style:italic;font-size:clamp(24px,3.4vw,36px);
+    line-height:1.35;max-width:30ch;
+  }
+  .about-quote .rq{color:var(--rouge);}
+  .about-quote footer{
+    margin-top:16px;font-family:var(--f-mono);font-style:normal;font-size:12px;
+    letter-spacing:.24em;text-transform:uppercase;color:var(--asphalte);
+  }
+
+  /* ============ FLOTTE ============ */
+  #flotte{background:var(--craie);border-top:1px solid var(--ligne);}
+  .fleet-grid{
+    display:grid;grid-template-columns:repeat(2,1fr);gap:28px;
+  }
+  @media (max-width:920px){.fleet-grid{grid-template-columns:1fr;}}
+  .car-card{
+    background:var(--blanc);
+    border:2px solid var(--noir);
+    display:flex;flex-direction:column;
+    position:relative;
+    transition:transform .28s cubic-bezier(.22,.9,.3,1),box-shadow .28s ease;
+  }
+  .car-card:hover{transform:translateY(-6px);box-shadow:10px 10px 0 var(--rouge);}
+  .car-visual{
+    background:var(--noir);position:relative;overflow:hidden;
+    padding:34px 30px 24px;
+  }
+  .car-visual::after{
+    content:"";position:absolute;left:0;right:0;bottom:0;height:2px;
+    background:linear-gradient(90deg,transparent,var(--rouge-vif),transparent);
+    opacity:.8;
+  }
+  .car-visual .tag{
+    position:absolute;top:16px;left:20px;
+    font-family:var(--f-mono);font-size:11px;letter-spacing:.26em;text-transform:uppercase;
+    color:var(--rouge-vif);
+  }
+  .car-visual .num{
+    position:absolute;top:4px;right:14px;
+    font-family:var(--f-display);font-weight:900;font-stretch:condensed;
+    font-size:64px;color:transparent;-webkit-text-stroke:1px rgba(255,255,255,.18);
+    line-height:1;user-select:none;
+  }
+  .car-visual svg{width:100%;height:auto;color:#efe9e7;margin-top:14px;transition:transform .4s cubic-bezier(.22,.9,.3,1);}
+  .car-card:hover .car-visual svg{transform:translateX(10px);}
+  .car-body{padding:26px 28px 30px;display:flex;flex-direction:column;gap:20px;flex:1;}
+  .car-title-row{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;}
+  .car-title-row h3{
+    font-family:var(--f-display);font-weight:900;font-stretch:condensed;text-transform:uppercase;
+    font-size:26px;letter-spacing:.02em;line-height:1;
+  }
+  .car-title-row .car-sub{
+    display:block;font-family:var(--f-paris);font-style:italic;text-transform:none;
+    font-size:16px;font-weight:400;color:var(--asphalte);margin-top:6px;letter-spacing:0;
+  }
+  .plate{
+    flex:none;display:flex;align-items:stretch;
+    border:2px solid var(--noir);border-radius:4px;overflow:hidden;
+    font-variant-numeric:tabular-nums;
+  }
+  .plate .band{
+    background:var(--rouge);color:var(--blanc);
+    font-family:var(--f-mono);font-size:9px;letter-spacing:.08em;
+    writing-mode:vertical-rl;text-orientation:mixed;
+    display:flex;align-items:center;justify-content:center;padding:4px 3px;
+  }
+  .plate .amount{
+    background:var(--blanc);padding:6px 12px;
+    font-family:var(--f-display);font-weight:900;font-stretch:condensed;font-size:24px;line-height:1;
+    display:flex;align-items:baseline;gap:4px;
+  }
+  .plate .amount small{font-family:var(--f-mono);font-size:10px;letter-spacing:.1em;color:var(--asphalte);}
+  .car-specs{display:flex;flex-direction:column;gap:12px;}
+  .spec{display:grid;grid-template-columns:110px 1fr 64px;align-items:center;gap:14px;}
+  .spec .lbl{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--asphalte);}
+  .spec .bar{height:5px;background:var(--ligne);position:relative;overflow:hidden;border-radius:2px;}
+  .spec .bar i{
+    position:absolute;inset:0;background:linear-gradient(90deg,var(--rouge-sombre),var(--rouge));
+    transform:scaleX(var(--v,0));transform-origin:left;border-radius:2px;
+    transition:transform 1s cubic-bezier(.22,.9,.3,1) .2s;
+  }
+  .car-card.in .spec .bar i{transform:scaleX(var(--v,0));}
+  .car-card:not(.in) .spec .bar i{transform:scaleX(0);}
+  .spec .val{
+    font-family:var(--f-mono);font-size:12.5px;text-align:right;
+    font-variant-numeric:tabular-nums;white-space:nowrap;
+  }
+  .car-cta{
+    margin-top:auto;
+    display:flex;align-items:center;justify-content:center;gap:12px;
+    background:var(--noir);color:var(--blanc);border:0;border-radius:2px;
+    font-family:var(--f-display);font-weight:900;font-stretch:condensed;
+    text-transform:uppercase;letter-spacing:.08em;font-size:16px;
+    padding:15px 20px;
+    transition:background .2s ease,transform .2s ease,box-shadow .2s ease;
+  }
+  .car-cta:hover{background:var(--rouge);transform:translateY(-2px);box-shadow:0 10px 24px rgba(225,6,0,.3);}
+  .car-cta .chev{transition:transform .2s ease;}
+  .car-cta:hover .chev{transform:translateX(4px);}
+
+  /* ============ RÉSERVATION ============ */
+  #reservation{
+    background:var(--noir);color:var(--blanc);position:relative;overflow:hidden;
+  }
+  #reservation::before{
+    content:"";position:absolute;top:0;left:0;right:0;height:2px;
+    background:linear-gradient(90deg,transparent,var(--rouge-vif),transparent);
+  }
+  #reservation .eyebrow{color:var(--rouge-vif);}
+  #reservation .lede{color:rgba(255,255,255,.65);}
+  .resa-grid{
+    display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,.85fr);gap:clamp(28px,4vw,56px);
+    align-items:start;
+  }
+  @media (max-width:920px){.resa-grid{grid-template-columns:1fr;}}
+  .resa-form{display:flex;flex-direction:column;gap:26px;}
+  .field-label{
+    font-family:var(--f-mono);font-size:11.5px;letter-spacing:.22em;text-transform:uppercase;
+    color:rgba(255,255,255,.6);margin-bottom:12px;display:block;
+  }
+  .car-picker{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}
+  @media (max-width:560px){.car-picker{grid-template-columns:1fr;}}
+  .car-chip{
+    background:var(--noir-2);border:2px solid var(--ligne-nuit);border-radius:3px;
+    color:var(--blanc);text-align:left;padding:14px 16px;
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+    transition:border-color .2s ease,background .2s ease,transform .2s ease;
+  }
+  .car-chip:hover{border-color:rgba(255,46,31,.55);transform:translateY(-2px);}
+  .car-chip[aria-pressed="true"]{border-color:var(--rouge);background:#1d1113;box-shadow:0 0 0 1px var(--rouge),0 8px 26px rgba(225,6,0,.25);}
+  .car-chip .cc-name{
+    font-family:var(--f-display);font-weight:900;font-stretch:condensed;text-transform:uppercase;
+    font-size:16px;letter-spacing:.03em;display:block;
+  }
+  .car-chip .cc-type{font-family:var(--f-mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.5);display:block;margin-top:3px;}
+  .car-chip .cc-price{
+    font-family:var(--f-mono);font-size:13px;color:var(--rouge-vif);white-space:nowrap;
+    font-variant-numeric:tabular-nums;
+  }
+  .field-row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+  @media (max-width:640px){.field-row{grid-template-columns:1fr;}}
+  .field input{
+    width:100%;
+    background:var(--noir-2);border:2px solid var(--ligne-nuit);border-radius:3px;
+    color:var(--blanc);padding:14px 14px;font:inherit;
+    font-variant-numeric:tabular-nums;
+    transition:border-color .2s ease,box-shadow .2s ease;
+    color-scheme:dark;
+  }
+  .field input:hover{border-color:rgba(255,255,255,.3);}
+  .field input:focus{outline:none;border-color:var(--rouge);box-shadow:0 0 0 1px var(--rouge);}
+  .field-err{
+    display:none;margin-top:8px;font-size:13.5px;color:var(--rouge-vif);
+  }
+  .field.invalid input{border-color:var(--rouge);}
+  .field.invalid .field-err{display:block;}
+  .resa-submit{width:100%;justify-content:center;font-size:19px;padding:19px 30px;}
+
+  /* ticket récap */
+  .ticket{
+    background:var(--blanc);color:var(--noir);border-radius:4px;
+    position:sticky;top:calc(var(--header-h) + 20px);
+    overflow:hidden;
+  }
+  .ticket-head{
+    background:var(--rouge);color:var(--blanc);
+    padding:16px 24px;
+    display:flex;justify-content:space-between;align-items:center;
+    font-family:var(--f-mono);font-size:11px;letter-spacing:.24em;text-transform:uppercase;
+  }
+  .ticket-body{padding:24px;display:flex;flex-direction:column;gap:14px;}
+  .ticket-row{
+    display:flex;justify-content:space-between;gap:16px;align-items:baseline;
+    font-size:15px;border-bottom:1px dashed var(--ligne);padding-bottom:12px;
+  }
+  .ticket-row:last-of-type{border-bottom:0;padding-bottom:0;}
+  .ticket-row .k{font-family:var(--f-mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--asphalte);}
+  .ticket-row .v{font-weight:600;text-align:right;font-variant-numeric:tabular-nums;}
+  .ticket-total{
+    background:var(--noir);color:var(--blanc);padding:20px 24px;
+    display:flex;justify-content:space-between;align-items:center;
+  }
+  .ticket-total .k{font-family:var(--f-mono);font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.6);}
+  .ticket-total .v{
+    font-family:var(--f-display);font-weight:900;font-stretch:condensed;
+    font-size:36px;line-height:1;font-variant-numeric:tabular-nums;
+  }
+  .ticket-total .v .u{color:var(--rouge-vif);font-size:20px;}
+  .ticket-note{padding:14px 24px 20px;font-size:12.5px;color:var(--asphalte);background:var(--craie);}
+  .flash{animation:flash .9s ease;}
+  @keyframes flash{
+    0%{box-shadow:0 0 0 0 rgba(255,46,31,.9);}
+    100%{box-shadow:0 0 0 26px rgba(255,46,31,0);}
+  }
+  @media (prefers-reduced-motion:reduce){.flash{animation:none;}}
+
+  /* ============ MODALE ============ */
+  .modal-overlay{
+    position:fixed;inset:0;z-index:100;
+    background:rgba(11,10,11,.78);
+    -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
+    display:none;align-items:center;justify-content:center;padding:20px;
+  }
+  .modal-overlay.open{display:flex;}
+  .modal{
+    background:var(--blanc);color:var(--noir);border-radius:6px;
+    width:min(520px,100%);overflow:hidden;
+    animation:pop .45s cubic-bezier(.22,1.2,.3,1);
+    max-height:90vh;overflow-y:auto;
+  }
+  @keyframes pop{from{transform:translateY(30px) scale(.96);opacity:0;}to{transform:none;opacity:1;}}
+  @media (prefers-reduced-motion:reduce){.modal{animation:none;}}
+  .modal-top{
+    background:var(--noir);color:var(--blanc);padding:34px 32px 30px;text-align:center;position:relative;
+  }
+  .modal-top::after{
+    content:"";position:absolute;left:0;right:0;bottom:0;height:8px;
+    background:repeating-linear-gradient(90deg,var(--noir) 0 14px,var(--blanc) 14px 28px);
+  }
+  .check-ring{width:74px;height:74px;margin:0 auto 18px;}
+  .check-ring circle{
+    fill:none;stroke:var(--rouge-vif);stroke-width:3;
+    stroke-dasharray:214;stroke-dashoffset:214;
+    animation:draw .7s ease-out forwards;
+  }
+  .check-ring path{
+    fill:none;stroke:var(--blanc);stroke-width:5;stroke-linecap:round;stroke-linejoin:round;
+    stroke-dasharray:60;stroke-dashoffset:60;
+    animation:draw .45s ease-out .5s forwards;
+  }
+  @keyframes draw{to{stroke-dashoffset:0;}}
+  @media (prefers-reduced-motion:reduce){
+    .check-ring circle,.check-ring path{animation:none;stroke-dashoffset:0;}
+  }
+  .modal-top h3{
+    font-family:var(--f-display);font-weight:900;font-stretch:condensed;text-transform:uppercase;
+    font-size:30px;letter-spacing:.02em;
+  }
+  .modal-top .ref{
+    margin-top:8px;font-family:var(--f-mono);font-size:12px;letter-spacing:.2em;color:var(--rouge-vif);
+  }
+  .modal-body{padding:28px 32px 8px;}
+  .modal-body .ticket-row{padding-block:12px;border-bottom:1px dashed var(--ligne);}
+  .modal-body .ticket-row:last-child{border-bottom:0;}
+  .modal-total{
+    margin:16px 32px 0;padding:18px 22px;background:var(--craie);border-left:4px solid var(--rouge);
+    display:flex;justify-content:space-between;align-items:center;
+  }
+  .modal-total .k{font-family:var(--f-mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--asphalte);}
+  .modal-total .v{font-family:var(--f-display);font-weight:900;font-stretch:condensed;font-size:32px;font-variant-numeric:tabular-nums;}
+  .modal-total .v .u{color:var(--rouge);font-size:19px;}
+  .modal-actions{padding:24px 32px 30px;display:flex;gap:14px;}
+  .modal-actions .btn{flex:1;justify-content:center;}
+  .btn-dark{background:var(--noir);color:var(--blanc);}
+  .btn-dark:hover{background:var(--rouge);transform:translateY(-2px);}
+
+  /* ============ FOOTER ============ */
+  .site-footer{background:var(--noir);color:var(--blanc);position:relative;}
+  .skyline{display:block;width:100%;height:auto;color:#171217;background:var(--noir);}
+  .skyline .glow{fill:var(--rouge);opacity:.9;}
+  .footer-inner{
+    display:flex;flex-wrap:wrap;justify-content:space-between;gap:28px;align-items:flex-end;
+    padding-block:44px 40px;border-top:1px solid var(--ligne-nuit);
+  }
+  .footer-inner .logo{font-size:30px;}
+  .footer-meta{
+    font-family:var(--f-mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+    color:rgba(255,255,255,.5);line-height:2;text-align:right;
+  }
+  .footer-meta a{color:rgba(255,255,255,.75);text-decoration:none;}
+  .footer-meta a:hover{color:var(--rouge-vif);}
+  @media (max-width:640px){.footer-meta{text-align:left;}}
+</style>
+
+<header class="site-header" id="siteHeader">
+  <div class="wrap">
+    <a class="logo" href="#accueil" aria-label="Loc'N'Joy — retour à l'accueil">Loc<span class="n">'N'</span>Joy</a>
+    <button class="burger" id="burger" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="mainNav">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true">
+        <line x1="3" y1="6.5" x2="21" y2="6.5"></line>
+        <line x1="3" y1="12" x2="21" y2="12"></line>
+        <line x1="3" y1="17.5" x2="15" y2="17.5"></line>
+      </svg>
+    </button>
+    <nav class="main-nav" id="mainNav" aria-label="Navigation principale">
+      <a href="#accueil">Accueil</a>
+      <a href="#apropos">À propos</a>
+      <a href="#flotte">Notre flotte</a>
+      <a href="#reservation" class="nav-cta">Réserver</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <!-- ============ HERO ============ -->
+  <section class="hero" id="accueil">
+    <canvas class="hero-canvas" id="heroCanvas" aria-hidden="true"></canvas>
+    <svg class="hero-tower" viewBox="0 0 220 360" aria-hidden="true">
+      <path fill="currentColor" d="M110 8 L114 52 L118 96 L106 96 L102 52 Z
+        M99 100 L121 100 L128 160 L92 160 Z
+        M88 166 L132 166 L136 176 L84 176 Z
+        M90 182 L130 182 L146 250 L74 250 Z
+        M70 256 L150 256 L156 268 L64 268 Z
+        M72 274 L98 274 Q110 300 110 322 L110 274 L148 274 L176 356 L142 356 Q126 306 110 306 Q94 306 78 356 L44 356 Z"></path>
+      <circle cx="110" cy="4" r="3" fill="#ff2e1f"></circle>
+    </svg>
+    <div class="hero-horizon" aria-hidden="true"></div>
+    <div class="wrap hero-inner">
+      <p class="hero-kicker">Paris · Location à la journée · Sans engagement</p>
+      <h1>Vivez Paris au rythme de <span class="paris">vos envies</span></h1>
+      <p class="hero-sub">
+        Une clé, une journée, tout Paris. Loc'N'Joy vous ouvre les portes d'une flotte
+        d'exception — de la citadine électrique à la sportive de caractère — réservée
+        en moins de deux minutes, remise en plein cœur de la capitale.
+      </p>
+      <div class="hero-actions">
+        <a class="btn btn-red" href="#reservation">Réserver ma journée
+          <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7"></path></svg>
+        </a>
+        <a class="btn btn-ghost" href="#flotte">Découvrir la flotte</a>
+      </div>
+      <div class="hero-meta">
+        <div><strong>4</strong>véhicules d'exception</div>
+        <div><strong>2<span class="u">&nbsp;min</span></strong>pour réserver</div>
+        <div><strong>7<span class="u">j/7</span></strong>de 7h à 23h</div>
+        <div><strong>0<span class="u">&nbsp;€</span></strong>de frais cachés</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="stripe" aria-hidden="true"></div>
+
+  <!-- ============ À PROPOS ============ -->
+  <section class="section" id="apropos">
+    <div class="wrap">
+      <header class="section-head rv">
+        <p class="eyebrow">À propos</p>
+        <h2 class="h-display">La liberté, <span class="paris" style="color:var(--rouge);">à la journée</span></h2>
+        <p class="lede">
+          Loc'N'Joy est né d'une conviction simple : à Paris, posséder une voiture est une contrainte,
+          mais en conduire une belle, le temps d'une journée, est un plaisir. Nous avons donc tout enlevé —
+          l'engagement, la paperasse, les files d'attente — pour ne garder que l'essentiel : la route.
+        </p>
+      </header>
+
+      <div class="about-grid">
+        <article class="about-card rv">
+          <svg class="pict" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="24" cy="24" r="19"></circle>
+            <path d="M24 12v12l8 5"></path>
+          </svg>
+          <h3>La journée, pas plus</h3>
+          <p>Vous choisissez votre date, votre heure de réception et votre heure de remise. Le forfait
+          couvre 12 heures de liberté totale : assurance tous risques et 200 km inclus, sans surprise à l'arrivée.</p>
+        </article>
+        <article class="about-card rv rv-d1">
+          <svg class="pict" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M24 42s-15-10.5-15-21a15 15 0 0 1 30 0c0 10.5-15 21-15 21Z"></path>
+            <circle cx="24" cy="21" r="5"></circle>
+          </svg>
+          <h3>Au cœur de Paris</h3>
+          <p>Nos conciergeries de la Bastille, de l'Étoile et de Montparnasse vous remettent les clés en
+          main propre. Descendez du métro, montez dans votre voiture : Paris est déjà à vous.</p>
+        </article>
+        <article class="about-card rv rv-d2">
+          <svg class="pict" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M6 30a18 18 0 0 1 36 0"></path>
+            <path d="M24 30 33 18"></path>
+            <circle cx="24" cy="30" r="3" fill="currentColor" stroke="none"></circle>
+            <path d="M6 36h36" opacity=".4"></path>
+          </svg>
+          <h3>Des machines choisies</h3>
+          <p>Chaque véhicule de la flotte a été sélectionné, préparé et bichonné par nos soins. Pas de
+          moyenne gamme anonyme : uniquement des voitures qui donnent envie de faire un détour.</p>
+        </article>
+      </div>
+
+      <blockquote class="about-quote rv">
+        «&nbsp;De l'Arc de Triomphe aux quais de Seine, la plus belle ville du monde
+        mérite mieux qu'un ticket de métro&nbsp;: elle mérite <span class="rq">une belle mécanique</span>.&nbsp;»
+        <footer>— L'équipe Loc'N'Joy, Paris 11ᵉ</footer>
+      </blockquote>
+    </div>
+  </section>
+
+  <!-- ============ FLOTTE ============ -->
+  <section class="section" id="flotte">
+    <div class="wrap">
+      <header class="section-head rv">
+        <p class="eyebrow">Notre flotte</p>
+        <h2 class="h-display">Quatre caractères, <span class="paris" style="color:var(--rouge);">une capitale</span></h2>
+        <p class="lede">
+          Du pavé de Montmartre au périphérique de nuit, chaque silhouette de la flotte a son terrain de jeu.
+          Choisissez la vôtre — le prix affiché est le forfait journée, tout compris.
+        </p>
+      </header>
+
+      <div class="fleet-grid">
+
+        <!-- Renault 5 E-Tech -->
+        <article class="car-card rv" id="car-r5">
+          <div class="car-visual">
+            <span class="tag">Citadine · 100% électrique</span>
+            <span class="num" aria-hidden="true">01</span>
+            <svg viewBox="0 0 360 130" fill="none" aria-hidden="true">
+              <path d="M40 96 Q42 70 68 64 L96 40 Q118 30 168 32 L206 38 L232 64 Q286 68 300 82 Q306 88 306 96" stroke="currentColor" stroke-width="4" stroke-linecap="round"></path>
+              <path d="M104 44 L160 38 L164 62 L92 62 Z M176 40 L204 44 L222 62 L174 62 Z" fill="currentColor" opacity=".22"></path>
+              <circle cx="92" cy="98" r="17" stroke="currentColor" stroke-width="4"></circle>
+              <circle cx="92" cy="98" r="6" fill="#e10600"></circle>
+              <circle cx="256" cy="98" r="17" stroke="currentColor" stroke-width="4"></circle>
+              <circle cx="256" cy="98" r="6" fill="#e10600"></circle>
+              <path d="M18 118 H342" stroke="#e10600" stroke-width="2" opacity=".7"></path>
+            </svg>
+          </div>
+          <div class="car-body">
+            <div class="car-title-row">
+              <h3>Renault 5 E-Tech
+                <span class="car-sub">L'esprit parisien, rebranché</span>
+              </h3>
+              <div class="plate" aria-label="59 euros par jour">
+                <span class="band">LNJ</span>
+                <span class="amount">59<small>€/JOUR</small></span>
+              </div>
+            </div>
+            <div class="car-specs">
+              <div class="spec"><span class="lbl">Autonomie</span><span class="bar"><i style="--v:.82;"></i></span><span class="val">410 km</span></div>
+              <div class="spec"><span class="lbl">Puissance</span><span class="bar"><i style="--v:.38;"></i></span><span class="val">150 ch</span></div>
+              <div class="spec"><span class="lbl">Places</span><span class="bar"><i style="--v:1;"></i></span><span class="val">5</span></div>
+            </div>
+            <button class="car-cta" type="button" data-car="r5">Réservez la R5
+              <svg class="chev" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7"></path></svg>
+            </button>
+          </div>
+        </article>
+
+        <!-- Alpine A110 -->
+        <article class="car-card rv rv-d1" id="car-alpine">
+          <div class="car-visual">
+            <span class="tag">Sportive · Berlinette française</span>
+            <span class="num" aria-hidden="true">02</span>
+            <svg viewBox="0 0 360 130" fill="none" aria-hidden="true">
+              <path d="M28 98 Q36 84 66 80 L108 58 Q150 40 196 46 L246 60 Q300 68 316 88 Q320 92 320 98" stroke="currentColor" stroke-width="4" stroke-linecap="round"></path>
+              <path d="M118 60 L182 50 L190 72 L104 72 Z M198 52 L240 62 L252 72 L196 72 Z" fill="currentColor" opacity=".22"></path>
+              <circle cx="98" cy="100" r="16" stroke="currentColor" stroke-width="4"></circle>
+              <circle cx="98" cy="100" r="6" fill="#e10600"></circle>
+              <circle cx="272" cy="100" r="16" stroke="currentColor" stroke-width="4"></circle>
+              <circle cx="272" cy="100" r="6" fill="#e10600"></circle>
+              <path d="M6 118 H354" stroke="#e10600" stroke-width="2" opacity=".7"></path>
+              <path d="M6 92 H40 M0 104 H30" stroke="currentColor" stroke-width="2" opacity=".35"></path>
+            </svg>
+          </div>
+          <div class="car-body">
+            <div class="car-title-row">
+              <h3>Alpine A110 GT
+                <span class="car-sub">Paris by night, en bleu de France</span>
+              </h3>
+              <div class="plate" aria-label="249 euros par jour">
+                <span class="band">LNJ</span>
+                <span class="amount">249<small>€/JOUR</small></span>
+              </div>
+            </div>
+            <div class="car-specs">
+              <div class="spec"><span class="lbl">0–100 km/h</span><span class="bar"><i style="--v:.94;"></i></span><span class="val">4,1 s</span></div>
+              <div class="spec"><span class="lbl">Puissance</span><span class="bar"><i style="--v:.75;"></i></span><span class="val">300 ch</span></div>
+              <div class="spec"><span class="lbl">Places</span><span class="bar"><i style="--v:.4;"></i></span><span class="val">2</span></div>
+            </div>
+            <button class="car-cta" type="button" data-car="alpine">Réservez l'Alpine
+              <svg class="chev" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7"></path></svg>
+            </button>
+          </div>
+        </article>
+
+        <!-- DS 7 -->
+        <article class="car-card rv" id="car-ds7">
+          <div class="car-visual">
+            <span class="tag">SUV Premium · Hybride rechargeable</span>
+            <span class="num" aria-hidden="true">03</span>
+            <svg viewBox="0 0 360 130" fill="none" aria-hidden="true">
+              <path d="M34 96 Q36 66 62 60 L84 34 Q104 24 176 26 L226 34 L248 60 Q292 64 304 78 Q310 84 310 96" stroke="currentColor" stroke-width="4" stroke-linecap="round"></path>
+              <path d="M92 38 L150 32 L154 56 L82 56 Z M166 32 L222 38 L238 56 L164 56 Z" fill="currentColor" opacity=".22"></path>
+              <circle cx="94" cy="96" r="18" stroke="currentColor" stroke-width="4"></circle>
+              <circle cx="94" cy="96" r="6" fill="#e10600"></circle>
+              <circle cx="252" cy="96" r="18" stroke="currentColor" stroke-width="4"></circle>
+              <circle cx="252" cy="96" r="6" fill="#e10600"></circle>
+              <path d="M18 118 H342" stroke="#e10600" stroke-width="2" opacity=".7"></path>
+            </svg>
+          </div>
+          <div class="car-body">
+            <div class="car-title-row">
+              <h3>DS 7 E-Tense 4x4
+                <span class="car-sub">Le salon roulant, signature française</span>
+              </h3>
+              <div class="plate" aria-label="139 euros par jour">
+                <span class="band">LNJ</span>
+                <span class="amount">139<small>€/JOUR</small></span>
+              </div>
+            </div>
+            <div class="car-specs">
+              <div class="spec"><span class="lbl">Puissance</span><span class="bar"><i style="--v:.88;"></i></span><span class="val">360 ch</span></div>
+              <div class="spec"><span class="lbl">Autonomie EV</span><span class="bar"><i style="--v:.3;"></i></span><span class="val">62 km</span></div>
+              <div class="spec"><span class="lbl">Places</span><span class="bar"><i style="--v:1;"></i></span><span class="val">5</span></div>
+            </div>
+            <button class="car-cta" type="button" data-car="ds7">Réservez le DS 7
+              <svg class="chev" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7"></path></svg>
+            </button>
+          </div>
+        </article>
+
+        <!-- Mini Cabrio -->
+        <article class="car-card rv rv-d1" id="car-mini">
+          <div class="car-visual">
+            <span class="tag">Cabriolet · Électrique découvrable</span>
+            <span class="num" aria-hidden="true">04</span>
+            <svg viewBox="0 0 360 130" fill="none" aria-hidden="true">
+              <path d="M44 96 Q46 74 72 70 L112 62 L150 62 Q160 52 172 52 Q182 52 188 62 L228 66 Q282 70 296 84 Q302 90 302 96" stroke="currentColor" stroke-width="4" stroke-linecap="round"></path>
+              <path d="M120 66 L188 66 L194 74 L112 74 Z" fill="currentColor" opacity=".22"></path>
+              <path d="M196 46 Q214 34 228 40" stroke="currentColor" stroke-width="3" stroke-linecap="round" opacity=".5"></path>
+              <circle cx="98" cy="98" r="16" stroke="currentColor" stroke-width="4"></circle>
+              <circle cx="98" cy="98" r="6" fill="#e10600"></circle>
+              <circle cx="254" cy="98" r="16" stroke="currentColor" stroke-width="4"></circle>
+              <circle cx="254" cy="98" r="6" fill="#e10600"></circle>
+              <path d="M24 118 H336" stroke="#e10600" stroke-width="2" opacity=".7"></path>
+            </svg>
+          </div>
+          <div class="car-body">
+            <div class="car-title-row">
+              <h3>Mini Cooper SE Cabrio
+                <span class="car-sub">Cheveux au vent, quais de Seine</span>
+              </h3>
+              <div class="plate" aria-label="89 euros par jour">
+                <span class="band">LNJ</span>
+                <span class="amount">89<small>€/JOUR</small></span>
+              </div>
+            </div>
+            <div class="car-specs">
+              <div class="spec"><span class="lbl">Autonomie</span><span class="bar"><i style="--v:.46;"></i></span><span class="val">230 km</span></div>
+              <div class="spec"><span class="lbl">Puissance</span><span class="bar"><i style="--v:.46;"></i></span><span class="val">184 ch</span></div>
+              <div class="spec"><span class="lbl">Places</span><span class="bar"><i style="--v:.8;"></i></span><span class="val">4</span></div>
+            </div>
+            <button class="car-cta" type="button" data-car="mini">Réservez la Mini
+              <svg class="chev" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7"></path></svg>
+            </button>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ RÉSERVATION ============ -->
+  <section class="section" id="reservation">
+    <div class="wrap">
+      <header class="section-head rv">
+        <p class="eyebrow">Réservation</p>
+        <h2 class="h-display">Votre journée <span class="paris" style="color:var(--rouge-vif);">commence ici</span></h2>
+        <p class="lede">
+          Choisissez votre machine, votre date et vos horaires : le forfait journée couvre 12 heures.
+          Au-delà, chaque heure entamée est facturée 12&nbsp;€. Le récapitulatif se met à jour en direct.
+        </p>
+      </header>
+
+      <div class="resa-grid">
+        <form class="resa-form rv" id="resaForm" novalidate>
+          <div>
+            <span class="field-label" id="pickerLabel">01 · Votre véhicule</span>
+            <div class="car-picker" role="group" aria-labelledby="pickerLabel" id="carPicker">
+              <button type="button" class="car-chip" data-car="r5" aria-pressed="false">
+                <span><span class="cc-name">Renault 5 E-Tech</span><span class="cc-type">Citadine électrique</span></span>
+                <span class="cc-price">59 €/j</span>
+              </button>
+              <button type="button" class="car-chip" data-car="alpine" aria-pressed="false">
+                <span><span class="cc-name">Alpine A110 GT</span><span class="cc-type">Sportive</span></span>
+                <span class="cc-price">249 €/j</span>
+              </button>
+              <button type="button" class="car-chip" data-car="ds7" aria-pressed="false">
+                <span><span class="cc-name">DS 7 E-Tense 4x4</span><span class="cc-type">SUV premium</span></span>
+                <span class="cc-price">139 €/j</span>
+              </button>
+              <button type="button" class="car-chip" data-car="mini" aria-pressed="false">
+                <span><span class="cc-name">Mini Cooper SE Cabrio</span><span class="cc-type">Cabriolet électrique</span></span>
+                <span class="cc-price">89 €/j</span>
+              </button>
+            </div>
+            <p class="field-err" id="errCar" style="margin-top:10px;">Choisissez d'abord votre véhicule.</p>
+          </div>
+
+          <div class="field-row">
+            <div class="field" id="fDate">
+              <label class="field-label" for="inDate">02 · Date de réservation</label>
+              <input type="date" id="inDate" required>
+              <p class="field-err">Choisissez une date à partir d'aujourd'hui.</p>
+            </div>
+            <div class="field" id="fIn">
+              <label class="field-label" for="inCheckin">03 · Réception (check-in)</label>
+              <input type="time" id="inCheckin" required step="900" min="07:00" max="22:00" value="09:00">
+              <p class="field-err">Réception possible entre 7h00 et 22h00.</p>
+            </div>
+            <div class="field" id="fOut">
+              <label class="field-label" for="inCheckout">04 · Remise (check-out)</label>
+              <input type="time" id="inCheckout" required step="900" min="08:00" max="23:00" value="19:00">
+              <p class="field-err">La remise doit être après la réception, au plus tard 23h00.</p>
+            </div>
+          </div>
+
+          <button class="btn btn-red resa-submit" type="submit">Valider la réservation
+            <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7"></path></svg>
+          </button>
+        </form>
+
+        <aside class="ticket rv rv-d1" id="ticket" aria-live="polite">
+          <div class="ticket-head"><span>Récapitulatif</span><span>LNJ · Paris</span></div>
+          <div class="ticket-body">
+            <div class="ticket-row"><span class="k">Véhicule</span><span class="v" id="sumCar">—</span></div>
+            <div class="ticket-row"><span class="k">Date</span><span class="v" id="sumDate">—</span></div>
+            <div class="ticket-row"><span class="k">Check-in → Check-out</span><span class="v" id="sumHours">—</span></div>
+            <div class="ticket-row"><span class="k">Durée</span><span class="v" id="sumDuration">—</span></div>
+            <div class="ticket-row"><span class="k">Forfait journée (12 h)</span><span class="v" id="sumBase">—</span></div>
+            <div class="ticket-row"><span class="k">Heures supplémentaires</span><span class="v" id="sumExtra">—</span></div>
+          </div>
+          <div class="ticket-total">
+            <span class="k">Total TTC</span>
+            <span class="v" id="sumTotal">— <span class="u">€</span></span>
+          </div>
+          <p class="ticket-note">Assurance tous risques et 200 km inclus. Annulation gratuite jusqu'à 24 h avant le check-in.</p>
+        </aside>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="site-footer">
+  <svg class="skyline" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true">
+    <path fill="currentColor" d="M0 120 V78 H60 V92 H110 V64 H150 V92 H210 V72 H240 V50 L252 38 L264 50 V92 H330 V70 H400 V92 H450 V60 H500 V92 H560 V80 H620 V44 L660 12 L700 44 V80 H760 V92 H830 V66 H890 V92 H950 V56 H990 V40 L1000 30 L1010 40 V92 H1080 V74 H1140 V92 H1200 V62 H1260 V92 H1330 V78 H1440 V120 Z"></path>
+    <circle class="glow" cx="660" cy="10" r="3"></circle>
+    <circle class="glow" cx="252" cy="36" r="2.4"></circle>
+    <circle class="glow" cx="1000" cy="28" r="2.4"></circle>
+  </svg>
+  <div class="wrap footer-inner">
+    <div>
+      <a class="logo" href="#accueil">Loc<span class="n">'N'</span>Joy</a>
+      <p style="margin-top:12px;color:rgba(255,255,255,.5);font-size:14px;max-width:38ch;">
+        Location de voitures à la journée, au cœur de Paris. La ville lumière, à votre volant.
+      </p>
+    </div>
+    <div class="footer-meta">
+      <p>Conciergeries · Bastille — Étoile — Montparnasse</p>
+      <p><a href="tel:+33142000000">01 42 00 00 00</a> · <a href="mailto:bonjour@locnjoy.paris">bonjour@locnjoy.paris</a></p>
+      <p>© 2026 Loc'N'Joy — Paris, France</p>
+    </div>
+  </div>
+</footer>
+
+<!-- ============ MODALE ============ -->
+<div class="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal">
+    <div class="modal-top">
+      <svg class="check-ring" viewBox="0 0 80 80" aria-hidden="true">
+        <circle cx="40" cy="40" r="34"></circle>
+        <path d="M26 41 L36 51 L56 30"></path>
+      </svg>
+      <h3 id="modalTitle">Réservation confirmée</h3>
+      <p class="ref" id="modalRef">RÉF. LNJ-2026-0000</p>
+    </div>
+    <div class="modal-body">
+      <div class="ticket-row"><span class="k">Véhicule</span><span class="v" id="mCar">—</span></div>
+      <div class="ticket-row"><span class="k">Date</span><span class="v" id="mDate">—</span></div>
+      <div class="ticket-row"><span class="k">Check-in</span><span class="v" id="mIn">—</span></div>
+      <div class="ticket-row"><span class="k">Check-out</span><span class="v" id="mOut">—</span></div>
+      <div class="ticket-row"><span class="k">Durée</span><span class="v" id="mDuration">—</span></div>
+    </div>
+    <div class="modal-total">
+      <span class="k">Total TTC</span>
+      <span class="v" id="mTotal">— <span class="u">€</span></span>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-dark" type="button" id="modalClose">Parfait, merci&nbsp;!</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- Données flotte ---------- */
+  var FLEET = {
+    r5:     { name:"Renault 5 E-Tech",     type:"Citadine électrique",  price:59  },
+    alpine: { name:"Alpine A110 GT",       type:"Sportive",             price:249 },
+    ds7:    { name:"DS 7 E-Tense 4x4",     type:"SUV premium",          price:139 },
+    mini:   { name:"Mini Cooper SE Cabrio",type:"Cabriolet électrique", price:89  }
+  };
+  var EXTRA_RATE = 12;       // €/heure au-delà du forfait
+  var INCLUDED_MIN = 12*60;  // 12 h incluses
+
+  var $ = function(id){ return document.getElementById(id); };
+  var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ---------- Header : état au scroll ---------- */
+  var header = $("siteHeader");
+  function onScroll(){
+    header.classList.toggle("scrolled", window.scrollY > 40);
+  }
+  window.addEventListener("scroll", onScroll, { passive:true });
+  onScroll();
+
+  /* ---------- Menu mobile ---------- */
+  var burger = $("burger"), nav = $("mainNav");
+  burger.addEventListener("click", function(){
+    var open = nav.classList.toggle("open");
+    burger.setAttribute("aria-expanded", String(open));
+    burger.setAttribute("aria-label", open ? "Fermer le menu" : "Ouvrir le menu");
+  });
+  nav.addEventListener("click", function(e){
+    if (e.target.closest("a")) {
+      nav.classList.remove("open");
+      burger.setAttribute("aria-expanded","false");
+    }
+  });
+
+  /* ---------- Révélation au défilement ---------- */
+  var revealed = document.querySelectorAll(".rv, .car-card");
+  if ("IntersectionObserver" in window && !reduceMotion) {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if (en.isIntersecting) { en.target.classList.add("in"); io.unobserve(en.target); }
+      });
+    }, { threshold: 0.18, rootMargin: "0px 0px -6% 0px" });
+    revealed.forEach(function(el){ io.observe(el); });
+  } else {
+    revealed.forEach(function(el){ el.classList.add("in"); });
+  }
+
+  /* ---------- Hero : traînées lumineuses (Paris by night) ---------- */
+  var canvas = $("heroCanvas");
+  if (canvas && canvas.getContext && !reduceMotion) {
+    var ctx = canvas.getContext("2d");
+    var W = 0, H = 0, dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var trails = [];
+    function resize(){
+      var r = canvas.getBoundingClientRect();
+      W = r.width; H = r.height;
+      canvas.width = W * dpr; canvas.height = H * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    function spawn(initial){
+      var red = Math.random() < 0.55;
+      return {
+        x: initial ? Math.random()*W : -220,
+        y: H * (0.35 + Math.random()*0.62),
+        len: 90 + Math.random()*180,
+        sp: 1.6 + Math.random()*3.4,
+        w: 1 + Math.random()*1.6,
+        col: red ? "255,46,31" : "255,236,220",
+        a: 0.10 + Math.random()*0.28
+      };
+    }
+    function loop(){
+      ctx.clearRect(0,0,W,H);
+      // voile de profondeur
+      var g = ctx.createRadialGradient(W*0.32, H*0.42, 60, W*0.32, H*0.42, Math.max(W,H)*0.75);
+      g.addColorStop(0, "rgba(225,6,0,0.07)");
+      g.addColorStop(1, "rgba(225,6,0,0)");
+      ctx.fillStyle = g;
+      ctx.fillRect(0,0,W,H);
+      for (var i=0;i<trails.length;i++){
+        var t = trails[i];
+        t.x += t.sp;
+        if (t.x - t.len > W) { trails[i] = spawn(false); continue; }
+        var lg = ctx.createLinearGradient(t.x - t.len, t.y, t.x, t.y);
+        lg.addColorStop(0, "rgba(" + t.col + ",0)");
+        lg.addColorStop(1, "rgba(" + t.col + "," + t.a + ")");
+        ctx.strokeStyle = lg;
+        ctx.lineWidth = t.w;
+        ctx.lineCap = "round";
+        ctx.beginPath();
+        ctx.moveTo(t.x - t.len, t.y);
+        ctx.lineTo(t.x, t.y);
+        ctx.stroke();
+      }
+      requestAnimationFrame(loop);
+    }
+    resize();
+    for (var i=0;i<34;i++) trails.push(spawn(true));
+    window.addEventListener("resize", resize);
+    requestAnimationFrame(loop);
+  }
+
+  /* ---------- État réservation ---------- */
+  var state = { car: null };
+  var chips = Array.prototype.slice.call(document.querySelectorAll(".car-chip"));
+  var inDate = $("inDate"), inIn = $("inCheckin"), inOut = $("inCheckout");
+
+  // date min = aujourd'hui, valeur par défaut = demain
+  var today = new Date();
+  function isoDate(d){
+    return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0");
+  }
+  inDate.min = isoDate(today);
+  var tomorrow = new Date(today); tomorrow.setDate(today.getDate()+1);
+  inDate.value = isoDate(tomorrow);
+
+  function toMin(v){
+    if (!v) return null;
+    var p = v.split(":");
+    return parseInt(p[0],10)*60 + parseInt(p[1],10);
+  }
+  function fmtHour(v){ return v ? v.replace(":", "h") : "—"; }
+  function fmtDate(v){
+    if (!v) return "—";
+    var d = new Date(v + "T12:00:00");
+    return d.toLocaleDateString("fr-FR", { weekday:"long", day:"numeric", month:"long", year:"numeric" });
+  }
+  function fmtDuration(min){
+    var h = Math.floor(min/60), m = min%60;
+    return h + " h" + (m ? " " + String(m).padStart(2,"0") : "");
+  }
+
+  function compute(){
+    var mi = toMin(inIn.value), mo = toMin(inOut.value);
+    var ok = state.car && inDate.value && mi !== null && mo !== null && mo > mi;
+    var dur = ok ? (mo - mi) : null;
+    var extraH = 0, base = 0, total = null;
+    if (ok) {
+      base = FLEET[state.car].price;
+      extraH = Math.max(0, Math.ceil((dur - INCLUDED_MIN) / 60));
+      total = base + extraH * EXTRA_RATE;
+    }
+    return { ok:ok, dur:dur, base:base, extraH:extraH, total:total };
+  }
+
+  function renderTicket(){
+    var c = compute();
+    $("sumCar").textContent = state.car ? FLEET[state.car].name : "—";
+    $("sumDate").textContent = fmtDate(inDate.value);
+    $("sumHours").textContent = (inIn.value && inOut.value) ? fmtHour(inIn.value) + " → " + fmtHour(inOut.value) : "—";
+    $("sumDuration").textContent = c.dur ? fmtDuration(c.dur) : "—";
+    $("sumBase").textContent = state.car ? FLEET[state.car].price + " €" : "—";
+    $("sumExtra").textContent = c.ok ? (c.extraH > 0 ? "+" + (c.extraH*EXTRA_RATE) + " € (" + c.extraH + " h)" : "Aucune") : "—";
+    $("sumTotal").innerHTML = (c.total !== null ? c.total : "—") + ' <span class="u">€</span>';
+  }
+
+  function selectCar(key, scroll){
+    if (!FLEET[key]) return;
+    state.car = key;
+    chips.forEach(function(ch){
+      ch.setAttribute("aria-pressed", String(ch.dataset.car === key));
+    });
+    $("errCar").style.display = "none";
+    renderTicket();
+    if (scroll) {
+      document.getElementById("reservation").scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth" });
+      var ticket = $("ticket");
+      ticket.classList.remove("flash");
+      // relance l'animation
+      void ticket.offsetWidth;
+      ticket.classList.add("flash");
+    }
+  }
+
+  chips.forEach(function(ch){
+    ch.addEventListener("click", function(){ selectCar(ch.dataset.car, false); });
+  });
+  document.querySelectorAll(".car-cta").forEach(function(btn){
+    btn.addEventListener("click", function(){ selectCar(btn.dataset.car, true); });
+  });
+  [inDate, inIn, inOut].forEach(function(el){
+    el.addEventListener("input", function(){
+      el.closest(".field").classList.remove("invalid");
+      renderTicket();
+    });
+  });
+
+  /* ---------- Validation + confirmation ---------- */
+  var overlay = $("modalOverlay");
+  var lastFocus = null;
+
+  function openModal(){
+    lastFocus = document.activeElement;
+    overlay.classList.add("open");
+    document.body.style.overflow = "hidden";
+    $("modalClose").focus();
+  }
+  function closeModal(){
+    overlay.classList.remove("open");
+    document.body.style.overflow = "";
+    if (lastFocus) lastFocus.focus();
+  }
+  $("modalClose").addEventListener("click", closeModal);
+  overlay.addEventListener("click", function(e){ if (e.target === overlay) closeModal(); });
+  document.addEventListener("keydown", function(e){
+    if (e.key === "Escape" && overlay.classList.contains("open")) closeModal();
+  });
+
+  $("resaForm").addEventListener("submit", function(e){
+    e.preventDefault();
+    var valid = true;
+
+    if (!state.car) {
+      $("errCar").style.display = "block";
+      valid = false;
+    }
+    var todayISO = isoDate(new Date());
+    if (!inDate.value || inDate.value < todayISO) {
+      $("fDate").classList.add("invalid"); valid = false;
+    }
+    var mi = toMin(inIn.value), mo = toMin(inOut.value);
+    if (mi === null || mi < 7*60 || mi > 22*60) {
+      $("fIn").classList.add("invalid"); valid = false;
+    }
+    if (mo === null || mo > 23*60 || (mi !== null && mo <= mi)) {
+      $("fOut").classList.add("invalid"); valid = false;
+    }
+    if (!valid) {
+      var firstInvalid = document.querySelector(".field.invalid input");
+      if (!state.car) { document.getElementById("carPicker").scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block:"center" }); }
+      else if (firstInvalid) firstInvalid.focus();
+      return;
+    }
+
+    var c = compute();
+    var ref = "LNJ-" + inDate.value.slice(0,4) + "-" + String(Math.floor(1000 + Math.random()*9000));
+    $("modalRef").textContent = "RÉF. " + ref;
+    $("mCar").textContent = FLEET[state.car].name + " · " + FLEET[state.car].type;
+    $("mDate").textContent = fmtDate(inDate.value);
+    $("mIn").textContent = fmtHour(inIn.value);
+    $("mOut").textContent = fmtHour(inOut.value);
+    $("mDuration").textContent = fmtDuration(c.dur) + (c.extraH ? " (dont " + c.extraH + " h sup.)" : " (forfait 12 h)");
+    $("mTotal").innerHTML = c.total + ' <span class="u">€</span>';
+    openModal();
+  });
+
+  renderTicket();
+})();
+</script>
+</body>
+</html>
