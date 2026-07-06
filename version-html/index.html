@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Loc'N'Joy — Location de voitures premium à Paris</title>
+  <meta name="description" content="Loc'N'Joy, agence parisienne de location de véhicules sportifs et premium. Réservez votre expérience au cœur de Paris.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ============ Preloader ============ -->
+  <div id="preloader">
+    <svg viewBox="0 0 800 360" fill="none" aria-hidden="true">
+      <path class="draw" d="M62 266 C58 244 66 230 92 224 C130 214 178 210 224 194 C280 174 314 148 376 140 C440 132 510 136 556 150 C600 164 620 190 660 204 C695 216 728 222 740 236 C750 248 748 260 742 268 C736 276 726 278 712 278 L688 278 C686 242 656 214 618 214 C580 214 550 242 548 278 L262 278 C260 242 230 214 192 214 C154 214 124 242 122 278 L96 278 C76 278 66 274 62 266 Z" stroke="#e11d2e" stroke-width="3"/>
+      <circle class="draw" cx="192" cy="272" r="45" stroke="#e11d2e" stroke-width="3"/>
+      <circle class="draw" cx="618" cy="272" r="45" stroke="#e11d2e" stroke-width="3"/>
+    </svg>
+    <div class="brand">Loc<span class="red">'N'</span>Joy</div>
+    <div class="bar"></div>
+  </div>
+
+  <!-- ============ Navigation ============ -->
+  <header id="navbar">
+    <nav>
+      <a href="#" class="logo">Loc<span class="red">'N'</span>Joy</a>
+      <div class="nav-links">
+        <a href="#apropos">Qui sommes-nous</a>
+        <a href="#flotte">La flotte</a>
+        <a href="#reservation">Réservation</a>
+        <a href="#contact">Contact</a>
+        <a href="#reservation" class="btn small magnetic">Réserver</a>
+      </div>
+      <button id="burger" class="burger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </nav>
+  </header>
+
+  <div id="mobile-menu">
+    <a href="#apropos">Qui sommes-nous</a>
+    <a href="#flotte">La flotte</a>
+    <a href="#reservation">Réservation</a>
+    <a href="#contact">Contact</a>
+    <a href="#reservation" class="btn">Réserver maintenant</a>
+  </div>
+
+  <main>
+    <!-- ============ Hero ============ -->
+    <section id="hero">
+      <div class="glow-bottom"></div>
+      <div id="city-lights"></div>
+      <div class="hero-content">
+        <p class="hero-eyebrow hero-anim">Paris — Location Premium</p>
+        <h1 class="hero-title">
+          <span class="l1 hero-anim">La nuit</span>
+          <span class="l2 hero-anim" style="transition-delay:0.12s">vous</span>
+          <span class="l3 hero-anim" style="transition-delay:0.24s">appartient</span>
+        </h1>
+        <p class="hero-sub hero-anim" style="transition-delay:0.4s">
+          Véhicules sportifs et premium, livrés au cœur de Paris.
+          L'asphalte parisien n'attend que vous.
+        </p>
+        <div class="hero-ctas hero-anim" style="transition-delay:0.55s">
+          <a href="#reservation" class="btn magnetic">Réserver maintenant</a>
+          <a href="#flotte" class="btn ghost magnetic">Voir la flotte</a>
+        </div>
+      </div>
+      <img class="hero-car hero-anim" src="cars/911.svg" alt="Sportive de nuit à Paris">
+      <div class="scroll-hint">
+        <small>Scroll</small>
+        <div class="line"></div>
+      </div>
+    </section>
+
+    <!-- ============ Qui sommes-nous ============ -->
+    <section id="apropos">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="section-num">01</span>
+          <h2 class="section-label">Qui sommes-nous ?</h2>
+        </div>
+        <div class="about-grid">
+          <div class="about-punch">Née sur l'asphalte parisien, Loc'N'Joy est le trait d'union entre la ville lumière et les machines qui la méritent.</div>
+          <div class="about-text">
+            <p class="reveal">
+              Fondée à Paris par des passionnés d'automobile, notre agence
+              sélectionne chaque véhicule pour son caractère. Sportives affûtées,
+              SUV souverains : notre flotte est pensée pour transformer chaque
+              trajet — des Champs-Élysées au périphérique de nuit — en expérience.
+            </p>
+            <p class="reveal">
+              Positionnement premium, service sur-mesure : livraison à l'adresse
+              de votre choix, conciergerie disponible en continu, et une exigence
+              sans compromis sur l'état de chaque voiture.
+            </p>
+          </div>
+        </div>
+        <div class="stats">
+          <div class="stat reveal"><b>6+</b><small>Véhicules d'exception</small></div>
+          <div class="stat reveal" style="transition-delay:0.12s"><b>24/7</b><small>Conciergerie</small></div>
+          <div class="stat reveal" style="transition-delay:0.24s"><b>75</b><small>Paris &amp; Île-de-France</small></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ La flotte ============ -->
+    <section id="flotte">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="section-num">02</span>
+          <h2 class="section-label">Présentation de la flotte</h2>
+        </div>
+        <div class="fleet-top">
+          <p class="section-title reveal">Des machines choisies une à une.</p>
+          <div class="slider-arrows">
+            <button id="arrow-prev" class="arrow" aria-label="Précédent">←</button>
+            <button id="arrow-next" class="arrow" aria-label="Suivant">→</button>
+          </div>
+        </div>
+      </div>
+      <div id="fleet-slider" class="fleet-slider"><!-- cartes générées par app.js --></div>
+    </section>
+
+    <!-- ============ Réservation ============ -->
+    <section id="reservation">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="section-num">03</span>
+          <h2 class="section-label">Réservation</h2>
+        </div>
+        <p class="section-title reveal">Choisissez vos dates. Prenez les clés.</p>
+
+        <div class="booking-grid">
+          <div class="reveal">
+            <label class="field-label">Véhicule</label>
+            <div id="vehicle-picker" class="vehicle-picker"></div>
+
+            <div id="calendar-placeholder" class="calendar-placeholder">
+              Sélectionnez un véhicule pour voir ses disponibilités
+            </div>
+            <div id="calendar" class="calendar" style="display:none">
+              <div class="cal-head">
+                <button type="button" id="cal-prev" class="cal-nav" aria-label="Mois précédent">←</button>
+                <span id="cal-title" class="cal-title"></span>
+                <button type="button" id="cal-next" class="cal-nav" aria-label="Mois suivant">→</button>
+              </div>
+              <div class="cal-grid">
+                <span class="cal-dow">L</span><span class="cal-dow">M</span><span class="cal-dow">M</span><span class="cal-dow">J</span><span class="cal-dow">V</span><span class="cal-dow">S</span><span class="cal-dow">D</span>
+              </div>
+              <div id="cal-days" class="cal-grid"></div>
+              <div class="cal-legend">
+                <span><i style="background:#e11d2e"></i>Sélection</span>
+                <span><i style="background:#232326"></i>Indisponible</span>
+              </div>
+            </div>
+
+            <div class="times">
+              <div>
+                <label class="field-label" for="start-time">Heure de départ</label>
+                <input type="time" id="start-time" value="10:00" required>
+              </div>
+              <div>
+                <label class="field-label" for="end-time">Heure de retour</label>
+                <input type="time" id="end-time" value="10:00" required>
+              </div>
+            </div>
+          </div>
+
+          <form id="booking-form" class="summary-card reveal">
+            <h3>Votre réservation</h3>
+            <div class="summary-rows">
+              <div><span>Véhicule</span><span id="sum-vehicle">—</span></div>
+              <div><span>Départ</span><span id="sum-start">—</span></div>
+              <div><span>Retour</span><span id="sum-end">—</span></div>
+              <div><span>Durée</span><span id="sum-days">—</span></div>
+              <div><span>Total estimé</span><span id="sum-total" class="summary-total">—</span></div>
+            </div>
+            <div class="form-grid">
+              <input id="bk-firstname" placeholder="Prénom" required>
+              <input id="bk-lastname" placeholder="Nom" required>
+              <input id="bk-email" type="email" class="span2" placeholder="Email" required>
+              <input id="bk-phone" type="tel" class="span2" placeholder="Téléphone" required>
+            </div>
+            <div id="booking-ok" class="msg ok"></div>
+            <div id="booking-err" class="msg err"></div>
+            <button type="submit" id="booking-submit" class="btn" style="width:100%;margin-top:24px" disabled>
+              Confirmer la demande
+            </button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ Contact ============ -->
+    <section id="contact">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="section-num">04</span>
+          <h2 class="section-label">Contact</h2>
+        </div>
+        <p class="section-title reveal">Parlons de votre prochaine virée.</p>
+
+        <div class="contact-grid">
+          <div class="channels">
+            <a class="channel reveal" href="https://instagram.com/locnjoy.paris" target="_blank" rel="noreferrer">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+              <span><small>Instagram</small><b>@locnjoy.paris</b></span>
+            </a>
+            <a class="channel reveal" href="mailto:contact@locnjoy.fr" style="transition-delay:0.08s">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 8l9 6 9-6"/></svg>
+              <span><small>Email</small><b>contact@locnjoy.fr</b></span>
+            </a>
+            <a class="channel reveal" href="tel:+33600000000" style="transition-delay:0.16s">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 4h4l2 5-2.5 1.5a12 12 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg>
+              <span><small>Téléphone</small><b>+33 6 00 00 00 00</b></span>
+            </a>
+            <a class="channel reveal" href="https://snapchat.com/add/locnjoy" target="_blank" rel="noreferrer" style="transition-delay:0.24s">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3c3 0 5 2.2 5 5.2 0 .9 0 1.8.1 2.5.6.2 1.4-.6 1.9-.1.5.6-.7 1.3-1.5 1.8.3 1.5 2 2.7 3.5 3-.4 1-1.9 1.2-2.9 1.4-.2.5-.3 1.1-.7 1.1-.6 0-1.2-.3-2.2-.3-1.4 0-1.8 1.4-3.2 1.4s-1.8-1.4-3.2-1.4c-1 0-1.6.3-2.2.3-.4 0-.5-.6-.7-1.1-1-.2-2.5-.4-2.9-1.4 1.5-.3 3.2-1.5 3.5-3-.8-.5-2-1.2-1.5-1.8.5-.5 1.3.3 1.9.1.1-.7.1-1.6.1-2.5C7 5.2 9 3 12 3z"/></svg>
+              <span><small>Snapchat</small><b>locnjoy</b></span>
+            </a>
+          </div>
+
+          <form id="contact-form" class="contact-form reveal">
+            <div class="form-grid" style="margin-top:0">
+              <input id="ct-firstname" placeholder="Prénom" required>
+              <input id="ct-lastname" placeholder="Nom" required>
+              <input id="ct-email" type="email" placeholder="Adresse email" required>
+              <input id="ct-snapchat" placeholder="Snapchat (optionnel)">
+              <textarea id="ct-message" class="span2" rows="5" placeholder="Votre message" required></textarea>
+            </div>
+            <div id="contact-ok" class="msg ok"></div>
+            <button type="submit" class="btn magnetic" style="margin-top:24px">Envoyer</button>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ Footer ============ -->
+  <footer>
+    <div class="marquee">
+      <div class="marquee-track">
+        <span>Loc'N'Joy <span class="red">—</span> Paris <span class="red">—</span></span>
+        <span>Loc'N'Joy <span class="red">—</span> Paris <span class="red">—</span></span>
+        <span>Loc'N'Joy <span class="red">—</span> Paris <span class="red">—</span></span>
+        <span>Loc'N'Joy <span class="red">—</span> Paris <span class="red">—</span></span>
+        <span>Loc'N'Joy <span class="red">—</span> Paris <span class="red">—</span></span>
+        <span>Loc'N'Joy <span class="red">—</span> Paris <span class="red">—</span></span>
+        <span>Loc'N'Joy <span class="red">—</span> Paris <span class="red">—</span></span>
+        <span>Loc'N'Joy <span class="red">—</span> Paris <span class="red">—</span></span>
+      </div>
+    </div>
+    <div class="footer-grid">
+      <div>
+        <span class="logo">Loc<span class="red">'N'</span>Joy</span>
+        <p>Location de véhicules sportifs et premium à Paris. Livraison en Île-de-France, conciergerie 24/7.</p>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="https://instagram.com/locnjoy.paris" target="_blank" rel="noreferrer">Instagram</a></li>
+          <li><a href="https://snapchat.com/add/locnjoy" target="_blank" rel="noreferrer">Snapchat</a></li>
+          <li><a href="mailto:contact@locnjoy.fr">Email</a></li>
+          <li><a href="tel:+33600000000">Téléphone</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Légal</h4>
+        <ul>
+          <li><a href="legal.html#confidentialite">Politique de confidentialité</a></li>
+          <li><a href="legal.html#mentions">Mentions légales</a></li>
+          <li><a href="legal.html#cgv">Conditions générales</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="copyright">© <span id="year"></span> Loc'N'Joy — Tous droits réservés — Paris, France</div>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

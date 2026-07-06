@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — Loc'N'Joy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="admin-wrap">
+
+    <!-- Écran de connexion -->
+    <div id="login-screen">
+      <form id="login-form" class="login-box">
+        <span class="logo">Loc<span class="red">'N'</span>Joy</span>
+        <div class="sub">Espace admin</div>
+        <input type="password" id="login-password" placeholder="Mot de passe" autofocus>
+        <p id="login-error" style="margin-top:12px;font-size:14px;color:var(--blood-bright)"></p>
+        <button type="submit" class="btn">Entrer</button>
+      </form>
+    </div>
+
+    <!-- Tableau de bord -->
+    <div id="dashboard" style="display:none">
+      <header class="admin-header">
+        <div>
+          <span class="logo">Loc<span class="red">'N'</span>Joy — Planning</span>
+          <div id="meta" class="meta"></div>
+        </div>
+        <div class="tabs">
+          <button class="tab active" data-view="list">Liste</button>
+          <button class="tab" data-view="calendar">Calendrier</button>
+          <button class="tab" data-view="messages">Messages</button>
+          <button class="tab" id="logout">Déconnexion</button>
+        </div>
+      </header>
+
+      <div class="note-demo">
+        ⚠️ Version démo sans serveur : les réservations et messages sont stockés
+        dans <b>ce navigateur uniquement</b> (localStorage). Vous voyez ici les
+        demandes faites depuis la page d'accueil ouverte sur cet ordinateur.
+      </div>
+
+      <div id="content"></div>
+    </div>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

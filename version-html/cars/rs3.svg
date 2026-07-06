@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 360" fill="none">
+  <defs>
+    <linearGradient id="body" x1="0" y1="120" x2="0" y2="300" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#38383e"/>
+      <stop offset="0.5" stop-color="#1b1b1f"/>
+      <stop offset="1" stop-color="#0d0d0f"/>
+    </linearGradient>
+    <linearGradient id="glass" x1="0" y1="130" x2="0" y2="200" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#52525b"/>
+      <stop offset="1" stop-color="#16161a"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#e11d2e" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#e11d2e" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <ellipse cx="400" cy="315" rx="330" ry="22" fill="url(#glow)"/>
+  <path d="M80 266 C76 242 88 228 112 220 C146 210 182 202 214 182 C250 158 276 134 338 126 C404 118 478 120 524 132 C564 142 588 170 624 188 C660 204 700 212 718 226 C732 238 734 256 728 266 C722 276 712 278 696 278 L668 278 C666 240 636 212 598 212 C560 212 530 240 528 278 L266 278 C264 240 234 212 196 212 C158 212 128 240 126 278 L104 278 C92 278 83 274 80 266 Z" fill="url(#body)"/>
+  <path d="M242 176 C272 152 296 140 340 134 C394 127 454 128 496 138 C528 146 548 170 576 184 L508 188 L488 142 C450 134 398 133 348 139 C312 144 290 158 268 174 Z" fill="url(#glass)" opacity="0.9"/>
+  <path d="M494 142 L512 186 L556 182 C538 166 520 150 494 142 Z" fill="url(#glass)" opacity="0.75"/>
+  <path d="M84 248 L116 248 L114 260 L86 260 Z" fill="#e11d2e" opacity="0.9"/>
+  <path d="M696 238 L724 246 L726 258 L700 254 Z" fill="#8f1220" opacity="0.9"/>
+  <circle cx="196" cy="272" r="46" fill="#0a0a0b"/>
+  <circle cx="196" cy="272" r="44" fill="#141416" stroke="#2e2e33" stroke-width="3"/>
+  <circle cx="196" cy="272" r="20" fill="#0a0a0b" stroke="#e11d2e" stroke-width="2.5"/>
+  <circle cx="598" cy="272" r="46" fill="#0a0a0b"/>
+  <circle cx="598" cy="272" r="44" fill="#141416" stroke="#2e2e33" stroke-width="3"/>
+  <circle cx="598" cy="272" r="20" fill="#0a0a0b" stroke="#e11d2e" stroke-width="2.5"/>
+</svg>
