@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 360" fill="none">
+  <defs>
+    <linearGradient id="body" x1="0" y1="130" x2="0" y2="300" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#3d3d44"/>
+      <stop offset="0.5" stop-color="#1b1b1f"/>
+      <stop offset="1" stop-color="#0d0d0f"/>
+    </linearGradient>
+    <linearGradient id="glass" x1="0" y1="140" x2="0" y2="205" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#565660"/>
+      <stop offset="1" stop-color="#16161a"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#e11d2e" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#e11d2e" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <ellipse cx="400" cy="315" rx="345" ry="22" fill="url(#glow)"/>
+  <path d="M62 266 C58 244 66 230 92 224 C130 214 178 210 224 194 C280 174 314 148 376 140 C440 132 510 136 556 150 C600 164 620 190 660 204 C695 216 728 222 740 236 C750 248 748 260 742 268 C736 276 726 278 712 278 L688 278 C686 242 656 214 618 214 C580 214 550 242 548 278 L262 278 C260 242 230 214 192 214 C154 214 124 242 122 278 L96 278 C76 278 66 274 62 266 Z" fill="url(#body)"/>
+  <path d="M296 186 C330 162 352 152 396 147 C446 142 500 146 536 156 C564 166 578 184 602 198 L520 202 L500 154 C462 148 420 147 384 151 C352 156 332 168 312 184 Z" fill="url(#glass)" opacity="0.9"/>
+  <path d="M506 154 L524 200 L580 196 C560 180 538 162 506 154 Z" fill="url(#glass)" opacity="0.75"/>
+  <path d="M66 246 L100 248 L98 260 L68 258 Z" fill="#e11d2e" opacity="0.9"/>
+  <path d="M712 244 L740 250 L740 262 L714 258 Z" fill="#8f1220" opacity="0.9"/>
+  <circle cx="192" cy="272" r="47" fill="#0a0a0b"/>
+  <circle cx="192" cy="272" r="45" fill="#141416" stroke="#2e2e33" stroke-width="3"/>
+  <circle cx="192" cy="272" r="21" fill="#0a0a0b" stroke="#e11d2e" stroke-width="2.5"/>
+  <circle cx="618" cy="272" r="47" fill="#0a0a0b"/>
+  <circle cx="618" cy="272" r="45" fill="#141416" stroke="#2e2e33" stroke-width="3"/>
+  <circle cx="618" cy="272" r="21" fill="#0a0a0b" stroke="#e11d2e" stroke-width="2.5"/>
+  <path d="M96 226 C150 214 200 208 244 190" stroke="#4b4b52" stroke-width="2" opacity="0.6"/>
+</svg>

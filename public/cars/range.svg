@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 360" fill="none">
+  <defs>
+    <linearGradient id="body" x1="0" y1="90" x2="0" y2="300" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#3a3a41"/>
+      <stop offset="0.5" stop-color="#1c1c20"/>
+      <stop offset="1" stop-color="#0d0d0f"/>
+    </linearGradient>
+    <linearGradient id="glass" x1="0" y1="100" x2="0" y2="180" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#50505a"/>
+      <stop offset="1" stop-color="#16161a"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#e11d2e" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#e11d2e" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <ellipse cx="400" cy="315" rx="345" ry="22" fill="url(#glow)"/>
+  <path d="M70 258 C66 232 78 218 104 212 C134 205 158 200 184 178 C216 150 242 112 316 104 C392 96 484 100 536 114 C582 128 606 152 640 170 C674 188 712 196 728 212 C742 226 744 246 738 258 C732 268 722 270 706 270 L680 270 C678 234 648 206 610 206 C572 206 542 234 540 270 L272 270 C270 234 240 206 202 206 C164 206 134 234 132 270 L110 270 C92 270 74 268 70 258 Z" fill="url(#body)"/>
+  <path d="M214 166 C244 140 268 120 328 113 C396 105 474 108 520 122 C556 134 578 152 606 168 L522 176 L500 124 C458 114 400 112 344 119 C302 125 274 144 244 166 Z" fill="url(#glass)" opacity="0.9"/>
+  <path d="M506 126 L526 174 L584 168 C562 150 540 136 506 126 Z" fill="url(#glass)" opacity="0.75"/>
+  <path d="M76 236 L110 238 L108 250 L78 248 Z" fill="#e11d2e" opacity="0.9"/>
+  <path d="M706 226 L736 234 L736 248 L708 244 Z" fill="#8f1220" opacity="0.9"/>
+  <circle cx="202" cy="266" r="50" fill="#0a0a0b"/>
+  <circle cx="202" cy="266" r="48" fill="#141416" stroke="#2e2e33" stroke-width="3"/>
+  <circle cx="202" cy="266" r="22" fill="#0a0a0b" stroke="#e11d2e" stroke-width="2.5"/>
+  <circle cx="610" cy="266" r="50" fill="#0a0a0b"/>
+  <circle cx="610" cy="266" r="48" fill="#141416" stroke="#2e2e33" stroke-width="3"/>
+  <circle cx="610" cy="266" r="22" fill="#0a0a0b" stroke="#e11d2e" stroke-width="2.5"/>
+</svg>

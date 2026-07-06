@@ -1,0 +1,83 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-noir text-smoke-light font-sans antialiased;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: #e11d2e;
+  color: #fff;
+}
+
+/* Thin dark scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0a0a0b;
+}
+::-webkit-scrollbar-thumb {
+  background: #2a2a2e;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #e11d2e;
+}
+
+/* Outline text used in hero / section numbers */
+.text-stroke {
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.22);
+  color: transparent;
+}
+.text-stroke-red {
+  -webkit-text-stroke: 1px rgba(225, 29, 46, 0.6);
+  color: transparent;
+}
+
+/* Grain overlay for the asphalt feel */
+.grain::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+}
+
+/* Hide native scrollbars on horizontal sliders while keeping scroll */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Preloader car stroke-draw animation */
+.draw-car {
+  stroke-dasharray: 2200;
+  stroke-dashoffset: 2200;
+  animation: drawCar 2.2s ease-in-out forwards;
+}
+@keyframes drawCar {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+input[type="time"]::-webkit-calendar-picker-indicator {
+  filter: invert(0.7);
+}

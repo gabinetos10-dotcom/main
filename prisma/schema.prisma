@@ -1,0 +1,62 @@
+// Loc'N'Joy — database schema
+//
+// Uses SQLite locally for a zero-config demo. To move to PostgreSQL
+// (e.g. Supabase/Neon), switch provider to "postgresql" and set
+// DATABASE_URL accordingly — the models are fully compatible.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Vehicle {
+  id           String    @id @default(cuid())
+  slug         String    @unique
+  name         String
+  brand        String
+  category     String // e.g. "Sportive", "SUV", "Berline"
+  pricePerDay  Int // price in euros per day
+  seats        Int
+  power        String // e.g. "420 ch"
+  transmission String // "Automatique" | "Manuelle"
+  acceleration String // e.g. "3.9s 0-100"
+  image        String // path to image in /public
+  tagline      String
+  description  String
+  featured     Boolean   @default(false)
+  bookings     Booking[]
+  createdAt    DateTime  @default(now())
+}
+
+model Booking {
+  id        String   @id @default(cuid())
+  vehicle   Vehicle  @relation(fields: [vehicleId], references: [id])
+  vehicleId String
+  firstName String
+  lastName  String
+  email     String
+  phone     String
+  startDate DateTime // day of pick-up (date part)
+  endDate   DateTime // day of drop-off (date part)
+  startTime String // "HH:mm" pick-up time
+  endTime   String // "HH:mm" drop-off time
+  status    String   @default("PENDING") // PENDING | CONFIRMED | CANCELLED
+  createdAt DateTime @default(now())
+
+  @@index([vehicleId, startDate, endDate])
+}
+
+model ContactMessage {
+  id        String   @id @default(cuid())
+  firstName String
+  lastName  String
+  email     String
+  snapchat  String?
+  message   String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
