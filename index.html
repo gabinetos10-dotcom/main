@@ -3,275 +3,875 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="GJS Group - Création de sites web futuristes et automatisations performantes. Design moderne, code robuste, résultats mesurables.">
-    <title>GJS Group - Sites web futuristes & Automatisations</title>
-    <link rel="stylesheet" href="style.css">
+    <meta name="description" content="GJS Group — Agence digitale futuriste : création de sites web, automatisation et marketing digital. Design moderne, code robuste, résultats mesurables.">
+    <meta name="theme-color" content="#0a0a0f">
+    <title>GJS Group — Sites web futuristes & Automatisations</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <a class="skip-link" href="#app">Aller au contenu</a>
+
+    <!-- Preloader -->
+    <div class="preloader" id="preloader" aria-hidden="true">
+        <div class="preloader-mark">GJS<span>·</span>GROUP</div>
+    </div>
+
+    <!-- Ambient background layers -->
+    <div class="ambient" aria-hidden="true"></div>
+    <div class="grain" aria-hidden="true"></div>
+
+    <!-- Route transition curtain -->
+    <div class="curtain" id="curtain" aria-hidden="true">
+        <div class="curtain-panel"></div>
+        <div class="curtain-panel"></div>
+        <div class="curtain-label" id="curtainLabel"></div>
+    </div>
+
+    <!-- Custom cursor -->
+    <div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
+    <div class="cursor-ring" id="cursorRing" aria-hidden="true"></div>
+
     <!-- Header -->
     <header class="header" id="header">
         <div class="container">
-            <div class="header-content">
-                <a href="index.html" class="logo">
-                    <img src="images/Logo-GJS-Group.svg" alt="GJS Group" class="logo-img">
+            <div class="header-inner">
+                <a href="#/accueil" class="logo" data-link="accueil" aria-label="GJS Group — Accueil">
+                    <img src="images/Logo-GJS-Group.svg" alt="" class="logo-img">
+                    <span class="logo-word">GJS<em>·</em>GROUP</span>
                 </a>
-                <nav class="nav" id="nav">
-                    <a href="index.html" class="nav-link active">Accueil</a>
-                    <a href="about.html" class="nav-link">À propos</a>
-                    <a href="services.html" class="nav-link">Services</a>
-                    <a href="partners.html" class="nav-link">Partenaires</a>
-                    <a href="blog.html" class="nav-link">Blog</a>
-                    <a href="contact.html" class="nav-link btn-nav">Contact</a>
+                <nav class="nav" aria-label="Navigation principale">
+                    <a href="#/accueil" class="nav-link" data-link="accueil">Accueil</a>
+                    <a href="#/a-propos" class="nav-link" data-link="a-propos">À propos</a>
+                    <a href="#/services" class="nav-link" data-link="services">Services</a>
+                    <a href="#/expertise" class="nav-link" data-link="expertise">Expertise</a>
+                    <a href="#/blog" class="nav-link" data-link="blog">Blog</a>
                 </nav>
-                <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Menu">
-                    <span></span>
-                    <span></span>
-                    <span></span>
+                <a href="#/contact" class="btn btn-primary nav-cta" data-link="contact">Contact</a>
+                <button class="burger" id="menuToggle" aria-label="Menu" aria-expanded="false" aria-controls="mobileMenu">
+                    <span class="burger-lines">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </span>
                 </button>
             </div>
         </div>
     </header>
 
-    <!-- Hero Section -->
-    <section class="hero">
-        <canvas id="heroCanvas" class="hero-canvas"></canvas>
-        <div class="hero-overlay"></div>
-        <div class="container">
-            <div class="hero-content">
-                <h1 class="hero-title">
-                    <span class="title-line">Créons ensemble</span>
-                    <span class="title-line highlight">votre vitrine digitale</span>
-                </h1>
-                <p class="hero-subtitle">
-                    Spécialisés dans la création de sites web, nous sommes disposés à façonner votre identité de marque, augmenter votre visibilité et faciliter votre business.
-                </p>
-                <div class="hero-buttons">
-                    <a href="contact.html" class="btn btn-primary">Démarrer un projet</a>
-                    <a href="services.html" class="btn btn-secondary">Découvrir nos services</a>
-                </div>
-                <div class="hero-stats">
-                    <div class="stat-item">
-                        <div class="stat-number" data-target="32">0</div>
-                        <div class="stat-label">Projets réalisés</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-number" data-target="98">0</div>
-                        <div class="stat-label">% Satisfaction</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-number" data-target="24">0</div>
-                        <div class="stat-label">Heures de support</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+    <!-- Mobile menu -->
+    <nav class="mobile-menu" id="mobileMenu" aria-label="Navigation mobile">
+        <a href="#/accueil" class="mobile-menu-link" data-link="accueil"><small>01</small>Accueil</a>
+        <a href="#/a-propos" class="mobile-menu-link" data-link="a-propos"><small>02</small>À propos</a>
+        <a href="#/services" class="mobile-menu-link" data-link="services"><small>03</small>Services</a>
+        <a href="#/expertise" class="mobile-menu-link" data-link="expertise"><small>04</small>Expertise</a>
+        <a href="#/blog" class="mobile-menu-link" data-link="blog"><small>05</small>Blog</a>
+        <a href="#/contact" class="mobile-menu-link" data-link="contact"><small>06</small>Contact</a>
+        <p class="mobile-menu-foot">
+            Un projet en tête ? <a href="mailto:gjsgroup.contact@gmail.com">gjsgroup.contact@gmail.com</a>
+        </p>
+    </nav>
 
-    <!-- About Section -->
-    <section class="section about-section">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-label">Qui sommes-nous ?</span>
-                <h2 class="section-title">Une jeune équipe passionnée</h2>
-                <p class="section-description">
-                    GJS Group est une agence digitale composée de 3 étudiants d'un double Master en Digital Marketing & Data Analytics, spécialisée dans la création de sites web modernes et l'automatisation de processus métier.
-                </p>
-            </div>
-            <div class="about-content reveal">
-                <div class="about-grid">
-                    <div class="about-image">
-                        <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&h=600&fit=crop" alt="Équipe GJS Group" loading="lazy">
+    <main id="app">
+
+        <!-- ==================================================
+             VIEW · ACCUEIL
+             ================================================== -->
+        <section class="view" data-view="accueil">
+
+            <!-- Hero -->
+            <div class="hero">
+                <canvas id="heroCanvas" class="hero-canvas" aria-hidden="true"></canvas>
+                <div class="container">
+                    <p class="hero-tag">Agence digitale — automatisation & web</p>
+                    <h1 class="hero-title">
+                        <span class="line"><span>Créons ensemble</span></span>
+                        <span class="line"><span class="grad-text">votre vitrine</span></span>
+                        <span class="line"><span class="grad-text">digitale.</span></span>
+                    </h1>
+                    <p class="hero-sub">
+                        Spécialisés dans la création de sites web, nous sommes disposés à façonner votre identité de marque, augmenter votre visibilité et faciliter votre business.
+                    </p>
+                    <div class="hero-actions">
+                        <a href="#/contact" class="btn btn-primary btn-lg" data-link="contact">
+                            Démarrer un projet
+                            <span class="btn-arrow" aria-hidden="true">→</span>
+                        </a>
+                        <a href="#/services" class="btn btn-ghost btn-lg" data-link="services">Découvrir nos services</a>
                     </div>
-                    <div class="about-text">
+                    <div class="hero-stats">
+                        <div class="stat">
+                            <div class="stat-number"><span data-target="32">0</span><span class="suffix">+</span></div>
+                            <div class="stat-label">Projets réalisés</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-number"><span data-target="98">0</span><span class="suffix">%</span></div>
+                            <div class="stat-label">Satisfaction</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-number"><span data-target="24">0</span><span class="suffix">h</span></div>
+                            <div class="stat-label">Heures de support</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="hero-scroll-hint" aria-hidden="true">Scroll</div>
+            </div>
+
+            <!-- Marquee -->
+            <div class="marquee" aria-hidden="true">
+                <div class="marquee-track">
+                    <span>Sites Web</span>
+                    <span>Automatisation</span>
+                    <span>SEO &amp; SEA</span>
+                    <span>Data Analytics</span>
+                    <span>E-commerce</span>
+                    <span>Branding</span>
+                    <span>Sites Web</span>
+                    <span>Automatisation</span>
+                    <span>SEO &amp; SEA</span>
+                    <span>Data Analytics</span>
+                    <span>E-commerce</span>
+                    <span>Branding</span>
+                </div>
+            </div>
+
+            <!-- About teaser -->
+            <div class="section">
+                <div class="container">
+                    <div class="about-grid">
+                        <div class="about-visual" data-reveal="left">
+                            <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&h=600&fit=crop" alt="Équipe GJS Group" loading="lazy">
+                        </div>
+                        <div class="about-copy" data-reveal="right">
+                            <span class="kicker" data-index="/01">Qui sommes-nous ?</span>
+                            <h2 style="font-size: var(--step-3); margin-block: var(--space-2);">Une jeune équipe passionnée</h2>
+                            <p class="lead">
+                                GJS Group est une agence digitale composée de 3 étudiants d'un double Master en Digital Marketing &amp; Data Analytics, spécialisée dans la création de sites web modernes et l'automatisation de processus métier.
+                            </p>
+                            <p>
+                                Fondée avec la vision de démocratiser l'accès à des solutions web de qualité, GJS Group accompagne les entreprises de toutes tailles dans leur transformation digitale. Notre approche se base sur l'écoute, la transparence et l'innovation constante.
+                            </p>
+                            <div class="mt-4">
+                                <a href="#/a-propos" class="btn btn-ghost" data-link="a-propos">
+                                    Notre histoire
+                                    <span class="btn-arrow" aria-hidden="true">→</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Features bento -->
+            <div class="section">
+                <div class="container">
+                    <div class="section-head" data-reveal>
+                        <span class="kicker" data-index="/02">Nos forces</span>
+                        <h2>Pourquoi choisir GJS Group ?</h2>
                         <p>
-                            Fondée avec la vision de démocratiser l'accès à des solutions web de qualité, GJS Group accompagne les entreprises de toutes tailles dans leur transformation digitale. Notre approche se base sur l'écoute, la transparence et l'innovation constante.
-                        </p>
-                        <p>
-                            Que vous soyez une startup en pleine croissance, un commerce de proximité ou une entreprise établie, nous mettons notre savoir-faire à votre service pour créer des solutions digitales uniques qui génèrent des résultats concrets.
+                            Une expertise technique façonnée à travers plusieurs projets digitaux, alliée à une créativité sans limites pour des résultats exceptionnels.
                         </p>
                     </div>
-                </div>
-                <div class="about-values">
-                    <div class="value-card reveal">
-                        <div class="value-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                                <circle cx="9" cy="7" r="4"/>
-                                <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
-                            </svg>
-                        </div>
-                        <h3 class="value-title">Équipe jeune et dynamique</h3>
-                        <p class="value-description">
-                            3 étudiants passionnés par le digital et formés aux dernières tendances du marketing et de la data.
-                        </p>
-                    </div>
-                    <div class="value-card reveal">
-                        <div class="value-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                            </svg>
-                        </div>
-                        <h3 class="value-title">Formation d'excellence</h3>
-                        <p class="value-description">
-                            Double Master en Digital Marketing & Data Analytics pour une expertise complète et à jour.
-                        </p>
-                    </div>
-                    <div class="value-card reveal">
-                        <div class="value-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
-                            </svg>
-                        </div>
-                        <h3 class="value-title">Approche innovante</h3>
-                        <p class="value-description">
-                            Des solutions modernes et performantes adaptées aux besoins de chaque client.
-                        </p>
+                    <div class="bento" data-reveal-group>
+                        <article class="glass-card feature-card" data-reveal>
+                            <span class="feature-num">01</span>
+                            <div class="feature-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                                </svg>
+                            </div>
+                            <h3>Design Innovant</h3>
+                            <p>Des interfaces modernes et intuitives qui captivent vos utilisateurs dès le premier regard.</p>
+                        </article>
+                        <article class="glass-card feature-card" data-reveal>
+                            <span class="feature-num">02</span>
+                            <div class="feature-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                                </svg>
+                            </div>
+                            <h3>Performance Optimale</h3>
+                            <p>Des sites ultra-rapides, optimisés pour les moteurs de recherche (SEO) et le mobile (responsive).</p>
+                        </article>
+                        <article class="glass-card feature-card" data-reveal>
+                            <span class="feature-num">03</span>
+                            <div class="feature-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                                </svg>
+                            </div>
+                            <h3>Personnalisation Maximale</h3>
+                            <p>Faites naître vos idées en créant un site internet qui vous ressemble, doté d'une forte identité visuelle.</p>
+                        </article>
+                        <article class="glass-card feature-card" data-reveal>
+                            <span class="feature-num">04</span>
+                            <div class="feature-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                                    <polyline points="22 4 12 14.01 9 11.01"/>
+                                </svg>
+                            </div>
+                            <h3>Support Dédié</h3>
+                            <p>Un accompagnement dédié et personnalisé à chaque étape de votre projet digital.</p>
+                        </article>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
 
-    <!-- Features Section -->
-    <section class="section features-section">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-label">Nos forces</span>
-                <h2 class="section-title">Pourquoi choisir GJS Group ?</h2>
-                <p class="section-description">
-                    Une expertise technique façonnée à travers plusieurs projets digitales, alliée à une créativité sans limites pour des résultats exceptionnels.
-                </p>
-            </div>
-            <div class="features-grid">
-                <div class="feature-card reveal">
-                    <div class="feature-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-                        </svg>
+            <!-- Services preview -->
+            <div class="section">
+                <div class="container">
+                    <div class="section-head" data-reveal>
+                        <span class="kicker" data-index="/03">Nos services</span>
+                        <h2>Des solutions sur-mesure et tout-terrain</h2>
                     </div>
-                    <h3 class="feature-title">Design Innovant</h3>
-                    <p class="feature-description">
-                        Des interfaces modernes et intuitives qui captivent vos utilisateurs dès le premier regard.
-                    </p>
-                </div>
-                <div class="feature-card reveal">
-                    <div class="feature-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
-                        </svg>
+                    <div class="service-rows" data-reveal-group>
+                        <a href="#/services" class="service-row" data-link="services" data-reveal>
+                            <span class="service-index">01</span>
+                            <div class="service-body">
+                                <h3>Développement digital &amp; création de sites web</h3>
+                                <p>Sites vitrines, e-commerce, applications web sur-mesure avec les dernières technologies.</p>
+                            </div>
+                            <span class="service-go" aria-hidden="true">→</span>
+                        </a>
+                        <a href="#/services" class="service-row" data-link="services" data-reveal>
+                            <span class="service-index">02</span>
+                            <div class="service-body">
+                                <h3>Automatisation</h3>
+                                <p>Intégrations API, workflows automatisés, connexion de vos outils métier (automatiser les mails…).</p>
+                            </div>
+                            <span class="service-go" aria-hidden="true">→</span>
+                        </a>
+                        <a href="#/services" class="service-row" data-link="services" data-reveal>
+                            <span class="service-index">03</span>
+                            <div class="service-body">
+                                <h3>SEO, SEA &amp; Marketing Digital</h3>
+                                <p>Optimisation SEO, stratégie de contenu digital, analytics et tracking avancé.</p>
+                            </div>
+                            <span class="service-go" aria-hidden="true">→</span>
+                        </a>
                     </div>
-                    <h3 class="feature-title">Performance Optimale</h3>
-                    <p class="feature-description">
-                        Des sites ultra-rapides, optimisés pour les moteurs de recherche (SEO) et le mobile (responsive).
-                    </p>
-                </div>
-                <div class="feature-card reveal">
-                    <div class="feature-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
-                        </svg>
+                    <div class="text-center mt-4" data-reveal>
+                        <a href="#/services" class="btn btn-ghost" data-link="services">Voir tous nos services</a>
                     </div>
-                    <h3 class="feature-title">Personnalisation Maximale</h3>
-                    <p class="feature-description">
-                        Faites naître vos idées en créant un site internet qui vous ressemble, doté d'une forte identité visuelle.
-                    </p>
-                </div>
-                <div class="feature-card reveal">
-                    <div class="feature-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                            <polyline points="22 4 12 14.01 9 11.01"/>
-                        </svg>
-                    </div>
-                    <h3 class="feature-title">Support Dédié</h3>
-                    <p class="feature-description">
-                        Un accompagnement dédié et personnalisé à chaque étape de votre projet digital.
-                    </p>
                 </div>
             </div>
-        </div>
-    </section>
 
-    <!-- Services Preview -->
-    <section class="section services-preview">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-label">Nos services</span>
-                <h2 class="section-title">Des solutions sur-mesure et tout-terrain</h2>
-            </div>
-            <div class="services-grid">
-                <div class="service-card reveal">
-                    <div class="service-image">
-                        <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=600&fit=crop" alt="Développement web" loading="lazy">
-                    </div>
-                    <div class="service-content">
-                        <h3 class="service-title">Développement digital et Création de sites web</h3>
-                        <p class="service-description">
-                            Sites vitrines, e-commerce, applications web sur-mesure avec les dernières technologies.
-                        </p>
-                        <a href="services.html" class="service-link">En savoir plus →</a>
-                    </div>
-                </div>
-                <div class="service-card reveal">
-                    <div class="service-image">
-                        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=600&fit=crop" alt="Automatisation" loading="lazy">
-                    </div>
-                    <div class="service-content">
-                        <h3 class="service-title">Automatisation</h3>
-                        <p class="service-description">
-                            Intégrations API, workflows automatisés, connexion de vos outils métier (automatiser les mails...).
-                        </p>
-                        <a href="services.html" class="service-link">En savoir plus →</a>
-                    </div>
-                </div>
-                <div class="service-card reveal">
-                    <div class="service-image">
-                        <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&h=600&fit=crop" alt="SEO & Marketing" loading="lazy">
-                    </div>
-                    <div class="service-content">
-                        <h3 class="service-title">SEO, SEA & Marketing Digital</h3>
-                        <p class="service-description">
-                            Optimisation SEO, stratégie de contenu digital, analytics et tracking avancé.
-                        </p>
-                        <a href="services.html" class="service-link">En savoir plus →</a>
+            <!-- CTA -->
+            <div class="section">
+                <div class="container">
+                    <div class="cta-panel" data-reveal="zoom">
+                        <h2>Prêt à accroître votre présence digitale ?</h2>
+                        <p>Discutons de votre projet de création et travaillons ensemble.</p>
+                        <a href="#/contact" class="btn btn-primary btn-lg" data-link="contact">
+                            Contactez-nous dès maintenant
+                            <span class="btn-arrow" aria-hidden="true">→</span>
+                        </a>
                     </div>
                 </div>
             </div>
-            <div class="text-center mt-4">
-                <a href="services.html" class="btn btn-outline">Voir tous nos services</a>
-            </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- CTA Section -->
-    <section class="section cta-section">
-        <div class="container">
-            <div class="cta-box reveal">
-                <h2 class="cta-title">Prêt à accroître votre présence digitale ?</h2>
-                <p class="cta-description">
-                    Discutons de votre projet de création et travaillons ensemble.
-                </p>
-                <a href="contact.html" class="btn btn-primary btn-large">Contactez nous dès maintenant</a>
+        <!-- ==================================================
+             VIEW · À PROPOS
+             ================================================== -->
+        <section class="view" data-view="a-propos">
+            <div class="page-hero">
+                <div class="container">
+                    <span class="kicker" data-index="/02">À propos</span>
+                    <h1>À propos de <span class="grad-text">GJS Group</span></h1>
+                    <p>Une équipe passionnée au service de votre réussite digitale.</p>
+                </div>
             </div>
-        </div>
-    </section>
+
+            <div class="section">
+                <div class="container">
+                    <div class="about-grid">
+                        <div class="about-copy" data-reveal="left">
+                            <span class="kicker">Notre histoire</span>
+                            <h2 style="font-size: var(--step-3); margin-block: var(--space-2);">Née d'une vision</h2>
+                            <p class="lead">
+                                GJS Group est née de la conviction que chaque entreprise mérite une présence digitale exceptionnelle. Fondée en 2020, notre agence s'est rapidement imposée comme un acteur clé dans le domaine du développement web et de l'automatisation.
+                            </p>
+                            <p>
+                                Nous croyons en l'alliance parfaite entre créativité et technologie. Chaque projet que nous réalisons est une opportunité de repousser les limites et de créer quelque chose d'unique qui marque les esprits.
+                            </p>
+                            <p>
+                                Notre approche se base sur l'écoute, la transparence et l'excellence. Nous ne livrons pas seulement un site web ou une solution technique, nous créons un véritable outil de croissance pour votre entreprise.
+                            </p>
+                        </div>
+                        <div class="about-visual" data-reveal="right">
+                            <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&h=600&fit=crop" alt="Équipe GJS Group en pleine collaboration" loading="lazy">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="container">
+                    <div class="section-head" data-reveal>
+                        <span class="kicker">Nos valeurs</span>
+                        <h2>Ce qui nous anime</h2>
+                    </div>
+                    <div class="values-grid" data-reveal-group>
+                        <article class="glass-card value-card" data-reveal>
+                            <div class="feature-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                                </svg>
+                            </div>
+                            <h3>Excellence</h3>
+                            <p>Nous visons l'excellence dans chaque détail, de la conception à la livraison finale.</p>
+                        </article>
+                        <article class="glass-card value-card" data-reveal>
+                            <div class="feature-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+                                </svg>
+                            </div>
+                            <h3>Innovation</h3>
+                            <p>Nous restons à la pointe des technologies pour vous offrir les solutions les plus modernes.</p>
+                        </article>
+                        <article class="glass-card value-card" data-reveal>
+                            <div class="feature-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <path d="M8 12l3 3 5-6"/>
+                                </svg>
+                            </div>
+                            <h3>Transparence</h3>
+                            <p>Communication claire, processus transparents, pas de surprises, seulement des résultats.</p>
+                        </article>
+                        <article class="glass-card value-card" data-reveal>
+                            <div class="feature-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                                </svg>
+                            </div>
+                            <h3>Engagement</h3>
+                            <p>Votre succès est notre priorité. Nous nous engageons à vos côtés pour la durée.</p>
+                        </article>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="container">
+                    <div class="section-head" data-reveal>
+                        <span class="kicker">Nos atouts</span>
+                        <h2>Des experts à votre service</h2>
+                    </div>
+                    <div class="expertise-grid" data-reveal-group>
+                        <article class="glass-card value-card" data-reveal>
+                            <div class="feature-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                                    <circle cx="9" cy="7" r="4"/>
+                                    <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
+                                </svg>
+                            </div>
+                            <h3>Équipe jeune et dynamique</h3>
+                            <p>3 étudiants passionnés par le digital et formés aux dernières tendances du marketing et de la data.</p>
+                        </article>
+                        <article class="glass-card value-card" data-reveal>
+                            <div class="feature-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                                </svg>
+                            </div>
+                            <h3>Formation d'excellence</h3>
+                            <p>Double Master en Digital Marketing &amp; Data Analytics pour une expertise complète et à jour.</p>
+                        </article>
+                        <article class="glass-card value-card" data-reveal>
+                            <div class="feature-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+                                </svg>
+                            </div>
+                            <h3>Approche innovante</h3>
+                            <p>Des solutions modernes et performantes adaptées aux besoins de chaque client.</p>
+                        </article>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="container">
+                    <div class="cta-panel" data-reveal="zoom">
+                        <h2>Travaillons ensemble</h2>
+                        <p>Discutons de votre projet et créons quelque chose d'exceptionnel.</p>
+                        <a href="#/contact" class="btn btn-primary btn-lg" data-link="contact">
+                            Démarrer un projet
+                            <span class="btn-arrow" aria-hidden="true">→</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================================================
+             VIEW · SERVICES
+             ================================================== -->
+        <section class="view" data-view="services">
+            <div class="page-hero">
+                <div class="container">
+                    <span class="kicker" data-index="/03">Services</span>
+                    <h1>Nos <span class="grad-text">Services</span></h1>
+                    <p>Des solutions digitales complètes pour propulser votre entreprise vers le futur.</p>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="container">
+                    <div class="service-rows" data-reveal-group>
+                        <div class="service-row" data-reveal>
+                            <span class="service-index">01</span>
+                            <div class="service-body">
+                                <h3>Développement Web</h3>
+                                <p>Nous créons des sites web sur-mesure qui allient esthétique moderne et performance technique. De la conception à la mise en production, nous vous accompagnons à chaque étape.</p>
+                                <div class="service-tags">
+                                    <span class="chip">Sites vitrines</span>
+                                    <span class="chip">E-commerce</span>
+                                    <span class="chip">Applications web</span>
+                                    <span class="chip">Responsive design</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="service-row" data-reveal>
+                            <span class="service-index">02</span>
+                            <div class="service-body">
+                                <h3>Automatisation &amp; Intégrations</h3>
+                                <p>Automatisez vos processus métier et connectez vos outils pour gagner en efficacité. Nous créons des workflows intelligents qui transforment votre façon de travailler.</p>
+                                <div class="service-tags">
+                                    <span class="chip">Intégrations API</span>
+                                    <span class="chip">Workflows Make / Zapier</span>
+                                    <span class="chip">Emails automatisés</span>
+                                    <span class="chip">Synchronisation d'outils</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="service-row" data-reveal>
+                            <span class="service-index">03</span>
+                            <div class="service-body">
+                                <h3>SEO &amp; Marketing Digital</h3>
+                                <p>Augmentez votre visibilité en ligne et générez plus de leads qualifiés grâce à nos stratégies SEO et marketing digital sur-mesure.</p>
+                                <div class="service-tags">
+                                    <span class="chip">SEO technique</span>
+                                    <span class="chip">SEA</span>
+                                    <span class="chip">Stratégie de contenu</span>
+                                    <span class="chip">Analytics &amp; tracking</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="service-row" data-reveal>
+                            <span class="service-index">04</span>
+                            <div class="service-body">
+                                <h3>Consulting Digital</h3>
+                                <p>Bénéficiez de notre expertise pour définir votre stratégie digitale et prendre les meilleures décisions pour votre transformation numérique.</p>
+                                <div class="service-tags">
+                                    <span class="chip">Audit digital</span>
+                                    <span class="chip">Stratégie</span>
+                                    <span class="chip">Accompagnement</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="container">
+                    <div class="section-head" data-reveal>
+                        <span class="kicker">Méthodologie</span>
+                        <h2>Comment nous travaillons</h2>
+                    </div>
+                    <div class="process" data-reveal-group>
+                        <article class="glass-card process-step" data-reveal>
+                            <h3>Découverte</h3>
+                            <p>Nous analysons vos besoins, vos objectifs et votre environnement pour comprendre votre vision.</p>
+                        </article>
+                        <article class="glass-card process-step" data-reveal>
+                            <h3>Conception</h3>
+                            <p>Nous créons des maquettes et prototypes pour valider l'expérience utilisateur avant le développement.</p>
+                        </article>
+                        <article class="glass-card process-step" data-reveal>
+                            <h3>Développement</h3>
+                            <p>Notre équipe développe votre solution avec les meilleures pratiques et technologies modernes.</p>
+                        </article>
+                        <article class="glass-card process-step" data-reveal>
+                            <h3>Lancement</h3>
+                            <p>Nous testons, optimisons et lançons votre projet avec un accompagnement complet.</p>
+                        </article>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="container">
+                    <div class="cta-panel" data-reveal="zoom">
+                        <h2>Prêt à démarrer votre projet ?</h2>
+                        <p>Parlons de vos objectifs et construisons la solution qui vous ressemble.</p>
+                        <a href="#/contact" class="btn btn-primary btn-lg" data-link="contact">
+                            Obtenir un devis
+                            <span class="btn-arrow" aria-hidden="true">→</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================================================
+             VIEW · EXPERTISE
+             ================================================== -->
+        <section class="view" data-view="expertise">
+            <div class="page-hero">
+                <div class="container">
+                    <span class="kicker" data-index="/04">Expertise</span>
+                    <h1>Notre <span class="grad-text">expertise</span></h1>
+                    <p>Des compétences multi-secteurs et un écosystème technologique de pointe au service de vos ambitions.</p>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="container">
+                    <div class="section-head" data-reveal>
+                        <span class="kicker">Stack</span>
+                        <h2>Notre écosystème technologique</h2>
+                        <p>Les outils et technologies que nous maîtrisons pour construire, automatiser et faire croître votre présence digitale.</p>
+                    </div>
+                    <div class="stack-cloud" data-reveal>
+                        <span class="chip">HTML5 / CSS3</span>
+                        <span class="chip">JavaScript</span>
+                        <span class="chip">React</span>
+                        <span class="chip">Next.js</span>
+                        <span class="chip">Node.js</span>
+                        <span class="chip">WordPress</span>
+                        <span class="chip">Shopify</span>
+                        <span class="chip">Make</span>
+                        <span class="chip">Zapier</span>
+                        <span class="chip">Google Analytics 4</span>
+                        <span class="chip">Google Ads</span>
+                        <span class="chip">Meta Ads</span>
+                        <span class="chip">Figma</span>
+                        <span class="chip">SEO / SEA</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="container">
+                    <div class="section-head" data-reveal>
+                        <span class="kicker">Écosystème</span>
+                        <h2>Des compétences multi-secteurs</h2>
+                    </div>
+                    <div class="expertise-grid" data-reveal-group>
+                        <article class="glass-card expertise-card" data-reveal>
+                            <div class="expertise-media">
+                                <img src="images/expertise.jpg" alt="Partenaires technologiques" loading="lazy">
+                            </div>
+                            <div class="expertise-body">
+                                <h3>Partenaires Technologiques</h3>
+                                <p>Un réseau d'outils et de plateformes de pointe pour construire des solutions robustes, évolutives et interconnectées.</p>
+                            </div>
+                        </article>
+                        <article class="glass-card expertise-card" data-reveal>
+                            <div class="expertise-media">
+                                <img src="images/experise2.jpg" alt="Partenaires business" loading="lazy">
+                            </div>
+                            <div class="expertise-body">
+                                <h3>Partenaires Business</h3>
+                                <p>Des collaborations avec des acteurs de tous secteurs pour comprendre vos enjeux métier et générer des résultats concrets.</p>
+                            </div>
+                        </article>
+                        <article class="glass-card expertise-card" data-reveal>
+                            <div class="expertise-media">
+                                <img src="images/expertise3.jpg" alt="Partenaires agences" loading="lazy">
+                            </div>
+                            <div class="expertise-body">
+                                <h3>Partenaires Agences</h3>
+                                <p>Un écosystème d'agences complémentaires pour couvrir l'intégralité de vos besoins digitaux, du design à la data.</p>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="container">
+                    <div class="cta-panel" data-reveal="zoom">
+                        <h2>Devenir partenaire ?</h2>
+                        <p>Rejoignez notre écosystème et développons ensemble de nouvelles opportunités.</p>
+                        <a href="#/contact" class="btn btn-primary btn-lg" data-link="contact">
+                            Discutons-en
+                            <span class="btn-arrow" aria-hidden="true">→</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================================================
+             VIEW · BLOG
+             ================================================== -->
+        <section class="view" data-view="blog">
+            <div class="page-hero">
+                <div class="container">
+                    <span class="kicker" data-index="/05">Blog</span>
+                    <h1>Le <span class="grad-text">Blog</span></h1>
+                    <p>Actualités, tutoriels et conseils sur le développement web, l'automatisation et le marketing digital.</p>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="container">
+                    <div class="blog-grid" data-reveal-group>
+                        <article class="glass-card blog-card" data-reveal>
+                            <div class="blog-meta">
+                                <span class="blog-cat">Développement</span>
+                                <span class="blog-date">2024</span>
+                            </div>
+                            <h3>Les tendances du développement web en 2024</h3>
+                            <p>Découvrez les technologies et frameworks qui vont marquer l'année 2024 dans le développement web. De Next.js 14 aux nouvelles APIs, explorez l'avenir du web.</p>
+                            <span class="blog-more">Lire l'article
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                            </span>
+                        </article>
+                        <article class="glass-card blog-card" data-reveal>
+                            <div class="blog-meta">
+                                <span class="blog-cat">Automatisation</span>
+                                <span class="blog-date">2024</span>
+                            </div>
+                            <h3>Automatiser son business avec Make et Zapier</h3>
+                            <p>Comment automatiser vos processus métier pour gagner du temps et améliorer votre productivité. Guide pratique avec exemples concrets.</p>
+                            <span class="blog-more">Lire l'article
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                            </span>
+                        </article>
+                        <article class="glass-card blog-card" data-reveal>
+                            <div class="blog-meta">
+                                <span class="blog-cat">SEO</span>
+                                <span class="blog-date">2024</span>
+                            </div>
+                            <h3>Optimiser ses Core Web Vitals en 2024</h3>
+                            <p>Les Core Web Vitals sont essentiels pour le SEO. Découvrez comment optimiser votre site pour améliorer vos performances et votre classement Google.</p>
+                            <span class="blog-more">Lire l'article
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                            </span>
+                        </article>
+                        <article class="glass-card blog-card" data-reveal>
+                            <div class="blog-meta">
+                                <span class="blog-cat">Design</span>
+                                <span class="blog-date">2024</span>
+                            </div>
+                            <h3>Les principes du design moderne en 2024</h3>
+                            <p>Explorez les tendances du design web moderne : glassmorphism, néomorphism, micro-interactions et bien plus encore.</p>
+                            <span class="blog-more">Lire l'article
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                            </span>
+                        </article>
+                        <article class="glass-card blog-card" data-reveal>
+                            <div class="blog-meta">
+                                <span class="blog-cat">E-commerce</span>
+                                <span class="blog-date">2024</span>
+                            </div>
+                            <h3>Créer une boutique en ligne performante</h3>
+                            <p>Guide complet pour créer et optimiser votre e-commerce : choix de la plateforme, design, conversion et marketing.</p>
+                            <span class="blog-more">Lire l'article
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                            </span>
+                        </article>
+                        <article class="glass-card blog-card" data-reveal>
+                            <div class="blog-meta">
+                                <span class="blog-cat">Tutoriel</span>
+                                <span class="blog-date">2024</span>
+                            </div>
+                            <h3>Intégrer une API REST avec Next.js</h3>
+                            <p>Tutoriel pas à pas pour intégrer une API REST dans votre application Next.js. Exemples de code et bonnes pratiques inclus.</p>
+                            <span class="blog-more">Lire l'article
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                            </span>
+                        </article>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="container">
+                    <div class="cta-panel" data-reveal="zoom">
+                        <h2>Besoin d'aide pour votre projet ?</h2>
+                        <p>Nos experts sont là pour transformer vos idées en réalité digitale.</p>
+                        <a href="#/contact" class="btn btn-primary btn-lg" data-link="contact">
+                            Parler à un expert
+                            <span class="btn-arrow" aria-hidden="true">→</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================================================
+             VIEW · CONTACT
+             ================================================== -->
+        <section class="view" data-view="contact">
+            <div class="page-hero">
+                <div class="container">
+                    <span class="kicker" data-index="/06">Contact</span>
+                    <h1>Contactez-<span class="grad-text">nous</span></h1>
+                    <p>Discutons de votre projet et créons quelque chose d'exceptionnel ensemble !</p>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="container">
+                    <div class="contact-grid">
+                        <div class="glass-card contact-form-panel" data-reveal="left">
+                            <div class="section-head" style="margin-bottom: var(--space-3);">
+                                <span class="kicker">Formulaire de contact</span>
+                                <h2 style="font-size: var(--step-2);">Envoyez-nous un message</h2>
+                                <p style="font-size: var(--step-0);">Remplissez le formulaire ci-dessous et nous vous recontacterons sous 24h.</p>
+                            </div>
+                            <form class="contact-form" id="contactForm" novalidate>
+                                <input type="text" name="honeypot" class="honeypot" tabindex="-1" autocomplete="off" aria-hidden="true">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="name">Nom complet *</label>
+                                        <input type="text" id="name" name="name" required placeholder="Jean Dupont" autocomplete="name">
+                                        <span class="error-message" id="nameError" role="alert"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="email">Email *</label>
+                                        <input type="email" id="email" name="email" required placeholder="jean@exemple.fr" autocomplete="email">
+                                        <span class="error-message" id="emailError" role="alert"></span>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="phone">Téléphone</label>
+                                        <input type="tel" id="phone" name="phone" placeholder="+33 6 12 34 56 78" autocomplete="tel">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="company">Entreprise</label>
+                                        <input type="text" id="company" name="company" placeholder="Nom de votre entreprise" autocomplete="organization">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="service">Service souhaité</label>
+                                    <select id="service" name="service">
+                                        <option value="">Sélectionnez un service</option>
+                                        <option value="website">Création de site internet</option>
+                                        <option value="automation">Automatisation de tâches</option>
+                                        <option value="seo">Optimisation SEO &/ou SEA</option>
+                                        <option value="consulting">Consulting</option>
+                                        <option value="other">Autre</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="budget">Budget estimé</label>
+                                    <select id="budget" name="budget">
+                                        <option value="">Sélectionnez un budget</option>
+                                        <option value="<500">Moins de 500€</option>
+                                        <option value="500-1000">500€ - 1 000€</option>
+                                        <option value="1000-2500">1 000€ - 2 500€</option>
+                                        <option value="2500-5000">2 500€ - 5 000€</option>
+                                        <option value=">5000">Plus de 5 000€</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="message">Message *</label>
+                                    <textarea id="message" name="message" rows="6" required placeholder="Décrivez votre projet..."></textarea>
+                                    <span class="error-message" id="messageError" role="alert"></span>
+                                </div>
+                                <div class="form-group checkbox-group">
+                                    <input type="checkbox" id="consent" name="consent" required>
+                                    <label for="consent">J'accepte que mes données soient utilisées pour me recontacter. *</label>
+                                    <span class="error-message" id="consentError" role="alert"></span>
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-lg w-full" id="submitBtn">
+                                    <span class="btn-text">Envoyer le message</span>
+                                    <span class="btn-loading" style="display: none;">
+                                        <span class="spinner" aria-hidden="true"></span>
+                                        Envoi en cours...
+                                    </span>
+                                </button>
+                            </form>
+                        </div>
+
+                        <aside class="contact-aside" data-reveal="right">
+                            <div class="glass-card contact-info-card">
+                                <h3>Informations de contact</h3>
+                                <div class="contact-item">
+                                    <div class="contact-item-icon">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                                            <polyline points="22,6 12,13 2,6"/>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h4>Email</h4>
+                                        <a href="mailto:gjsgroup.contact@gmail.com">gjsgroup.contact@gmail.com</a>
+                                    </div>
+                                </div>
+                                <div class="contact-item">
+                                    <div class="contact-item-icon">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h4>Téléphone</h4>
+                                        <a href="tel:+33123456789">+33 1 23 45 67 89</a>
+                                    </div>
+                                </div>
+                                <div class="contact-item">
+                                    <div class="contact-item-icon">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <circle cx="12" cy="12" r="10"/>
+                                            <polyline points="12 6 12 12 16 14"/>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h4>Horaires</h4>
+                                        <p>Lun - Sam : 24h / 24h</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="glass-card contact-info-card">
+                                <h3>Suivez-nous</h3>
+                                <div class="socials">
+                                    <a href="#" class="social-link" aria-label="LinkedIn">
+                                        <svg viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                                        </svg>
+                                    </a>
+                                    <a href="#" class="social-link" aria-label="Twitter">
+                                        <svg viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"/>
+                                        </svg>
+                                    </a>
+                                    <a href="#" class="social-link" aria-label="GitHub">
+                                        <svg viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                                        </svg>
+                                    </a>
+                                </div>
+                            </div>
+                        </aside>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
 
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
             <div class="footer-grid">
-                <div class="footer-col">
-                    <div class="footer-logo">
-                        <span class="logo-text">GJS</span>
-                        <span class="logo-group">GROUP</span>
-                    </div>
-                    <p class="footer-description">
-                        Créons ensemble l'avenir digital. Des sites web qui marquent, des solutions qui transforment.
-                    </p>
-                    <div class="footer-social">
+                <div class="footer-brand">
+                    <span class="logo-word">GJS<em>·</em>GROUP</span>
+                    <p>Créons ensemble l'avenir digital. Des sites web qui marquent, des solutions qui transforment.</p>
+                    <div class="socials">
                         <a href="#" class="social-link" aria-label="LinkedIn">
                             <svg viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
@@ -289,27 +889,28 @@
                         </a>
                     </div>
                 </div>
-                <div class="footer-col">
-                    <h4 class="footer-title">Navigation</h4>
+                <div>
+                    <h4>Navigation</h4>
                     <ul class="footer-links">
-                        <li><a href="index.html">Accueil</a></li>
-                        <li><a href="about.html">À propos</a></li>
-                        <li><a href="services.html">Services</a></li>
-                        <li><a href="partners.html">Partenaires</a></li>
-                        <li><a href="blog.html">Blog</a></li>
+                        <li><a href="#/accueil" data-link="accueil">Accueil</a></li>
+                        <li><a href="#/a-propos" data-link="a-propos">À propos</a></li>
+                        <li><a href="#/services" data-link="services">Services</a></li>
+                        <li><a href="#/expertise" data-link="expertise">Expertise</a></li>
+                        <li><a href="#/blog" data-link="blog">Blog</a></li>
+                        <li><a href="#/contact" data-link="contact">Contact</a></li>
                     </ul>
                 </div>
-                <div class="footer-col">
-                    <h4 class="footer-title">Services</h4>
+                <div>
+                    <h4>Services</h4>
                     <ul class="footer-links">
-                        <li><a href="services.html">Création de sites web</a></li>
-                        <li><a href="services.html">Automatisation</a></li>
-                        <li><a href="services.html">SEO, SEA & Marketing</a></li>
-                        <li><a href="services.html">Consulting</a></li>
+                        <li><a href="#/services" data-link="services">Création de sites web</a></li>
+                        <li><a href="#/services" data-link="services">Automatisation</a></li>
+                        <li><a href="#/services" data-link="services">SEO, SEA &amp; Marketing</a></li>
+                        <li><a href="#/services" data-link="services">Consulting</a></li>
                     </ul>
                 </div>
-                <div class="footer-col">
-                    <h4 class="footer-title">Contact</h4>
+                <div>
+                    <h4>Contact</h4>
                     <ul class="footer-contact">
                         <li>
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -337,7 +938,16 @@
         </div>
     </footer>
 
+    <!-- Toast Notification -->
+    <div class="toast" id="toast" role="status" aria-live="polite">
+        <div class="toast-content">
+            <span class="toast-title" id="toastTitle"></span>
+            <span class="toast-message" id="toastMessage"></span>
+        </div>
+        <button class="toast-close" id="toastClose" aria-label="Fermer la notification">×</button>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js" defer></script>
     <script src="script.js"></script>
 </body>
 </html>
-

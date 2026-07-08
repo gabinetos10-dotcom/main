@@ -1,106 +1,106 @@
-# GJS Group - Site Web Complet
+# GJS Group — Digital Showcase
 
-Site web moderne et complet en HTML, CSS et JavaScript pur - sans framework, sans npm, sans serveur.
+Site vitrine premium en HTML, CSS et JavaScript pur — sans framework, sans npm, sans serveur. Expérience single-page avec routes virtuelles, transitions "rideau", champ de particules interactif et design glassmorphique néon.
 
 ## 🚀 Utilisation
 
-1. **Ouvrir le site** : Double-cliquez simplement sur `index.html` dans votre navigateur
+1. **Ouvrir le site** : double-cliquez simplement sur `index.html` dans votre navigateur
 2. **C'est tout !** Le site fonctionne directement sans installation ni serveur
 
 ## 📁 Structure
 
 ```
 site-gjs/
-├── index.html      # Page d'accueil
-├── about.html      # À propos
-├── services.html   # Services
-├── partners.html   # Partenaires
-├── contact.html    # Contact (avec formulaire)
-├── blog.html       # Blog
-├── style.css       # Tous les styles CSS
-├── script.js       # Toutes les interactions JavaScript
+├── index.html      # Application complète : 6 vues (Accueil, À propos, Services, Expertise, Blog, Contact)
+├── style.css       # Design system : tokens, glassmorphism, animations, responsive mobile-first
+├── script.js       # Moteur : routeur virtuel, particules canvas, curseur, reveals, formulaire
+├── about.html      # Redirection → index.html#/a-propos
+├── services.html   # Redirection → index.html#/services
+├── partners.html   # Redirection → index.html#/expertise
+├── blog.html       # Redirection → index.html#/blog
+├── contact.html    # Redirection → index.html#/contact
+├── images/         # Logo & visuels expertise
 └── README.md       # Ce fichier
 ```
 
+Les anciennes pages multi-fichiers sont conservées comme redirections : tout lien ou favori existant atterrit sur la bonne vue.
+
 ## ✨ Fonctionnalités
 
-### Design Moderne
-- ✅ Design moderne et futuriste (2025)
-- ✅ Arrière-plan dynamique avec particules 3D (Canvas)
-- ✅ Dégradés fluides et effets visuels
-- ✅ Typographie élégante (Space Grotesk + Inter)
-- ✅ Couleurs modernes et contrastées
+### Expérience single-page (SPA)
+- ✅ Routeur virtuel en Vanilla JS (`history.pushState` + hash `#/route`)
+- ✅ Transitions de page "rideau" en deux temps (indigo → fond) avec libellé de destination
+- ✅ Deep-linking : `index.html#/services` ouvre directement la vue Services
+- ✅ Boutons précédent/suivant du navigateur pris en charge (`popstate`)
+- ✅ Titre du document et état `aria-current` mis à jour à chaque navigation
 
-### Animations
-- ✅ Particules 3D animées sur la page d'accueil
-- ✅ Animations au scroll (reveal on scroll)
-- ✅ Compteur animé sur les statistiques
-- ✅ Carrousel de logos partenaires animé
-- ✅ Effets de survol sur les cartes et images
-- ✅ Transitions douces entre les pages
+### Design futuriste
+- ✅ Fond cyber profond (`#0a0a0f`), accents néon indigo/violet, rose électrique, ambre
+- ✅ Glassmorphism généralisé (`backdrop-filter: blur`, bordures semi-transparentes)
+- ✅ Bento-grid asymétrique, rangées de services avec index néon, panneaux CTA à bordure dégradée
+- ✅ Orbes aurora animés + grain cinématographique en arrière-plan
+- ✅ Typographie fluide (`clamp()`) — Space Grotesk (titres) + Inter (texte)
 
-### Pages
-- ✅ **index.html** : Page d'accueil avec hero, stats, features, services preview
-- ✅ **about.html** : À propos avec histoire, valeurs, équipe
-- ✅ **services.html** : Services détaillés avec processus
-- ✅ **partners.html** : Partenaires avec carrousel animé
-- ✅ **contact.html** : Formulaire de contact fonctionnel avec validation
-- ✅ **blog.html** : Blog avec articles et pagination
+### Interactions & animations
+- ✅ Champ de particules canvas haute densité avec **attraction gravitationnelle du curseur**
+- ✅ Curseur personnalisé (point + anneau magnétique) sur pointeurs fins uniquement
+- ✅ Reveals au scroll en cascade (`IntersectionObserver` + délais échelonnés)
+- ✅ Compteurs animés avec easing exponentiel
+- ✅ Spotlight sur les cartes de verre suivant le pointeur
+- ✅ Marquee infini sans couture, menu mobile en `clip-path` circulaire
 
-### Responsive
-- ✅ Mobile-first design
-- ✅ Adapté à tous les écrans (mobile, tablette, desktop)
-- ✅ Menu mobile avec animation
-- ✅ Navigation fluide
+### Performance & accessibilité
+- ✅ Mobile-first : densité de particules et rayons réduits via `matchMedia`
+- ✅ Le canvas se met en pause hors écran et onglet masqué (IntersectionObserver + `visibilitychange`)
+- ✅ `prefers-reduced-motion` respecté partout (rendu statique, transitions désactivées)
+- ✅ Skip-link, focus visible, `aria-expanded`/`aria-current`, labels de formulaire conservés
+- ✅ DPR plafonné à 2, scroll listeners passifs, resize débouncé
 
-### Formulaire de Contact
-- ✅ Validation en temps réel
-- ✅ Messages d'erreur personnalisés
+### Formulaire de contact
+- ✅ Validation en temps réel + messages d'erreur personnalisés
 - ✅ Protection anti-spam (honeypot)
-- ✅ Toast notifications (succès/erreur)
-- ✅ États de chargement
+- ✅ Envoi Formspree ou EmailJS (voir configuration ci-dessous)
+- ✅ Toast notifications (succès/erreur) et état de chargement
 
 ## 🎨 Personnalisation
 
 ### Changer les couleurs
 
-Éditez les variables CSS dans `style.css` (lignes 8-20) :
+Éditez les design tokens en tête de `style.css` :
 
 ```css
 :root {
-    --primary: #6366f1;
-    --secondary: #ec4899;
-    --accent: #f59e0b;
+    --bg-1: #0a0a0f;
+    --indigo: #6366f1;
+    --violet: #8b5cf6;
+    --pink: #ec4899;
+    --amber: #f59e0b;
     /* ... */
 }
 ```
 
-### Modifier les textes
-
-Tous les textes sont directement dans les fichiers HTML. Recherchez et remplacez les contenus.
-
 ### Configurer le formulaire
 
-Pour connecter le formulaire à Formspree ou EmailJS, modifiez la fonction `initContactForm()` dans `script.js` :
+Renseignez `CONTACT_SEND` en tête de `script.js` :
 
 ```javascript
-// Remplacez cette partie :
-await new Promise(resolve => setTimeout(resolve, 1500));
-
-// Par :
-const response = await fetch('https://formspree.io/f/VOTRE_ID', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(formData),
-});
+const CONTACT_SEND = {
+    formsprreeEndpoint: 'https://formspree.io/f/VOTRE_ID',
+    emailJs: {
+        publicKey: '',
+        serviceId: '',
+        templateId: '',
+    }
+};
 ```
 
-### Changer les images
+Formspree est utilisé en priorité ; EmailJS sert de repli si l'endpoint est vide.
 
-Les images utilisent Unsplash. Pour utiliser vos propres images :
-1. Placez vos images dans un dossier `images/`
-2. Remplacez les URLs Unsplash par vos chemins locaux
-3. Exemple : `src="images/votre-image.jpg"`
+### Ajouter une vue
+
+1. Dupliquez une `<section class="view" data-view="...">` dans `index.html`
+2. Déclarez la route dans `Router.routes` (`script.js`) avec son libellé et son titre
+3. Ajoutez le lien `data-link="..."` dans la navigation
 
 ## 📱 Compatibilité
 
@@ -109,20 +109,11 @@ Les images utilisent Unsplash. Pour utiliser vos propres images :
 - ✅ Safari (dernières versions)
 - ✅ Mobile browsers (iOS Safari, Chrome Mobile)
 
-## 🔧 Améliorations possibles
-
-- Ajouter un favicon personnalisé
-- Intégrer Google Analytics (avec consentement)
-- Optimiser les images (WebP, lazy loading)
-- Ajouter un système de recherche pour le blog
-- Ajouter des animations GSAP pour plus d'effets
-
 ## 📝 Notes
 
-- Le site est entièrement autonome et fonctionne hors ligne
-- Aucune dépendance externe (sauf Google Fonts pour la typographie)
+- Aucune dépendance externe hormis Google Fonts et le SDK EmailJS (optionnel)
 - Compatible avec tous les hébergeurs statiques (GitHub Pages, Netlify, Vercel, etc.)
-- Les images Unsplash se chargent depuis Internet (ajoutez vos propres images pour un site 100% offline)
+- Les visuels Unsplash se chargent depuis Internet — remplacez-les par vos propres images dans `images/` pour un site 100 % offline
 
 ## 🚀 Déploiement
 
@@ -133,19 +124,10 @@ Les images utilisent Unsplash. Pour utiliser vos propres images :
 3. Activez GitHub Pages dans les paramètres
 4. Votre site sera accessible à `https://votre-username.github.io/repo-name/`
 
-### Netlify
+### Netlify / Vercel
 
-1. Allez sur [netlify.com](https://netlify.com)
-2. Glissez-déposez le dossier `site-gjs`
-3. Votre site est en ligne !
-
-### Vercel
-
-1. Allez sur [vercel.com](https://vercel.com)
-2. Importez le dossier
-3. Déployez !
+Glissez-déposez le dossier ou importez le repository : aucun build n'est nécessaire.
 
 ## 📞 Support
 
-Pour toute question, contactez : contact@gjs-group.fr
-
+Pour toute question, contactez : gjsgroup.contact@gmail.com
