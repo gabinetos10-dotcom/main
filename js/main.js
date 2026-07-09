@@ -123,16 +123,11 @@
   }
 
   /* ======================================================================
-     3. CURSOR (spray cap) + SPRAY PAINT TRAIL
+     3. SPRAY PAINT TRAIL (graphic effect — native cursor stays visible)
   ====================================================================== */
-  const ring = $('#cursorRing'), dot = $('#cursorDot'), cText = $('#cursorText');
   const spray = $('#sprayCanvas');
-
-  if (!TOUCH && ring) {
-    document.body.classList.add('has-cursor');
-    let mx = innerWidth / 2, my = innerHeight / 2;
-    let rx = mx, ry = my, dx = mx, dy = my;
-    let pmx = mx, pmy = my, visible = false;
+  if (!TOUCH && spray && !RM) {
+    let pmx = innerWidth / 2, pmy = innerHeight / 2;
 
     /* spray trail: yellow paint particles that fade like fresh paint */
     const sctx = spray.getContext('2d');
@@ -147,8 +142,7 @@
     window.addEventListener('resize', sizeSpray);
 
     window.addEventListener('pointermove', e => {
-      mx = e.clientX; my = e.clientY;
-      if (!visible) { visible = true; ring.classList.remove('cursor-hidden'); dot.classList.remove('cursor-hidden'); }
+      const mx = e.clientX, my = e.clientY;
       // emit paint proportional to pointer speed
       const speed = Math.hypot(mx - pmx, my - pmy);
       const n = clamp(Math.floor(speed / 6), 0, 5);
@@ -164,17 +158,8 @@
       if (drops.length > 220) drops.splice(0, drops.length - 220);
       pmx = mx; pmy = my;
     });
-    document.addEventListener('mouseleave', () => {
-      ring.classList.add('cursor-hidden'); dot.classList.add('cursor-hidden'); visible = false;
-    });
 
-    (function renderCursor() {
-      dx = lerp(dx, mx, 0.35); dy = lerp(dy, my, 0.35);
-      rx = lerp(rx, mx, 0.15); ry = lerp(ry, my, 0.15);
-      dot.style.transform = `translate(${dx}px, ${dy}px) translate(-50%,-50%)`;
-      ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
-
-      // paint drops
+    (function renderSpray() {
       sctx.clearRect(0, 0, sw, sh);
       for (let i = drops.length - 1; i >= 0; i--) {
         const p = drops[i];
@@ -185,22 +170,8 @@
         sctx.fillStyle = `rgba(233, 200, 0, ${0.5 * p.life})`;
         sctx.fill();
       }
-      requestAnimationFrame(renderCursor);
+      requestAnimationFrame(renderSpray);
     })();
-
-    const STATES = ['link', 'cta', 'plus', 'see'];
-    $$('[data-cursor]').forEach(el => {
-      const type = el.dataset.cursor;
-      el.addEventListener('mouseenter', () => {
-        STATES.forEach(s => document.body.classList.remove('cs-' + s));
-        document.body.classList.add('cs-' + type);
-        cText.textContent = el.dataset.cursorLabel || (type === 'cta' ? 'Go' : type === 'see' ? 'Voir' : '');
-      });
-      el.addEventListener('mouseleave', () => {
-        document.body.classList.remove('cs-' + type);
-        cText.textContent = '';
-      });
-    });
   }
 
   /* ======================================================================

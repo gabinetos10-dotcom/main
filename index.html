@@ -19,10 +19,6 @@
 <!-- ============ SPRAY TRAIL (paint follows the cursor) ============ -->
 <canvas id="sprayCanvas" class="spray-canvas" aria-hidden="true"></canvas>
 
-<!-- ============ CUSTOM CURSOR (spray cap) ============ -->
-<div class="cursor-ring" id="cursorRing"></div>
-<div class="cursor-dot" id="cursorDot"><span class="cursor-text" id="cursorText"></span></div>
-
 <!-- ============ GRAIN / CONCRETE OVERLAY ============ -->
 <div class="grain" aria-hidden="true"></div>
 
@@ -59,14 +55,14 @@
 
 <!-- ============ HEADER (black) ============ -->
 <header class="header" id="header">
-  <a href="#top" class="brand" data-cursor="link" data-cursor-label="Top">NOUS<span class="brand-dot">.</span></a>
+  <a href="#top" class="brand">NOUS<span class="brand-dot">.</span></a>
   <span class="street-clock" aria-hidden="true"><i></i>Paris — <b id="clock">00:00:00</b></span>
   <nav class="nav">
-    <a href="#manifesto" class="nav-link" data-cursor="link"><span>Manifeste</span></a>
-    <a href="#expertise" class="nav-link" data-cursor="link"><span>Expertise</span></a>
-    <a href="#work" class="nav-link" data-cursor="link"><span>Murs</span></a>
-    <a href="#game" class="nav-link" data-cursor="link"><span>Le Jeu</span></a>
-    <a href="#contact" class="nav-link nav-cta" data-cursor="link"><span>Contact</span></a>
+    <a href="#manifesto" class="nav-link"><span>Manifeste</span></a>
+    <a href="#expertise" class="nav-link"><span>Expertise</span></a>
+    <a href="#work" class="nav-link"><span>Murs</span></a>
+    <a href="#game" class="nav-link"><span>Le Jeu</span></a>
+    <a href="#contact" class="nav-link nav-cta"><span>Contact</span></a>
   </nav>
   <button class="burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
 </header>
@@ -107,7 +103,7 @@
           Collectif de stratèges, designers et writers. On prend l'énergie
           brute de la rue et on en fait des marques impossibles à ignorer.
         </p>
-        <a href="#contact" class="magnetic btn" data-cursor="cta" data-magnetic>
+        <a href="#contact" class="magnetic btn" data-magnetic>
           <span class="btn-fill"></span>
           <span class="btn-label"><span>Taguer un projet</span><span aria-hidden="true">Taguer un projet</span></span>
           <svg class="btn-arrow" viewBox="0 0 24 24"><path d="M5 19L19 5M19 5H9M19 5V15" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -159,23 +155,23 @@
       <h2 class="section-title light" data-reveal data-scramble>Notre terrain de jeu</h2>
     </div>
     <div class="acc wrap" id="acc">
-      <article class="acc-row" data-cursor="plus">
+      <article class="acc-row">
         <div class="acc-head"><span class="acc-num">01</span><h3>Stratégie de marque</h3><span class="acc-plus"></span></div>
         <div class="acc-body"><p>Positionnement, territoire, narration. On repère le bon spot avant de sortir la bombe : la vérité de marque qui fera tenir tout le reste.</p></div>
       </article>
-      <article class="acc-row" data-cursor="plus">
+      <article class="acc-row">
         <div class="acc-head"><span class="acc-num">02</span><h3>Identité visuelle</h3><span class="acc-plus"></span></div>
         <div class="acc-body"><p>Logotype, systèmes graphiques, charte. Un lettrage qui se reconnaît de loin, comme une signature sur un mur.</p></div>
       </article>
-      <article class="acc-row" data-cursor="plus">
+      <article class="acc-row">
         <div class="acc-head"><span class="acc-num">03</span><h3>Design graphique</h3><span class="acc-plus"></span></div>
         <div class="acc-body"><p>Print, motion, digital. Chaque support devient une surface d'expression — affiche, écran, textile, béton.</p></div>
       </article>
-      <article class="acc-row" data-cursor="plus">
+      <article class="acc-row">
         <div class="acc-head"><span class="acc-num">04</span><h3>Direction artistique</h3><span class="acc-plus"></span></div>
         <div class="acc-body"><p>Photo, vidéo, scénographie. L'œil qui cadre la ville et met la marque en scène, du trottoir au flagship.</p></div>
       </article>
-      <article class="acc-row" data-cursor="plus">
+      <article class="acc-row">
         <div class="acc-head"><span class="acc-num">05</span><h3>Sites &amp; expériences</h3><span class="acc-plus"></span></div>
         <div class="acc-body"><p>Interfaces, interactions, motion design. Le digital comme un mur infini où l'identité prend vie et bouge.</p></div>
       </article>
@@ -191,19 +187,19 @@
       <h2 class="section-title" data-reveal data-scramble>Des murs qui parlent</h2>
     </div>
     <div class="work-grid wrap">
-      <article class="card" data-cursor="see" data-tilt>
+      <article class="card" data-tilt>
         <div class="card-media"><canvas class="card-canvas" data-grad="0"></canvas><span class="card-stamp">Fresh</span></div>
         <div class="card-foot"><h3>Blockparty</h3><span>Identité &amp; affiches — Festival hip-hop</span><em>'24</em></div>
       </article>
-      <article class="card" data-cursor="see" data-tilt>
+      <article class="card" data-tilt>
         <div class="card-media"><canvas class="card-canvas" data-grad="1"></canvas><span class="card-stamp">Sold out</span></div>
         <div class="card-foot"><h3>Ligne 13</h3><span>Branding &amp; retail — Streetwear</span><em>'24</em></div>
       </article>
-      <article class="card" data-cursor="see" data-tilt>
+      <article class="card" data-tilt>
         <div class="card-media"><canvas class="card-canvas" data-grad="2"></canvas><span class="card-stamp">Classic</span></div>
         <div class="card-foot"><h3>Béton Café</h3><span>Identité &amp; lieu — Coffee shop urbain</span><em>'23</em></div>
       </article>
-      <article class="card" data-cursor="see" data-tilt>
+      <article class="card" data-tilt>
         <div class="card-media"><canvas class="card-canvas" data-grad="3"></canvas><span class="card-stamp">Collab</span></div>
         <div class="card-foot"><h3>Vandale</h3><span>DA &amp; e-commerce — Sneakers custom</span><em>'23</em></div>
       </article>
@@ -224,7 +220,7 @@
         <div class="game-hud">
           <span class="hud-item">⏱ <b id="gameTime">00:00</b></span>
           <span class="hud-item">👟 <b id="gameMoves">0</b> pas</span>
-          <button type="button" class="hud-reset" id="gameReset" data-cursor="link">↻ Recommencer</button>
+          <button type="button" class="hud-reset" id="gameReset">↻ Recommencer</button>
         </div>
         <div class="maze-frame">
           <canvas id="mazeCanvas" class="maze-canvas" tabindex="0" aria-label="Labyrinthe : guide la bille jaune jusqu'à la réponse NOUS."></canvas>
@@ -232,7 +228,7 @@
             <span class="maze-win-kicker">Bonne réponse.</span>
             <span class="maze-win-title">NOUS<i class="brand-dot">.</i></span>
             <span class="maze-win-sub">Évidemment. <b id="mazeScore"></b></span>
-            <button type="button" class="btn maze-replay" id="mazeReplay" data-cursor="cta">
+            <button type="button" class="btn maze-replay" id="mazeReplay">
               <span class="btn-fill"></span>
               <span class="btn-label"><span>Rejouer</span><span aria-hidden="true">Rejouer</span></span>
             </button>
@@ -268,21 +264,21 @@
           <label for="cf-name">D'abord, c'est quoi ton blaze&nbsp;?</label>
           <div class="chat-row">
             <input type="text" id="cf-name" name="name" placeholder="Ton prénom / ton tag" required>
-            <button type="button" class="chat-go magnetic" data-next="2" data-magnetic data-cursor="cta">→</button>
+            <button type="button" class="chat-go magnetic" data-next="2" data-magnetic>→</button>
           </div>
         </div>
         <div class="chat-step" data-step="2">
           <label for="cf-email">Bien vu. Ton email pour qu'on te réponde&nbsp;?</label>
           <div class="chat-row">
             <input type="email" id="cf-email" name="email" placeholder="toi@exemple.com" required>
-            <button type="button" class="chat-go magnetic" data-next="3" data-magnetic data-cursor="cta">→</button>
+            <button type="button" class="chat-go magnetic" data-next="3" data-magnetic>→</button>
           </div>
         </div>
         <div class="chat-step" data-step="3">
           <label for="cf-message">Balance ton projet, sans filtre.</label>
           <div class="chat-row">
             <textarea id="cf-message" name="message" placeholder="Une marque à créer, un mur à réveiller…" required></textarea>
-            <button type="submit" class="chat-go magnetic" data-magnetic data-cursor="cta">Envoyer</button>
+            <button type="submit" class="chat-go magnetic" data-magnetic>Envoyer</button>
           </div>
         </div>
         <div class="chat-step chat-done" data-step="4">
@@ -292,17 +288,17 @@
     </div>
 
     <div class="footer-bottom">
-      <a href="#top" class="footer-logo" data-cursor="link">NOUS<span class="brand-dot">.</span></a>
+      <a href="#top" class="footer-logo">NOUS<span class="brand-dot">.</span></a>
       <div class="footer-col">
         <span class="footer-col-h">Écrire</span>
-        <a href="mailto:bonjour@wearenous.fr" data-cursor="link">bonjour@wearenous.fr</a>
-        <a href="tel:+33100000000" data-cursor="link">+33 1 00 00 00 00</a>
+        <a href="mailto:bonjour@wearenous.fr">bonjour@wearenous.fr</a>
+        <a href="tel:+33100000000">+33 1 00 00 00 00</a>
       </div>
       <div class="footer-col">
         <span class="footer-col-h">Suivre</span>
-        <a href="#" data-cursor="link">Instagram</a>
-        <a href="#" data-cursor="link">LinkedIn</a>
-        <a href="#" data-cursor="link">Behance</a>
+        <a href="#">Instagram</a>
+        <a href="#">LinkedIn</a>
+        <a href="#">Behance</a>
       </div>
       <p class="footer-copy">© <span id="year"></span> NOUS. Studio — Peint à la main, jamais au pochoir.</p>
     </div>

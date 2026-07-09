@@ -43,8 +43,6 @@ a { color: inherit; text-decoration: none; }
 button { font-family: inherit; border: none; background: none; color: inherit; cursor: pointer; }
 input, textarea { font-family: inherit; }
 ::selection { background: var(--yellow); color: var(--black); }
-body.has-cursor, body.has-cursor a, body.has-cursor button,
-body.has-cursor input, body.has-cursor textarea { cursor: none; }
 
 .wrap { width: min(1280px, 90vw); margin-inline: auto; }
 .brand-dot { color: var(--yellow); }
@@ -59,43 +57,10 @@ body.has-cursor input, body.has-cursor textarea { cursor: none; }
   z-index: 9990; pointer-events: none; mix-blend-mode: multiply;
 }
 
-/* ==========================================================================
-   Custom cursor — spray cap
-   ========================================================================== */
-.cursor-dot, .cursor-ring {
-  position: fixed; top: 0; left: 0; z-index: 9999; pointer-events: none;
-  border-radius: 50%; transform: translate(-50%,-50%);
-}
-.cursor-dot {
-  width: 10px; height: 10px; background: var(--yellow-deep);
-  outline: 2px solid var(--black); outline-offset: 1px;
-  transition: width .3s var(--e-out), height .3s var(--e-out), background-color .3s;
-  display: flex; align-items: center; justify-content: center;
-}
-.cursor-ring {
-  width: 42px; height: 42px; border: 1.5px dashed rgba(10,10,10,.45);
-  transition: width .4s var(--e-out), height .4s var(--e-out),
-              border-color .4s, background-color .4s, opacity .3s;
-  animation: capSpin 14s linear infinite;
-}
-@keyframes capSpin { to { transform: translate(-50%,-50%) rotate(360deg); } }
-.cursor-text {
-  font-size: 11px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase;
-  color: var(--black); opacity: 0; white-space: nowrap; transition: opacity .25s;
-}
-body.cs-link .cursor-ring { width: 66px; height: 66px; border-color: var(--yellow-deep); background: rgba(244,216,35,.15); }
-body.cs-cta .cursor-ring { width: 98px; height: 98px; background: var(--yellow); border-color: var(--black); border-style: solid; }
-body.cs-cta .cursor-dot { width: 0; height: 0; outline: none; }
-body.cs-cta .cursor-text { opacity: 1; }
-body.cs-plus .cursor-ring { width: 56px; height: 56px; background: var(--black); border-color: var(--black); }
-body.cs-plus .cursor-dot { background: var(--yellow); outline-color: var(--yellow); }
-body.cs-see .cursor-ring { width: 112px; height: 112px; background: var(--yellow); border-color: var(--black); border-style: solid; }
-body.cs-see .cursor-dot { width: 0; height: 0; outline: none; }
-body.cs-see .cursor-text { opacity: 1; }
-.cursor-hidden { opacity: 0 !important; }
 @media (hover: none), (pointer: coarse) {
-  .cursor-dot, .cursor-ring, .spray-canvas { display: none; }
+  .spray-canvas { display: none; }
 }
+@keyframes capSpin { to { transform: rotate(360deg); } }
 
 /* ==========================================================================
    Custom scrollbar — street signage
