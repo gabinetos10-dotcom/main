@@ -68,7 +68,9 @@
       scrollCurrent = lerp(scrollCurrent, scrollTarget, 0.09);
       if (Math.abs(scrollTarget - scrollCurrent) < 0.05) scrollCurrent = scrollTarget;
       velocity = scrollCurrent - prev;
-      scrollEl.style.transform = `translate3d(0, ${-scrollCurrent}px, 0)`;
+      // subtle skew distortion driven by scroll velocity (top-tier feel)
+      const skew = clamp(velocity * 0.06, -3, 3);
+      scrollEl.style.transform = `translate3d(0, ${-scrollCurrent}px, 0) skewY(${skew}deg)`;
       applyParallax();
       applyDraw();
       requestAnimationFrame(render);
@@ -563,7 +565,214 @@
   }
 
   /* ======================================================================
-     15. MISC + boot
+     15. MINI-GAME — Le Labyrinthe NOUS.
+     Procedural maze (recursive backtracker), animated player, confetti win
+  ====================================================================== */
+  const maze = $('#mazeCanvas');
+  if (maze) {
+    const mctx = maze.getContext('2d');
+    const winBox = $('#mazeWin'), timeEl = $('#gameTime'), movesEl = $('#gameMoves'), scoreEl = $('#mazeScore');
+    const COLS = 15, ROWS = 11;
+    let dpr, cw, ch, cell, grid, player, goal, moves, startTime, timerId, won, confetti;
+
+    /* ---- maze generation: recursive backtracker ---- */
+    function genMaze() {
+      grid = Array.from({ length: ROWS }, () =>
+        Array.from({ length: COLS }, () => ({ t: 1, r: 1, b: 1, l: 1, seen: false })));
+      const stack = [[0, 0]];
+      grid[0][0].seen = true;
+      while (stack.length) {
+        const [cx, cy] = stack[stack.length - 1];
+        const nbs = [
+          [cx, cy - 1, 't', 'b'], [cx + 1, cy, 'r', 'l'],
+          [cx, cy + 1, 'b', 't'], [cx - 1, cy, 'l', 'r'],
+        ].filter(([nx, ny]) => nx >= 0 && nx < COLS && ny >= 0 && ny < ROWS && !grid[ny][nx].seen);
+        if (!nbs.length) { stack.pop(); continue; }
+        const [nx, ny, wall, opp] = nbs[Math.floor(Math.random() * nbs.length)];
+        grid[cy][cx][wall] = 0;
+        grid[ny][nx][opp] = 0;
+        grid[ny][nx].seen = true;
+        stack.push([nx, ny]);
+      }
+    }
+
+    /* ---- sizing ---- */
+    function sizeMaze() {
+      dpr = Math.min(devicePixelRatio || 1, 2);
+      const cssW = maze.parentElement.clientWidth - 6; // inside the border
+      cell = Math.floor(cssW / COLS);
+      cw = cell * COLS; ch = cell * ROWS;
+      maze.style.height = (ch) + 'px';
+      maze.width = cw * dpr; maze.height = ch * dpr;
+      mctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    /* ---- state ---- */
+    function resetGame() {
+      genMaze();
+      player = { x: 0, y: 0, px: 0, py: 0 };      // grid pos + pixel-lerped pos
+      goal = { x: COLS - 1, y: ROWS - 1 };
+      moves = 0; won = false; confetti = [];
+      movesEl.textContent = '0';
+      winBox.classList.remove('show');
+      winBox.setAttribute('aria-hidden', 'true');
+      startTime = performance.now();
+      clearInterval(timerId);
+      timerId = setInterval(() => {
+        if (won) return;
+        const s = Math.floor((performance.now() - startTime) / 1000);
+        timeEl.textContent = `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
+      }, 500);
+      timeEl.textContent = '00:00';
+    }
+
+    /* ---- movement ---- */
+    const DIRS = { up: [0, -1, 't'], down: [0, 1, 'b'], left: [-1, 0, 'l'], right: [1, 0, 'r'] };
+    function move(dir) {
+      if (won) return;
+      const [dx, dy, wall] = DIRS[dir];
+      const c = grid[player.y][player.x];
+      if (c[wall]) { bump(dir); return; }             // wall hit
+      player.x += dx; player.y += dy;
+      moves++; movesEl.textContent = moves;
+      if (player.x === goal.x && player.y === goal.y) winGame();
+    }
+    let bumpAnim = 0, bumpDir = null;
+    function bump(dir) { bumpAnim = 1; bumpDir = dir; }
+
+    function winGame() {
+      won = true;
+      const s = Math.floor((performance.now() - startTime) / 1000);
+      scoreEl.textContent = `${moves} pas · ${s}s`;
+      // confetti burst from goal cell
+      const gx = goal.x * cell + cell / 2, gy = goal.y * cell + cell / 2;
+      for (let i = 0; i < 90; i++) {
+        const a = Math.random() * Math.PI * 2, v = 2 + Math.random() * 6;
+        confetti.push({
+          x: gx, y: gy, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 3,
+          rot: Math.random() * Math.PI, vr: (Math.random() - 0.5) * 0.3,
+          size: 3 + Math.random() * 6, life: 1,
+          color: Math.random() < 0.7 ? '#F4D823' : (Math.random() < 0.5 ? '#F4F3EE' : '#E9C800'),
+        });
+      }
+      setTimeout(() => {
+        winBox.classList.add('show');
+        winBox.setAttribute('aria-hidden', 'false');
+      }, 700);
+    }
+
+    /* ---- render loop ---- */
+    function drawMaze() {
+      mctx.clearRect(0, 0, cw, ch);
+      // concrete-dark board
+      mctx.fillStyle = '#141414';
+      mctx.fillRect(0, 0, cw, ch);
+
+      // goal cell: pulsing yellow "answer" pad
+      const pulse = 0.75 + Math.sin(performance.now() / 300) * 0.25;
+      mctx.fillStyle = `rgba(244, 216, 35, ${0.25 * pulse})`;
+      mctx.fillRect(goal.x * cell + 2, goal.y * cell + 2, cell - 4, cell - 4);
+      mctx.fillStyle = '#F4D823';
+      mctx.font = `700 ${Math.max(9, cell * 0.28)}px 'Archivo Black', sans-serif`;
+      mctx.textAlign = 'center'; mctx.textBaseline = 'middle';
+      mctx.fillText('NOUS.', goal.x * cell + cell / 2, goal.y * cell + cell / 2);
+
+      // walls
+      mctx.strokeStyle = '#F4D823';
+      mctx.lineWidth = 2.5;
+      mctx.lineCap = 'round';
+      mctx.beginPath();
+      for (let y = 0; y < ROWS; y++) {
+        for (let x = 0; x < COLS; x++) {
+          const c = grid[y][x], X = x * cell, Y = y * cell;
+          if (c.t) { mctx.moveTo(X, Y); mctx.lineTo(X + cell, Y); }
+          if (c.l) { mctx.moveTo(X, Y); mctx.lineTo(X, Y + cell); }
+          if (x === COLS - 1 && c.r) { mctx.moveTo(X + cell, Y); mctx.lineTo(X + cell, Y + cell); }
+          if (y === ROWS - 1 && c.b) { mctx.moveTo(X, Y + cell); mctx.lineTo(X + cell, Y + cell); }
+        }
+      }
+      mctx.stroke();
+
+      // player: yellow paint blob, lerped toward its cell, squash on bump
+      const tx = player.x * cell + cell / 2, ty = player.y * cell + cell / 2;
+      player.px = lerp(player.px || tx, tx, 0.25);
+      player.py = lerp(player.py || ty, ty, 0.25);
+      let ox = 0, oy = 0;
+      if (bumpAnim > 0) {
+        const k = Math.sin(bumpAnim * Math.PI) * 4;
+        if (bumpDir === 'up') oy = -k; if (bumpDir === 'down') oy = k;
+        if (bumpDir === 'left') ox = -k; if (bumpDir === 'right') ox = k;
+        bumpAnim -= 0.12;
+      }
+      const r = cell * 0.3;
+      mctx.beginPath();
+      mctx.arc(player.px + ox, player.py + oy, r, 0, Math.PI * 2);
+      mctx.fillStyle = '#F4D823';
+      mctx.shadowColor = 'rgba(244,216,35,.7)'; mctx.shadowBlur = 14;
+      mctx.fill();
+      mctx.shadowBlur = 0;
+      mctx.beginPath();
+      mctx.arc(player.px + ox - r * 0.3, player.py + oy - r * 0.3, r * 0.25, 0, Math.PI * 2);
+      mctx.fillStyle = 'rgba(255,255,255,.8)';
+      mctx.fill();
+
+      // confetti
+      for (let i = confetti.length - 1; i >= 0; i--) {
+        const p = confetti[i];
+        p.x += p.vx; p.y += p.vy; p.vy += 0.18; p.rot += p.vr; p.life -= 0.008;
+        if (p.life <= 0) { confetti.splice(i, 1); continue; }
+        mctx.save();
+        mctx.translate(p.x, p.y); mctx.rotate(p.rot);
+        mctx.globalAlpha = p.life;
+        mctx.fillStyle = p.color;
+        mctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
+        mctx.restore();
+        mctx.globalAlpha = 1;
+      }
+
+      requestAnimationFrame(drawMaze);
+    }
+
+    /* ---- controls: keyboard (when maze visible), swipe, d-pad ---- */
+    let gameActive = false;
+    new IntersectionObserver(ents => { gameActive = ents[0].isIntersecting; }, { threshold: 0.25 })
+      .observe(maze);
+
+    const KEYS = {
+      ArrowUp: 'up', ArrowDown: 'down', ArrowLeft: 'left', ArrowRight: 'right',
+      z: 'up', s: 'down', q: 'left', d: 'right',
+      w: 'up', a: 'left',
+    };
+    window.addEventListener('keydown', e => {
+      const dir = KEYS[e.key];
+      if (!dir || !gameActive) return;
+      // don't hijack keys while typing in the contact form
+      if (/INPUT|TEXTAREA/.test(document.activeElement.tagName)) return;
+      e.preventDefault();
+      move(dir);
+    });
+
+    // swipe (mobile)
+    let sx = 0, sy = 0;
+    maze.addEventListener('touchstart', e => { sx = e.touches[0].clientX; sy = e.touches[0].clientY; }, { passive: true });
+    maze.addEventListener('touchend', e => {
+      const dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy;
+      if (Math.max(Math.abs(dx), Math.abs(dy)) < 24) return;
+      move(Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 'right' : 'left') : (dy > 0 ? 'down' : 'up'));
+    }, { passive: true });
+
+    // d-pad
+    $$('#gamePad button').forEach(b => b.addEventListener('click', () => move(b.dataset.dir)));
+
+    $('#gameReset').addEventListener('click', resetGame);
+    $('#mazeReplay').addEventListener('click', resetGame);
+    window.addEventListener('resize', () => { sizeMaze(); });
+
+    sizeMaze(); resetGame(); drawMaze();
+  }
+
+  /* ======================================================================
+     16. MISC + boot
   ====================================================================== */
   $('#year').textContent = new Date().getFullYear();
   registerParallax();

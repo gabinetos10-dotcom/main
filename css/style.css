@@ -352,6 +352,48 @@ body.cs-see .cursor-text { opacity: 1; }
 .card-foot em { font-style: normal; font-size: .82rem; color: var(--yellow-deep); font-weight: 700; }
 
 /* ==========================================================================
+   Mini-game — Le Labyrinthe
+   ========================================================================== */
+.game { position: relative; padding: 8rem 0 9rem; background: var(--black); color: var(--white); }
+.game .section-title { max-width: 22ch; }
+.game-hint { color: rgba(255,255,255,.6); margin: -2rem 0 2.6rem; font-size: .95rem; }
+
+.game-board { max-width: 720px; }
+.game-hud { display: flex; align-items: center; gap: 1.6rem; margin-bottom: 1rem;
+  font-size: .85rem; text-transform: uppercase; letter-spacing: .06em; color: rgba(255,255,255,.7); }
+.hud-item b { color: var(--yellow); font-family: var(--font-display); font-size: 1rem; }
+.hud-reset { margin-left: auto; color: var(--white); font-size: .8rem; text-transform: uppercase;
+  letter-spacing: .06em; border-bottom: 1px dashed rgba(255,255,255,.4); padding-bottom: 2px;
+  transition: color .3s, border-color .3s; }
+.hud-reset:hover { color: var(--yellow); border-color: var(--yellow); }
+
+.maze-frame { position: relative; border: 3px solid var(--yellow); box-shadow: 8px 9px 0 rgba(244,216,35,.25);
+  background: var(--black-2); }
+.maze-canvas { display: block; width: 100%; height: auto; outline: none; touch-action: none; }
+.maze-canvas:focus-visible { box-shadow: inset 0 0 0 3px rgba(244,216,35,.5); }
+
+/* win overlay */
+.maze-win { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: .5rem; text-align: center; background: rgba(10,10,10,.88);
+  opacity: 0; visibility: hidden; transform: scale(1.05);
+  transition: opacity .5s var(--e-out), transform .5s var(--e-back), visibility .5s; }
+.maze-win.show { opacity: 1; visibility: visible; transform: scale(1); }
+.maze-win-kicker { font-size: .85rem; text-transform: uppercase; letter-spacing: .14em; color: rgba(255,255,255,.65); }
+.maze-win-title { font-family: var(--font-display); font-size: clamp(3rem, 9vw, 5.5rem); color: var(--yellow);
+  line-height: 1; text-shadow: 4px 4px 0 rgba(244,216,35,.25); animation: winPop .6s var(--e-back); }
+@keyframes winPop { 0% { transform: scale(.4) rotate(-6deg); } 100% { transform: scale(1) rotate(0); } }
+.maze-win-sub { font-size: .95rem; color: rgba(255,255,255,.75); margin-bottom: 1rem; }
+.maze-win-sub b { color: var(--yellow); }
+.maze-replay { padding: .9rem 1.6rem; font-size: .85rem; }
+
+/* mobile d-pad */
+.game-pad { display: none; margin-top: 1.2rem; text-align: center; }
+.game-pad button { width: 56px; height: 48px; margin: 3px; background: var(--black-2); color: var(--yellow);
+  border: 2px solid rgba(244,216,35,.5); font-size: 1rem; transition: background .2s, transform .1s; }
+.game-pad button:active { background: var(--yellow); color: var(--black); transform: scale(.94); }
+@media (hover: none), (pointer: coarse) { .game-pad { display: block; } }
+
+/* ==========================================================================
    Footer
    ========================================================================== */
 .footer { position: relative; background: var(--black); color: var(--white); padding: 8rem 5vw 2.4rem; overflow: hidden; }

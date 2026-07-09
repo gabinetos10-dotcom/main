@@ -55,6 +55,7 @@
     <a href="#manifesto" class="nav-link" data-cursor="link"><span>Manifeste</span></a>
     <a href="#expertise" class="nav-link" data-cursor="link"><span>Expertise</span></a>
     <a href="#work" class="nav-link" data-cursor="link"><span>Murs</span></a>
+    <a href="#game" class="nav-link" data-cursor="link"><span>Le Jeu</span></a>
     <a href="#contact" class="nav-link nav-cta" data-cursor="link"><span>Contact</span></a>
   </nav>
   <button class="burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
@@ -66,7 +67,8 @@
     <a href="#manifesto" data-i="01">Manifeste</a>
     <a href="#expertise" data-i="02">Expertise</a>
     <a href="#work" data-i="03">Murs</a>
-    <a href="#contact" data-i="04">Contact</a>
+    <a href="#game" data-i="04">Le Jeu</a>
+    <a href="#contact" data-i="05">Contact</a>
   </div>
 </div>
 
@@ -198,6 +200,43 @@
     </div>
   </section>
 
+  <!-- ============ MINI-GAME — Le Labyrinthe ============ -->
+  <section class="game" id="game">
+    <div class="torn torn-top" aria-hidden="true"></div>
+    <div class="wrap">
+      <span class="tag light" data-reveal><i></i>04 — Le Jeu</span>
+      <h2 class="section-title light" data-reveal data-scramble>Quelle est la meilleure agence de branding&nbsp;?</h2>
+      <p class="game-hint" data-reveal>
+        Un seul chemin mène à la réponse. Flèches / ZQSD au clavier, swipe sur mobile.
+      </p>
+
+      <div class="game-board" data-reveal>
+        <div class="game-hud">
+          <span class="hud-item">⏱ <b id="gameTime">00:00</b></span>
+          <span class="hud-item">👟 <b id="gameMoves">0</b> pas</span>
+          <button type="button" class="hud-reset" id="gameReset" data-cursor="link">↻ Recommencer</button>
+        </div>
+        <div class="maze-frame">
+          <canvas id="mazeCanvas" class="maze-canvas" tabindex="0" aria-label="Labyrinthe : guide la bille jaune jusqu'à la réponse NOUS."></canvas>
+          <div class="maze-win" id="mazeWin" aria-hidden="true">
+            <span class="maze-win-kicker">Bonne réponse.</span>
+            <span class="maze-win-title">NOUS<i class="brand-dot">.</i></span>
+            <span class="maze-win-sub">Évidemment. <b id="mazeScore"></b></span>
+            <button type="button" class="btn maze-replay" id="mazeReplay" data-cursor="cta">
+              <span class="btn-fill"></span>
+              <span class="btn-label"><span>Rejouer</span><span aria-hidden="true">Rejouer</span></span>
+            </button>
+          </div>
+        </div>
+        <div class="game-pad" id="gamePad" aria-hidden="true">
+          <button data-dir="up">▲</button>
+          <div><button data-dir="left">◀</button><button data-dir="down">▼</button><button data-dir="right">▶</button></div>
+        </div>
+      </div>
+    </div>
+    <div class="torn torn-bottom" aria-hidden="true"></div>
+  </section>
+
   <!-- ============ CONTACT / FOOTER (black, shapes) ============ -->
   <footer class="footer" id="contact">
     <div class="hazard hazard-top" aria-hidden="true"></div>
@@ -211,7 +250,7 @@
     </svg>
 
     <div class="footer-top">
-      <span class="tag light" data-reveal><i></i>04 — Contact</span>
+      <span class="tag light" data-reveal><i></i>05 — Contact</span>
       <h2 class="footer-title" data-reveal data-scramble>Un mur t'attend.</h2>
 
       <form class="chat" id="chat" autocomplete="off">
