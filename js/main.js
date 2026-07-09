@@ -772,7 +772,114 @@
   }
 
   /* ======================================================================
-     16. MISC + boot
+     16. SIGNATURE DETAILS — drip progress, clock, jiggle, drag stickers,
+         easter egg
+  ====================================================================== */
+
+  /* ---- scroll drip: paint runs down the left edge ---- */
+  const dripLine = $('#dripLine'), dripBlob = $('#dripBlob');
+  if (dripLine) {
+    (function dripLoop() {
+      const max = Math.max(1, document.body.scrollHeight - innerHeight);
+      const p = clamp(Scroll.y / max, 0, 1);
+      const px = p * (innerHeight - 20);
+      // the blob wobbles more when scrolling fast, like paint about to fall
+      const wob = Math.min(Math.abs(Scroll.v) * 0.4, 8);
+      dripLine.style.height = px + 'px';
+      dripBlob.style.transform = `translateY(${px - 6}px) scale(${1 + wob * 0.06}, ${1 + wob * 0.12})`;
+      requestAnimationFrame(dripLoop);
+    })();
+  }
+
+  /* ---- street clock (Paris time) ---- */
+  const clock = $('#clock');
+  if (clock) {
+    const fmt = new Intl.DateTimeFormat('fr-FR', { timeZone: 'Europe/Paris', hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    const tickClock = () => { clock.textContent = fmt.format(new Date()); };
+    tickClock();
+    setInterval(tickClock, 1000);
+  }
+
+  /* ---- hero letters dance on hover ---- */
+  if (!TOUCH) {
+    $$('.hero-title .char').forEach(c => {
+      c.addEventListener('mouseenter', () => {
+        if (c.classList.contains('jig')) return;
+        c.classList.add('jig');
+        c.addEventListener('animationend', () => c.classList.remove('jig'), { once: true });
+      });
+    });
+  }
+
+  /* ---- stickers: grab, throw, elastic return ---- */
+  $$('.sticker').forEach(st => {
+    let ox = 0, oy = 0, sx = 0, sy = 0, vx = 0, vy = 0, lx = 0, ly = 0;
+    let dragging = false, raf;
+
+    function onMove(e) {
+      if (!dragging) return;
+      const nx = e.clientX - sx, ny = e.clientY - sy;
+      vx = nx - lx; vy = ny - ly; lx = nx; ly = ny;
+      ox = nx; oy = ny;
+      st.style.transform = `translate(${ox}px, ${oy}px) rotate(${clamp(vx * 1.2, -20, 20)}deg)`;
+    }
+    function onUp() {
+      if (!dragging) return;
+      dragging = false;
+      window.removeEventListener('pointermove', onMove);
+      // throw: keep momentum, decay, then spring home
+      // ('grabbed' stays on until home so the wobble animation
+      //  doesn't override the inline transform mid-flight)
+      (function fling() {
+        vx *= 0.92; vy = vy * 0.92 + 0.5;           // gravity pulls a bit
+        ox += vx; oy += vy;
+        st.style.transform = `translate(${ox}px, ${oy}px) rotate(${clamp(vx * 2, -30, 30)}deg)`;
+        if (Math.abs(vx) > 0.3 || Math.abs(vy) > 0.3) raf = requestAnimationFrame(fling);
+        else {
+          st.style.transition = 'transform .9s cubic-bezier(.34,1.56,.64,1)';
+          st.style.transform = 'translate(0,0) rotate(0)';
+          setTimeout(() => {
+            st.style.transition = '';
+            st.classList.remove('grabbed');
+            ox = oy = 0;
+          }, 900);
+        }
+      })();
+    }
+    st.addEventListener('pointerdown', e => {
+      e.preventDefault();
+      cancelAnimationFrame(raf);
+      dragging = true;
+      st.classList.add('grabbed');
+      st.style.transition = '';
+      sx = e.clientX - ox; sy = e.clientY - oy;
+      lx = ox; ly = oy; vx = vy = 0;
+      window.addEventListener('pointermove', onMove);
+      window.addEventListener('pointerup', onUp, { once: true });
+    });
+  });
+
+  /* ---- easter egg: type "nous" anywhere → paint splash ---- */
+  const splash = $('#splash');
+  if (splash) {
+    let buffer = '';
+    window.addEventListener('keydown', e => {
+      if (/INPUT|TEXTAREA/.test(document.activeElement.tagName)) return;
+      if (e.key.length !== 1) return;
+      buffer = (buffer + e.key.toLowerCase()).slice(-4);
+      if (buffer === 'nous' && !splash.classList.contains('pop')) {
+        splash.classList.add('pop');
+        splash.setAttribute('aria-hidden', 'false');
+        setTimeout(() => {
+          splash.classList.remove('pop');
+          splash.setAttribute('aria-hidden', 'true');
+        }, 1750);
+      }
+    });
+  }
+
+  /* ======================================================================
+     17. MISC + boot
   ====================================================================== */
   $('#year').textContent = new Date().getFullYear();
   registerParallax();

@@ -26,6 +26,15 @@
 <!-- ============ GRAIN / CONCRETE OVERLAY ============ -->
 <div class="grain" aria-hidden="true"></div>
 
+<!-- ============ SCROLL DRIP (paint runs down as you scroll) ============ -->
+<div class="drip" aria-hidden="true"><i id="dripLine"></i><b id="dripBlob"></b></div>
+
+<!-- ============ EASTER EGG SPLASH (type "nous") ============ -->
+<div class="splash" id="splash" aria-hidden="true">
+  <div class="splash-blob"></div>
+  <span class="splash-word">NOUS<i>.</i></span>
+</div>
+
 <!-- ============ LOADER — spray-tag reveal ============ -->
 <div class="loader" id="loader">
   <div class="loader-stage">
@@ -51,6 +60,7 @@
 <!-- ============ HEADER (black) ============ -->
 <header class="header" id="header">
   <a href="#top" class="brand" data-cursor="link" data-cursor-label="Top">NOUS<span class="brand-dot">.</span></a>
+  <span class="street-clock" aria-hidden="true"><i></i>Paris — <b id="clock">00:00:00</b></span>
   <nav class="nav">
     <a href="#manifesto" class="nav-link" data-cursor="link"><span>Manifeste</span></a>
     <a href="#expertise" class="nav-link" data-cursor="link"><span>Expertise</span></a>

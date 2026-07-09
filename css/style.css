@@ -98,6 +98,76 @@ body.cs-see .cursor-text { opacity: 1; }
 }
 
 /* ==========================================================================
+   Custom scrollbar — street signage
+   ========================================================================== */
+::-webkit-scrollbar { width: 11px; }
+::-webkit-scrollbar-track { background: var(--black); }
+::-webkit-scrollbar-thumb { background: var(--yellow); border: 3px solid var(--black); border-radius: 6px; }
+html { scrollbar-color: var(--yellow) var(--black); scrollbar-width: thin; }
+
+/* ==========================================================================
+   Scroll drip — paint runs down the left edge with scroll progress
+   ========================================================================== */
+.drip { position: fixed; top: 0; left: 10px; bottom: 0; width: 6px; z-index: 8500; pointer-events: none; }
+.drip i { position: absolute; top: 0; left: 1px; width: 4px; height: 0;
+  background: linear-gradient(to bottom, var(--yellow-deep), var(--yellow)); border-radius: 0 0 3px 3px; }
+.drip b { position: absolute; left: -2px; top: 0; width: 10px; height: 14px;
+  background: var(--yellow); border-radius: 50% 50% 60% 60% / 40% 40% 70% 70%;
+  transform: translateY(-6px); }
+@media (max-width: 860px) { .drip { display: none; } }
+
+/* ==========================================================================
+   Easter egg splash — type "nous"
+   ========================================================================== */
+.splash { position: fixed; inset: 0; z-index: 10500; display: flex; align-items: center; justify-content: center;
+  pointer-events: none; visibility: hidden; }
+.splash.pop { visibility: visible; }
+.splash-blob { position: absolute; width: 40vmax; height: 40vmax; background: var(--yellow);
+  border-radius: 58% 42% 55% 45% / 45% 58% 42% 55%; transform: scale(0); }
+.splash.pop .splash-blob { animation: blobPop 1.7s var(--e-io) forwards; }
+@keyframes blobPop {
+  0% { transform: scale(0) rotate(-20deg); }
+  35% { transform: scale(2.6) rotate(8deg); }
+  70% { transform: scale(2.6) rotate(12deg); }
+  100% { transform: scale(0) rotate(30deg); }
+}
+.splash-word { position: relative; font-family: var(--font-display); font-size: clamp(3rem, 14vw, 10rem);
+  color: var(--black); opacity: 0; transform: scale(.5) rotate(-6deg); }
+.splash-word i { color: var(--white); font-style: normal; }
+.splash.pop .splash-word { animation: wordPop 1.7s var(--e-back) forwards; }
+@keyframes wordPop {
+  0%, 20% { opacity: 0; transform: scale(.5) rotate(-6deg); }
+  40% { opacity: 1; transform: scale(1.05) rotate(2deg); }
+  70% { opacity: 1; transform: scale(1) rotate(0); }
+  100% { opacity: 0; transform: scale(1.1) rotate(3deg); }
+}
+
+/* ==========================================================================
+   Street clock (header)
+   ========================================================================== */
+.street-clock { display: inline-flex; align-items: center; gap: .5rem; font-size: .72rem;
+  letter-spacing: .1em; text-transform: uppercase; color: rgba(255,255,255,.65);
+  border: 1px solid rgba(255,255,255,.2); padding: .35rem .8rem; border-radius: 100px; }
+.street-clock i { width: 7px; height: 7px; border-radius: 50%; background: var(--yellow); animation: pulse 1.4s ease-in-out infinite; }
+.street-clock b { color: var(--yellow); font-weight: 600; font-variant-numeric: tabular-nums; }
+@media (max-width: 1080px) { .street-clock { display: none; } }
+
+/* ==========================================================================
+   Hero char jiggle (hover a letter, it dances)
+   ========================================================================== */
+.hero-title .char.jig { animation: jig .45s var(--e-back); }
+@keyframes jig {
+  0% { transform: translateY(0) rotate(0); }
+  35% { transform: translateY(-14%) rotate(5deg) scale(1.08); }
+  70% { transform: translateY(4%) rotate(-3deg); }
+  100% { transform: translateY(0) rotate(0); }
+}
+
+/* draggable stickers */
+.sticker { cursor: grab; pointer-events: auto; }
+.sticker.grabbed { cursor: grabbing; animation: none; z-index: 50; }
+
+/* ==========================================================================
    Grain — concrete texture
    ========================================================================== */
 .grain {
