@@ -7,7 +7,12 @@
   z-index: 400;
   display: grid;
   place-items: center;
+  /* CSS-only failsafe: if JS never runs (opened without a server, script
+     blocked…), the curtain lifts by itself so content is never trapped.
+     The JS path always finishes and removes the loader well before 8s. */
+  animation: loader-failsafe 0.5s ease 8s forwards;
 }
+@keyframes loader-failsafe { to { opacity: 0; visibility: hidden; } }
 .loader__panel {
   position: absolute;
   left: 0; right: 0;

@@ -5,12 +5,8 @@
    arcade → easter eggs.
    ═══════════════════════════════════════════════════════════ */
 
-import './styles/tokens.css';
-import './styles/base.css';
-import './styles/components.css';
-import './styles/sections.css';
-import './styles/games.css';
-
+/* Styles are linked from index.html <head> (not imported here) so the
+   design renders even when the page is opened without Vite. */
 import { renderAll } from './components/render.js';
 import { initLoader } from './components/loader.js';
 import { initHeader } from './components/header.js';

@@ -23,7 +23,15 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400..700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
 
-  <script type="module" src="/src/main.js"></script>
+  <!-- Styles linked here (not imported from JS) so the design shows even
+       if the page is opened without the Vite dev server -->
+  <link rel="stylesheet" href="./src/styles/tokens.css" />
+  <link rel="stylesheet" href="./src/styles/base.css" />
+  <link rel="stylesheet" href="./src/styles/components.css" />
+  <link rel="stylesheet" href="./src/styles/sections.css" />
+  <link rel="stylesheet" href="./src/styles/games.css" />
+
+  <script type="module" src="./src/main.js"></script>
 </head>
 <body data-mood="deep">
 

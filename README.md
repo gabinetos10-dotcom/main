@@ -10,15 +10,26 @@ No dark-cyberpunk clichés were harmed in the making of this site.
 
 ## Run it
 
+> ⚠️ **Don't double-click the source `index.html`** — this is a Vite project,
+> browsers can't load it straight from the filesystem. Use one of these:
+
 ```bash
 npm install
-npm run dev        # → http://localhost:5173
+npm run dev        # → http://localhost:5173  (development, hot reload)
 ```
 
 ```bash
-npm run build      # production build → dist/
+npm run build      # optimized production build → dist/  (deploy this)
 npm run preview    # serve the production build locally
 ```
+
+```bash
+npm run build:portable   # → dist-portable/index.html
+```
+
+`build:portable` produces **one self-contained HTML file** (styles, JS and
+Three.js all inlined) that you *can* double-click, email to a client, or drop
+on any server — no install needed on their side.
 
 ## Stack
 
