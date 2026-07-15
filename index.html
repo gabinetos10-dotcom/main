@@ -3,129 +3,109 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="description" content="GJS Agency — Elite scraping infrastructures, autonomous workflows and cyber-luxury web experiences engineered for the companies of 2030.">
-  <meta name="theme-color" content="#02020D">
-  <title>GJS Agency — We Engineer Invisible Advantages</title>
+  <meta name="description" content="GJS Agency — a dream-tech studio. Scraping, automation & web design crafted as warm, luminous digital experiences.">
+  <meta name="theme-color" content="#324ea1">
+  <title>GJS Agency — We Build Digital Daydreams</title>
 
-  <!-- Typography: Space Grotesk (display) + JetBrains Mono (terminal/data) -->
+  <!-- Typography: Fraunces (dreamy display serif) + Outfit (warm geometric sans) + DM Mono (data labels) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Outfit:wght@300;400;500;600;700&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="css/style.css">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2302020D'/%3E%3Ctext x='16' y='22' font-family='monospace' font-size='14' font-weight='700' fill='%2300F2FE' text-anchor='middle'%3EGJ%3C/text%3E%3C/svg%3E">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%23324ea1'/%3E%3Ctext x='16' y='22' font-family='serif' font-size='14' font-weight='700' fill='%23ffc243' text-anchor='middle'%3EGJ%3C/text%3E%3C/svg%3E">
 </head>
 <body data-state="loading">
 
-  <!-- ══════════════ AMBIENT LAYERS ══════════════ -->
+  <!-- ══════════════ AMBIENT DREAM LAYERS ══════════════ -->
+  <div class="sky" aria-hidden="true"></div>
   <canvas id="bg-canvas" aria-hidden="true"></canvas>
-  <div class="bg-grid" aria-hidden="true"></div>
-  <div class="bg-nebula bg-nebula--cyan" aria-hidden="true"></div>
-  <div class="bg-nebula bg-nebula--violet" aria-hidden="true"></div>
-  <div class="noise" aria-hidden="true"></div>
+  <div class="halo halo--gold" aria-hidden="true"></div>
+  <div class="halo halo--blush" aria-hidden="true"></div>
+  <div class="halo halo--cloud" aria-hidden="true"></div>
+  <div class="grain" aria-hidden="true"></div>
 
-  <!-- Custom cursor (desktop / fine pointers only) -->
+  <!-- Custom cursor halo (desktop / fine pointers only) -->
   <div id="cursor" aria-hidden="true">
     <div class="cursor-dot"></div>
-    <div class="cursor-ring"></div>
+    <div class="cursor-halo"></div>
   </div>
 
-  <!-- ══════════════ PRELOADER — SYSTEM BOOT ══════════════ -->
+  <!-- ══════════════ PRELOADER — DREAM COMPILER ══════════════ -->
   <div id="preloader" role="status" aria-label="Loading GJS Agency">
-    <div class="preloader-panel preloader-panel--l" aria-hidden="true"></div>
-    <div class="preloader-panel preloader-panel--r" aria-hidden="true"></div>
-    <div class="boot">
-      <div class="boot-mark" aria-hidden="true">
-        <svg viewBox="0 0 64 64" class="boot-glyph">
-          <polygon class="boot-glyph-shape" points="32,4 58,18 58,46 32,60 6,46 6,18" fill="none" stroke="currentColor" stroke-width="1.5"/>
-          <polygon class="boot-glyph-core" points="32,18 46,26 46,40 32,48 18,40 18,26" fill="none" stroke="currentColor" stroke-width="1"/>
-          <circle class="boot-glyph-dot" cx="32" cy="33" r="3" fill="currentColor"/>
-        </svg>
+    <div class="dream">
+      <div class="dream-blob" aria-hidden="true">
+        <span class="dream-core"></span>
       </div>
-      <pre class="boot-lines" id="boot-lines" aria-hidden="true"></pre>
-      <div class="boot-track" aria-hidden="true">
-        <div class="boot-bar" id="boot-bar"></div>
-      </div>
-      <div class="boot-readout" aria-hidden="true">
-        <span id="boot-status">INITIALIZING</span>
-        <span id="boot-percent">000%</span>
-      </div>
+      <p class="dream-word" id="dream-word" aria-hidden="true">gathering stardust</p>
+      <div class="dream-track" aria-hidden="true"><div class="dream-bar" id="dream-bar"></div></div>
+      <p class="dream-percent" id="dream-percent" aria-hidden="true">0%</p>
     </div>
   </div>
 
   <!-- ══════════════ HEADER ══════════════ -->
   <header id="header">
     <a class="logo" id="logo" href="#hero" aria-label="GJS Agency — home">
-      <svg class="logo-svg" viewBox="0 0 96 34" aria-hidden="true">
-        <text class="logo-text logo-text--r" x="4" y="25">GJS</text>
-        <text class="logo-text logo-text--b" x="4" y="25">GJS</text>
-        <text class="logo-text logo-text--main" x="4" y="25">GJS</text>
-        <rect class="logo-cursor" x="70" y="8" width="8" height="18"/>
+      <svg class="logo-svg" viewBox="0 0 44 44" aria-hidden="true">
+        <circle class="logo-ring" cx="22" cy="22" r="19" fill="none" stroke-width="2.5"/>
+        <circle class="logo-sun" cx="22" cy="22" r="8"/>
+        <g class="logo-rays">
+          <line x1="22" y1="2"  x2="22" y2="8"  stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="22" y1="36" x2="22" y2="42" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="2"  y1="22" x2="8"  y2="22" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="36" y1="22" x2="42" y2="22" stroke-width="2.5" stroke-linecap="round"/>
+        </g>
       </svg>
-      <span class="logo-tag">AGENCY</span>
+      <span class="logo-word">GJS<em>agency</em></span>
     </a>
 
     <nav class="nav-desktop" aria-label="Primary">
-      <a href="#services" class="nav-link" data-cursor="link"><span class="nav-link-n">01</span>Services</a>
-      <a href="#hub" class="nav-link" data-cursor="link"><span class="nav-link-n">02</span>Capability Hub</a>
+      <a href="#services" class="nav-link" data-cursor="link"><span class="nav-link-n">01</span>Craft</a>
+      <a href="#hub" class="nav-link" data-cursor="link"><span class="nav-link-n">02</span>Playground</a>
       <a href="#manifesto" class="nav-link" data-cursor="link"><span class="nav-link-n">03</span>Manifesto</a>
-      <a href="#contact" class="nav-link nav-link--cta magnetic" data-cursor="link">Initiate Contact</a>
+      <a href="#contact" class="nav-link nav-link--cta magnetic" data-cursor="link">Say Bonjour</a>
     </nav>
 
     <button id="menu-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="menu">
       <span class="mt-node" aria-hidden="true"></span>
       <span class="mt-line mt-line--a" aria-hidden="true"></span>
       <span class="mt-line mt-line--b" aria-hidden="true"></span>
-      <span class="mt-label" aria-hidden="true">MENU</span>
     </button>
   </header>
 
-  <!-- ══════════════ FULLSCREEN MENU ══════════════ -->
+  <!-- ══════════════ FULLSCREEN MENU — CHROMATIC WAVE ══════════════ -->
   <div id="menu" aria-hidden="true">
     <div class="menu-plates" aria-hidden="true">
-      <span></span><span></span><span></span><span></span><span></span>
+      <span class="plate plate--blush"></span>
+      <span class="plate plate--gold"></span>
+      <span class="plate plate--indigo"></span>
     </div>
     <nav class="menu-inner" aria-label="Fullscreen">
       <a class="menu-link magnetic" href="#hero" data-menu-close>
-        <span class="ml-index">00</span>
-        <span class="ml-text" data-text="Origin">Origin</span>
-        <span class="ml-preview" aria-hidden="true">
-          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="12" r="2.5" fill="currentColor"/></svg>
-        </span>
+        <span class="ml-index">✧ 00</span>
+        <span class="ml-text" data-text="Sunrise">Sunrise</span>
       </a>
       <a class="menu-link magnetic" href="#services" data-menu-close>
-        <span class="ml-index">01</span>
-        <span class="ml-text" data-text="Services">Services</span>
-        <span class="ml-preview" aria-hidden="true">
-          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="13" y="13" width="8" height="8" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M11 7h6v6" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
-        </span>
+        <span class="ml-index">✧ 01</span>
+        <span class="ml-text" data-text="The Craft">The Craft</span>
       </a>
       <a class="menu-link magnetic" href="#hub" data-menu-close>
-        <span class="ml-index">02</span>
-        <span class="ml-text" data-text="Capability Hub">Capability Hub</span>
-        <span class="ml-preview" aria-hidden="true">
-          <svg viewBox="0 0 24 24"><polygon points="12,2 22,8 22,16 12,22 2,16 2,8" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg>
-        </span>
+        <span class="ml-index">✧ 02</span>
+        <span class="ml-text" data-text="Playground">Playground</span>
       </a>
       <a class="menu-link magnetic" href="#manifesto" data-menu-close>
-        <span class="ml-index">03</span>
+        <span class="ml-index">✧ 03</span>
         <span class="ml-text" data-text="Manifesto">Manifesto</span>
-        <span class="ml-preview" aria-hidden="true">
-          <svg viewBox="0 0 24 24"><path d="M4 5h16M4 10h12M4 15h16M4 20h8" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
-        </span>
       </a>
       <a class="menu-link magnetic" href="#contact" data-menu-close>
-        <span class="ml-index">04</span>
-        <span class="ml-text" data-text="Contact">Contact</span>
-        <span class="ml-preview" aria-hidden="true">
-          <svg viewBox="0 0 24 24"><path d="M3 6l9 7 9-7M3 6v12h18V6" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
-        </span>
+        <span class="ml-index">✧ 04</span>
+        <span class="ml-text" data-text="Say Bonjour">Say Bonjour</span>
       </a>
     </nav>
     <div class="menu-meta">
-      <span class="menu-meta-item">EST. 2024 // EARTH ORBIT</span>
-      <a class="menu-meta-item" href="mailto:contact@gjs.agency">contact@gjs.agency</a>
-      <span class="menu-meta-item menu-meta-coords">48.8566°N — 2.3522°E</span>
+      <span class="menu-meta-item">EST. 2024 // SOMEWHERE SUNNY</span>
+      <a class="menu-meta-item" href="mailto:bonjour@gjs.agency">bonjour@gjs.agency</a>
+      <span class="menu-meta-item">48.8566°N — 2.3522°E</span>
     </div>
   </div>
 
@@ -136,111 +116,111 @@
       <canvas id="hero-canvas" aria-hidden="true"></canvas>
 
       <div class="hero-content">
-        <p class="hero-kicker reveal"><span class="blink">▮</span> DIGITAL SYSTEMS AGENCY — V.5.0</p>
+        <p class="hero-kicker reveal"><span class="twinkle">✧</span> DREAM-TECH STUDIO — SINCE 2024</p>
         <h1 class="hero-title">
-          <span class="hero-line"><span class="hero-line-inner" data-scramble>WE ENGINEER</span></span>
-          <span class="hero-line"><span class="hero-line-inner hero-line-inner--accent" data-scramble>INVISIBLE</span></span>
-          <span class="hero-line"><span class="hero-line-inner" data-scramble>ADVANTAGES.</span></span>
+          <span class="hero-line"><span class="hero-line-inner" data-scramble>WE BUILD</span></span>
+          <span class="hero-line"><span class="hero-line-inner hero-line-inner--accent" data-scramble>DIGITAL</span></span>
+          <span class="hero-line"><span class="hero-line-inner hero-line-inner--italic" data-scramble>daydreams.</span></span>
         </h1>
-        <p class="hero-sub reveal">Scraping infrastructures, autonomous workflows &amp; cyber-luxury web experiences — engineered for the companies of 2030.</p>
+        <p class="hero-sub reveal">Scraping engines, self-running workflows &amp; luminous web design — technology so warm it feels like a place, not a product.</p>
         <div class="hero-cta reveal">
-          <a href="#hub" class="btn btn--primary magnetic" data-cursor="link"><span>Enter the Hub</span><i class="btn-glow" aria-hidden="true"></i></a>
-          <a href="#services" class="btn btn--ghost magnetic" data-cursor="link"><span>Decrypt Services</span></a>
+          <a href="#hub" class="btn btn--sun magnetic" data-cursor="link"><span>Enter the Playground</span><i class="btn-shine" aria-hidden="true"></i></a>
+          <a href="#services" class="btn btn--glass magnetic" data-cursor="link"><span>Explore the Craft</span></a>
         </div>
       </div>
 
       <div class="hero-hud" aria-hidden="true">
-        <span class="hud hud--tl">SYS.RENDER // ACTIVE</span>
-        <span class="hud hud--tr" id="hud-nodes">NODES: 000</span>
+        <span class="hud hud--tl">DREAM.RENDER // ACTIVE</span>
+        <span class="hud hud--tr" id="hud-nodes">SHAPES: 000</span>
         <span class="hud hud--bl" id="hud-clock">00:00:00 UTC</span>
-        <span class="hud hud--br">TILT TO INTERACT ⌖</span>
+        <span class="hud hud--br">TILT TO DRIFT ✧</span>
       </div>
 
-      <a class="scroll-hint" href="#services" aria-label="Scroll to services">
+      <a class="scroll-hint" href="#services" aria-label="Scroll to the craft">
         <span class="scroll-hint-track"><span class="scroll-hint-dot"></span></span>
-        <span class="scroll-hint-label">SCROLL</span>
+        <span class="scroll-hint-label">FLOAT DOWN</span>
       </a>
     </section>
 
     <!-- ══════════════ MARQUEE ══════════════ -->
     <div class="marquee" aria-hidden="true">
       <div class="marquee-track">
-        <span>WEB SCRAPING</span><i>◆</i><span>AUTOMATION</span><i>◆</i><span>PREMIUM DESIGN</span><i>◆</i><span>AI SYSTEMS</span><i>◆</i>
-        <span>WEB SCRAPING</span><i>◆</i><span>AUTOMATION</span><i>◆</i><span>PREMIUM DESIGN</span><i>◆</i><span>AI SYSTEMS</span><i>◆</i>
-        <span>WEB SCRAPING</span><i>◆</i><span>AUTOMATION</span><i>◆</i><span>PREMIUM DESIGN</span><i>◆</i><span>AI SYSTEMS</span><i>◆</i>
+        <span>WEB SCRAPING</span><i>✧</i><span>AUTOMATION</span><i>☀</i><span>LUMINOUS DESIGN</span><i>✧</i><span>AI SYSTEMS</span><i>☀</i>
+        <span>WEB SCRAPING</span><i>✧</i><span>AUTOMATION</span><i>☀</i><span>LUMINOUS DESIGN</span><i>✧</i><span>AI SYSTEMS</span><i>☀</i>
+        <span>WEB SCRAPING</span><i>✧</i><span>AUTOMATION</span><i>☀</i><span>LUMINOUS DESIGN</span><i>✧</i><span>AI SYSTEMS</span><i>☀</i>
       </div>
     </div>
 
-    <!-- ══════════════ SERVICES ══════════════ -->
+    <!-- ══════════════ SERVICES / THE CRAFT ══════════════ -->
     <section id="services" class="section">
       <header class="section-head reveal">
-        <p class="section-kicker">01 // CAPABILITIES</p>
-        <h2 class="section-title">Precision instruments<br><em>for digital dominance.</em></h2>
+        <p class="section-kicker">01 // THE CRAFT</p>
+        <h2 class="section-title">Serious machinery,<br><em>wrapped in wonder.</em></h2>
       </header>
 
       <div class="services-grid">
         <article class="service-card reveal" data-cursor="card">
           <span class="sc-index">/01</span>
-          <div class="sc-icon" aria-hidden="true">
-            <svg viewBox="0 0 48 48"><path d="M8 12h32M8 20h24M8 28h32M8 36h18" stroke="currentColor" stroke-width="2" fill="none"/><circle cx="38" cy="20" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M41 23l5 5" stroke="currentColor" stroke-width="2"/></svg>
+          <div class="sc-icon sc-icon--gold" aria-hidden="true">
+            <svg viewBox="0 0 48 48"><path d="M8 12h32M8 20h24M8 28h32M8 36h18" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round"/><circle cx="38" cy="20" r="4.5" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M41 23l5 5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
           </div>
-          <h3 class="sc-title">Web Scraping<br>&amp; Data Extraction</h3>
-          <p class="sc-desc">Industrial-grade harvesting engines that turn the open web into your private, structured database. Anti-bot evasion, rotating fleets, millisecond parsing.</p>
+          <h3 class="sc-title">Web Scraping<br>&amp; Data Harvest</h3>
+          <p class="sc-desc">Gentle-looking, ferociously capable harvesting engines that turn the open web into your own orchard of structured data. Picked fresh, every hour.</p>
           <ul class="sc-tags"><li>PLAYWRIGHT</li><li>PROXY MESH</li><li>PIPELINES</li></ul>
-          <span class="sc-data" aria-hidden="true">THROUGHPUT: 4.2M ROWS/H</span>
+          <span class="sc-data" aria-hidden="true">HARVEST: 4.2M ROWS/H ✧</span>
         </article>
 
         <article class="service-card reveal" data-cursor="card">
           <span class="sc-index">/02</span>
-          <div class="sc-icon" aria-hidden="true">
-            <svg viewBox="0 0 48 48"><circle cx="10" cy="24" r="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="38" cy="10" r="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="38" cy="38" r="5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M15 22l18-10M15 26l18 10" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+          <div class="sc-icon sc-icon--apricot" aria-hidden="true">
+            <svg viewBox="0 0 48 48"><circle cx="10" cy="24" r="5" fill="none" stroke="currentColor" stroke-width="2.5"/><circle cx="38" cy="10" r="5" fill="none" stroke="currentColor" stroke-width="2.5"/><circle cx="38" cy="38" r="5" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M15 22l18-10M15 26l18 10" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg>
           </div>
           <h3 class="sc-title">Workflow<br>Automation</h3>
-          <p class="sc-desc">Self-healing pipelines that connect your entire stack. Triggers, transformations and actions orchestrated while your competitors sleep.</p>
+          <p class="sc-desc">Self-healing pipelines that hum along while you sleep in. Triggers, transformations and actions — orchestrated like a small, tireless orchestra.</p>
           <ul class="sc-tags"><li>N8N / MAKE</li><li>CUSTOM APIS</li><li>WEBHOOKS</li></ul>
-          <span class="sc-data" aria-hidden="true">UPTIME: 99.99% VERIFIED</span>
+          <span class="sc-data" aria-hidden="true">UPTIME: 99.99% ☀</span>
         </article>
 
         <article class="service-card reveal" data-cursor="card">
           <span class="sc-index">/03</span>
-          <div class="sc-icon" aria-hidden="true">
-            <svg viewBox="0 0 48 48"><rect x="6" y="8" width="36" height="26" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M6 15h36M18 40h12M24 34v6" stroke="currentColor" stroke-width="2" fill="none"/><path d="M12 22l6 5-6 5" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+          <div class="sc-icon sc-icon--raspberry" aria-hidden="true">
+            <svg viewBox="0 0 48 48"><rect x="6" y="8" width="36" height="26" rx="4" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M6 15h36M18 40h12M24 34v6" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M12 22l6 5-6 5" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </div>
-          <h3 class="sc-title">Premium<br>Web Design</h3>
-          <p class="sc-desc">Award-calibre interfaces with obsessive motion design. Every pixel calculated, every interaction choreographed at 60 frames per second.</p>
+          <h3 class="sc-title">Luminous<br>Web Design</h3>
+          <p class="sc-desc">Interfaces that people remember the way they remember holidays. Obsessive motion design, every interaction choreographed at a silky 60fps.</p>
           <ul class="sc-tags"><li>WEBGL</li><li>MOTION</li><li>60 FPS</li></ul>
-          <span class="sc-data" aria-hidden="true">LIGHTHOUSE: 100/100</span>
+          <span class="sc-data" aria-hidden="true">LIGHTHOUSE: 100/100 ✧</span>
         </article>
 
         <article class="service-card reveal" data-cursor="card">
           <span class="sc-index">/04</span>
-          <div class="sc-icon" aria-hidden="true">
-            <svg viewBox="0 0 48 48"><polygon points="24,4 42,14 42,34 24,44 6,34 6,14" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="24" cy="24" r="6" fill="none" stroke="currentColor" stroke-width="2"/><path d="M24 10v8M24 30v8M11 17l7 4M30 27l7 4M37 17l-7 4M18 27l-7 4" stroke="currentColor" stroke-width="1.5"/></svg>
+          <div class="sc-icon sc-icon--indigo" aria-hidden="true">
+            <svg viewBox="0 0 48 48"><polygon points="24,4 42,14 42,34 24,44 6,34 6,14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/><circle cx="24" cy="24" r="6" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M24 10v8M24 30v8M11 17l7 4M30 27l7 4M37 17l-7 4M18 27l-7 4" stroke="currentColor" stroke-width="2"/></svg>
           </div>
           <h3 class="sc-title">AI System<br>Integration</h3>
-          <p class="sc-desc">LLM agents embedded directly into your operations — reading, deciding and executing with your data as their nervous system.</p>
+          <p class="sc-desc">Friendly LLM agents embedded right inside your operations — reading, deciding and doing, with your data as their morning coffee.</p>
           <ul class="sc-tags"><li>AGENTS</li><li>RAG</li><li>FINE-TUNING</li></ul>
-          <span class="sc-data" aria-hidden="true">LATENCY: &lt;120MS P99</span>
+          <span class="sc-data" aria-hidden="true">LATENCY: &lt;120MS ☀</span>
         </article>
       </div>
     </section>
 
-    <!-- ══════════════ CAPABILITY HUB — MINI-GAMES ══════════════ -->
+    <!-- ══════════════ PLAYGROUND — MINI-GAMES ══════════════ -->
     <section id="hub" class="section section--hub">
       <header class="section-head reveal">
-        <p class="section-kicker">02 // CAPABILITY HUB</p>
-        <h2 class="section-title">Don't read about our skills.<br><em>Play them.</em></h2>
+        <p class="section-kicker">02 // THE PLAYGROUND</p>
+        <h2 class="section-title">Don't read about our craft.<br><em>Come play with it.</em></h2>
       </header>
 
-      <div class="hub-tabs reveal" role="tablist" aria-label="Capability games">
+      <div class="hub-tabs reveal" role="tablist" aria-label="Playground games">
         <button class="hub-tab is-active" role="tab" aria-selected="true" aria-controls="game-scrape" id="tab-scrape" data-game="scrape">
-          <span class="ht-n">G.01</span>Scraping Matrix
+          <span class="ht-n">✧ G.01</span>Scraping Matrix
         </button>
         <button class="hub-tab" role="tab" aria-selected="false" aria-controls="game-pipeline" id="tab-pipeline" data-game="pipeline">
-          <span class="ht-n">G.02</span>Automation Pipeline
+          <span class="ht-n">✧ G.02</span>Automation Pipeline
         </button>
         <button class="hub-tab" role="tab" aria-selected="false" aria-controls="game-simon" id="tab-simon" data-game="simon">
-          <span class="ht-n">G.03</span>Visual Hacking Lab
+          <span class="ht-n">✧ G.03</span>Visual Hacking Lab
         </button>
       </div>
 
@@ -248,15 +228,15 @@
       <div class="game-panel is-active" id="game-scrape" role="tabpanel" aria-labelledby="tab-scrape">
         <div class="game-frame">
           <div class="game-hud">
-            <span>SCRAPED <b id="scrape-score">0</b></span>
+            <span>HARVESTED <b id="scrape-score">0</b></span>
             <span>TIME <b id="scrape-time">30.0</b></span>
             <span>BEST <b id="scrape-best">0</b></span>
           </div>
           <canvas id="scrape-canvas"></canvas>
           <div class="game-overlay is-active" id="scrape-overlay">
             <h3 class="go-title">THE SCRAPING MATRIX</h3>
-            <p class="go-desc">Data nodes are streaming through the grid. Tap <b class="c-cyan">◆ cyan nodes</b> to scrape them. Golden nodes are worth <b class="c-gold">×5</b>. Never touch the <b class="c-red">⬢ firewalls</b>.</p>
-            <button class="btn btn--primary magnetic" id="scrape-start"><span>Deploy Scraper</span><i class="btn-glow" aria-hidden="true"></i></button>
+            <p class="go-desc">Luminous data is drifting down like warm snow. Tap the <b class="c-gold">◆ golden nodes</b> to harvest them — <b class="c-blush">blush prisms</b> are worth ×5. Mind the <b class="c-rasp">⬢ firewalls</b>.</p>
+            <button class="btn btn--sun magnetic" id="scrape-start"><span>Start the Harvest</span><i class="btn-shine" aria-hidden="true"></i></button>
           </div>
         </div>
       </div>
@@ -266,21 +246,20 @@
         <div class="game-frame">
           <div class="game-hud">
             <span>LINKS <b id="pipe-links">0/4</b></span>
-            <span>STATUS <b id="pipe-status">OFFLINE</b></span>
+            <span>STATUS <b id="pipe-status">DOZING</b></span>
           </div>
           <div class="pipe-board" id="pipe-board">
             <svg class="pipe-svg" id="pipe-svg" aria-hidden="true"></svg>
-            <!-- nodes injected by JS -->
           </div>
           <div class="game-overlay is-active" id="pipe-overlay">
             <h3 class="go-title">THE AUTOMATION PIPELINE</h3>
-            <p class="go-desc">A workflow is fractured. Tap two nodes to connect them and rebuild the chain from <b class="c-cyan">TRIGGER</b> to <b class="c-violet">ACTION</b>. Wrong links short-circuit.</p>
-            <button class="btn btn--primary magnetic" id="pipe-start"><span>Open Circuit</span><i class="btn-glow" aria-hidden="true"></i></button>
+            <p class="go-desc">A little workflow fell apart in transit. Tap two nodes to weld a glowing cable and rebuild the chain from <b class="c-gold">TRIGGER</b> to <b class="c-blush">ACTION</b>. Wrong links fizzle politely.</p>
+            <button class="btn btn--sun magnetic" id="pipe-start"><span>Wake the Circuit</span><i class="btn-shine" aria-hidden="true"></i></button>
           </div>
           <div class="game-overlay" id="pipe-victory">
-            <h3 class="go-title go-title--victory">EFFICIENCY BOOSTED<br><span class="pv-number">+400%</span></h3>
-            <p class="go-desc">Pipeline compiled. Zero human hours required, forever.</p>
-            <button class="btn btn--ghost magnetic" id="pipe-replay"><span>Rebuild Pipeline</span></button>
+            <h3 class="go-title go-title--victory">EFFICIENCY BLOOMED<br><span class="pv-number">+400%</span></h3>
+            <p class="go-desc">Pipeline compiled. It will now run forever, humming softly, asking for nothing.</p>
+            <button class="btn btn--glass magnetic" id="pipe-replay"><span>Rebuild the Dream</span></button>
           </div>
         </div>
       </div>
@@ -294,29 +273,29 @@
           </div>
           <div class="simon-stage">
             <div class="simon-grid" id="simon-grid">
-              <button class="simon-pad simon-pad--cyan" data-pad="0" aria-label="Cyan triangle pad">
-                <svg viewBox="0 0 48 48"><polygon points="24,8 42,40 6,40" fill="none" stroke="currentColor" stroke-width="2.5"/></svg>
+              <button class="simon-pad simon-pad--gold" data-pad="0" aria-label="Gold triangle pad">
+                <svg viewBox="0 0 48 48"><polygon points="24,8 42,40 6,40" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/></svg>
               </button>
-              <button class="simon-pad simon-pad--violet" data-pad="1" aria-label="Violet square pad">
-                <svg viewBox="0 0 48 48"><rect x="9" y="9" width="30" height="30" fill="none" stroke="currentColor" stroke-width="2.5"/></svg>
+              <button class="simon-pad simon-pad--apricot" data-pad="1" aria-label="Apricot square pad">
+                <svg viewBox="0 0 48 48"><rect x="9" y="9" width="30" height="30" rx="6" fill="none" stroke="currentColor" stroke-width="3"/></svg>
               </button>
-              <button class="simon-pad simon-pad--green" data-pad="2" aria-label="Green hexagon pad">
-                <svg viewBox="0 0 48 48"><polygon points="24,5 41,14.5 41,33.5 24,43 7,33.5 7,14.5" fill="none" stroke="currentColor" stroke-width="2.5"/></svg>
+              <button class="simon-pad simon-pad--raspberry" data-pad="2" aria-label="Raspberry hexagon pad">
+                <svg viewBox="0 0 48 48"><polygon points="24,5 41,14.5 41,33.5 24,43 7,33.5 7,14.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/></svg>
               </button>
-              <button class="simon-pad simon-pad--white" data-pad="3" aria-label="White circle pad">
-                <svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="16" fill="none" stroke="currentColor" stroke-width="2.5"/></svg>
+              <button class="simon-pad simon-pad--cloud" data-pad="3" aria-label="Cloud circle pad">
+                <svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="16" fill="none" stroke="currentColor" stroke-width="3"/></svg>
               </button>
             </div>
           </div>
           <div class="game-overlay is-active" id="simon-overlay">
             <h3 class="go-title">THE VISUAL HACKING LAB</h3>
-            <p class="go-desc">The perfect layout is encrypted in a light rhythm. Watch the shapes pulse — then replicate the sequence to <b class="c-cyan">compile it</b>. Survive 5 rounds to unlock a transmission.</p>
-            <button class="btn btn--primary magnetic" id="simon-start"><span>Begin Decryption</span><i class="btn-glow" aria-hidden="true"></i></button>
+            <p class="go-desc">The perfect responsive canvas is hidden in a rhythm of light. Watch the shapes glow — then replay the melody to <b class="c-gold">compile it</b>. Five rounds unlocks a little gift.</p>
+            <button class="btn btn--sun magnetic" id="simon-start"><span>Begin the Rhythm</span><i class="btn-shine" aria-hidden="true"></i></button>
           </div>
           <div class="game-overlay" id="simon-victory">
-            <h3 class="go-title go-title--victory">LAYOUT COMPILED</h3>
-            <p class="go-desc">Voucher decrypted — quote <b class="c-cyan" id="simon-voucher">GJS-ARCHITECT-15</b> for 15% off your first build.</p>
-            <button class="btn btn--ghost magnetic" id="simon-replay"><span>Re-encrypt</span></button>
+            <h3 class="go-title go-title--victory">CANVAS COMPILED ✧</h3>
+            <p class="go-desc">Gift unwrapped — whisper <b class="c-gold" id="simon-voucher">GJS-DAYDREAM-15</b> to us for 15% off your first build.</p>
+            <button class="btn btn--glass magnetic" id="simon-replay"><span>Play It Again</span></button>
           </div>
         </div>
       </div>
@@ -328,60 +307,63 @@
         <p class="section-kicker">03 // MANIFESTO</p>
       </header>
       <blockquote class="manifesto-quote reveal">
-        “Most agencies decorate the web.<br>
-        <em>We weaponize it</em> — quietly, elegantly,<br>
-        at machine speed.”
+        “Most agencies build websites.<br>
+        <em>We build little worlds</em> — warm, luminous,<br>
+        and quietly running at machine speed.”
       </blockquote>
       <div class="stats-grid">
-        <div class="stat reveal"><b class="stat-n" data-count="12">0</b><span class="stat-l">M+ RECORDS SCRAPED / MONTH</span></div>
-        <div class="stat reveal"><b class="stat-n" data-count="340">0</b><span class="stat-l">WORKFLOWS DEPLOYED</span></div>
-        <div class="stat reveal"><b class="stat-n" data-count="60">0</b><span class="stat-l">FPS — NEVER LESS</span></div>
-        <div class="stat reveal"><b class="stat-n" data-count="0">0</b><span class="stat-l">HOURS OF SLEEP LOST BY CLIENTS</span></div>
+        <div class="stat reveal"><b class="stat-n" data-count="12">0</b><span class="stat-l">M+ RECORDS HARVESTED / MONTH</span></div>
+        <div class="stat reveal"><b class="stat-n" data-count="340">0</b><span class="stat-l">WORKFLOWS HUMMING ALONG</span></div>
+        <div class="stat reveal"><b class="stat-n" data-count="60">0</b><span class="stat-l">FPS — SILKY, ALWAYS</span></div>
+        <div class="stat reveal"><b class="stat-n" data-count="0">0</b><span class="stat-l">CLIENTS WHO WENT BACK TO BORING</span></div>
       </div>
     </section>
 
     <!-- ══════════════ CONTACT ══════════════ -->
     <section id="contact" class="section section--contact">
       <header class="section-head reveal">
-        <p class="section-kicker">04 // TRANSMISSION</p>
-        <h2 class="section-title">Open a channel<br><em>to the architects.</em></h2>
+        <p class="section-kicker">04 // SAY BONJOUR</p>
+        <h2 class="section-title">Send us a postcard<br><em>from the future.</em></h2>
       </header>
       <form class="contact-form reveal" id="contact-form" novalidate>
         <div class="cf-row">
           <label class="cf-field">
-            <span class="cf-label">CALLSIGN / NAME</span>
+            <span class="cf-label">YOUR NAME ✧</span>
             <input class="cf-input" type="text" name="name" autocomplete="name" required placeholder="Ada Lovelace">
           </label>
           <label class="cf-field">
-            <span class="cf-label">FREQUENCY / EMAIL</span>
+            <span class="cf-label">YOUR EMAIL ✧</span>
             <input class="cf-input" type="email" name="email" autocomplete="email" required placeholder="ada@future.corp">
           </label>
         </div>
         <label class="cf-field">
-          <span class="cf-label">PAYLOAD / MISSION BRIEF</span>
-          <textarea class="cf-input cf-textarea" name="message" rows="4" required placeholder="We need to extract, automate, dominate…"></textarea>
+          <span class="cf-label">YOUR DREAM / BRIEF ✧</span>
+          <textarea class="cf-input cf-textarea" name="message" rows="4" required placeholder="We'd love something that scrapes, automates, and makes people smile…"></textarea>
         </label>
-        <button class="btn btn--primary btn--wide magnetic" type="submit" id="contact-send">
-          <span>Transmit Signal</span><i class="btn-glow" aria-hidden="true"></i>
+        <button class="btn btn--sun btn--wide magnetic" type="submit" id="contact-send">
+          <span>Send the Dream</span><i class="btn-shine" aria-hidden="true"></i>
         </button>
         <p class="cf-confirm" id="cf-confirm" role="status" aria-live="polite"></p>
       </form>
     </section>
   </main>
 
-  <!-- ══════════════ FOOTER ══════════════ -->
+  <!-- ══════════════ FOOTER — ORGANIC WAVES ══════════════ -->
   <footer class="footer">
-    <div class="footer-shard" aria-hidden="true"></div>
+    <div class="footer-wave footer-wave--blush" aria-hidden="true"></div>
+    <div class="footer-wave footer-wave--apricot" aria-hidden="true"></div>
+    <div class="footer-wave footer-wave--gold" aria-hidden="true"></div>
+    <div class="footer-moon" aria-hidden="true"></div>
     <div class="footer-inner">
       <div class="footer-col footer-col--brand">
         <span class="footer-logo">GJS</span>
-        <p class="footer-line">Invisible advantages,<br>engineered nightly.</p>
+        <p class="footer-line">Digital daydreams,<br>engineered daily.</p>
       </div>
       <nav class="footer-col" aria-label="Footer">
-        <a class="footer-link" href="#services" data-cursor="link">Services</a>
-        <a class="footer-link" href="#hub" data-cursor="link">Capability Hub</a>
+        <a class="footer-link" href="#services" data-cursor="link">The Craft</a>
+        <a class="footer-link" href="#hub" data-cursor="link">Playground</a>
         <a class="footer-link" href="#manifesto" data-cursor="link">Manifesto</a>
-        <a class="footer-link" href="#contact" data-cursor="link">Contact</a>
+        <a class="footer-link" href="#contact" data-cursor="link">Say Bonjour</a>
       </nav>
       <div class="footer-col">
         <a class="footer-social magnetic" href="https://github.com" target="_blank" rel="noopener noreferrer" data-cursor="link"><span>GH</span>GitHub</a>
@@ -389,21 +371,21 @@
         <a class="footer-social magnetic" href="https://linkedin.com" target="_blank" rel="noopener noreferrer" data-cursor="link"><span>IN</span>LinkedIn</a>
       </div>
       <div class="footer-col footer-col--status">
-        <span class="status-pill"><i class="status-dot" aria-hidden="true"></i>SYSTEM STATUS: <b>ONLINE</b></span>
-        <span class="footer-uptime" id="footer-uptime">UPTIME 00:00:00</span>
-        <span class="footer-copy">© <span id="footer-year">2026</span> GJS AGENCY — ALL FREQUENCIES RESERVED</span>
+        <span class="status-pill"><i class="status-dot" aria-hidden="true"></i>SYSTEM STATUS: <b>ONLINE&nbsp;&amp;&nbsp;DREAMING</b></span>
+        <span class="footer-uptime" id="footer-uptime">DREAMING FOR 00:00:00</span>
+        <span class="footer-copy">© <span id="footer-year">2026</span> GJS AGENCY — MADE WITH SUNLIGHT ☀</span>
       </div>
     </div>
   </footer>
 
-  <!-- ══════════════ OVERDRIVE TRANSMISSION (EASTER EGG) ══════════════ -->
-  <div id="transmission" aria-hidden="true" role="dialog" aria-label="Secret transmission">
+  <!-- ══════════════ OVERDRIVE DREAM MODE (EASTER EGG) ══════════════ -->
+  <div id="transmission" aria-hidden="true" role="dialog" aria-label="Secret message">
     <div class="tx-card">
-      <p class="tx-head">▓▓ INCOMING TRANSMISSION — PRIORITY OMEGA ▓▓</p>
+      <p class="tx-head">✧ ✧ ✧ A LETTER FOUND INSIDE THE LIGHT ✧ ✧ ✧</p>
       <pre class="tx-body" id="tx-body"></pre>
       <div class="tx-actions">
-        <a class="btn btn--primary magnetic" href="#contact" id="tx-contact"><span>Contact the Architects</span><i class="btn-glow" aria-hidden="true"></i></a>
-        <button class="btn btn--ghost magnetic" id="tx-close"><span>Sever Link</span></button>
+        <a class="btn btn--sun magnetic" href="#contact" id="tx-contact"><span>Write Back to Us</span><i class="btn-shine" aria-hidden="true"></i></a>
+        <button class="btn btn--glass magnetic" id="tx-close"><span>Fold the Letter</span></button>
       </div>
     </div>
   </div>

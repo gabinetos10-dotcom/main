@@ -1,7 +1,7 @@
 /* ════════════════════════════════════════════════════════════════════
-   GJS AGENCY — CAPABILITY HUB
+   GJS AGENCY — THE PLAYGROUND
    G.01 Scraping Matrix · G.02 Automation Pipeline · G.03 Visual Hacking Lab
-   Vanilla ES6+, rAF-driven, zero dependencies.
+   Warm dream-tech skin · Vanilla ES6+, rAF-driven, zero dependencies.
    ════════════════════════════════════════════════════════════════════ */
 'use strict';
 
@@ -81,7 +81,7 @@
       this.timeLeft = 30;
       this.playing = true;
       this.spawnAcc = 0;
-      this.lastTs = performance.now();
+      this.startTs = this.lastTs = performance.now();
       cancelAnimationFrame(this.raf);
       this.raf = requestAnimationFrame(this.loop);
     },
@@ -90,7 +90,7 @@
       if (!this.playing) return;
       this.playing = false;
       cancelAnimationFrame(this.raf);
-      this.showOverlay('MATRIX SUSPENDED', `Run interrupted at ${this.score} records. The data waits for no one.`, 'Redeploy Scraper');
+      this.showOverlay('HARVEST PAUSED', `Basket set down at ${this.score} berries of data. They will wait — data is patient here.`, 'Resume the Harvest');
     },
 
     end() {
@@ -103,9 +103,9 @@
         this.bestEl.textContent = this.best;
       }
       this.showOverlay(
-        newBest ? 'NEW EXTRACTION RECORD' : 'EXTRACTION COMPLETE',
-        `${this.score} records scraped in 30 seconds. ${newBest ? 'The fleet salutes you.' : 'Our production fleet does 4.2M an hour — imagine the difference.'}`,
-        'Run It Back'
+        newBest ? 'NEW HARVEST RECORD ✧' : 'HARVEST COMPLETE',
+        `${this.score} records gathered in 30 golden seconds. ${newBest ? 'The orchard applauds you.' : 'Our production engines pick 4.2M an hour — imagine the jam we could make.'}`,
+        'One More Round'
       );
     },
 
@@ -145,14 +145,14 @@
           this.entities.splice(i, 1);
           if (ent.type === 'firewall') {
             this.score = Math.max(0, this.score - 20);
-            this.burst(ent.x, ent.y, '255,59,92', 'BLOCKED');
+            this.burst(ent.x, ent.y, '231,112,200', 'FIREWALL!');
             this.canvas.animate(
               [{ filter: 'hue-rotate(0)' }, { filter: 'hue-rotate(140deg)' }, { filter: 'hue-rotate(0)' }],
               { duration: 220 });
           } else {
             const pts = ent.type === 'gold' ? 50 : 10;
             this.score += pts;
-            this.burst(ent.x, ent.y, ent.type === 'gold' ? '255,209,102' : '0,242,254', `+${pts}`);
+            this.burst(ent.x, ent.y, ent.type === 'gold' ? '240,190,217' : '255,194,67', `+${pts}`);
           }
           this.scoreEl.textContent = this.score;
           return;
@@ -174,10 +174,13 @@
 
     loop(ts) {
       if (!this.playing) return;
-      const dt = Math.min((ts - this.lastTs) / 1000, 0.05);
+      /* dt caps at 0.25s so the game stays real-time even when rAF is
+         throttled (low-end devices, software rendering) without letting
+         a background-tab pause teleport everything off-screen          */
+      const dt = Math.min((ts - this.lastTs) / 1000, 0.25);
       this.lastTs = ts;
 
-      this.timeLeft -= dt;
+      this.timeLeft = 30 - (ts - this.startTs) / 1000;   // wall-clock honest
       this.timeEl.textContent = Math.max(0, this.timeLeft).toFixed(1);
       if (this.timeLeft <= 0) { this.end(); return; }
 
@@ -192,12 +195,12 @@
       const ctx = this.ctx;
       ctx.clearRect(0, 0, this.w, this.h);
 
-      /* faint matrix rain columns */
-      ctx.fillStyle = 'rgba(56,255,156,0.05)';
-      ctx.font = '10px "JetBrains Mono", monospace';
+      /* faint drifting starlight in the night window */
+      ctx.fillStyle = 'rgba(160,195,235,0.16)';
+      ctx.font = '10px "DM Mono", monospace';
       for (let i = 0; i < 8; i++) {
         const cx = (this.w / 8) * i + 12;
-        ctx.fillText(String.fromCharCode(0x30A0 + ((ts / 90 + i * 7) | 0) % 96), cx, (ts / 6 + i * 140) % this.h);
+        ctx.fillText('✧', cx, (ts / 9 + i * 140) % this.h);
       }
 
       for (let i = this.entities.length - 1; i >= 0; i--) {
@@ -233,8 +236,8 @@
       ctx.translate(ent.x, ent.y);
       ctx.rotate(ent.rot);
       if (ent.type === 'firewall') {
-        ctx.strokeStyle = 'rgba(255,59,92,0.95)';
-        ctx.fillStyle = 'rgba(255,59,92,0.12)';
+        ctx.strokeStyle = 'rgba(231,112,200,0.95)';
+        ctx.fillStyle = 'rgba(155,45,132,0.3)';
         ctx.lineWidth = 2;
         ctx.beginPath();
         for (let i = 0; i < 6; i++) {
@@ -244,13 +247,13 @@
         ctx.closePath();
         ctx.fill();
         ctx.stroke();
-        ctx.strokeStyle = 'rgba(255,59,92,0.8)';
+        ctx.strokeStyle = 'rgba(231,112,200,0.85)';
         ctx.beginPath();
         ctx.moveTo(-5, -5); ctx.lineTo(5, 5);
         ctx.moveTo(5, -5);  ctx.lineTo(-5, 5);
         ctx.stroke();
       } else {
-        const c = ent.type === 'gold' ? '255,209,102' : '0,242,254';
+        const c = ent.type === 'gold' ? '240,190,217' : '255,194,67';
         ctx.shadowColor = `rgb(${c})`;
         ctx.shadowBlur = 12;
         ctx.strokeStyle = `rgba(${c},0.95)`;
@@ -331,7 +334,7 @@
     updateHud() {
       this.linksEl.textContent = `${this.links.length}/4`;
       this.statusEl.textContent =
-        this.built ? 'COMPILED' : this.links.length ? 'WELDING' : 'OFFLINE';
+        this.built ? 'HUMMING ✧' : this.links.length ? 'WELDING' : 'DOZING';
     },
 
     pick(id) {
@@ -459,7 +462,7 @@
     ROUNDS: 5,
     sequence: [], inputIdx: 0, round: 0,
     state: 'idle', audio: null,
-    TONES: [329.63, 415.30, 493.88, 587.33],
+    TONES: [293.66, 369.99, 440.00, 554.37],
 
     init() {
       this.pads = $$('.simon-pad');
