@@ -286,6 +286,32 @@
     </div>
   </div>
 
+  <!-- Friendly help screen when this SOURCE file is opened by double-click:
+       browsers block module JS on file://, so the app can never boot there.
+       (The portable build inlines everything, boots fine, never shows this.) -->
+  <script>
+    setTimeout(function () {
+      if (window.__GJS_BOOTED || location.protocol !== 'file:') return;
+      var loader = document.getElementById('loader');
+      if (loader) loader.style.display = 'none';
+      var el = document.createElement('div');
+      el.setAttribute('role', 'alert');
+      el.style.cssText = 'position:fixed;inset:0;z-index:500;display:grid;place-items:center;padding:24px;background:#1a1633;color:#f3ece3;font-family:system-ui,sans-serif;text-align:center;';
+      el.innerHTML =
+        '<div style="max-width:34rem;display:grid;gap:14px;justify-items:center;">' +
+        '<div style="font-size:2.6rem;font-weight:700;letter-spacing:.04em;background:linear-gradient(120deg,#ffc243,#eb6a29,#9b2d84);-webkit-background-clip:text;background-clip:text;color:transparent;">GJS</div>' +
+        '<h1 style="margin:0;font-size:1.3rem;">Ce fichier est le code source 🛠️</h1>' +
+        '<p style="margin:0;opacity:.85;line-height:1.7;">Il ne peut pas se lancer par double-clic : le navigateur bloque le JavaScript du projet sans serveur.</p>' +
+        '<p style="margin:0;line-height:2;text-align:left;background:rgba(160,195,235,.08);border:1px solid rgba(160,195,235,.25);border-radius:14px;padding:14px 20px;">' +
+        '<strong style="color:#ffc243;">Pour voir le site :</strong><br/>' +
+        '✦ Double-clique <code style="color:#f0bed9;">GJS-site-demo.html</code> (à la racine du projet), <em>ou</em><br/>' +
+        '✦ Lance <code style="color:#f0bed9;">npm install&nbsp;&amp;&amp;&nbsp;npm run dev</code> puis ouvre <code style="color:#f0bed9;">localhost:5173</code></p>' +
+        '<p style="margin:0;font-size:.8rem;opacity:.55;">(This is the source file — open GJS-site-demo.html or run npm run dev.)</p>' +
+        '</div>';
+      document.body.appendChild(el);
+    }, 1000);
+  </script>
+
   <!-- ══════════ SECRET STRATEGY CONSOLE (easter egg) ══════════ -->
   <div id="secret-console" class="secret" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Secret strategy console">
     <div class="secret__window">

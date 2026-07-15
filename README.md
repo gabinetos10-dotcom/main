@@ -10,8 +10,14 @@ No dark-cyberpunk clichés were harmed in the making of this site.
 
 ## Run it
 
+**Just want to see the site?** Double-click **`GJS-site-demo.html`** at the
+repo root — it's the whole site in one self-contained file, no install needed.
+(Regenerate it after edits: `npm run build:portable`, then copy
+`dist-portable/index.html` over it.)
+
 > ⚠️ **Don't double-click the source `index.html`** — this is a Vite project,
-> browsers can't load it straight from the filesystem. Use one of these:
+> browsers can't load it straight from the filesystem (you'd see a help screen
+> telling you exactly this). Use one of these:
 
 ```bash
 npm install

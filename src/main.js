@@ -7,6 +7,8 @@
 
 /* Styles are linked from index.html <head> (not imported here) so the
    design renders even when the page is opened without Vite. */
+window.__GJS_BOOTED = true; // tells the no-server helper in index.html we're alive
+
 import { renderAll } from './components/render.js';
 import { initLoader } from './components/loader.js';
 import { initHeader } from './components/header.js';
