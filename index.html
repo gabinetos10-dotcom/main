@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>GJS Agency — We build the web you were promised</title>
+  <meta name="description" content="GJS is a digital studio crafting custom websites, automations and data machines — serious engineering with a warm, playful soul. Web creation · Automations · Scraping · Consulting." />
+  <meta name="theme-color" content="#1a1633" />
+
+  <!-- Open Graph / Twitter -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="GJS Agency — We build the web you were promised" />
+  <meta property="og:description" content="Custom websites, automations, data intelligence & strategy. Warm futurism, serious engineering." />
+  <meta property="og:image" content="/og-card.svg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="GJS Agency" />
+  <meta name="twitter:description" content="We build the web you were promised." />
+
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+  <!-- Fonts: Space Grotesk (display) · Inter (body) · JetBrains Mono (technical) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400..700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+
+  <script type="module" src="/src/main.js"></script>
+</head>
+<body data-mood="deep">
+
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- ══════════ PRELOADER ══════════ -->
+  <div id="loader" class="loader" role="status" aria-label="Loading GJS Agency">
+    <div class="loader__panel loader__panel--top"></div>
+    <div class="loader__panel loader__panel--bottom"></div>
+    <div class="loader__center">
+      <svg class="loader__monogram" viewBox="0 0 120 60" aria-hidden="true">
+        <text x="60" y="46" text-anchor="middle" class="loader__mono-text">GJS</text>
+      </svg>
+      <div class="loader__count mono"><span id="loader-count">0</span>%</div>
+      <div class="loader__bar"><span id="loader-bar"></span></div>
+      <p class="loader__hint mono">WARMING UP THE FUTURE…</p>
+    </div>
+  </div>
+
+  <!-- ══════════ GLOBAL CHROME ══════════ -->
+  <div class="grain" aria-hidden="true"></div>
+  <div id="cursor" class="cursor" aria-hidden="true"><span class="cursor__dot"></span><span class="cursor__label"></span></div>
+  <div class="scroll-progress" aria-hidden="true"><span id="scroll-progress-bar"></span></div>
+
+  <header id="header" class="header">
+    <div class="header__inner">
+      <a href="#hero" id="logo" class="logo" aria-label="GJS Agency — home">
+        <svg viewBox="0 0 96 40" class="logo__svg" aria-hidden="true">
+          <defs>
+            <linearGradient id="logo-grad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="var(--gold)"/>
+              <stop offset="55%" stop-color="var(--apricot)"/>
+              <stop offset="100%" stop-color="var(--raspberry)"/>
+            </linearGradient>
+          </defs>
+          <text x="0" y="30" class="logo__text">GJS</text>
+          <circle class="logo__spark" cx="88" cy="12" r="4" fill="url(#logo-grad)"/>
+        </svg>
+      </a>
+      <nav class="nav" aria-label="Primary">
+        <ul id="nav-list" class="nav__list"><!-- rendered from data --></ul>
+      </nav>
+      <div class="header__actions">
+        <a href="#contact" class="btn btn--primary header__cta" data-cursor="Let's go">Start a project</a>
+        <button id="burger" class="burger" aria-label="Open menu" aria-expanded="false" aria-controls="menu">
+          <svg viewBox="0 0 48 48" aria-hidden="true">
+            <path class="burger__line burger__line--a" d="M10 18 H38" />
+            <path class="burger__line burger__line--b" d="M10 24 H38" />
+            <path class="burger__line burger__line--c" d="M10 30 H38" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ══════════ FULL-SCREEN MENU ══════════ -->
+  <div id="menu" class="menu" aria-hidden="true">
+    <div class="menu__blob menu__blob--1" aria-hidden="true"></div>
+    <div class="menu__blob menu__blob--2" aria-hidden="true"></div>
+    <nav class="menu__inner" aria-label="Menu">
+      <ul id="menu-list" class="menu__list"><!-- rendered from data --></ul>
+      <div class="menu__foot">
+        <a class="btn btn--primary" href="#contact">Start a project</a>
+        <p class="mono menu__hint">PSST — TRY TYPING “GJS” ANYWHERE ✦</p>
+      </div>
+    </nav>
+  </div>
+
+  <main id="main">
+
+    <!-- ══════════ 01 · HERO (Deep) ══════════ -->
+    <section id="hero" class="section hero" data-mood="deep">
+      <canvas id="hero-canvas" class="hero__canvas" aria-hidden="true"></canvas>
+      <div class="hero__poster" aria-hidden="true"></div>
+      <div class="hero__content container">
+        <p class="hero__kicker mono reveal">GJS AGENCY — DIGITAL STUDIO · EST. TOMORROW</p>
+        <h1 class="hero__title">
+          <span class="hero__line">We build the web</span>
+          <span class="hero__line hero__line--grad">you were promised.</span>
+        </h1>
+        <p class="hero__sub reveal">Custom websites, automations and data machines —
+          serious engineering with a warm, playful soul.</p>
+        <div class="hero__ctas reveal">
+          <a href="#contact" class="btn btn--primary btn--lg" data-cursor="Say hi">Let's talk</a>
+          <a href="#playground" class="btn btn--ghost btn--lg" data-cursor="Play">Play our work</a>
+        </div>
+      </div>
+      <div class="hero__scrollcue mono" aria-hidden="true"><span></span>SCROLL TO DREAM</div>
+      <div class="hero__ticker" aria-hidden="true">
+        <div class="ticker" id="hero-ticker"></div>
+      </div>
+    </section>
+
+    <!-- ══════════ 02 · MANIFESTO (Daylight) ══════════ -->
+    <section id="manifesto" class="section manifesto" data-mood="day">
+      <div class="container">
+        <p class="section-index mono">01 / MANIFESTO</p>
+        <h2 class="manifesto__text split-lines">
+          The future doesn't have to be cold. We make technology that feels like
+          <em>sunrise</em> — websites with heartbeat, robots with manners, data with taste.
+          Serious engineering, zero gray suits.
+        </h2>
+        <div class="manifesto__badges" aria-hidden="true">
+          <span class="chip chip--gold">Ludique</span>
+          <span class="chip chip--raspberry">Dynamique</span>
+          <span class="chip chip--indigo">Coloré</span>
+        </div>
+      </div>
+      <div class="blob blob--gold manifesto__blob" aria-hidden="true"></div>
+    </section>
+
+    <!-- ══════════ 03 · SERVICES ══════════ -->
+    <section id="services" class="section services" data-mood="day">
+      <div class="container">
+        <p class="section-index mono">02 / WHAT WE DO</p>
+        <h2 class="section-title split-lines">Four crafts. One obsession: <em>making it feel effortless.</em></h2>
+      </div>
+      <div id="services-list" class="services__list container"><!-- rendered from data --></div>
+    </section>
+
+    <!-- ══════════ 04 · PLAYGROUND / ARCADE (Deep) ══════════ -->
+    <section id="playground" class="section playground" data-mood="deep">
+      <div class="container">
+        <p class="section-index mono">03 / PLAYGROUND</p>
+        <h2 class="section-title split-lines">We don't just talk. <em>We ship.</em> Here — play the proof.</h2>
+        <p class="section-sub">Three tiny games, hand-built like everything we do. Each one is how we think about a service. High scores are watching you.</p>
+      </div>
+      <div id="games-list" class="playground__grid container"><!-- rendered from data --></div>
+      <div class="playground__orbit" aria-hidden="true"></div>
+    </section>
+
+    <!-- ══════════ 05 · PROCESS (Daylight) ══════════ -->
+    <section id="process" class="section process" data-mood="day">
+      <div class="container">
+        <p class="section-index mono">04 / HOW WE WORK</p>
+        <h2 class="section-title split-lines">From “what if” to <em>“it's live”</em> — without the drama.</h2>
+      </div>
+      <ol id="process-list" class="process__steps container"><!-- rendered from data --></ol>
+    </section>
+
+    <!-- ══════════ 06 · WORK (Deep) ══════════ -->
+    <section id="work" class="section work" data-mood="deep">
+      <div class="container">
+        <p class="section-index mono">05 / SELECTED WORK</p>
+        <h2 class="section-title split-lines">Things we made <em>glow.</em></h2>
+      </div>
+      <div id="work-list" class="work__grid container"><!-- rendered from data --></div>
+      <div class="ticker ticker--work" id="work-ticker" aria-hidden="true"></div>
+    </section>
+
+    <!-- ══════════ 07 · ABOUT (Daylight) ══════════ -->
+    <section id="about" class="section about" data-mood="day">
+      <div class="container">
+        <p class="section-index mono">06 / THE INITIALS</p>
+        <h2 class="section-title split-lines">Three letters. <em>Three humans.</em></h2>
+        <p class="section-sub">A studio small enough to care, sharp enough to matter.</p>
+      </div>
+      <div id="about-list" class="about__grid container"><!-- rendered from data --></div>
+    </section>
+
+    <!-- ══════════ 08 · CONTACT (Deep) ══════════ -->
+    <section id="contact" class="section contact" data-mood="deep">
+      <div class="contact__aurora" aria-hidden="true"></div>
+      <div class="container contact__grid">
+        <div class="contact__pitch">
+          <p class="section-index mono">07 / SAY HI</p>
+          <h2 class="section-title split-lines">Got a wild idea? <em>Good.</em> We collect those.</h2>
+          <p class="section-sub">Tell us what keeps you up at night. We'll bring the sunrise.</p>
+          <p class="mono contact__meta">REPLIES WITHIN 24H · COFFEE ALWAYS ON<br/>hello@gjs.agency <span class="contact__meta-note">[EDIT: real email]</span></p>
+        </div>
+        <form id="contact-form" class="form" novalidate>
+          <div class="form__field">
+            <label for="f-name">Your name</label>
+            <input id="f-name" name="name" type="text" autocomplete="name" required placeholder="Ada Lovelace" />
+            <span class="form__error" aria-live="polite"></span>
+          </div>
+          <div class="form__field">
+            <label for="f-email">Email</label>
+            <input id="f-email" name="email" type="email" autocomplete="email" required placeholder="ada@futuremail.com" />
+            <span class="form__error" aria-live="polite"></span>
+          </div>
+          <div class="form__field">
+            <label for="f-msg">The wild idea</label>
+            <textarea id="f-msg" name="message" rows="4" required placeholder="We need a website that feels like…"></textarea>
+            <span class="form__error" aria-live="polite"></span>
+          </div>
+          <button type="submit" class="btn btn--primary btn--lg form__submit" data-cursor="Send it">
+            <span class="form__submit-label">Send it ✦</span>
+            <span class="form__submit-loading mono" aria-hidden="true">TRANSMITTING…</span>
+          </button>
+          <p class="form__success mono" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ══════════ FOOTER ══════════ -->
+  <footer id="footer" class="footer" data-mood="deep">
+    <div class="footer__blobfield" aria-hidden="true">
+      <span class="blob blob--raspberry"></span>
+      <span class="blob blob--indigo"></span>
+      <span class="blob blob--gold"></span>
+    </div>
+    <div class="container footer__cta-row">
+      <h2 class="footer__cta-title split-lines">Let's build <em>something bright.</em></h2>
+      <a href="#contact" class="btn btn--primary btn--lg" data-cursor="Go">Start a project</a>
+    </div>
+    <div class="container footer__cols">
+      <nav aria-label="Footer navigation"><h3 class="mono">MAP</h3><ul id="footer-nav"></ul></nav>
+      <div><h3 class="mono">CRAFTS</h3><ul id="footer-services"></ul></div>
+      <div>
+        <h3 class="mono">SIGNALS</h3>
+        <ul>
+          <li><a href="mailto:hello@gjs.agency">hello@gjs.agency</a></li>
+          <li><a href="#" rel="noopener">LinkedIn <span class="mono">[EDIT]</span></a></li>
+          <li><a href="#" rel="noopener">Instagram <span class="mono">[EDIT]</span></a></li>
+          <li><a href="#" rel="noopener">GitHub <span class="mono">[EDIT]</span></a></li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="mono">SECRET</h3>
+        <p class="footer__egg-hint mono">↑↑↓↓←→←→BA<br/>…if you know, you know.</p>
+      </div>
+    </div>
+    <div class="footer__wordmark" aria-hidden="true">
+      <button id="footer-orb" class="footer__orb" aria-label="A mysterious glowing orb. Click it."></button>
+      <span class="footer__wordmark-text">GJS</span>
+    </div>
+    <div class="container footer__legal mono">
+      <span>© <span id="year"></span> GJS AGENCY — MADE WITH UNREASONABLE CARE</span>
+      <span>THE FUTURE IS WARM ✦</span>
+    </div>
+  </footer>
+
+  <!-- ══════════ ARCADE OVERLAY ══════════ -->
+  <div id="arcade" class="arcade" aria-hidden="true" role="dialog" aria-modal="true" aria-label="GJS Arcade">
+    <div class="arcade__chrome">
+      <p class="mono arcade__title" id="arcade-title">GJS ARCADE</p>
+      <div class="arcade__stats mono">
+        <span id="arcade-score">SCORE 0</span>
+        <span id="arcade-best">BEST 0</span>
+      </div>
+      <div class="arcade__buttons">
+        <button id="arcade-mute" class="arcade__btn mono" aria-label="Toggle sound" aria-pressed="false">♪ ON</button>
+        <button id="arcade-close" class="arcade__btn mono" aria-label="Close game">ESC ✕</button>
+      </div>
+    </div>
+    <div id="arcade-stage" class="arcade__stage">
+      <canvas id="arcade-canvas"></canvas>
+      <div id="arcade-ui" class="arcade__ui"></div>
+    </div>
+  </div>
+
+  <!-- ══════════ SECRET STRATEGY CONSOLE (easter egg) ══════════ -->
+  <div id="secret-console" class="secret" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Secret strategy console">
+    <div class="secret__window">
+      <div class="secret__bar mono"><span>gjs://strategy-console</span><button id="secret-close" class="arcade__btn mono" aria-label="Close console">✕</button></div>
+      <pre id="secret-output" class="secret__output mono"></pre>
+      <div class="secret__prompt mono">▸ <input id="secret-input" type="text" aria-label="Console input" autocomplete="off" spellcheck="false" placeholder="type 'help'…" /></div>
+    </div>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,71 @@
+/* ═══════════════════════════════════════════════════════════
+   GJS DESIGN TOKENS — "Histoires en couleurs"
+   The six core hex values are the brand. Do not change them.
+   ═══════════════════════════════════════════════════════════ */
+:root {
+  /* Core palette */
+  --gold:      #ffc243; /* Or — energy, highlights, primary CTA glow */
+  --apricot:   #eb6a29; /* Abricot — warmth, secondary accent, hover heat */
+  --raspberry: #9b2d84; /* Framboise — brand richness, gradients, depth */
+  --cloud:     #a0c3eb; /* Nuage — soft, airy, calm surfaces */
+  --indigo:    #324ea1; /* Indigo — trust, the "deep/future" base */
+  --blush:     #f0bed9; /* Blush — soft playful highlight */
+
+  /* Neutrals */
+  --cream:     #f3ece3; /* warm off-white — Daylight base */
+  --ink:       #1a1633; /* deep indigo-black — text & Deep base */
+  --ink-soft:  #241e45; /* raised surfaces on Deep */
+  --cream-soft:#faf6f0; /* raised surfaces on Daylight */
+
+  /* Signature gradients */
+  --grad-sunrise: linear-gradient(120deg, var(--gold), var(--apricot) 55%, var(--raspberry));
+  --grad-dusk:    linear-gradient(140deg, var(--raspberry), var(--indigo));
+  --grad-sky:     linear-gradient(120deg, var(--cloud), var(--blush));
+  --grad-aurora:  linear-gradient(110deg, var(--indigo), var(--raspberry) 45%, var(--gold));
+
+  /* Type */
+  --font-display: 'Space Grotesk', system-ui, sans-serif;
+  --font-body:    'Inter', system-ui, sans-serif;
+  --font-mono:    'JetBrains Mono', ui-monospace, monospace;
+
+  /* Fluid type scale */
+  --fs-hero:  clamp(2.6rem, 2.2rem + 7vw, 7.5rem);
+  --fs-h2:    clamp(1.9rem, 1.4rem + 3.4vw, 4.2rem);
+  --fs-h3:    clamp(1.3rem, 1.1rem + 1.2vw, 2rem);
+  --fs-body:  clamp(1rem, 0.95rem + 0.3vw, 1.15rem);
+  --fs-small: clamp(0.8rem, 0.76rem + 0.2vw, 0.9rem);
+  --fs-mono:  clamp(0.68rem, 0.64rem + 0.2vw, 0.8rem);
+
+  /* Space & shape */
+  --space-section: clamp(5rem, 4rem + 8vw, 11rem);
+  --container: min(100% - 2.5rem, 74rem);
+  --radius-lg: 1.75rem;
+  --radius-md: 1rem;
+  --radius-pill: 999px;
+
+  /* Motion */
+  --ease-out:   cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-punch: cubic-bezier(0.68, -0.4, 0.27, 1.35);
+  --dur-fast: 0.28s;
+  --dur-med:  0.6s;
+
+  /* Contextual (mood) — defaults = Deep */
+  --bg:        var(--ink);
+  --fg:        var(--cream);
+  --fg-dim:    color-mix(in srgb, var(--cream) 72%, transparent);
+  --surface:   var(--ink-soft);
+  --line:      color-mix(in srgb, var(--cloud) 22%, transparent);
+  --accent:    var(--gold);
+
+  --header-h: 4.5rem;
+}
+
+/* Daylight mood — applied per-section via [data-mood="day"] */
+[data-mood='day'] {
+  --bg:      var(--cream);
+  --fg:      var(--ink);
+  --fg-dim:  color-mix(in srgb, var(--ink) 70%, transparent);
+  --surface: var(--cream-soft);
+  --line:    color-mix(in srgb, var(--ink) 14%, transparent);
+  --accent:  var(--raspberry);
+}

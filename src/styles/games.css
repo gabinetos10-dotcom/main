@@ -1,0 +1,207 @@
+/* ═══════════ ARCADE OVERLAY & GAMES ═══════════ */
+.arcade {
+  position: fixed;
+  inset: 0;
+  z-index: 260;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  background:
+    radial-gradient(80% 60% at 50% 0%, color-mix(in srgb, var(--indigo) 45%, transparent), transparent 60%),
+    var(--ink);
+  color: var(--cream);
+  opacity: 0;
+  visibility: hidden;
+  transform: scale(1.04);
+  transition: opacity 0.35s ease, transform 0.45s var(--ease-out), visibility 0s linear 0.45s;
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.arcade.is-open {
+  opacity: 1;
+  visibility: visible;
+  transform: scale(1);
+  transition: opacity 0.35s ease, transform 0.45s var(--ease-out);
+}
+.arcade__chrome {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.9rem clamp(1rem, 3vw, 2rem);
+  border-bottom: 1px solid var(--line);
+  flex-wrap: wrap;
+}
+.arcade__title { color: var(--gold); }
+.arcade__stats { display: flex; gap: 1.6rem; color: var(--cloud); }
+.arcade__buttons { display: flex; gap: 0.6rem; }
+.arcade__btn {
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0.5em 1.1em;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  color: var(--cream);
+  transition: border-color var(--dur-fast) ease, background var(--dur-fast) ease;
+}
+.arcade__btn:hover { border-color: var(--gold); background: color-mix(in srgb, var(--gold) 12%, transparent); }
+.arcade__stage {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+}
+#arcade-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+}
+.arcade__ui {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  padding: 1.5rem;
+}
+.arcade__ui > * { pointer-events: auto; }
+
+/* Start / end panels inside games */
+.game-panel {
+  max-width: 30rem;
+  width: 100%;
+  text-align: center;
+  display: grid;
+  gap: 1.1rem;
+  justify-items: center;
+  background: color-mix(in srgb, var(--ink) 72%, transparent);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 2.2rem 1.8rem;
+  backdrop-filter: blur(14px);
+  animation: panel-pop 0.5s var(--ease-punch);
+}
+@keyframes panel-pop { from { transform: scale(0.85); opacity: 0; } }
+.game-panel__glyph { font-size: 3rem; line-height: 1; filter: drop-shadow(0 0 18px var(--gold)); }
+.game-panel__title { font-family: var(--font-display); font-size: 1.7rem; font-weight: 700; }
+.game-panel__pitch { color: color-mix(in srgb, var(--cream) 75%, transparent); font-size: 0.95rem; }
+.game-panel__how {
+  color: var(--cloud);
+  border: 1px dashed var(--line);
+  border-radius: var(--radius-md);
+  padding: 0.7rem 1rem;
+  line-height: 1.9;
+}
+.game-panel__score { font-size: 1.4rem; color: var(--gold); }
+.game-panel__newbest { color: var(--blush); animation: pulse-txt 1s ease-in-out infinite; }
+
+/* Code Rush choice buttons */
+.coderush-choices {
+  position: absolute;
+  bottom: max(1.2rem, env(safe-area-inset-bottom));
+  left: 50%;
+  translate: -50% 0;
+  display: flex;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: min(94vw, 40rem);
+}
+.coderush-choices button {
+  font-family: var(--font-mono);
+  font-size: clamp(0.85rem, 2.6vw, 1.05rem);
+  padding: 0.8em 1.3em;
+  min-height: 48px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--ink-soft) 85%, transparent);
+  color: var(--cream);
+  transition: transform 0.15s var(--ease-punch), border-color 0.15s ease, background 0.15s ease;
+}
+.coderush-choices button:hover { border-color: var(--gold); transform: translateY(-3px); }
+.coderush-choices button.is-right { background: var(--gold); color: var(--ink); border-color: var(--gold); }
+.coderush-choices button.is-wrong { background: var(--apricot); color: var(--ink); animation: field-shake 0.3s; }
+
+/* On-screen d-pad hint for Data Harvest (touch) */
+.dh-hint {
+  position: absolute;
+  bottom: max(1.2rem, env(safe-area-inset-bottom));
+  left: 50%;
+  translate: -50% 0;
+  color: color-mix(in srgb, var(--cloud) 60%, transparent);
+  pointer-events: none;
+}
+
+/* ═══ SECRET STRATEGY CONSOLE ═══ */
+.secret {
+  position: fixed;
+  inset: 0;
+  z-index: 270;
+  display: grid;
+  place-items: center;
+  padding: 1.2rem;
+  background: color-mix(in srgb, var(--ink) 62%, transparent);
+  backdrop-filter: blur(8px);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0s linear 0.3s;
+}
+.secret.is-open { opacity: 1; visibility: visible; transition: opacity 0.3s ease; }
+.secret__window {
+  width: min(100%, 42rem);
+  max-height: min(80vh, 34rem);
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  border-radius: var(--radius-md);
+  border: 1px solid color-mix(in srgb, var(--gold) 45%, transparent);
+  background:
+    linear-gradient(160deg, color-mix(in srgb, var(--indigo) 24%, transparent), transparent 55%),
+    var(--ink);
+  box-shadow: 0 0 60px -12px color-mix(in srgb, var(--raspberry) 65%, transparent);
+  overflow: hidden;
+  transform: translateY(14px);
+  transition: transform 0.35s var(--ease-out);
+}
+.secret.is-open .secret__window { transform: translateY(0); }
+.secret__bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.6rem 1rem;
+  color: var(--gold);
+  border-bottom: 1px solid var(--line);
+  background: color-mix(in srgb, var(--gold) 6%, transparent);
+}
+.secret__output {
+  margin: 0;
+  padding: 1.1rem;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: var(--cloud);
+  font-size: 0.78rem;
+  line-height: 1.7;
+  text-transform: none;
+  letter-spacing: 0.03em;
+}
+.secret__output .accent { color: var(--gold); }
+.secret__prompt {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.7rem 1.1rem;
+  border-top: 1px solid var(--line);
+  color: var(--gold);
+}
+.secret__prompt input {
+  flex: 1;
+  background: none;
+  border: 0;
+  outline: none;
+  color: var(--cream);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  min-height: 34px;
+}
