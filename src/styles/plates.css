@@ -1,0 +1,221 @@
+/* ============================================================
+   GJS · OVERPRINT — plates.css
+   Per-plate compositions. No two plates share a layout.
+   ============================================================ */
+
+/* ---- Plate 00 · Cover -------------------------------------- */
+.plate--cover {
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  padding-top: calc(var(--plate-pad) + 4.5rem);
+}
+.cover-grid {
+  display: grid;
+  gap: calc(var(--space) * 2);
+  align-items: center;
+  width: 100%;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+}
+@media (max-width: 900px) {
+  .cover-grid { grid-template-columns: 1fr; }
+  .cover-specimen { order: -1; max-height: 34svh; }
+}
+.cover-title {
+  font-size: var(--step-5);
+  margin: 0.15em 0 0.35em;
+}
+.cover-line { display: inline-block; }
+.cover-services {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: calc(var(--space) * 1.4);
+}
+.svc-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  min-height: 44px;
+  padding: 0.4em 1em;
+  border: 1.5px solid color-mix(in srgb, var(--ink) 30%, transparent);
+  border-radius: 999px;
+  text-decoration: none;
+  font-size: 0.68rem;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s var(--ease-snap);
+}
+.svc-chip:hover { transform: translate(-1px, -1px); border-color: var(--ink); box-shadow: 2px 2px 0 var(--ink); }
+.svc-chip.is-intended {
+  border-color: var(--accent);
+  box-shadow: 2.5px 2.5px 0 var(--accent);
+  font-weight: 700;
+}
+.cover-ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  margin-top: calc(var(--space) * 1.5);
+}
+
+/* the 3D specimen frame */
+.cover-specimen {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  max-height: 72svh;
+  justify-self: stretch;
+}
+#specimen, .specimen-poster {
+  position: absolute;
+  inset: 0;
+}
+#specimen canvas { width: 100%; height: 100%; }
+.specimen-poster {
+  --dot: color-mix(in srgb, var(--op-a) 55%, var(--paper));
+  border: 1px solid color-mix(in srgb, var(--ink) 20%, transparent);
+  transition: opacity 0.8s;
+}
+.cover-specimen.is-live .specimen-poster { opacity: 0; }
+.specimen-caption {
+  position: absolute;
+  bottom: -1.9em;
+  left: 0;
+  opacity: 0.55;
+  font-size: 0.62rem;
+}
+
+/* ---- Plate 02 · Web ---------------------------------------- */
+.web-specimen { width: 100%; height: auto; color: var(--text); }
+.svc-list {
+  list-style: none;
+  margin: 0; padding: 0;
+  display: grid;
+  gap: 0.45em;
+  text-transform: none;
+  letter-spacing: 0.03em;
+  font-size: 0.8rem;
+}
+.svc-list li::before {
+  content: '✛ ';
+  color: var(--op-b);
+  font-weight: 700;
+}
+
+/* ---- Plate 03 · Automations (night) ------------------------- */
+.route-specimen { width: min(100%, 22rem); height: auto; margin-inline: auto; color: var(--text); }
+.pipe--pulse { animation: pipe-flow 2.2s linear infinite; }
+@keyframes pipe-flow { to { stroke-dashoffset: -40; } }
+@media (prefers-reduced-motion: reduce) { .pipe--pulse { animation: none; } }
+
+/* ---- Plate 04 · Scraping ------------------------------------ */
+.harvest-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  align-content: start;
+}
+.harvest-card {
+  display: grid;
+  gap: 0.3rem;
+  padding: 1rem;
+  border-radius: 4px;
+  font-size: 0.66rem;
+}
+.harvest-card b {
+  font-family: var(--font-display);
+  font-size: var(--step-1);
+  font-weight: 650;
+}
+.harvest-card:nth-child(2) { transform: rotate(1.2deg) translateY(0.6rem); }
+.harvest-card:nth-child(3) { transform: rotate(-1deg); }
+.harvest-card:nth-child(4) { transform: rotate(0.8deg) translateY(-0.4rem); }
+
+/* ---- Plate 05 · Consulting ---------------------------------- */
+.consulting-cols {
+  columns: 2;
+  column-gap: calc(var(--space) * 2);
+  column-rule: 1px solid color-mix(in srgb, var(--text) 18%, transparent);
+  max-width: 72rem;
+}
+.consulting-cols p { break-inside: avoid; margin-bottom: 1em; }
+@media (max-width: 760px) { .consulting-cols { columns: 1; } }
+
+/* ---- Plate 07 · Work (page-turn cards) ----------------------- */
+.work-card {
+  display: grid;
+  gap: 0.8rem;
+  padding: 1.4rem;
+  border-radius: 5px;
+  min-height: min(52svh, 24rem);
+  align-content: end;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: var(--sheet);
+  border: 1px solid color-mix(in srgb, var(--text) 22%, transparent);
+}
+.work-card .wc-plate {
+  position: absolute;
+  inset: 0 0 38%;
+  z-index: -1;
+}
+.work-card .wc-plate i {
+  position: absolute;
+  mix-blend-mode: multiply;
+  border-radius: 42% 58% 52% 48% / 52% 46% 54% 48%;
+}
+.work-card .wc-plate i:first-child { inset: 8% 22% 12% 6%; }
+.work-card .wc-plate i:last-child { inset: 16% 8% 4% 26%; }
+.work-card .wc-tag {
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+.work-card h3 {
+  font-family: var(--font-display);
+  font-size: var(--step-2);
+  font-weight: 650;
+  line-height: 1;
+}
+.work-card p { font-size: 0.9rem; opacity: 0.85; max-width: 40ch; }
+
+/* ---- Plate 08 · People ---------------------------------------- */
+.people-grid {
+  display: grid;
+  gap: calc(var(--space) * 1.4);
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  max-width: 68rem;
+}
+.person {
+  display: grid;
+  gap: 0.6rem;
+  padding: 1.4rem;
+  border-radius: 5px;
+}
+.person .p-initial {
+  font-size: clamp(4rem, 9vw, 6.5rem);
+  line-height: 0.9;
+}
+.person h3 { font-family: var(--font-display); font-weight: 640; font-size: var(--step-1); }
+.person .p-role {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  opacity: 0.65;
+}
+.person p { font-size: 0.9rem; opacity: 0.88; }
+.person:nth-child(2) { transform: translateY(1.2rem); }
+@media (max-width: 760px) { .person:nth-child(2) { transform: none; } }
+
+/* ---- Plate 09 · Contact ---------------------------------------- */
+.contact-form { max-width: 30rem; }
+.form-note { opacity: 0.5; font-size: 0.62rem; text-transform: none; letter-spacing: 0.04em; }
+
+/* Intent pre-highlight: the visitor's chosen service plate is starred */
+.plate.is-intended .plate-kicker::before {
+  content: '★ your pick · ';
+  color: var(--accent);
+  font-weight: 700;
+}

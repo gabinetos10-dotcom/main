@@ -1,0 +1,169 @@
+/* ============================================================
+   GJS · OVERPRINT — games.css
+   Exhibits that came alive: the full-screen game shell and
+   per-game HUD, printed in the visitor's accent ink.
+   ============================================================ */
+
+.game-shell {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: var(--paper);
+  color: var(--ink);
+  display: flex;
+  flex-direction: column;
+  visibility: hidden;
+}
+.game-shell.is-open { visibility: visible; }
+
+.game-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.7rem clamp(0.8rem, 3vw, 1.6rem);
+  padding-top: calc(0.7rem + env(safe-area-inset-top));
+  border-bottom: 1px solid color-mix(in srgb, var(--ink) 15%, transparent);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.game-bar .g-title { font-weight: 700; }
+.game-bar .g-plate { opacity: 0.5; display: none; }
+@media (min-width: 560px) { .game-bar .g-plate { display: inline; } }
+.game-bar .g-score { margin-left: auto; font-variant-numeric: tabular-nums; }
+.game-bar .g-hi { opacity: 0.6; font-variant-numeric: tabular-nums; }
+.game-bar button {
+  min-width: 44px; min-height: 44px;
+  display: grid; place-items: center;
+  border-radius: 50%;
+  font-size: 1rem;
+}
+.game-bar button:hover { background: color-mix(in srgb, var(--ink) 8%, transparent); }
+
+.game-stage {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  touch-action: none;
+}
+.game-stage canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* start / end panels */
+.game-panel {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+  text-align: center;
+  background: color-mix(in srgb, var(--paper) 82%, transparent);
+  backdrop-filter: blur(2px);
+}
+.game-panel[hidden] { display: none; }
+.game-panel .gp-inner { display: grid; gap: 1rem; justify-items: center; max-width: 30rem; }
+.game-panel h3 {
+  font-family: var(--font-display);
+  font-size: var(--step-3);
+  font-weight: 650;
+  line-height: 0.95;
+}
+.game-panel p { max-width: 38ch; }
+.game-panel .gp-keys {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  opacity: 0.65;
+}
+.game-panel .gp-score {
+  font-family: var(--font-mono);
+  font-size: 2rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.game-panel .gp-line {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.05rem;
+  opacity: 0.9;
+  max-width: 36ch;
+}
+.gp-newhigh {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--paper);
+  background: var(--accent);
+  padding: 0.3em 0.9em;
+  border-radius: 999px;
+}
+
+/* Press Run word prompt (DOM overlay above canvas) */
+.pr-prompt {
+  position: absolute;
+  left: 50%;
+  bottom: calc(1rem + env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  z-index: 3;
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: min(94%, 34rem);
+}
+.pr-choice {
+  font-family: var(--font-mono);
+  font-size: clamp(0.78rem, 2.6vw, 0.95rem);
+  font-weight: 600;
+  padding: 0.55em 0.9em;
+  min-height: 44px;
+  border-radius: 4px;
+  border: 1.5px solid color-mix(in srgb, var(--ink) 40%, transparent);
+  background: var(--paper);
+  transition: transform 0.12s var(--ease-snap);
+}
+.pr-choice:active { transform: scale(0.94); }
+
+/* Ink Routing tiles are canvas-drawn; this is its touch hint */
+.game-hint {
+  position: absolute;
+  left: 50%;
+  bottom: calc(0.9rem + env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  z-index: 3;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0.55;
+  white-space: nowrap;
+}
+
+/* Field Collector virtual joystick */
+.g-stick {
+  position: absolute;
+  z-index: 3;
+  width: 108px; height: 108px;
+  border-radius: 50%;
+  border: 1.5px dashed color-mix(in srgb, var(--ink) 35%, transparent);
+  pointer-events: none;
+  display: none;
+}
+.g-stick i {
+  position: absolute;
+  left: 50%; top: 50%;
+  width: 44px; height: 44px;
+  margin: -22px 0 0 -22px;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: 0.75;
+  mix-blend-mode: multiply;
+}
+.g-stick.is-active { display: block; }

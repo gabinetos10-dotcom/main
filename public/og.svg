@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" font-family="Georgia, serif">
+  <rect width="1200" height="630" fill="#f3ece3"/>
+  <g style="isolation:isolate">
+    <circle cx="180" cy="260" r="120" fill="#324ea1" style="mix-blend-mode:multiply"/>
+    <rect x="140" y="220" width="210" height="210" rx="24" fill="#9b2d84" style="mix-blend-mode:multiply"/>
+    <path d="M255 180 L390 420 L120 420 Z" fill="#ffc243" style="mix-blend-mode:multiply"/>
+  </g>
+  <g style="isolation:isolate">
+    <text x="460" y="300" font-size="110" font-weight="600" fill="#324ea1" style="mix-blend-mode:multiply">GJS Agency</text>
+    <text x="466" y="306" font-size="110" font-weight="600" fill="#9b2d84" style="mix-blend-mode:multiply">GJS Agency</text>
+  </g>
+  <text x="462" y="380" font-size="38" fill="#1a1633" font-family="monospace">histoires en couleurs</text>
+  <text x="462" y="440" font-size="26" fill="#1a1633" opacity="0.75" font-family="monospace">web creation · automations · scraping · consulting</text>
+  <g stroke="#1a1633" stroke-width="2" opacity="0.5" fill="none">
+    <circle cx="1120" cy="80" r="22"/><line x1="1120" y1="46" x2="1120" y2="114"/><line x1="1086" y1="80" x2="1154" y2="80"/>
+  </g>
+  <g>
+    <rect x="60" y="540" width="60" height="24" fill="#324ea1"/><rect x="124" y="540" width="60" height="24" fill="#9b2d84"/>
+    <rect x="188" y="540" width="60" height="24" fill="#eb6a29"/><rect x="252" y="540" width="60" height="24" fill="#ffc243"/>
+    <rect x="316" y="540" width="60" height="24" fill="#a0c3eb"/><rect x="380" y="540" width="60" height="24" fill="#f0bed9"/>
+  </g>
+</svg>

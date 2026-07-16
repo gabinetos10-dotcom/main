@@ -1,0 +1,152 @@
+/* ============================================================
+   GJS · OVERPRINT — loader.css
+   The press comes up to registration. Six ink plates lock in
+   as six real load milestones complete.
+   ============================================================ */
+
+.press-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483450;
+  background: var(--paper);
+  color: var(--ink);
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+  transition: visibility 0s 0.7s;
+}
+.press-loader[hidden] { display: none; }
+
+.loader-inner {
+  display: grid;
+  gap: 1.8rem;
+  justify-items: center;
+  text-align: center;
+  max-width: 30rem;
+  width: 100%;
+}
+
+/* -- the six plates: misaligned bars that snap into register -- */
+.loader-plates {
+  position: relative;
+  width: min(72vw, 300px);
+  height: 132px;
+}
+.loader-plate {
+  position: absolute;
+  inset: 0;
+  border-radius: 4px;
+  mix-blend-mode: multiply;
+  opacity: 0;
+  transform: translate(var(--mx, 20px), var(--my, -14px)) rotate(var(--mr, 3deg)) scale(0.96);
+  transition: transform 0.55s var(--ease-snap), opacity 0.3s ease-out;
+}
+.loader-plate.is-registered {
+  opacity: 1;
+  transform: translate(var(--rx, 0px), var(--ry, 0px)) rotate(0deg) scale(1);
+}
+/* each plate is a different cut of the pressmark sheet */
+.loader-plate:nth-child(1) { background: var(--indigo);   clip-path: polygon(0 0, 100% 0, 100% 34%, 0 34%); --rx: -1px; --ry: -1px; }
+.loader-plate:nth-child(2) { background: var(--raspberry); clip-path: polygon(0 22%, 100% 22%, 100% 56%, 0 56%); --rx: 1.5px; --ry: 0px; }
+.loader-plate:nth-child(3) { background: var(--apricot);  clip-path: polygon(0 44%, 100% 44%, 100% 78%, 0 78%); --rx: -1px; --ry: 1px; }
+.loader-plate:nth-child(4) { background: var(--gold);     clip-path: polygon(0 66%, 100% 66%, 100% 100%, 0 100%); --rx: 1px; --ry: 0.5px; }
+.loader-plate:nth-child(5) { background: var(--cloud);    clip-path: polygon(0 0, 38% 0, 38% 100%, 0 100%); --rx: 0.5px; --ry: -1.5px; }
+.loader-plate:nth-child(6) { background: var(--blush);    clip-path: polygon(62% 0, 100% 0, 100% 100%, 62% 100%); --rx: -1.5px; --ry: 1px; }
+
+/* registration crosses at the plate corners */
+.loader-plates .reg-cross { opacity: 0.7; }
+.loader-plates .reg-cross--tl { top: -28px; left: -28px; }
+.loader-plates .reg-cross--tr { top: -28px; right: -28px; }
+.loader-plates .reg-cross--bl { bottom: -28px; left: -28px; }
+.loader-plates .reg-cross--br { bottom: -28px; right: -28px; }
+
+/* -- readout ------------------------------------------------- */
+.loader-readout {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.loader-counter {
+  font-size: 1.5rem;
+  font-weight: 650;
+  letter-spacing: 0.06em;
+  min-width: 3.2ch;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.loader-stage { opacity: 0.6; min-width: 16ch; text-align: left; }
+
+/* -- intent capture ------------------------------------------ */
+.loader-intent {
+  display: grid;
+  gap: 0.8rem;
+  justify-items: center;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.4s, transform 0.4s var(--ease-press);
+}
+.loader-intent.is-in { opacity: 1; transform: none; }
+.loader-intent p {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.15rem;
+  font-weight: 500;
+}
+.intent-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+}
+.intent-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  min-height: 44px;
+  padding: 0.5em 1.1em;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border: 1.5px solid color-mix(in srgb, var(--ink) 35%, transparent);
+  border-radius: 999px;
+  background: transparent;
+  transition: transform 0.15s var(--ease-snap), border-color 0.15s, box-shadow 0.15s;
+}
+.intent-btn:hover, .intent-btn:focus-visible {
+  border-color: var(--ib, var(--ink));
+  box-shadow: 2.5px 2.5px 0 var(--ib, var(--ink));
+  transform: translate(-1px, -1px);
+}
+.intent-btn .ink-dot { --dot: var(--ib); }
+.intent-skip {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.5;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  min-height: 44px;
+}
+.intent-skip:hover { opacity: 0.9; }
+
+/* -- handoff: the printed sheet wipes up into the site -------- */
+.press-loader.is-done {
+  animation: loader-out 0.7s var(--ease-press) forwards;
+}
+@keyframes loader-out {
+  to { transform: translateY(-100%); visibility: hidden; }
+}
+.press-loader.is-done .loader-inner { animation: inner-out 0.5s ease-in forwards; }
+@keyframes inner-out { to { opacity: 0; transform: translateY(-30px); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .loader-plate { transition: opacity 0.001s; transform: none; }
+  .press-loader.is-done { animation: none; visibility: hidden; opacity: 0; transition: opacity 0.001s; }
+}

@@ -1,0 +1,117 @@
+/* ============================================================
+   GJS · OVERPRINT — egg.css
+   The Misprint: the director's test print and its secret zine.
+   ============================================================ */
+
+.zine {
+  position: fixed;
+  inset: 0;
+  z-index: 2100;
+  display: grid;
+  place-items: center;
+  padding: 1.2rem;
+  background: color-mix(in srgb, var(--ink) 55%, transparent);
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.35s, visibility 0.35s;
+}
+.zine.is-open { visibility: visible; opacity: 1; }
+
+.zine-page {
+  /* the one clean sheet inside the chaos — re-register locally */
+  --reg-x: 0.05em;
+  --reg-y: 0.03em;
+  position: relative;
+  width: min(94vw, 34rem);
+  max-height: min(88svh, 44rem);
+  overflow-y: auto;
+  background: var(--paper);
+  color: var(--ink);
+  padding: 2.2rem 1.8rem 1.8rem;
+  border-radius: 3px;
+  box-shadow: 0 30px 60px -20px rgba(26, 22, 51, 0.5);
+  transform: rotate(-1.2deg);
+}
+.zine.is-open .zine-page { animation: zine-print 0.6s var(--ease-snap); }
+@keyframes zine-print {
+  from { transform: translateY(60px) rotate(-4deg); opacity: 0; }
+  to   { transform: translateY(0) rotate(-1.2deg); opacity: 1; }
+}
+
+.zine-kicker {
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  opacity: 0.6;
+  margin-bottom: 0.8rem;
+}
+.zine-title {
+  font-family: var(--font-display);
+  font-size: var(--step-3);
+  font-weight: 660;
+  line-height: 0.95;
+  margin-bottom: 1rem;
+}
+.zine-note {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  margin-bottom: 1.2rem;
+}
+.zine-note em { font-family: var(--font-display); }
+.zine-promo {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  background: var(--gold);
+  padding: 0.4em 0.9em;
+  border-radius: 3px;
+  margin-bottom: 1.4rem;
+  user-select: all;
+}
+.zine-close {
+  position: absolute;
+  top: 0.7rem; right: 0.7rem;
+  width: 44px; height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  font-size: 1.1rem;
+}
+.zine-close:hover { background: color-mix(in srgb, var(--ink) 8%, transparent); }
+
+/* the hidden strategy console — consulting's secret toy */
+.strategy-console {
+  background: var(--ink);
+  color: var(--paper);
+  border-radius: 4px;
+  padding: 0.9rem;
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  line-height: 1.7;
+}
+.strategy-console .sc-log {
+  max-height: 9.5rem;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+  margin-bottom: 0.5rem;
+}
+.strategy-console .sc-log .sc-in { color: var(--gold); }
+.strategy-console form {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+.strategy-console input {
+  flex: 1;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--paper) 35%, transparent);
+  color: var(--paper);
+  font: inherit;
+  padding: 0.3em 0;
+  min-height: 40px;
+}
+.strategy-console input:focus { outline: none; border-color: var(--gold); }

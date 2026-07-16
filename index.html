@@ -1,0 +1,481 @@
+<!doctype html>
+<html lang="en" class="is-loading">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>GJS Agency — Histoires en couleurs · Web, Automations, Data & Strategy</title>
+  <meta name="description" content="GJS is a digital studio that layers craft, code and strategy like a printer layers inks. Web creation, automations, scraping and consulting — printed in six warm inks." />
+  <meta name="theme-color" content="#f3ece3" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+  <!-- Open Graph / Twitter -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="GJS Agency — Histoires en couleurs" />
+  <meta property="og:description" content="A digital studio that layers craft, code and strategy like a printer layers inks. Web creation · automations · scraping · consulting." />
+  <meta property="og:image" content="/og.svg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="GJS Agency — Histoires en couleurs" />
+  <meta name="twitter:description" content="Web creation · automations · scraping · consulting — printed in six warm inks." />
+
+  <!-- Critical pre-CSS paint: the sheet is warm before anything loads -->
+  <style>
+    html { background: #f3ece3; }
+    html.is-loading body > *:not(#press-loader) { visibility: hidden; }
+    #press-loader { position: fixed; inset: 0; display: grid; place-items: center; background: #f3ece3; }
+  </style>
+
+  <link rel="preload" href="/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/hanken-var.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/spline-mono-var.woff2" as="font" type="font/woff2" crossorigin />
+
+  <script type="module" src="/src/main.js"></script>
+  <noscript><style>#press-loader { display: none; } html.is-loading body > * { visibility: visible !important; }</style></noscript>
+</head>
+<body>
+
+  <a class="skip-link" href="#manifesto">Skip to content</a>
+
+  <!-- ============ THE PRESS LOADER ============ -->
+  <div id="press-loader" class="press-loader" role="dialog" aria-label="GJS press warming up" tabindex="-1">
+    <div class="loader-inner">
+      <div class="loader-plates" aria-hidden="true">
+        <div class="loader-plate"></div><div class="loader-plate"></div><div class="loader-plate"></div>
+        <div class="loader-plate"></div><div class="loader-plate"></div><div class="loader-plate"></div>
+        <span class="reg-cross reg-cross--tl"><svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1"><circle cx="11" cy="11" r="6.5"/><line x1="11" y1="0" x2="11" y2="22"/><line x1="0" y1="11" x2="22" y2="11"/></svg></span>
+        <span class="reg-cross reg-cross--tr"><svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1"><circle cx="11" cy="11" r="6.5"/><line x1="11" y1="0" x2="11" y2="22"/><line x1="0" y1="11" x2="22" y2="11"/></svg></span>
+        <span class="reg-cross reg-cross--bl"><svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1"><circle cx="11" cy="11" r="6.5"/><line x1="11" y1="0" x2="11" y2="22"/><line x1="0" y1="11" x2="22" y2="11"/></svg></span>
+        <span class="reg-cross reg-cross--br"><svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1"><circle cx="11" cy="11" r="6.5"/><line x1="11" y1="0" x2="11" y2="22"/><line x1="0" y1="11" x2="22" y2="11"/></svg></span>
+      </div>
+      <div class="loader-readout" role="status" aria-live="polite">
+        <span class="loader-counter">00</span>
+        <span class="loader-stage">warming the press</span>
+      </div>
+      <div class="loader-intent">
+        <p>While the plates register — what are you here to make?</p>
+        <div class="intent-options"></div>
+        <button type="button" class="intent-skip">just browsing</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ HEADER / PRESSMARK ============ -->
+  <header class="site-header">
+    <a class="pressmark" href="#cover" aria-label="GJS Agency — back to cover">
+      <svg viewBox="0 0 48 48" aria-hidden="true">
+        <g style="isolation: isolate">
+          <circle class="mark-plate mark-plate--a" cx="20" cy="21" r="13" fill="#324ea1" style="mix-blend-mode: multiply" />
+          <rect class="mark-plate mark-plate--b" x="16" y="16" width="23" height="23" rx="4" fill="#9b2d84" style="mix-blend-mode: multiply" />
+          <path class="mark-plate mark-plate--c" d="M24 12 L38 36 L10 36 Z" fill="#ffc243" style="mix-blend-mode: multiply" />
+        </g>
+      </svg>
+      <span class="pressmark-word">GJS&nbsp;·&nbsp;Agency</span>
+    </a>
+
+    <nav class="header-nav" aria-label="Plates">
+      <a href="#manifesto">Manifesto</a>
+      <a href="#web">Web</a>
+      <a href="#automation">Automations</a>
+      <a href="#scraping">Data</a>
+      <a href="#consulting">Advice</a>
+      <a href="#work">Work</a>
+      <a href="#contact">Contact</a>
+    </nav>
+
+    <a class="btn btn--accent op-box header-cta" href="#contact">Start a print run</a>
+
+    <button class="burger" type="button" aria-expanded="false" aria-label="Open index" aria-controls="index-card">
+      <svg viewBox="0 0 26 26" aria-hidden="true">
+        <circle cx="13" cy="13" r="9" />
+        <line class="b1" x1="3" y1="7" x2="23" y2="7" />
+        <line class="b2" x1="3" y1="13" x2="23" y2="13" />
+        <line class="b3" x1="3" y1="19" x2="23" y2="19" />
+      </svg>
+    </button>
+  </header>
+
+  <!-- ============ INDEX CARD (menu) ============ -->
+  <nav id="index-card" class="index-card" aria-label="Index of plates">
+    <p class="index-title">GJS Field Almanac — Index of Plates</p>
+    <ul class="index-list"><!-- built from config by menu.js --></ul>
+    <p class="index-foot">
+      Set in Fraunces, Hanken Grotesk &amp; Spline Sans Mono. Printed in six inks on warm stock.
+      <br /><span class="egg-crumb">n.b. — the pressmark in the colophon answers to three presses. Misprints are a feature.</span>
+    </p>
+  </nav>
+
+  <main class="almanac" id="top">
+
+    <!-- ============ PLATE 00 · COVER ============ -->
+    <section class="plate plate--cover" id="cover" data-plate="00" data-title="Cover" aria-label="Cover">
+      <div class="cover-grid">
+        <div class="cover-copy">
+          <p class="plate-kicker" data-ink-layer>GJS · Field Almanac of a Hopeful Web · No. 01</p>
+          <h1 class="t-display cover-title" data-ink-layer>
+            <span class="op cover-line">Histoires</span><br />
+            <span class="op cover-line">en&nbsp;couleurs.</span>
+          </h1>
+          <p class="t-lede" data-ink-layer>
+            <!-- PLACEHOLDER COPY -->
+            GJS is a digital studio that layers <em>craft, code and strategy</em> the way a printer
+            layers inks — where they overlap, something new appears.
+          </p>
+          <div class="cover-services t-mono" data-ink-layer aria-label="Services">
+            <a class="svc-chip" data-svc="web" href="#web"><span class="ink-dot" style="--dot: var(--indigo)"></span>Web creation · pl. 02</a>
+            <a class="svc-chip" data-svc="automation" href="#automation"><span class="ink-dot" style="--dot: var(--raspberry)"></span>Automations · pl. 03</a>
+            <a class="svc-chip" data-svc="scraping" href="#scraping"><span class="ink-dot" style="--dot: var(--apricot)"></span>Scraping · pl. 04</a>
+            <a class="svc-chip" data-svc="consulting" href="#consulting"><span class="ink-dot" style="--dot: var(--gold)"></span>Consulting · pl. 05</a>
+          </div>
+          <div class="cover-ctas" data-ink-layer>
+            <a class="btn btn--accent op-box" href="#contact">Start a print run</a>
+            <a class="btn btn--ghost op-frame" href="#manifesto">Read the manifesto</a>
+          </div>
+        </div>
+        <div class="cover-specimen" aria-hidden="true">
+          <!-- The 3D code specimen prints here after handoff; until then, a halftone poster -->
+          <div class="specimen-poster ht-tint"></div>
+          <div id="specimen"></div>
+          <p class="specimen-caption t-mono">Fig. 1 — the code specimen, screened in two inks</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PLATE 01 · MANIFESTO ============ -->
+    <section class="plate" id="manifesto" data-plate="01" data-title="Manifesto" aria-labelledby="manifesto-title">
+      <p class="plate-kicker" data-ink-layer>Plate 01 · Manifesto</p>
+      <h2 class="t-display plate-title op" id="manifesto-title" data-ink-layer>Overprint everything.</h2>
+
+      <div class="with-sidenotes">
+        <div class="stack">
+          <!-- PLACEHOLDER COPY -->
+          <p class="t-body dropcap" data-ink-layer>
+            Every studio says it blends design and engineering. We mean it mechanically. A website is a
+            press run: strategy is the imposition, code is the plate, craft is the ink<a class="fn-ref" href="#sn-1" data-note="sn-1" aria-label="Sidenote 1">1</a>.
+            Run them separately and you get flat, forgettable color. Run them <em>over each other</em> —
+            deliberately, slightly out of register — and colors appear that none of us owned alone.
+          </p>
+          <p class="t-body" data-ink-layer>
+            That is what GJS sells. Not deliverables in four separate folders, but the overlap: a site that
+            already knows your operations, an automation that respects your brand, data that arrives shaped
+            like a decision<a class="fn-ref" href="#sn-2" data-note="sn-2" aria-label="Sidenote 2">2</a>. Six inks, one sheet, no gloss.
+          </p>
+          <blockquote class="pullquote" data-ink-layer>Where the layers overlap, something new appears.</blockquote>
+
+          <!-- The Ink Mixer: authorship handed to the reader -->
+          <div class="ink-mixer op-frame" data-ink-layer>
+            <h3>Press check — mix your own spread</h3>
+            <div class="mixer-tray" role="group" aria-label="Choose two inks"></div>
+            <div class="mixer-slots" aria-hidden="true">
+              <span class="mixer-slot"><i></i></span>
+              <span>×</span>
+              <span class="mixer-slot"><i></i></span>
+              <span>=</span>
+              <span class="mixer-result"><i></i><i></i></span>
+            </div>
+            <p class="mixer-note">Tap two inks and this whole plate re-inks itself. The third color is mixed on the sheet, never in the file.</p>
+          </div>
+        </div>
+
+        <aside aria-label="Marginalia">
+          <p class="sidenote" id="sn-1" data-ink-layer><sup>1</sup> Risograph printers call an unplanned overlap a *misprint*. We call it Tuesday. <!-- PLACEHOLDER --></p>
+          <p class="sidenote" id="sn-2" data-ink-layer><sup>2</sup> The almanac hides one deliberate misprint. Collectors say it starts with ↑↑↓↓. <!-- easter-egg breadcrumb --></p>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ============ PLATE 02 · WEB CREATION ============ -->
+    <section class="plate" id="web" data-plate="02" data-title="Web Creation" aria-labelledby="web-title">
+      <p class="plate-kicker" data-ink-layer>Plate 02 · Service — Web Creation</p>
+      <div class="split split--40-60">
+        <figure class="ht" data-reveal data-ink-layer>
+          <!-- a page "printing itself": duotone wireframe specimen -->
+          <svg class="web-specimen" viewBox="0 0 320 240" role="img" aria-label="Illustration: a web page printed in two inks">
+            <g style="isolation: isolate">
+              <rect x="8" y="8" width="304" height="224" rx="6" fill="none" stroke="var(--op-a)" stroke-width="2"/>
+              <circle cx="24" cy="24" r="4" fill="var(--op-b)"/><circle cx="38" cy="24" r="4" fill="var(--op-a)"/><circle cx="52" cy="24" r="4" fill="var(--op-b)"/>
+              <rect x="24" y="44" width="150" height="26" fill="var(--op-a)" style="mix-blend-mode: multiply"/>
+              <rect x="34" y="52" width="150" height="26" fill="var(--op-b)" style="mix-blend-mode: multiply"/>
+              <rect x="24" y="92" width="210" height="8" fill="var(--op-a)" opacity="0.7"/>
+              <rect x="24" y="108" width="180" height="8" fill="var(--op-a)" opacity="0.5"/>
+              <rect x="24" y="124" width="195" height="8" fill="var(--op-a)" opacity="0.6"/>
+              <rect x="24" y="152" width="86" height="30" rx="3" fill="var(--op-b)" style="mix-blend-mode: multiply"/>
+              <rect x="30" y="158" width="86" height="30" rx="3" fill="var(--op-a)" style="mix-blend-mode: multiply"/>
+              <rect x="210" y="92" width="86" height="90" fill="var(--op-b)" opacity="0.35"/>
+              <g fill="var(--op-a)" opacity="0.8" font-family="monospace" font-size="9">
+                <text x="24" y="206">&lt;section class="hero"&gt; · printed at 60fps</text>
+                <text x="24" y="220">registration: perfect · ship: friday</text>
+              </g>
+            </g>
+          </svg>
+        </figure>
+        <div class="stack">
+          <h2 class="t-display plate-title op" id="web-title" data-ink-layer>Web creation</h2>
+          <p class="t-body" data-ink-layer>
+            <!-- PLACEHOLDER COPY -->
+            Sites composed like publications and built like instruments — fast, accessible, and impossible
+            to mistake for a template. Design systems, storefronts, editorial platforms, the odd beautiful
+            microsite. We hand-set the type; the press runs at sixty frames a second.
+          </p>
+          <ul class="svc-list t-mono" data-ink-layer>
+            <li>Art direction &amp; design systems</li>
+            <li>Front-end builds — fast, semantic, durable</li>
+            <li>CMS &amp; commerce that editors actually enjoy</li>
+          </ul>
+          <button class="exhibit op-frame" type="button" data-game="pressrun" data-ink-layer>
+            <span class="ex-tag">Exhibit A — interactive plate</span>
+            <span class="ex-name">Press Run</span>
+            <span class="ex-desc">Set the type before the press outruns you. Each correct block prints another row of the page.</span>
+            <span class="ex-hs" data-hs="pressrun"></span>
+            <span class="ex-cta">Pull the lever → play</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PLATE 03 · AUTOMATIONS (night press) ============ -->
+    <section class="plate plate--night" id="automation" data-plate="03" data-title="Automations" aria-labelledby="automation-title">
+      <p class="plate-kicker" data-ink-layer>Plate 03 · Service — Automations · The Night Press</p>
+      <div class="split split--60-40">
+        <div class="stack">
+          <h2 class="t-display plate-title op" id="automation-title" data-ink-layer>Automations</h2>
+          <p class="t-body" data-ink-layer>
+            <!-- PLACEHOLDER COPY -->
+            The night shift nobody has to work. We wire your tools together — forms to CRMs, orders to
+            invoices, signals to Slack — into routes that run while you sleep. Triggers in, actions out,
+            ink flowing through the pipes all night.
+          </p>
+          <ul class="svc-list t-mono" data-ink-layer>
+            <li>Workflow design — n8n, Make, Zapier, custom</li>
+            <li>API integrations &amp; internal tooling</li>
+            <li>Monitoring, retries, and honest logging</li>
+          </ul>
+          <button class="exhibit op-frame" type="button" data-game="inkrouting" data-ink-layer>
+            <span class="ex-tag">Exhibit B — interactive plate</span>
+            <span class="ex-name">Ink Routing</span>
+            <span class="ex-desc">Rotate the press pipes to route ink from trigger to action before the reservoir runs dry.</span>
+            <span class="ex-hs" data-hs="inkrouting"></span>
+            <span class="ex-cta">Open the valves → play</span>
+          </button>
+        </div>
+        <figure data-ink-layer>
+          <!-- animated route diagram: ink pulses through the pipes -->
+          <svg class="route-specimen" viewBox="0 0 280 300" role="img" aria-label="Illustration: an automation route, drawn as press plumbing">
+            <g fill="none" stroke-linecap="round">
+              <path class="pipe" d="M40 30 C40 110 140 90 140 150 S240 190 240 270" stroke="var(--op-a)" stroke-width="3"/>
+              <path class="pipe pipe--pulse" d="M40 30 C40 110 140 90 140 150 S240 190 240 270" stroke="var(--op-b)" stroke-width="3" stroke-dasharray="14 26"/>
+              <path class="pipe" d="M240 30 C240 90 150 100 145 148" stroke="var(--op-a)" stroke-width="2" opacity="0.6"/>
+              <path class="pipe" d="M40 270 C40 210 130 200 138 155" stroke="var(--op-a)" stroke-width="2" opacity="0.6"/>
+            </g>
+            <g font-family="monospace" font-size="10" fill="currentColor">
+              <circle cx="40" cy="30" r="10" fill="var(--op-b)"/><text x="58" y="34">trigger · new order</text>
+              <circle cx="240" cy="30" r="7" fill="var(--op-a)"/><text x="140" y="20">signal</text>
+              <circle cx="140" cy="150" r="12" fill="none" stroke="currentColor" stroke-width="1.5"/><text x="158" y="154">router</text>
+              <circle cx="40" cy="270" r="7" fill="var(--op-a)"/><text x="56" y="274">log</text>
+              <circle cx="240" cy="270" r="10" fill="var(--op-b)"/><text x="130" y="286">action · invoice sent</text>
+            </g>
+          </svg>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ============ PLATE 04 · SCRAPING ============ -->
+    <section class="plate" id="scraping" data-plate="04" data-title="Scraping" aria-labelledby="scraping-title">
+      <p class="plate-kicker" data-ink-layer>Plate 04 · Service — Data &amp; Scraping</p>
+      <h2 class="t-display plate-title op" id="scraping-title" data-ink-layer>Scraping&nbsp;&amp;&nbsp;data</h2>
+      <div class="split split--60-40">
+        <div class="stack">
+          <p class="t-body" data-ink-layer>
+            <!-- PLACEHOLDER COPY -->
+            The web is a field; we harvest it politely. Prices, listings, leads, mentions — gathered on
+            schedule, deduplicated, and delivered as clean rows you can actually use. Respectful of
+            robots.txt, rate limits and the law; ruthless about data quality.
+          </p>
+          <ul class="svc-list t-mono" data-ink-layer>
+            <li>Monitoring &amp; price intelligence</li>
+            <li>Lead &amp; market research pipelines</li>
+            <li>Delivery to sheets, warehouses or webhooks</li>
+          </ul>
+          <button class="exhibit op-frame" type="button" data-game="fieldcollector" data-ink-layer>
+            <span class="ex-tag">Exhibit C — interactive plate</span>
+            <span class="ex-name">Field Collector</span>
+            <span class="ex-desc">Steer the little crawler across the printed field. Harvest clean specimens, dodge the smudges.</span>
+            <span class="ex-hs" data-hs="fieldcollector"></span>
+            <span class="ex-cta">Release the crawler → play</span>
+          </button>
+        </div>
+        <div class="harvest-grid ht" data-reveal data-ink-layer aria-hidden="true">
+          <!-- specimen cards: harvested data, pinned like pressed plants -->
+          <div class="harvest-card op-frame"><span class="t-mono">specimen 042</span><b>€ 1 240,00</b><span class="t-mono">price · nightly</span></div>
+          <div class="harvest-card op-frame"><span class="t-mono">specimen 118</span><b>3 407 rows</b><span class="t-mono">listings · weekly</span></div>
+          <div class="harvest-card op-frame"><span class="t-mono">specimen 007</span><b>+12,4 %</b><span class="t-mono">trend · live</span></div>
+          <div class="harvest-card op-frame"><span class="t-mono">specimen 231</span><b>98,2 % clean</b><span class="t-mono">dedup rate</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PLATE 05 · CONSULTING ============ -->
+    <section class="plate" id="consulting" data-plate="05" data-title="Consulting" aria-labelledby="consulting-title">
+      <p class="plate-kicker" data-ink-layer>Plate 05 · Service — Consulting</p>
+      <h2 class="t-display plate-title op" id="consulting-title" data-ink-layer>Consulting</h2>
+      <div class="with-sidenotes">
+        <div class="consulting-cols" data-ink-layer>
+          <!-- PLACEHOLDER COPY -->
+          <p class="t-body">
+            Before any ink touches paper, someone has to decide what is worth printing. We audit stacks,
+            untangle roadmaps, and tell you — kindly, in writing — which rewrite to cancel. Strategy at GJS
+            is not a slide deck; it is the imposition plan the whole press run follows.
+          </p>
+          <p class="t-body">
+            Engagements run two to six weeks: interviews, a technical read of what you actually have,
+            and a route sheet of what to build, buy, automate or delete<a class="fn-ref" href="#sn-3" data-note="sn-3" aria-label="Sidenote 3">3</a>.
+            No retainer theatre. You leave with a plan your own team can print from.
+          </p>
+        </div>
+        <aside aria-label="Marginalia">
+          <p class="sidenote" id="sn-3" data-ink-layer><sup>3</sup> Consulting has no exhibit on this plate. Its game is hidden behind the misprint — advisors love a secret. <!-- PLACEHOLDER --></p>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ============ PLATE 06 · PROCESS (route sheet) ============ -->
+    <section class="plate" id="process" data-plate="06" data-title="Process" aria-labelledby="process-title">
+      <p class="plate-kicker" data-ink-layer>Plate 06 · The Route Sheet</p>
+      <h2 class="t-display plate-title op" id="process-title" data-ink-layer>How a job moves through the press</h2>
+      <div class="route" data-ink-layer>
+        <!-- PLACEHOLDER COPY -->
+        <div class="route-step" data-step="1">
+          <h3>Intake</h3>
+          <p>One honest conversation. What you make, who it is for, what "done" means.</p>
+          <span class="t-mono">output · a one-page brief we both sign</span>
+        </div>
+        <div class="route-step" data-step="2">
+          <h3>Imposition</h3>
+          <p>Strategy and scoping — what to build, what to automate, what to leave alone.</p>
+          <span class="t-mono">output · route sheet &amp; fixed quote</span>
+        </div>
+        <div class="route-step" data-step="3">
+          <h3>Plate-making</h3>
+          <p>Design and build in weekly proofs. You see real ink early and often.</p>
+          <span class="t-mono">output · staging link, every friday</span>
+        </div>
+        <div class="route-step" data-step="4">
+          <h3>Press check</h3>
+          <p>Performance, accessibility, and the wobble test. Nothing ships out of register.</p>
+          <span class="t-mono">output · lighthouse &amp; a11y report</span>
+        </div>
+        <div class="route-step" data-step="5">
+          <h3>Print run</h3>
+          <p>Launch, hand-over, and the automations that keep it running overnight.</p>
+          <span class="t-mono">output · keys, docs &amp; a colophon credit</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PLATE 07 · SELECTED WORK (page-turn) ============ -->
+    <section class="plate pageturn" id="work" data-plate="07" data-title="Selected Work" aria-labelledby="work-title">
+      <p class="plate-kicker" data-ink-layer>Plate 07 · Selected Work — turn the pages sideways</p>
+      <h2 class="t-display plate-title op" id="work-title" data-ink-layer>Selected work</h2>
+      <div class="pageturn-track"><!-- built from config by plates.js --></div>
+    </section>
+
+    <!-- ============ PLATE 08 · PEOPLE ============ -->
+    <section class="plate" id="people" data-plate="08" data-title="The People" aria-labelledby="people-title">
+      <p class="plate-kicker" data-ink-layer>Plate 08 · The People Behind G·J·S</p>
+      <h2 class="t-display plate-title op" id="people-title" data-ink-layer>Three initials, six inks</h2>
+      <div class="people-grid"><!-- built from config by plates.js --></div>
+    </section>
+
+    <!-- ============ PLATE 09 · CONTACT ============ -->
+    <section class="plate" id="contact" data-plate="09" data-title="Contact" aria-labelledby="contact-title">
+      <p class="plate-kicker" data-ink-layer>Plate 09 · Contact — Start a Print Run</p>
+      <div class="split split--60-40">
+        <div class="stack">
+          <h2 class="t-display plate-title op" id="contact-title" data-ink-layer>Tell us what to print.</h2>
+          <p class="t-body" data-ink-layer>
+            <!-- PLACEHOLDER COPY -->
+            A website, an automation, a data pipeline, or just an honest second opinion — write a few
+            lines and we will answer within two working days, in your language or ours.
+          </p>
+          <p class="t-mono" data-ink-layer>hello@gjs.agency · Paris &amp; remote <!-- PLACEHOLDER --></p>
+        </div>
+        <form class="contact-form stack" action="mailto:hello@gjs.agency" method="post" enctype="text/plain" data-ink-layer>
+          <div class="field">
+            <label for="cf-name">Your name</label>
+            <input id="cf-name" name="name" type="text" autocomplete="name" required />
+          </div>
+          <div class="field">
+            <label for="cf-email">Email</label>
+            <input id="cf-email" name="email" type="email" autocomplete="email" required />
+          </div>
+          <div class="field">
+            <label for="cf-msg">What should the press print?</label>
+            <textarea id="cf-msg" name="message" rows="5" required></textarea>
+          </div>
+          <button class="btn btn--accent op-box" type="submit">Send to the press room</button>
+          <p class="t-mono form-note"><!-- PLACEHOLDER: wire to your form backend --> form posts via mailto for now — swap in your endpoint</p>
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============ COLOPHON ============ -->
+  <footer class="colophon deckle" id="colophon" aria-label="Colophon">
+    <p class="plate-kicker">Colophon · Edition No. 01 · Print run: unlimited</p>
+    <p class="t-display colophon-word op" data-op="G·J·S">G·J·S</p>
+    <div class="colophon-grid">
+      <div>
+        <h4>The studio</h4>
+        <ul>
+          <li><a href="#manifesto">Manifesto</a></li>
+          <li><a href="#process">Process</a></li>
+          <li><a href="#work">Selected work</a></li>
+          <li><a href="#people">The people</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Services</h4>
+        <ul>
+          <li><a href="#web">Web creation</a></li>
+          <li><a href="#automation">Automations</a></li>
+          <li><a href="#scraping">Scraping &amp; data</a></li>
+          <li><a href="#consulting">Consulting</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Elsewhere</h4>
+        <ul>
+          <!-- PLACEHOLDER LINKS -->
+          <li><a href="#" rel="me">LinkedIn</a></li>
+          <li><a href="#" rel="me">Instagram</a></li>
+          <li><a href="#" rel="me">GitHub</a></li>
+          <li><a href="mailto:hello@gjs.agency">hello@gjs.agency</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Press notes</h4>
+        <ul class="press-notes">
+          <li>Printed in six warm inks on recycled pixels.</li>
+          <li>Type: Fraunces · Hanken Grotesk · Spline Sans Mono.</li>
+          <li>Registration errors are intentional. Mostly.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="colophon-signoff">
+      <span>© 2026 GJS Agency — histoires en couleurs. <!-- PLACEHOLDER --></span>
+      <button class="colophon-mark" type="button" aria-label="GJS pressmark — press three times for a surprise">
+        <svg viewBox="0 0 48 48" width="34" height="34" aria-hidden="true">
+          <g style="isolation: isolate">
+            <circle cx="20" cy="21" r="13" fill="#a0c3eb" style="mix-blend-mode: screen" />
+            <rect x="16" y="16" width="23" height="23" rx="4" fill="#f0bed9" style="mix-blend-mode: screen" />
+            <path d="M24 12 L38 36 L10 36 Z" fill="#ffc243" style="mix-blend-mode: screen" />
+          </g>
+        </svg>
+      </button>
+      <span>No pixels were harmed. One was slightly misregistered.</span>
+    </div>
+  </footer>
+
+  <div class="press-note" role="status" aria-live="polite"></div>
+
+</body>
+</html>

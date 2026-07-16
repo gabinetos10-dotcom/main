@@ -1,0 +1,255 @@
+/* ============================================================
+   GJS · OVERPRINT — overprint.css
+   The signature mechanic. Two ink plates, multiply blend,
+   a hair out of register. Where they overlap, a third color
+   is BORN — never hard-coded.
+   ============================================================ */
+
+/* ---- Overprinted text ------------------------------------
+   <h2 class="op" data-op="Automations">Automations</h2>
+   The real text stays for selection/AT; both visible layers are
+   pseudo-element plates. Scope --op-a/--op-b to re-ink. */
+.op {
+  position: relative;
+  color: transparent;
+  isolation: isolate;
+  -webkit-user-select: text;
+}
+.op::before,
+.op::after {
+  content: attr(data-op);
+  position: absolute;
+  inset: 0;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+.op::before {
+  color: var(--op-a);
+  transform: translate(calc(var(--reg-x) * -0.5), calc(var(--reg-y) * -0.5));
+}
+.op::after {
+  color: var(--op-b);
+  transform: translate(calc(var(--reg-x) * 0.5), calc(var(--reg-y) * 0.5));
+}
+
+/* Registration wobble — plates separate, then snap back into
+   register. Applied on hover/focus of the element itself or of a
+   wrapping [data-wobble-parent]. */
+@keyframes plate-wobble-a {
+  0%   { transform: translate(calc(var(--reg-x) * -0.5), calc(var(--reg-y) * -0.5)); }
+  30%  { transform: translate(calc(var(--reg-x) * -3.4), calc(var(--reg-y) * -2.4)) rotate(-0.4deg); }
+  55%  { transform: translate(calc(var(--reg-x) *  0.9), calc(var(--reg-y) *  0.6)); }
+  100% { transform: translate(-0.008em, -0.004em); }
+}
+@keyframes plate-wobble-b {
+  0%   { transform: translate(calc(var(--reg-x) * 0.5), calc(var(--reg-y) * 0.5)); }
+  30%  { transform: translate(calc(var(--reg-x) *  3.4), calc(var(--reg-y) *  2.6)) rotate(0.4deg); }
+  55%  { transform: translate(calc(var(--reg-x) * -0.9), calc(var(--reg-y) * -0.6)); }
+  100% { transform: translate(0.008em, 0.004em); }
+}
+.op:hover::before, .op:focus-visible::before,
+[data-wobble-parent]:hover .op::before,
+[data-wobble-parent]:focus-visible .op::before,
+.op.is-wobbling::before {
+  animation: plate-wobble-a 0.55s var(--ease-snap) both;
+}
+.op:hover::after, .op:focus-visible::after,
+[data-wobble-parent]:hover .op::after,
+[data-wobble-parent]:focus-visible .op::after,
+.op.is-wobbling::after {
+  animation: plate-wobble-b 0.55s var(--ease-snap) both;
+}
+
+/* ---- Overprinted box (buttons, cards, chips) --------------
+   Two offset color plates behind the content. */
+.op-box {
+  position: relative;
+  isolation: isolate;
+}
+.op-box::before,
+.op-box::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  mix-blend-mode: multiply;
+  z-index: -1;
+  transition: transform 0.3s var(--ease-snap);
+}
+.op-box::before {
+  background: var(--op-a);
+  transform: translate(-2px, -2px);
+}
+.op-box::after {
+  background: var(--op-b);
+  transform: translate(2px, 2px);
+}
+.op-box:hover::before, .op-box:focus-visible::before { transform: translate(-5px, -4px) rotate(-0.5deg); }
+.op-box:hover::after,  .op-box:focus-visible::after  { transform: translate(5px, 4px) rotate(0.5deg); }
+.op-box:active::before, .op-box:active::after { transform: translate(0, 0); }
+
+/* Outline variant: two offset ink strokes, paper core */
+.op-frame {
+  position: relative;
+  isolation: isolate;
+  background: var(--sheet);
+}
+.op-frame::before,
+.op-frame::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+  transition: transform 0.3s var(--ease-snap);
+}
+.op-frame::before { border: 1.5px solid var(--op-a); transform: translate(-2px, -2px); }
+.op-frame::after  { border: 1.5px solid var(--op-b); transform: translate(2px, 2px); }
+.op-frame:hover::before { transform: translate(-4px, -3px); }
+.op-frame:hover::after  { transform: translate(4px, 3px); }
+
+/* ---- Ink swatches / plate chips --------------------------- */
+.ink-dot {
+  display: inline-block;
+  width: 0.85em; height: 0.85em;
+  border-radius: 50%;
+  background: var(--dot, var(--op-a));
+  vertical-align: -0.08em;
+}
+
+/* ============================================================
+   REGISTRATION FURNITURE — the press sheet's working marks.
+   Injected by core/registration.js into every .plate.
+   ============================================================ */
+.reg-furniture {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* ✛ crosshair */
+.reg-cross {
+  position: absolute;
+  width: 22px; height: 22px;
+  opacity: 0.55;
+  color: var(--text);
+}
+.reg-cross svg { width: 100%; height: 100%; }
+.reg-cross--tl { top: 10px; left: 10px; }
+.reg-cross--tr { top: 10px; right: 10px; }
+.reg-cross--bl { bottom: 10px; left: 10px; }
+.reg-cross--br { bottom: 10px; right: 10px; }
+
+/* trim corners */
+.reg-trim {
+  position: absolute;
+  width: 16px; height: 16px;
+  border-color: var(--text);
+  border-style: solid;
+  border-width: 0;
+  opacity: 0.4;
+}
+.reg-trim--tl { top: 24px; left: 24px; border-top-width: 1px; border-left-width: 1px; }
+.reg-trim--tr { top: 24px; right: 24px; border-top-width: 1px; border-right-width: 1px; }
+.reg-trim--bl { bottom: 24px; left: 24px; border-bottom-width: 1px; border-left-width: 1px; }
+.reg-trim--br { bottom: 24px; right: 24px; border-bottom-width: 1px; border-right-width: 1px; }
+
+/* six-ink color bar */
+.reg-colorbar {
+  position: absolute;
+  top: 12px; left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 2px;
+  opacity: 0.85;
+}
+.reg-colorbar i {
+  width: 14px; height: 7px;
+  display: block;
+}
+@media (max-width: 640px) {
+  .reg-colorbar i { width: 9px; height: 5px; }
+}
+
+/* "calibrating" — marks drift in and settle when a plate enters */
+.plate .reg-cross, .plate .reg-trim, .plate .reg-colorbar {
+  transition: transform 0.9s var(--ease-press), opacity 0.9s var(--ease-press);
+}
+.plate:not(.is-inked) .reg-cross--tl { transform: translate(-6px, -4px); opacity: 0; }
+.plate:not(.is-inked) .reg-cross--tr { transform: translate(6px, -4px); opacity: 0; }
+.plate:not(.is-inked) .reg-cross--bl { transform: translate(-6px, 4px); opacity: 0; }
+.plate:not(.is-inked) .reg-cross--br { transform: translate(6px, 4px); opacity: 0; }
+.plate:not(.is-inked) .reg-colorbar  { transform: translateX(-50%) translateY(-8px); opacity: 0; }
+
+/* ============================================================
+   HALFTONE — content resolves from coarse dots to sharp.
+   core/halftone.js drives --ht-r from 1 → 10 on scroll-in.
+   (mask tile is 13px; a 10px dot radius over-covers it.)
+   ============================================================ */
+.ht {
+  --ht-r: 10px; /* resolved by default; JS rewinds it before reveal */
+  -webkit-mask-image: radial-gradient(circle, #000 calc(var(--ht-r) - 0.5px), transparent var(--ht-r));
+  mask-image: radial-gradient(circle, #000 calc(var(--ht-r) - 0.5px), transparent var(--ht-r));
+  -webkit-mask-size: 13px 13px;
+  mask-size: 13px 13px;
+  -webkit-mask-position: center;
+  mask-position: center;
+}
+
+/* Static halftone texture — a printed tint block */
+.ht-tint {
+  background-image: radial-gradient(circle, var(--dot, var(--op-a)) 1.3px, transparent 1.4px);
+  background-size: 9px 9px;
+}
+
+/* Stepped gradient — print-true, no smooth fades */
+.stepped {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--op-a) 34%, var(--sheet)) 0 12px,
+    color-mix(in srgb, var(--op-a) 22%, var(--sheet)) 12px 24px,
+    color-mix(in srgb, var(--op-a) 12%, var(--sheet)) 24px 36px,
+    var(--sheet) 36px 48px
+  );
+}
+
+/* ---- Duotone for imagery ---------------------------------- */
+.duotone {
+  filter: grayscale(1) contrast(1.05);
+  position: relative;
+}
+.duotone-wrap {
+  position: relative;
+  isolation: isolate;
+  background: var(--op-a);
+}
+.duotone-wrap > * { mix-blend-mode: screen; }
+.duotone-wrap::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: var(--op-b);
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+
+/* ============================================================
+   MISPRINT MODE — the director's test print. Plates gloriously
+   out of register, everything overprints wildly.
+   ============================================================ */
+html.misprint {
+  --reg-x: 0.35em;
+  --reg-y: 0.22em;
+}
+html.misprint .op-box::before { transform: translate(-9px, -7px) rotate(-1.2deg); }
+html.misprint .op-box::after  { transform: translate(9px, 7px) rotate(1.2deg); }
+html.misprint .plate { animation: misprint-drift 2.8s ease-in-out infinite alternate; }
+html.misprint .ht { --ht-r: 4.5px; }
+@keyframes misprint-drift {
+  from { transform: translate(0, 0) rotate(0); }
+  to   { transform: translate(4px, -3px) rotate(0.25deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  html.misprint .plate { animation: none; }
+}
