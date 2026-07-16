@@ -8,7 +8,8 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "build:portable": "vite build --mode portable"
+    "build:portable": "vite build --mode portable",
+    "build:folder": "vite build --mode folder"
   },
   "dependencies": {
     "gsap": "^3.12.5",

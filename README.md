@@ -13,15 +13,19 @@ never hard-coded. Hover anything and the plates wobble out of register, then sna
 
 ## Quickest look — no install
 
-**`GJS-Agency.html`** at the repo root is a self-contained build: double-click it
-and the whole site runs (fonts, 3D, games, everything inlined — ~1 MB).
-Regenerate it after editing the source with:
+Open **`site/index.html`** (or just double-click the root `index.html` — it
+forwards you there automatically when opened from disk). The `site/` folder is a
+pre-built copy that works straight off the filesystem: classic script, fonts
+inlined, no server and no npm needed.
+
+Regenerate it after editing the source:
 
 ```bash
-npm run build:portable   # → dist-portable/index.html
+npm run build:folder     # → site/ (double-clickable folder build)
+npm run build:portable   # → dist-portable/index.html (same, in ONE file)
 ```
 
-That file is for previewing/sharing; deploy the real `dist/` build to hosting.
+Those are for previewing/sharing; deploy the real `dist/` build to hosting.
 
 ## Run it (development)
 
