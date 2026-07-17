@@ -35,7 +35,10 @@ export default function Terminal() {
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    inputRef.current?.focus();
+    // léger différé : la touche qui a OUVERT le terminal (le « s » de gjs,
+    // le « a » du Konami) ne doit pas fuir dans le champ de saisie
+    const t = setTimeout(() => inputRef.current?.focus(), 40);
+    return () => clearTimeout(t);
   }, []);
 
   useEffect(() => {

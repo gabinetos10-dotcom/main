@@ -67,6 +67,8 @@ export function Header() {
       setCompact(y > 40);
       if (y > 180 && y > lastY.current + 6) setHidden(true);
       else if (y < lastY.current - 4 || y <= 180) setHidden(false);
+      // en zone hero, aucune section n'est « active »
+      if (y < window.innerHeight * 0.4) setActive(null);
       lastY.current = y;
     };
     window.addEventListener("scroll", onScroll, { passive: true });

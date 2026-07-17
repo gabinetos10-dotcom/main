@@ -126,7 +126,7 @@ export function Services() {
                   {/* Titre vertical (fermé) */}
                   <h3
                     className={cn(
-                      "absolute bottom-8 left-8 origin-bottom-left font-display text-2xl font-semibold text-mist transition-opacity duration-300 [writing-mode:vertical-rl] rotate-180",
+                      "absolute bottom-8 left-5 font-display text-2xl font-semibold text-mist transition-opacity duration-300 [writing-mode:vertical-rl] rotate-180",
                       open ? "opacity-0" : "opacity-100 delay-200"
                     )}
                     aria-hidden={open}
