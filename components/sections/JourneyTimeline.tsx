@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { SectionHeading } from "@/components/ui/Section";
 import Botanical from "@/components/decor/Botanical";
 import { usePrefersReducedMotion } from "@/lib/hooks";
@@ -10,14 +10,22 @@ import { journey } from "@/lib/content";
  * « Le parcours d'un oui » — timeline épinglée. Le défilement vertical fait
  * glisser horizontalement les étapes (GSAP ScrollTrigger + pin). Chaque étape
  * se révèle via containerAnimation. Repli vertical si prefers-reduced-motion.
+ *
+ * On ne bascule sur la version horizontale (GSAP) qu'APRÈS le montage client,
+ * une fois la préférence de mouvement connue — le rendu SSR/initial reste le
+ * repli vertical, sûr et sans dépendance JS.
  */
 export default function JourneyTimeline() {
   const reduced = usePrefersReducedMotion();
+  const [mounted, setMounted] = useState(false);
   const sectionRef = useRef<HTMLDivElement | null>(null);
   const trackRef = useRef<HTMLDivElement | null>(null);
 
+  useEffect(() => setMounted(true), []);
+  const horizontalMode = mounted && !reduced;
+
   useEffect(() => {
-    if (reduced) return;
+    if (!horizontalMode) return;
     const section = sectionRef.current;
     const track = trackRef.current;
     if (!section || !track) return;
@@ -70,10 +78,10 @@ export default function JourneyTimeline() {
     })();
 
     return () => cleanup();
-  }, [reduced]);
+  }, [horizontalMode]);
 
-  if (reduced) {
-    // Repli accessible : timeline verticale simple.
+  if (!horizontalMode) {
+    // Repli accessible (SSR + reduced-motion) : timeline verticale simple.
     return (
       <section id="parcours" className="relative py-20">
         <div className="mx-auto max-w-3xl px-5 sm:px-8">

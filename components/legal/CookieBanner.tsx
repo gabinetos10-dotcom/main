@@ -48,7 +48,7 @@ export default function CookieBanner() {
           role="dialog"
           aria-label="Gestion des cookies"
           aria-live="polite"
-          className="fixed inset-x-3 bottom-3 z-[75] sm:inset-x-auto sm:left-6 sm:max-w-md"
+          className="fixed inset-x-3 bottom-3 z-30 sm:inset-x-auto sm:left-6 sm:max-w-md"
           initial={{ opacity: 0, y: 30, filter: "blur(8px)" }}
           animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
           exit={{ opacity: 0, y: 30, filter: "blur(8px)" }}
