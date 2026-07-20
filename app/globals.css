@@ -1,0 +1,210 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================================
+   MAISON JOLIE WEDDING — Design tokens « Solaire & poudrée »
+   Palette exacte du brief. Les variables pilotent aussi le mini-jeu moodboard
+   (le fond réagit en direct aux couleurs choisies par l'utilisateur).
+   ========================================================================== */
+:root {
+  --creme: #fdf7f0; /* fond principal, chaleureux et lumineux */
+  --ivoire: #fffdfa; /* surfaces claires, cartes */
+  --blush: #f6d2ce; /* rose pastel principal */
+  --rose-poudre: #e39aa1; /* rose plus soutenu — accents, hovers */
+  --soleil: #fbe3a1; /* jaune clair ensoleillé */
+  --miel: #f4c871; /* jaune doré — accent chaud secondaire */
+  --sauge: #afc7a6; /* vert eucalyptus — fraîcheur botanique */
+  --terracotta: #e38b6d; /* corail chaud — CTA & pics d'énergie */
+  --or: #c9a227; /* filets dorés très fins, détails précieux */
+  --prune: #46343b; /* encre — texte & fond du footer */
+
+  /* Couleurs vivantes pilotées par le moodboard (valeurs par défaut = ambiance) */
+  --mood-1: var(--blush);
+  --mood-2: var(--soleil);
+  --mood-3: var(--sauge);
+  --mood-ink: var(--prune);
+
+  --header-h: 5.5rem;
+
+  color-scheme: light;
+}
+
+@layer base {
+  * {
+    /* Filets & bordures par défaut : or très discret */
+    border-color: color-mix(in oklab, var(--or) 22%, transparent);
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    scroll-behavior: auto; /* Lenis pilote le smooth scroll */
+  }
+
+  body {
+    background-color: var(--creme);
+    color: var(--prune);
+    font-family: var(--font-hanken), "Manrope", system-ui, sans-serif;
+    font-feature-settings: "ss01", "cv01";
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  /* Titres : serif d'affichage, réglages optiques doux/organiques */
+  h1, h2, h3, .font-serif {
+    font-optical-sizing: auto;
+    font-variation-settings: "SOFT" 60, "WONK" 0;
+  }
+
+  ::selection {
+    background: color-mix(in oklab, var(--rose-poudre) 45%, transparent);
+    color: var(--prune);
+  }
+
+  /* Focus visible élégant — anneau doré doux */
+  :focus-visible {
+    outline: 2px solid color-mix(in oklab, var(--or) 70%, transparent);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  /* Scrollbar personnalisée — fine, dégradée blush→terracotta, poignée pétale */
+  @supports (scrollbar-color: red blue) {
+    html {
+      scrollbar-color: var(--rose-poudre) transparent;
+      scrollbar-width: thin;
+    }
+  }
+  ::-webkit-scrollbar {
+    width: 11px;
+  }
+  ::-webkit-scrollbar-track {
+    background: color-mix(in oklab, var(--blush) 18%, var(--creme));
+  }
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(var(--blush), var(--terracotta));
+    border-radius: 999px;
+    border: 3px solid var(--creme);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(var(--rose-poudre), var(--terracotta));
+  }
+}
+
+@layer components {
+  /* Kicker calligraphié ou capitales très espacées */
+  .kicker {
+    @apply font-sans uppercase tracking-kicker text-[0.7rem] font-semibold;
+    color: color-mix(in oklab, var(--terracotta) 80%, var(--prune));
+  }
+
+  .script-accent {
+    font-family: var(--font-ephesis), "Petit Formal Script", cursive;
+    line-height: 1;
+  }
+
+  /* Carte façon carton d'invitation */
+  .invitation-card {
+    background: var(--ivoire);
+    border: 1px solid color-mix(in oklab, var(--or) 26%, transparent);
+    border-radius: 1.75rem;
+    box-shadow: 0 30px 80px -50px rgba(70, 52, 59, 0.4);
+  }
+
+  /* Filet doré 1px — séparateur précieux */
+  .hairline-gold {
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      color-mix(in oklab, var(--or) 60%, transparent) 20%,
+      color-mix(in oklab, var(--or) 60%, transparent) 80%,
+      transparent
+    );
+  }
+
+  /* Lien souligné qui se trace au survol */
+  .link-underline {
+    position: relative;
+    white-space: nowrap;
+  }
+  .link-underline::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    height: 1px;
+    width: 100%;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .link-underline:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+
+  /* Texte « soleil » — dégradé chaud pour mots-clés */
+  .text-sunwash {
+    background: linear-gradient(
+      100deg,
+      var(--terracotta),
+      var(--miel) 45%,
+      var(--rose-poudre)
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+}
+
+@layer utilities {
+  /* Grain organique global — overlay très léger */
+  .grain-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    pointer-events: none;
+    opacity: 0.4;
+    mix-blend-mode: soft-light;
+    background-image: var(--grain-url);
+    background-size: 220px 220px;
+  }
+
+  .mask-reveal {
+    -webkit-mask-image: linear-gradient(180deg, #000 0 100%);
+    mask-image: linear-gradient(180deg, #000 0 100%);
+  }
+
+  /* Empêche le flash de contenu avant l'hydratation du preloader */
+  .no-scroll {
+    overflow: hidden !important;
+    height: 100vh;
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+  .text-pretty {
+    text-wrap: pretty;
+  }
+}
+
+/* ============================================================================
+   prefers-reduced-motion — version apaisée, sans mouvement parasite
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .grain-overlay {
+    display: none;
+  }
+}
