@@ -65,7 +65,7 @@
 
   --container: 78rem;
   --container-wide: 90rem;
-  --gutter: clamp(1.25rem, 5vw, 4.5rem);
+  --gutter: clamp(1.4rem, 5.5vw, 4.5rem);
 
   /* Rayons généreux */
   --radius-s: 0.7rem;
