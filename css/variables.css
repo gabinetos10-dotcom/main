@@ -1,0 +1,102 @@
+/* ============================================================
+   MAISON JOLIE WEDDING — Design tokens
+   Palette « Solaire & poudrée » + type + motion + espace
+   ============================================================ */
+
+:root {
+  /* ---- Couleurs (voir brief §2.1) ---- */
+  --creme:        #FDF7F0; /* fond principal, chaleureux et lumineux */
+  --ivoire:       #FFFDFA; /* surfaces claires, cartes */
+  --blush:        #F6D2CE; /* rose pastel principal */
+  --rose-poudre:  #E39AA1; /* rose plus soutenu — accents, hovers */
+  --soleil:       #FBE3A1; /* jaune clair ensoleillé */
+  --miel:         #F4C871; /* jaune doré — accent chaud secondaire */
+  --sauge:        #AFC7A6; /* vert eucalyptus — complément botanique */
+  --terracotta:   #E38B6D; /* corail chaud — CTA & pics d'énergie */
+  --or:           #C9A227; /* filets dorés très fins, détails précieux */
+  --prune:        #46343B; /* encre — texte & fond du footer */
+
+  /* Teintes dérivées pour lisibilité AA */
+  --prune-80:     rgba(70, 52, 59, 0.80);
+  --prune-64:     rgba(70, 52, 59, 0.64);
+  --prune-45:     rgba(70, 52, 59, 0.45);
+  --terracotta-deep: #C96A4C; /* variante assombrie pour texte accent AA */
+  --rose-deep:    #C56A73;     /* rose lisible sur crème */
+  --or-line:      rgba(201, 162, 39, 0.55);
+
+  /* Surfaces / voiles */
+  --glass:        rgba(253, 247, 240, 0.72);
+  --glass-strong: rgba(253, 247, 240, 0.90);
+  --shadow-blush: 24px 40px 80px -32px rgba(227, 139, 109, 0.35);
+  --shadow-soft:  0 20px 60px -30px rgba(70, 52, 59, 0.28);
+  --shadow-lift:  0 30px 80px -40px rgba(197, 106, 115, 0.45);
+
+  /* ---- Typographie (voir brief §2.2) ---- */
+  --font-display: 'Fraunces', 'Cormorant Garamond', Georgia, serif;
+  --font-script:  'Ephesis', 'Petit Formal Script', cursive;
+  --font-body:    'Hanken Grotesk', 'Manrope', system-ui, -apple-system, sans-serif;
+
+  /* Échelle typographique fluide (clamp min → max) */
+  --step--1: clamp(0.82rem, 0.78rem + 0.2vw, 0.92rem);
+  --step-0:  clamp(1rem, 0.95rem + 0.28vw, 1.15rem);
+  --step-1:  clamp(1.2rem, 1.08rem + 0.6vw, 1.6rem);
+  --step-2:  clamp(1.5rem, 1.3rem + 1vw, 2.25rem);
+  --step-3:  clamp(1.95rem, 1.6rem + 1.8vw, 3.3rem);
+  --step-4:  clamp(2.5rem, 1.9rem + 3vw, 4.75rem);
+  --step-5:  clamp(3.1rem, 2rem + 5.2vw, 7rem);
+  --step-6:  clamp(3.6rem, 1.6rem + 8.5vw, 10rem);
+
+  --leading-tight: 0.98;
+  --leading-snug:  1.12;
+  --leading-body:  1.68;
+  --tracking-kicker: 0.34em;
+  --tracking-wide:   0.14em;
+
+  /* ---- Espace & rythme ---- */
+  --space-3xs: 0.35rem;
+  --space-2xs: 0.6rem;
+  --space-xs:  0.9rem;
+  --space-s:   1.35rem;
+  --space-m:   2.1rem;
+  --space-l:   3.3rem;
+  --space-xl:  5.2rem;
+  --space-2xl: 8rem;
+  --space-3xl: 12rem;
+
+  --container: 78rem;
+  --container-wide: 90rem;
+  --gutter: clamp(1.25rem, 5vw, 4.5rem);
+
+  /* Rayons généreux */
+  --radius-s: 0.7rem;
+  --radius-m: 1.4rem;
+  --radius-l: 2.4rem;
+  --radius-xl: 3.4rem;
+  --radius-pill: 999px;
+
+  /* ---- Motion (voir brief §4) ---- */
+  --ease-signature: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-soft:      cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-micro: 0.28s;
+  --dur-base:  0.6s;
+  --dur-reveal: 0.95s;
+  --dur-slow:  1.2s;
+
+  /* Couches (z-index) */
+  --z-bg: 0;
+  --z-content: 10;
+  --z-header: 60;
+  --z-cursor: 80;
+  --z-overlay: 90;
+  --z-preloader: 100;
+  --z-transition: 110;
+}
+
+/* Propriétés animables pour les meshs de dégradé (voir §5) */
+@property --mesh-x1 { syntax: '<percentage>'; inherits: false; initial-value: 18%; }
+@property --mesh-y1 { syntax: '<percentage>'; inherits: false; initial-value: 22%; }
+@property --mesh-x2 { syntax: '<percentage>'; inherits: false; initial-value: 82%; }
+@property --mesh-y2 { syntax: '<percentage>'; inherits: false; initial-value: 30%; }
+@property --mesh-x3 { syntax: '<percentage>'; inherits: false; initial-value: 60%; }
+@property --mesh-y3 { syntax: '<percentage>'; inherits: false; initial-value: 88%; }
+@property --halo-shift { syntax: '<length>'; inherits: false; initial-value: 0px; }

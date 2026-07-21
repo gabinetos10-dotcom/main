@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Maison Jolie Wedding — Wedding Planner & Designer en Occitanie</title>
+<meta name="description" content="Mélina, wedding planner et wedding designer en Occitanie — Montpellier, Béziers, Narbonne. Des mariages élégants, pensés avec le cœur. Une sensibilité esthétique, guidée par les liens humains.">
+<meta name="theme-color" content="#FDF7F0">
+<link rel="canonical" href="https://www.maisonjoliewedding.com/">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:title" content="Maison Jolie Wedding — Wedding Planner & Designer en Occitanie">
+<meta property="og:description" content="Des mariages élégants, pensés avec le cœur. Wedding planner & designer à Montpellier, Béziers, Narbonne.">
+<meta property="og:site_name" content="Maison Jolie Wedding">
+<meta property="og:image" content="assets/svg/og-image.svg">
+
+<!-- Favicon (inline SVG, autonome) -->
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23FDF7F0'/%3E%3Cg fill='none' stroke='%23C9A227' stroke-width='4' stroke-linecap='round'%3E%3Cpath d='M28 68V36l16 22 16-22v32'/%3E%3Cpath d='M70 36v26q0 10-11 8'/%3E%3C/g%3E%3C/svg%3E">
+
+<!-- Google Fonts (§2.2) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=Hanken+Grotesk:wght@400;500;600;700&family=Ephesis&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=Hanken+Grotesk:wght@400;500;600;700&family=Ephesis&display=swap">
+
+<link rel="stylesheet" href="css/reset.css">
+<link rel="stylesheet" href="css/variables.css">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/animations.css">
+
+<!-- Si JS désactivé : révéler le contenu masqué par le preloader -->
+<noscript><style>body.preloading main,body.preloading .site-header,body.preloading .site-footer{opacity:1!important}.preloader{display:none!important}</style></noscript>
+
+<!-- SEO : données structurées LocalBusiness (§15) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "name": "Maison Jolie Wedding",
+  "description": "Wedding planner et wedding designer en Occitanie — organisation et décoration de mariages élégants et sensibles.",
+  "image": "https://www.maisonjoliewedding.com/assets/svg/og-image.svg",
+  "founder": { "@type": "Person", "name": "Mélina" },
+  "telephone": "+33768189458",
+  "email": "contact@maisonjoliewedding.com",
+  "areaServed": ["Montpellier", "Béziers", "Narbonne", "Hérault", "Occitanie"],
+  "address": { "@type": "PostalAddress", "addressRegion": "Occitanie", "addressCountry": "FR" },
+  "sameAs": ["https://instagram.com/maisonjolie_wedding"],
+  "priceRange": "€€€",
+  "knowsAbout": ["Wedding Planner", "Wedding Designer", "Décoration de mariage", "Scénographie"]
+}
+</script>
+</head>
+
+<body class="preloading is-locked">
+
+<!-- ===================== PRELOADER (§6) ===================== -->
+<div class="preloader" data-preloader role="status" aria-label="Chargement">
+  <div class="preloader__halo"></div>
+  <div class="preloader__center">
+    <svg class="preloader__mono" viewBox="0 0 120 120" aria-hidden="true">
+      <circle cx="60" cy="60" r="52" class="mono-stroke" opacity="0.4"/>
+      <path class="mono-stroke" d="M34 82 L34 42 L54 68 L74 42 L74 82"/>
+      <path class="mono-stroke" d="M84 42 L84 72 Q84 84 70 81"/>
+      <circle cx="60" cy="26" r="2.4" fill="#C9A227"/>
+    </svg>
+    <span class="preloader__script">Maison Jolie</span>
+    <span class="preloader__tag">Wedding · Occitanie</span>
+    <div class="preloader__bar"><span></span></div>
+    <p class="preloader__punch"></p>
+  </div>
+  <div class="preloader__pane top"></div>
+  <div class="preloader__pane bottom"></div>
+  <button class="preloader__skip" type="button" aria-label="Passer l'introduction">Passer l'intro</button>
+</div>
+
+<!-- ===================== FOND GLOBAL (§5) ===================== -->
+<div class="bg-stage" aria-hidden="true">
+  <div class="bg-mesh"></div>
+  <div class="bg-halo"></div>
+  <canvas id="petals-canvas"></canvas>
+</div>
+<div class="bg-grain" aria-hidden="true"></div>
+
+<!-- ===================== HEADER (injecté) ===================== -->
+<header data-mj="header">
+  <noscript>
+    <nav class="container" aria-label="Navigation">
+      <a href="index.html">Accueil</a> · <a href="wedding-planner.html">Wedding Planner</a> ·
+      <a href="wedding-designer.html">Wedding Designer</a> · <a href="portfolio.html">Portfolio</a> ·
+      <a href="blog.html">Blog</a> · <a href="contact.html">Contact</a>
+    </nav>
+  </noscript>
+</header>
+
+<main id="main">
+
+  <!-- ===================== HERO (§8.1) ===================== -->
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="container-wide hero__grid">
+      <div class="hero__content">
+        <p class="kicker hero__kicker reveal">Wedding Planner &amp; Designer</p>
+        <!-- COPY (à valider) — accroche rédigée dans la voix de marque -->
+        <h1 class="hero__title reveal" id="hero-title" style="--reveal-delay:.08s">
+          L'émotion, <span class="em">dessinée</span>
+          <span class="script">avec soin.</span>
+        </h1>
+        <p class="hero__sub reveal" style="--reveal-delay:.16s">
+          Je suis <strong>Mélina</strong>, experte du design et de l'émotion.
+          J'imagine des mariages élégants, cohérents et profondément sensibles —
+          à votre image, jamais «&nbsp;catalogue&nbsp;».
+        </p>
+        <ul class="hero__place reveal" style="--reveal-delay:.22s" aria-label="Zone d'intervention">
+          <li>Occitanie</li><li>Montpellier</li><li>Béziers</li><li>Narbonne</li>
+        </ul>
+        <div class="hero__actions reveal" style="--reveal-delay:.3s">
+          <span class="magnetic"><a class="btn" href="contact.html" data-confetti><span class="btn__label">Je me marie&nbsp;!</span></a></span>
+          <a class="btn btn--ghost" href="#univers"><span class="btn__label">Découvrir mon univers</span> <span class="btn-arrow" aria-hidden="true">↓</span></a>
+        </div>
+      </div>
+
+      <div class="hero__visual reveal" style="--reveal-delay:.2s" data-parallax="0.06">
+        <div class="hero__frame">
+          <!-- Visuel hero — illustration SVG originale (aucune photo requise) -->
+          <svg viewBox="0 0 480 600" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Illustration : lumière du Sud, olivier et papeterie de mariage">
+            <defs>
+              <linearGradient id="heroG" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#FBE3A1"/><stop offset=".5" stop-color="#F6D2CE"/><stop offset="1" stop-color="#E39AA1"/>
+              </linearGradient>
+              <radialGradient id="heroSun" cx="50%" cy="34%" r="40%">
+                <stop offset="0" stop-color="#FFF7E0"/><stop offset="1" stop-color="#FBE3A1" stop-opacity="0"/>
+              </radialGradient>
+            </defs>
+            <rect width="480" height="600" fill="url(#heroG)"/>
+            <circle cx="240" cy="200" r="150" fill="url(#heroSun)"/>
+            <circle cx="240" cy="180" r="70" fill="#FFFBEA" opacity=".85"/>
+            <g fill="none" stroke="#8FA986" stroke-width="3" stroke-linecap="round" opacity=".85">
+              <path d="M60 600 C70 460 40 380 90 250"/>
+              <path d="M84 330 C130 315 150 340 175 322"/>
+              <path d="M80 400 C40 388 20 410 4 398"/>
+              <path d="M88 470 C136 456 158 480 186 466"/>
+            </g>
+            <g fill="#7f9a74" opacity=".9">
+              <ellipse cx="120" cy="322" rx="12" ry="5" transform="rotate(-20 120 322)"/>
+              <ellipse cx="150" cy="336" rx="12" ry="5" transform="rotate(18 150 336)"/>
+              <ellipse cx="46" cy="398" rx="12" ry="5" transform="rotate(-16 46 398)"/>
+              <ellipse cx="150" cy="470" rx="12" ry="5" transform="rotate(20 150 470)"/>
+            </g>
+            <g transform="translate(300 380)">
+              <rect x="-4" y="-4" width="150" height="190" rx="8" fill="#FFFDFA" opacity=".95" transform="rotate(6)"/>
+              <rect width="150" height="190" rx="8" fill="#FFFDFA"/>
+              <rect x="8" y="8" width="134" height="174" rx="5" fill="none" stroke="#C9A227" stroke-opacity=".6"/>
+              <text x="75" y="70" text-anchor="middle" font-family="Fraunces, serif" font-size="30" fill="#46343B">M &amp; V</text>
+              <text x="75" y="108" text-anchor="middle" font-family="Ephesis, cursive" font-size="26" fill="#C56A73">merci</text>
+              <circle cx="75" cy="150" r="16" fill="#B45B49"/>
+              <text x="75" y="155" text-anchor="middle" font-family="Fraunces, serif" font-size="12" fill="#8f3f30">MJ</text>
+            </g>
+          </svg>
+        </div>
+        <svg class="hero__seal" viewBox="0 0 100 100" aria-hidden="true">
+          <circle cx="50" cy="50" r="46" fill="none" stroke="#C9A227" stroke-dasharray="2 4" opacity=".7"/>
+          <path id="sealText" d="M50 12 a38 38 0 1 1 -0.1 0" fill="none"/>
+          <text font-family="Hanken Grotesk, sans-serif" font-size="8.5" letter-spacing="3" fill="#C9A227">
+            <textPath href="#sealText">· MAISON JOLIE · EST. AVEC AMOUR ·</textPath>
+          </text>
+          <text x="50" y="56" text-anchor="middle" font-family="Ephesis, cursive" font-size="24" fill="#E39AA1">mj</text>
+        </svg>
+        <div class="hero__badge floaty">
+          <span class="num" data-count="10" data-suffix="+"></span>
+          <small>ans d'attention<br>portée aux vôtres</small>
+        </div>
+      </div>
+    </div>
+
+    <a class="scroll-cue" href="#manifeste" aria-label="Faire défiler">
+      <span>Défiler</span>
+      <span class="track"></span>
+    </a>
+  </section>
+
+  <!-- ===================== MANIFESTE / À PROPOS (§8.2) ===================== -->
+  <section class="section" id="manifeste" aria-labelledby="manifeste-title">
+    <div class="container manifesto__grid">
+      <div class="manifesto__media stagger">
+        <figure class="frame-photo reveal" data-tilt="6">
+          <svg viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Scénographie de table, ambiance solaire">
+            <defs><linearGradient id="mA" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F6D2CE"/><stop offset="1" stop-color="#FBE3A1"/></linearGradient></defs>
+            <rect width="300" height="400" fill="url(#mA)"/>
+            <circle cx="150" cy="130" r="80" fill="#FFFBEA" opacity=".8"/>
+            <rect x="40" y="250" width="220" height="10" rx="5" fill="#fff" opacity=".7"/>
+            <g fill="#7f9a74"><ellipse cx="110" cy="240" rx="10" ry="4"/><ellipse cx="150" cy="236" rx="10" ry="4"/><ellipse cx="190" cy="240" rx="10" ry="4"/></g>
+            <circle cx="150" cy="300" r="14" fill="#E38B6D"/>
+          </svg>
+        </figure>
+        <figure class="frame-photo reveal" data-tilt="6" style="--reveal-delay:.12s">
+          <svg viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Bouquet de mariée, roses de jardin">
+            <defs><linearGradient id="mB" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#AFC7A6"/><stop offset="1" stop-color="#F6D2CE"/></linearGradient></defs>
+            <rect width="300" height="400" fill="url(#mB)"/>
+            <g stroke="#7f9a74" stroke-width="3" fill="none"><path d="M150 400 L150 210"/><path d="M150 300 C120 290 110 260 120 250"/><path d="M150 320 C180 312 192 282 182 272"/></g>
+            <circle cx="150" cy="200" r="26" fill="#E39AA1"/><circle cx="120" cy="220" r="18" fill="#F4C871"/><circle cx="182" cy="222" r="18" fill="#FDF7F0"/>
+          </svg>
+        </figure>
+      </div>
+
+      <div class="manifesto__content">
+        <p class="kicker reveal">La Maison</p>
+        <h2 class="title-lg reveal" id="manifeste-title" style="--reveal-delay:.06s">
+          Une sensibilité esthétique, <span class="em">guidée par les liens humains.</span>
+        </h2>
+        <div class="stack reveal" style="--reveal-delay:.12s">
+          <!-- COPY (à valider) — développe le récit factuel du brief §16 -->
+          <p class="lede">Formée aux arts appliqués, je porte un regard exigeant sur l'esthétique&nbsp;: les matières, les équilibres, la lumière, les détails. Mais ma vraie matière première, ce sont les gens.</p>
+          <p class="muted">Je crois que le luxe réside dans l'attention portée aux personnes — l'écoute, la justesse, la bienveillance. C'est de là que naissent des mariages cohérents et profondément sensibles, où chacun se sent, tout simplement, à sa place.</p>
+        </div>
+        <blockquote class="manifesto__quote reveal" style="--reveal-delay:.18s">
+          «&nbsp;Des mariages élégants, pensés avec le cœur, pour des moments précieux partagés avec ceux que vous aimez.&nbsp;»
+        </blockquote>
+        <p class="signature-name reveal" style="--reveal-delay:.24s" aria-label="Signature de Mélina">Mélina</p>
+
+        <div class="stats reveal" style="--reveal-delay:.3s">
+          <div class="stat"><div class="stat__num" data-count="120" data-suffix="+"></div><div class="stat__label">mariages accompagnés</div></div>
+          <div class="stat"><div class="stat__num" data-count="10" data-suffix="+"></div><div class="stat__label">ans d'expérience</div></div>
+          <div class="stat"><div class="stat__num" data-count="3"></div><div class="stat__label">départements d'amour</div></div>
+        </div>
+        <!-- COPY (à valider) — chiffres indicatifs à confirmer par Mélina -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== SERVICES (§8.3) ===================== -->
+  <section class="section" id="services" aria-labelledby="services-title">
+    <div class="container">
+      <div class="center">
+        <p class="kicker centered reveal">Mes services</p>
+        <h2 class="title-lg reveal" id="services-title" style="--reveal-delay:.06s">Deux métiers, <span class="em">une même exigence</span></h2>
+        <p class="lede mx-auto center reveal" style="--reveal-delay:.12s">De l'organisation à la scénographie — je vous accompagne autant que vous le souhaitez.</p>
+      </div>
+
+      <div class="services__grid stagger">
+        <article class="service-card service-card--planner reveal" data-tilt="4" tabindex="0" aria-labelledby="svc-planner">
+          <span class="service-card__index">01</span>
+          <h3 class="service-card__title" id="svc-planner">Wedding Planner <small>l'organisation</small></h3>
+          <!-- COPY (à valider) -->
+          <p class="service-card__desc">Je conçois, coordonne et sécurise chaque étape — pour que vous viviez vos fiançailles et votre jour&nbsp;J l'esprit léger.</p>
+          <ul class="service-card__list">
+            <li>Cadrage, budget &amp; rétroplanning</li>
+            <li>Recherche &amp; sélection de lieux</li>
+            <li>Prestataires de confiance</li>
+            <li>Coordination du jour&nbsp;J</li>
+          </ul>
+          <a class="service-card__cta link-underline" href="wedding-planner.html">En savoir plus →</a>
+        </article>
+
+        <article class="service-card service-card--designer reveal" data-tilt="4" tabindex="0" aria-labelledby="svc-designer" style="--reveal-delay:.12s">
+          <span class="service-card__index">02</span>
+          <h3 class="service-card__title" id="svc-designer">Wedding Designer <small>la décoration</small></h3>
+          <!-- COPY (à valider) -->
+          <p class="service-card__desc">Direction artistique, scénographie, palette &amp; matières&nbsp;: je donne un visage cohérent et sensible à votre mariage.</p>
+          <ul class="service-card__list">
+            <li>Concept &amp; direction artistique</li>
+            <li>Palette, matières &amp; papeterie</li>
+            <li>Scénographie &amp; fleurs</li>
+            <li>Mise en scène des espaces</li>
+          </ul>
+          <a class="service-card__cta link-underline" href="wedding-designer.html">En savoir plus →</a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== PARCOURS / TIMELINE (§8.4) ===================== -->
+  <section class="section" id="parcours" aria-labelledby="parcours-title">
+    <div class="container">
+      <div class="center">
+        <p class="kicker centered reveal">Le parcours d'un oui</p>
+        <h2 class="title-lg reveal" id="parcours-title" style="--reveal-delay:.06s">De la <span class="em">rencontre</span> au grand jour</h2>
+      </div>
+
+      <div class="journey">
+        <svg class="journey__botanic draw-path" viewBox="0 0 200 400" aria-hidden="true" style="--len:900">
+          <g fill="none" stroke="#AFC7A6" stroke-width="1.5" stroke-linecap="round">
+            <path d="M100 400 C100 300 60 240 90 120"/>
+            <path d="M88 200 C120 190 140 210 160 196"/>
+            <path d="M92 260 C60 250 44 268 24 256"/>
+            <path d="M86 320 C118 310 138 330 158 316"/>
+          </g>
+        </svg>
+
+        <div class="journey__track">
+          <div class="journey__line"></div>
+          <div class="journey__step reveal">
+            <span class="journey__dot">01</span>
+            <span class="journey__num">La rencontre</span>
+            <h3 class="journey__title">On apprend à se connaître</h3>
+            <!-- COPY (à valider) -->
+            <p class="journey__desc">Un premier échange, sans engagement, pour comprendre qui vous êtes, votre histoire et le mariage dont vous rêvez.</p>
+          </div>
+          <div class="journey__step reveal">
+            <span class="journey__dot">02</span>
+            <span class="journey__num">La conception</span>
+            <h3 class="journey__title">On dessine votre univers</h3>
+            <p class="journey__desc">Fil conducteur, palette, lieu, prestataires&nbsp;: je pose les fondations cohérentes de votre journée.</p>
+          </div>
+          <div class="journey__step reveal">
+            <span class="journey__dot">03</span>
+            <span class="journey__num">La direction artistique</span>
+            <h3 class="journey__title">On donne vie à la beauté</h3>
+            <p class="journey__desc">Scénographie, matières, fleurs, papeterie&nbsp;: chaque détail est accordé jusqu'à l'harmonie parfaite.</p>
+          </div>
+          <div class="journey__step reveal">
+            <span class="journey__dot">04</span>
+            <span class="journey__num">La coordination</span>
+            <h3 class="journey__title">On savoure le jour&nbsp;J</h3>
+            <p class="journey__desc">Je veille sur tout, dans l'ombre, pour que vous n'ayez qu'une chose à faire&nbsp;: vous aimer et profiter.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== MINI-JEU MOODBOARD (§9) — signature ===================== -->
+  <section class="section" id="univers" aria-labelledby="univers-title">
+    <div class="container">
+      <div class="center">
+        <p class="kicker centered reveal">Le jeu de la Maison</p>
+        <h2 class="title-lg reveal" id="univers-title" style="--reveal-delay:.06s">Composez votre <span class="script" style="font-size:1.15em">univers</span></h2>
+        <p class="lede mx-auto center reveal" style="--reveal-delay:.12s">Quelques choix, et je fais réagir le décor sous vos yeux. À la fin&nbsp;: votre moodboard, un mot de moi, et l'envie d'en parler pour de vrai.</p>
+      </div>
+
+      <div class="game reveal" data-moodboard style="--reveal-delay:.1s">
+        <div class="game__grid">
+          <div class="game__panel">
+            <div class="game__quiz" tabindex="-1">
+              <div class="game__steps" aria-hidden="true"></div>
+              <h3 class="game__step-title"></h3>
+              <p class="game__step-hint"></p>
+              <div class="game__options" role="group" aria-label="Options — cliquez pour choisir"></div>
+              <div class="game__nav">
+                <button class="ghost-link game__prev" type="button">← Retour</button>
+                <span class="magnetic"><button class="btn game__next" type="button"><span class="btn__label label">Continuer</span></button></span>
+              </div>
+            </div>
+
+            <div class="game__result">
+              <p class="kicker">Votre univers</p>
+              <div class="game__result-style"></div>
+              <h3 class="game__result-name"></h3>
+              <p class="game__result-text"></p>
+              <div class="game__result-actions">
+                <span class="magnetic"><a class="btn game__result-cta" href="contact.html" data-confetti><span class="btn__label">Recevez votre moodboard &amp; parlons-en</span></a></span>
+                <button class="btn btn--ghost game__share" type="button"><span class="btn__label">Enregistrer l'image</span></button>
+                <button class="ghost-link game__restart" type="button">↺ Recommencer</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="game__stage">
+            <div class="game__canvas-wrap">
+              <canvas id="moodboard-canvas" aria-label="Aperçu vivant de votre moodboard de mariage"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== PORTFOLIO (§8.6) ===================== -->
+  <section class="section" id="portfolio" aria-labelledby="portfolio-title">
+    <div class="container-wide">
+      <div class="center">
+        <p class="kicker centered reveal">Portfolio</p>
+        <h2 class="title-lg reveal" id="portfolio-title" style="--reveal-delay:.06s">Des mariages <span class="em">à leur image</span></h2>
+      </div>
+      <div class="center">
+        <div class="filters reveal" role="group" aria-label="Filtrer par ambiance" style="justify-content:center">
+          <button class="filter" data-filter="all" aria-pressed="true">Tous</button>
+          <button class="filter" data-filter="boheme" aria-pressed="false">Bohème</button>
+          <button class="filter" data-filter="solaire" aria-pressed="false">Solaire</button>
+          <button class="filter" data-filter="jardin" aria-pressed="false">Jardin</button>
+          <button class="filter" data-filter="minerale" aria-pressed="false">Minéral</button>
+        </div>
+      </div>
+
+      <div class="gallery" id="gallery">
+        <!-- Crédits photo réels réservés (§8.6) : © Yann Bader, © Cindy Gonzalez, © Lydia Torresan -->
+        <article class="gallery__item reveal" data-cat="solaire" data-title="Songe solaire — un mas en Provence" data-credit="© Yann Bader">
+          <div class="gallery__media"><svg viewBox="0 0 600 500" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Mariage solaire, arche et lumière dorée"><defs><linearGradient id="p1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FBE3A1"/><stop offset="1" stop-color="#E38B6D"/></linearGradient></defs><rect width="600" height="500" fill="url(#p1)"/><circle cx="300" cy="200" r="120" fill="#FFF7E0" opacity=".7"/><path d="M180 500 V240 Q180 150 300 150 Q420 150 420 240 V500" fill="none" stroke="#fff" stroke-opacity=".6" stroke-width="6"/><g fill="#7f9a74" opacity=".8"><ellipse cx="200" cy="230" rx="16" ry="7"/><ellipse cx="400" cy="230" rx="16" ry="7"/></g></svg></div>
+          <div class="gallery__cap"><span>Solaire · Béziers</span><h3>Songe solaire</h3></div>
+        </article>
+        <article class="gallery__item reveal" data-cat="boheme" data-title="Âme bohème — pampa &amp; terracotta" data-credit="© Cindy Gonzalez">
+          <div class="gallery__media"><svg viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Décor bohème, herbe de la pampa"><defs><linearGradient id="p2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F6D2CE"/><stop offset="1" stop-color="#F4C871"/></linearGradient></defs><rect width="400" height="500" fill="url(#p2)"/><g stroke="#E38B6D" stroke-width="2" opacity=".8"><path d="M150 500 L130 200"/><path d="M200 500 L200 180"/><path d="M250 500 L270 210"/></g><g fill="#F4C871" opacity=".9"><circle cx="130" cy="190" r="30"/><circle cx="200" cy="170" r="34"/><circle cx="270" cy="200" r="30"/></g></svg></div>
+          <div class="gallery__cap"><span>Bohème · Narbonne</span><h3>Âme bohème</h3></div>
+        </article>
+        <article class="gallery__item reveal" data-cat="jardin" data-title="Jardin romantique — roses de saison" data-credit="© Lydia Torresan">
+          <div class="gallery__media"><svg viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Roses de jardin, ambiance romantique"><defs><linearGradient id="p3" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E39AA1"/><stop offset="1" stop-color="#F6D2CE"/></linearGradient></defs><rect width="400" height="500" fill="url(#p3)"/><g fill="#FDF7F0" opacity=".85"><circle cx="140" cy="200" r="40"/><circle cx="240" cy="160" r="34"/><circle cx="270" cy="250" r="30"/></g><g stroke="#7f9a74" stroke-width="3" fill="none"><path d="M140 500 L140 240"/><path d="M240 500 L240 194"/></g></svg></div>
+          <div class="gallery__cap"><span>Jardin · Montpellier</span><h3>Jardin romantique</h3></div>
+        </article>
+        <article class="gallery__item reveal" data-cat="minerale" data-title="Épure minérale — orangerie" data-credit="© Yann Bader">
+          <div class="gallery__media"><svg viewBox="0 0 600 500" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Orangerie, décor minéral et épuré"><defs><linearGradient id="p4" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#EDE7DC"/><stop offset="1" stop-color="#AFC7A6"/></linearGradient></defs><rect width="600" height="500" fill="url(#p4)"/><g fill="none" stroke="#46343B" stroke-opacity=".4" stroke-width="3"><path d="M120 500 V250 Q120 180 200 180 Q280 180 280 250 V500"/><path d="M320 500 V250 Q320 180 400 180 Q480 180 480 250 V500"/></g></svg></div>
+          <div class="gallery__cap"><span>Minéral · Hérault</span><h3>Épure minérale</h3></div>
+        </article>
+        <article class="gallery__item reveal" data-cat="solaire jardin" data-title="Lumière d'été — table fleurie" data-credit="© Cindy Gonzalez">
+          <div class="gallery__media"><svg viewBox="0 0 500 400" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Table de mariage fleurie sous la lumière"><defs><linearGradient id="p5" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FBE3A1"/><stop offset="1" stop-color="#AFC7A6"/></linearGradient></defs><rect width="500" height="400" fill="url(#p5)"/><rect x="60" y="240" width="380" height="14" rx="7" fill="#fff" opacity=".7"/><g fill="#E39AA1"><circle cx="160" cy="228" r="14"/><circle cx="250" cy="222" r="16"/><circle cx="340" cy="228" r="14"/></g></svg></div>
+          <div class="gallery__cap"><span>Solaire · Hérault</span><h3>Lumière d'été</h3></div>
+        </article>
+        <article class="gallery__item reveal" data-cat="boheme minerale" data-title="Terre &amp; lin — cérémonie laïque" data-credit="© Lydia Torresan">
+          <div class="gallery__media"><svg viewBox="0 0 500 400" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Cérémonie laïque, matières naturelles"><defs><linearGradient id="p6" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#C9B79C"/><stop offset="1" stop-color="#F6D2CE"/></linearGradient></defs><rect width="500" height="400" fill="url(#p6)"/><path d="M120 400 V200 Q120 130 250 130 Q380 130 380 200 V400" fill="none" stroke="#fff" stroke-opacity=".6" stroke-width="6"/><g fill="#7f9a74"><ellipse cx="140" cy="190" rx="18" ry="7"/><ellipse cx="360" cy="190" rx="18" ry="7"/></g></svg></div>
+          <div class="gallery__cap"><span>Bohème · Occitanie</span><h3>Terre &amp; lin</h3></div>
+        </article>
+        <article class="gallery__item reveal" data-cat="jardin" data-title="Verger en fleurs — brunch de mariage" data-credit="© Yann Bader">
+          <div class="gallery__media"><svg viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Brunch de mariage dans un verger"><defs><linearGradient id="p7" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#AFC7A6"/><stop offset="1" stop-color="#FBE3A1"/></linearGradient></defs><rect width="400" height="500" fill="url(#p7)"/><circle cx="200" cy="200" r="90" fill="#FFF7E0" opacity=".6"/><g fill="#E39AA1"><circle cx="150" cy="180" r="14"/><circle cx="230" cy="150" r="16"/><circle cx="250" cy="230" r="12"/></g></svg></div>
+          <div class="gallery__cap"><span>Jardin · Béziers</span><h3>Verger en fleurs</h3></div>
+        </article>
+        <article class="gallery__item reveal" data-cat="solaire" data-title="Coucher doré — bord de mer" data-credit="© Cindy Gonzalez">
+          <div class="gallery__media"><svg viewBox="0 0 600 400" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Mariage au bord de mer au coucher du soleil"><defs><linearGradient id="p8" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F4C871"/><stop offset="1" stop-color="#E39AA1"/></linearGradient></defs><rect width="600" height="400" fill="url(#p8)"/><circle cx="300" cy="180" r="70" fill="#FFF7E0" opacity=".85"/><g fill="#FDF7F0" opacity=".5"><path d="M0 300 Q150 280 300 300 T600 300 V400 H0Z"/><path d="M0 330 Q150 315 300 330 T600 330 V400 H0Z" fill="#E39AA1" opacity=".4"/></g></svg></div>
+          <div class="gallery__cap"><span>Solaire · Narbonne</span><h3>Coucher doré</h3></div>
+        </article>
+      </div>
+
+      <div class="center" style="margin-top:var(--space-l)">
+        <a class="btn btn--ghost magnetic" href="portfolio.html"><span class="btn__label">Voir tout le portfolio</span></a>
+      </div>
+    </div>
+
+    <!-- Lightbox -->
+    <div class="lightbox" role="dialog" aria-modal="true" aria-label="Aperçu du projet">
+      <button class="lightbox__close" aria-label="Fermer">✕</button>
+      <button class="lightbox__nav prev" aria-label="Précédent">‹</button>
+      <button class="lightbox__nav next" aria-label="Suivant">›</button>
+      <div class="lightbox__stage">
+        <div class="lightbox__media"></div>
+        <div class="lightbox__bar"><h3></h3><span></span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== TÉMOIGNAGES (§8.7) ===================== -->
+  <section class="section" id="temoignages" aria-labelledby="temoignages-title">
+    <div class="container-wide">
+      <div class="center">
+        <p class="kicker centered reveal">Leurs mots</p>
+        <h2 class="title-lg reveal" id="temoignages-title" style="--reveal-delay:.06s">Ce que gardent <span class="em">les mariés</span></h2>
+      </div>
+      <!-- COPY (à valider) — témoignages illustratifs, à remplacer par de vrais avis -->
+      <div class="testi-track" tabindex="0" aria-label="Témoignages, faites défiler horizontalement">
+        <figure class="testi-card reveal">
+          <span class="testi-card__mark">&rdquo;</span>
+          <blockquote class="testi-card__quote">Mélina a compris notre histoire avant même qu'on la raconte. Tout était juste, cohérent, à notre image. Nous n'avons eu qu'à profiter.</blockquote>
+          <figcaption class="testi-card__author">
+            <span class="testi-card__avatar"><svg viewBox="0 0 44 44"><rect width="44" height="44" fill="#F6D2CE"/><circle cx="22" cy="18" r="8" fill="#E38B6D"/><path d="M8 40c2-9 26-9 28 0" fill="#E38B6D"/></svg></span>
+            <span><span class="testi-card__name">Camille &amp; Julien</span><span class="testi-card__meta">Domaine · Béziers</span></span>
+          </figcaption>
+        </figure>
+        <figure class="testi-card reveal" style="--reveal-delay:.1s">
+          <span class="testi-card__mark">&rdquo;</span>
+          <blockquote class="testi-card__quote">Une décoratrice au regard incroyable et une organisatrice d'un calme rassurant. Le jour&nbsp;J, tout roulait sans qu'on voie jamais l'effort.</blockquote>
+          <figcaption class="testi-card__author">
+            <span class="testi-card__avatar"><svg viewBox="0 0 44 44"><rect width="44" height="44" fill="#AFC7A6"/><circle cx="22" cy="18" r="8" fill="#46343B"/><path d="M8 40c2-9 26-9 28 0" fill="#46343B"/></svg></span>
+            <span><span class="testi-card__name">Léa &amp; Sarah</span><span class="testi-card__meta">Orangerie · Montpellier</span></span>
+          </figcaption>
+        </figure>
+        <figure class="testi-card reveal" style="--reveal-delay:.2s">
+          <span class="testi-card__mark">&rdquo;</span>
+          <blockquote class="testi-card__quote">On voulait un mariage «&nbsp;à nous&nbsp;», solaire et sincère. C'est exactement ce qu'on a vécu. Merci pour cette attention de chaque instant.</blockquote>
+          <figcaption class="testi-card__author">
+            <span class="testi-card__avatar"><svg viewBox="0 0 44 44"><rect width="44" height="44" fill="#FBE3A1"/><circle cx="22" cy="18" r="8" fill="#C56A73"/><path d="M8 40c2-9 26-9 28 0" fill="#C56A73"/></svg></span>
+            <span><span class="testi-card__name">Inès &amp; Thomas</span><span class="testi-card__meta">Bord de mer · Narbonne</span></span>
+          </figcaption>
+        </figure>
+      </div>
+      <div class="testi-controls">
+        <button class="prev" aria-label="Témoignage précédent">‹</button>
+        <button class="next" aria-label="Témoignage suivant">›</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== BLOG (§8.8) ===================== -->
+  <section class="section" id="blog" aria-labelledby="blog-title">
+    <div class="container-wide">
+      <div class="center">
+        <p class="kicker centered reveal">Le journal</p>
+        <h2 class="title-lg reveal" id="blog-title" style="--reveal-delay:.06s">Inspirations &amp; <span class="em">coulisses</span></h2>
+      </div>
+      <!-- COPY (à valider) — articles teaser d'exemple -->
+      <div class="blog__grid stagger">
+        <article class="article-card reveal">
+          <a href="blog.html" class="article-card__media"><svg viewBox="0 0 500 320" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Palette solaire pour un mariage d'été"><defs><linearGradient id="b1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FBE3A1"/><stop offset="1" stop-color="#E38B6D"/></linearGradient></defs><rect width="500" height="320" fill="url(#b1)"/><circle cx="250" cy="150" r="80" fill="#FFF7E0" opacity=".6"/></svg></a>
+          <div class="article-card__body">
+            <div class="article-card__meta"><span>Inspirations</span><span class="dot">·</span><span>5 min</span></div>
+            <h3 class="article-card__title"><a href="blog.html">Marier le blush et le doré sans faux pas</a></h3>
+            <p class="article-card__excerpt">La recette d'une palette solaire et poudrée qui reste chic du matin au feu d'artifice.</p>
+            <a class="article-card__more" href="blog.html">Lire l'article →</a>
+          </div>
+        </article>
+        <article class="article-card reveal" style="--reveal-delay:.1s">
+          <a href="blog.html" class="article-card__media"><svg viewBox="0 0 500 320" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Choisir son lieu de mariage en Occitanie"><defs><linearGradient id="b2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#AFC7A6"/><stop offset="1" stop-color="#F6D2CE"/></linearGradient></defs><rect width="500" height="320" fill="url(#b2)"/><path d="M120 320 V170 Q120 120 200 120 Q280 120 280 170 V320" fill="none" stroke="#fff" stroke-opacity=".6" stroke-width="6"/></svg></a>
+          <div class="article-card__body">
+            <div class="article-card__meta"><span>Conseils</span><span class="dot">·</span><span>7 min</span></div>
+            <h3 class="article-card__title"><a href="blog.html">Choisir son lieu en Hérault : le guide</a></h3>
+            <p class="article-card__excerpt">Domaines, mas et orangeries — comment trouver l'écrin qui vous ressemble vraiment.</p>
+            <a class="article-card__more" href="blog.html">Lire l'article →</a>
+          </div>
+        </article>
+        <article class="article-card reveal" style="--reveal-delay:.2s">
+          <a href="blog.html" class="article-card__media"><svg viewBox="0 0 500 320" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Coulisses d'une scénographie de mariage"><defs><linearGradient id="b3" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E39AA1"/><stop offset="1" stop-color="#FBE3A1"/></linearGradient></defs><rect width="500" height="320" fill="url(#b3)"/><rect x="80" y="180" width="340" height="12" rx="6" fill="#fff" opacity=".7"/><circle cx="180" cy="168" r="14" fill="#7f9a74"/><circle cx="320" cy="168" r="14" fill="#7f9a74"/></svg></a>
+          <div class="article-card__body">
+            <div class="article-card__meta"><span>Coulisses</span><span class="dot">·</span><span>4 min</span></div>
+            <h3 class="article-card__title"><a href="blog.html">Une table de fête, étape par étape</a></h3>
+            <p class="article-card__excerpt">Dans les coulisses du dressage d'une table de mariage — matières, hauteur, lumière.</p>
+            <a class="article-card__more" href="blog.html">Lire l'article →</a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== INSTAGRAM (§8.9) ===================== -->
+  <section class="section-tight" id="instagram" aria-labelledby="insta-title">
+    <div class="container-wide center">
+      <p class="kicker centered reveal">Sur Instagram</p>
+      <h2 class="title-md reveal" id="insta-title" style="--reveal-delay:.06s"><a class="link-underline" href="https://instagram.com/maisonjolie_wedding" target="_blank" rel="noopener">@maisonjolie_wedding</a></h2>
+      <div class="insta__grid stagger" role="list">
+        <a class="insta__cell reveal" role="listitem" href="https://instagram.com/maisonjolie_wedding" target="_blank" rel="noopener" aria-label="Voir sur Instagram"><svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="i1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F6D2CE"/><stop offset="1" stop-color="#FBE3A1"/></linearGradient></defs><rect width="200" height="200" fill="url(#i1)"/><circle cx="100" cy="80" r="40" fill="#FFF7E0" opacity=".7"/></svg></a>
+        <a class="insta__cell reveal" role="listitem" href="https://instagram.com/maisonjolie_wedding" target="_blank" rel="noopener" aria-label="Voir sur Instagram"><svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="i2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#AFC7A6"/><stop offset="1" stop-color="#F6D2CE"/></linearGradient></defs><rect width="200" height="200" fill="url(#i2)"/><g stroke="#7f9a74" stroke-width="3" fill="none"><path d="M100 200 L100 80"/><path d="M100 130 C70 120 60 95 70 88"/></g></svg></a>
+        <a class="insta__cell reveal" role="listitem" href="https://instagram.com/maisonjolie_wedding" target="_blank" rel="noopener" aria-label="Voir sur Instagram"><svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="i3" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E38B6D"/><stop offset="1" stop-color="#FBE3A1"/></linearGradient></defs><rect width="200" height="200" fill="url(#i3)"/><circle cx="100" cy="100" r="46" fill="#FFF7E0" opacity=".5"/></svg></a>
+        <a class="insta__cell reveal" role="listitem" href="https://instagram.com/maisonjolie_wedding" target="_blank" rel="noopener" aria-label="Voir sur Instagram"><svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="i4" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E39AA1"/><stop offset="1" stop-color="#F6D2CE"/></linearGradient></defs><rect width="200" height="200" fill="url(#i4)"/><g fill="#FDF7F0"><circle cx="80" cy="90" r="18"/><circle cx="120" cy="110" r="14"/></g></svg></a>
+        <a class="insta__cell reveal" role="listitem" href="https://instagram.com/maisonjolie_wedding" target="_blank" rel="noopener" aria-label="Voir sur Instagram"><svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="i5" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FBE3A1"/><stop offset="1" stop-color="#AFC7A6"/></linearGradient></defs><rect width="200" height="200" fill="url(#i5)"/><rect x="40" y="120" width="120" height="8" rx="4" fill="#fff" opacity=".7"/></svg></a>
+        <a class="insta__cell reveal" role="listitem" href="https://instagram.com/maisonjolie_wedding" target="_blank" rel="noopener" aria-label="Voir sur Instagram"><svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="i6" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F4C871"/><stop offset="1" stop-color="#E39AA1"/></linearGradient></defs><rect width="200" height="200" fill="url(#i6)"/><circle cx="100" cy="80" r="34" fill="#FFF7E0" opacity=".8"/></svg></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== CONTACT (§8.10) ===================== -->
+  <section class="section" id="contact" aria-labelledby="contact-title">
+    <div class="container">
+      <div class="center">
+        <p class="kicker centered reveal">Je me marie&nbsp;!</p>
+        <h2 class="title-lg reveal" id="contact-title" style="--reveal-delay:.06s">Racontez-moi <span class="em">votre histoire</span></h2>
+        <p class="lede mx-auto center reveal" style="--reveal-delay:.12s">Un premier échange, sans engagement. Je vous réponds sous 48h, avec le sourire.</p>
+      </div>
+
+      <div class="contact__grid">
+        <form class="form reveal" data-contact-form novalidate aria-label="Formulaire de contact">
+          <div class="field">
+            <label for="prenoms">Vos prénoms <span class="req" aria-hidden="true">*</span></label>
+            <input id="prenoms" name="prenoms" type="text" required autocomplete="name" placeholder="Ex. Camille &amp; Julien">
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label for="date">Date envisagée</label>
+              <input id="date" name="date" type="text" placeholder="Été 2026 ?" autocomplete="off">
+            </div>
+            <div class="field">
+              <label for="lieu">Lieu / secteur</label>
+              <input id="lieu" name="lieu" type="text" placeholder="Béziers, Montpellier…">
+            </div>
+          </div>
+          <div class="field">
+            <label for="prestation">Type de prestation</label>
+            <select id="prestation" name="prestation">
+              <option value="">Je ne sais pas encore</option>
+              <option value="planner">Wedding Planner (organisation)</option>
+              <option value="designer">Wedding Designer (décoration)</option>
+              <option value="les-deux">Les deux</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="message">Votre message <span class="req" aria-hidden="true">*</span></label>
+            <textarea id="message" name="message" required placeholder="Parlez-moi de vous, de votre projet, de vos envies…"></textarea>
+          </div>
+          <label class="consent">
+            <input type="checkbox" name="consent" required>
+            <span>J'accepte que mes informations soient utilisées pour être recontacté(e). Voir la <a href="politique-confidentialite.html">politique de confidentialité</a>.<span class="req" aria-hidden="true"> *</span></span>
+          </label>
+          <span class="magnetic"><button class="btn" type="submit"><span class="btn__label">Envoyer mon message</span></button></span>
+          <p class="form__status" role="status" aria-live="polite"></p>
+        </form>
+
+        <aside class="contact-aside reveal" style="--reveal-delay:.12s">
+          <div class="contact-info">
+            <a href="tel:+33768189458">
+              <span class="ci-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 5c0 9 6 15 15 15l2-4-5-2-2 2c-3-1-5-3-6-6l2-2-2-5z"/></svg></span>
+              <span><small>Téléphone</small>07 68 18 94 58</span>
+            </a>
+            <a href="mailto:contact@maisonjoliewedding.com">
+              <span class="ci-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></span>
+              <span><small>E-mail</small>contact@maisonjoliewedding.com</span>
+            </a>
+            <a href="https://instagram.com/maisonjolie_wedding" target="_blank" rel="noopener">
+              <span class="ci-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="2.5" y="2.5" width="19" height="19" rx="5.5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.6" cy="6.4" r="1.1" fill="currentColor" stroke="none"/></svg></span>
+              <span><small>Instagram</small>@maisonjolie_wedding</span>
+            </a>
+          </div>
+
+          <div class="zone-map" role="img" aria-label="Carte stylisée de la zone d'intervention : Hérault et Occitanie">
+            <svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice">
+              <rect width="400" height="300" fill="none"/>
+              <path d="M40 210 Q120 180 200 205 T380 200 L390 300 L20 300 Z" fill="#8FA986" opacity=".35"/>
+              <path d="M0 250 Q100 235 200 250 T400 245 L400 300 L0 300Z" fill="#4a90b8" opacity=".25"/>
+              <g font-family="Hanken Grotesk, sans-serif" font-size="12" fill="#46343B">
+                <circle cx="150" cy="150" r="5" fill="#E38B6D"/><text x="160" y="154">Montpellier</text>
+                <circle cx="110" cy="185" r="5" fill="#E38B6D"/><text x="120" y="189">Béziers</text>
+                <circle cx="80" cy="215" r="5" fill="#E38B6D"/><text x="90" y="219">Narbonne</text>
+              </g>
+              <text x="300" y="70" font-family="Ephesis, cursive" font-size="30" fill="#C56A73">Occitanie</text>
+            </svg>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ===================== FOOTER (injecté) ===================== -->
+<footer data-mj="footer"></footer>
+
+<!-- ===================== BANNIÈRE COOKIES (§19) ===================== -->
+<div class="cookie-banner" data-cookie-banner role="dialog" aria-live="polite" aria-label="Gestion des cookies">
+  <h3>Un peu de douceur… et vos préférences 🍪</h3>
+  <p>Nous utilisons des cookies pour améliorer votre visite. Vous choisissez ce que vous acceptez. En savoir plus dans la <a href="politique-confidentialite.html">politique de confidentialité</a>.</p>
+  <div class="cookie-actions">
+    <button class="btn" data-cookie="accept" type="button"><span class="btn__label">Tout accepter</span></button>
+    <button class="btn btn--ghost" data-cookie="refuse" type="button"><span class="btn__label">Refuser</span></button>
+    <button class="btn btn--ghost" data-cookie="customize" type="button"><span class="btn__label">Personnaliser</span></button>
+  </div>
+  <div class="cookie-prefs">
+    <label><input type="checkbox" checked disabled> Nécessaires <span class="muted">(toujours actifs)</span></label>
+    <label><input type="checkbox" name="c-analytics"> Mesure d'audience</label>
+    <button class="btn btn--ghost" data-cookie="save" type="button"><span class="btn__label">Enregistrer mes choix</span></button>
+  </div>
+</div>
+
+<!-- ===================== SCRIPTS (§3) — vanilla, defer ===================== -->
+<script src="js/components.js" defer></script>
+<script src="js/main.js" defer></script>
+<script src="js/nav.js" defer></script>
+<script src="js/petals.js" defer></script>
+<script src="js/preloader.js" defer></script>
+<script src="js/scroll.js" defer></script>
+<script src="js/moodboard.js" defer></script>
+<script src="js/transitions.js" defer></script>
+<script src="js/form.js" defer></script>
+<script src="js/easteregg.js" defer></script>
+</body>
+</html>

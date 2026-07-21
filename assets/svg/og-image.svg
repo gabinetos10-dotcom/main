@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FDF7F0"/><stop offset=".5" stop-color="#F6D2CE"/><stop offset="1" stop-color="#FBE3A1"/>
+    </linearGradient>
+    <radialGradient id="sun" cx="50%" cy="40%" r="45%">
+      <stop offset="0" stop-color="#FFFBEA"/><stop offset="1" stop-color="#FBE3A1" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <circle cx="600" cy="250" r="260" fill="url(#sun)"/>
+  <g fill="none" stroke="#C9A227" stroke-width="4" stroke-linecap="round">
+    <circle cx="600" cy="250" r="70" opacity=".5"/>
+    <path d="M568 285 V216 l32 42 32-42 v69"/>
+    <path d="M648 216 v52 q0 18-22 14"/>
+  </g>
+  <text x="600" y="430" text-anchor="middle" font-family="Georgia, serif" font-size="72" fill="#46343B">Maison Jolie</text>
+  <text x="600" y="500" text-anchor="middle" font-family="Georgia, serif" font-size="34" font-style="italic" fill="#C56A73">Wedding · Planner &amp; Designer</text>
+  <text x="600" y="560" text-anchor="middle" font-family="sans-serif" font-size="22" letter-spacing="6" fill="#E38B6D">OCCITANIE · MONTPELLIER · BÉZIERS · NARBONNE</text>
+</svg>
