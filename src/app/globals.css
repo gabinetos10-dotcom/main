@@ -1,0 +1,285 @@
+@import "tailwindcss";
+
+/* ============================================================================
+   GJS DESIGN SYSTEM — Deep‑space, luminous, airy. Not cyberpunk clutter.
+   All colours are tokenised so the whole brand re‑skins from :root.
+   ========================================================================== */
+
+:root {
+  /* --- Core palette (easily swappable brand tokens) --- */
+  --color-bg: #06070f;          /* deep spatial base            */
+  --color-bg-2: #0a0c1a;        /* raised base                  */
+  --color-surface: rgba(255, 255, 255, 0.035);
+  --color-surface-strong: rgba(255, 255, 255, 0.06);
+  --color-accent: #7b61ff;      /* electric indigo              */
+  --color-accent-2: #2de2e6;    /* neon cyan                    */
+  --color-accent-3: #ff7a59;    /* warm ember (rare contrast)   */
+  --color-highlight: #c4b5fd;   /* soft violet glow             */
+  --color-text: #eceef7;
+  --color-text-dim: #9498b6;
+  --color-text-mute: #5b5f7d;
+  --color-line: rgba(255, 255, 255, 0.08);
+  --color-line-strong: rgba(255, 255, 255, 0.14);
+
+  /* --- Signature gradients --- */
+  --grad-accent: linear-gradient(120deg, var(--color-accent), var(--color-accent-2));
+  --grad-aurora: radial-gradient(
+    120% 120% at 50% 0%,
+    rgba(123, 97, 255, 0.22) 0%,
+    rgba(45, 226, 230, 0.08) 35%,
+    transparent 70%
+  );
+  --grad-text: linear-gradient(
+    92deg,
+    #ffffff 0%,
+    #d7d3ff 40%,
+    var(--color-accent-2) 100%
+  );
+
+  /* --- Elevation --- */
+  --shadow-glow: 0 0 0 1px rgba(123, 97, 255, 0.25),
+    0 20px 60px -20px rgba(123, 97, 255, 0.45);
+  --shadow-soft: 0 30px 80px -40px rgba(0, 0, 0, 0.8);
+
+  /* --- Motion --- */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-quint: cubic-bezier(0.83, 0, 0.17, 1);
+
+  /* --- Rhythm --- */
+  --radius: 18px;
+  --radius-lg: 28px;
+  --container: 1280px;
+}
+
+/* Map tokens into Tailwind's theme so `text-accent`, `bg-surface`, etc. work. */
+@theme inline {
+  --color-bg: var(--color-bg);
+  --color-surface: var(--color-surface);
+  --color-accent: var(--color-accent);
+  --color-accent-2: var(--color-accent-2);
+  --color-highlight: var(--color-highlight);
+  --color-ink: var(--color-text);
+  --color-dim: var(--color-text-dim);
+
+  --font-display: var(--font-display);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+* {
+  border-color: var(--color-line);
+}
+
+html {
+  scroll-behavior: auto; /* Lenis owns scrolling */
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-feature-settings: "ss01", "cv01", "cv11";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  text-rendering: optimizeLegibility;
+}
+
+/* Living background: layered gradients that "breathe" behind the WebGL. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background:
+    var(--grad-aurora),
+    radial-gradient(90% 60% at 80% 100%, rgba(45, 226, 230, 0.06), transparent 60%),
+    linear-gradient(180deg, var(--color-bg) 0%, var(--color-bg-2) 100%);
+  pointer-events: none;
+}
+
+/* Fine film grain to kill banding and add texture. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.04;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+::selection {
+  background: color-mix(in srgb, var(--color-accent) 45%, transparent);
+  color: #fff;
+}
+
+/* Slim luminous scrollbar (desktop). */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(var(--color-accent), var(--color-accent-2));
+  border-radius: 99px;
+  border: 3px solid var(--color-bg);
+}
+
+/* ============================================================================
+   COMPONENT UTILITIES
+   ========================================================================== */
+
+/* Immersive glass panel. */
+.glass {
+  background: var(--color-surface);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  border: 1px solid var(--color-line);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), var(--shadow-soft);
+}
+
+/* Luminous gradient border via mask (no ugly box-shadow rings). */
+.border-gradient {
+  position: relative;
+  isolation: isolate;
+}
+.border-gradient::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--color-accent) 70%, transparent),
+    transparent 40%,
+    color-mix(in srgb, var(--color-accent-2) 60%, transparent)
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.text-gradient {
+  background: var(--grad-text);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.text-accent-gradient {
+  background: var(--grad-accent);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Reactive grid lines used behind hero / sections. */
+.grid-lines {
+  background-image:
+    linear-gradient(var(--color-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--color-line) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(70% 70% at 50% 40%, #000 0%, transparent 100%);
+}
+
+.container-x {
+  width: 100%;
+  max-width: var(--container);
+  margin-inline: auto;
+  padding-inline: clamp(1.25rem, 4vw, 3rem);
+}
+
+/* Eyebrow / kicker label. */
+.kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-family: var(--font-mono), monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--color-text-dim);
+}
+.kicker::before {
+  content: "";
+  width: 22px;
+  height: 1px;
+  background: var(--grad-accent);
+}
+
+/* Live status dot. */
+.pulse-dot {
+  position: relative;
+  width: 8px;
+  height: 8px;
+  border-radius: 99px;
+  background: #34d399;
+  box-shadow: 0 0 12px #34d399;
+}
+.pulse-dot::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: inherit;
+  border: 1px solid #34d399;
+  animation: ping 2s var(--ease-out-expo) infinite;
+}
+
+/* ============================================================================
+   KEYFRAMES
+   ========================================================================== */
+@keyframes ping {
+  0% { transform: scale(0.6); opacity: 0.9; }
+  100% { transform: scale(2.4); opacity: 0; }
+}
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@keyframes float-y {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-14px); }
+}
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+@keyframes gradient-pan {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+@keyframes caret-blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+.animate-float { animation: float-y 6s ease-in-out infinite; }
+.caret::after {
+  content: "▊";
+  margin-left: 1px;
+  animation: caret-blink 1s steps(1) infinite;
+  color: var(--color-accent-2);
+}
+
+/* Respect reduced motion. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* Utility to hide scrollbars on horizontal rails. */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
