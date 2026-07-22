@@ -6,6 +6,7 @@ import { NAV_LINKS } from "@/lib/data";
 import { useLenis } from "@/components/providers/SmoothScroll";
 import { Marquee } from "@/components/ui/Marquee";
 import { MagneticButton } from "@/components/ui/MagneticButton";
+import { BrandLogo } from "@/components/ui/BrandLogo";
 import { Em } from "@/components/ui/Em";
 import { LegalModal, type LegalType } from "@/components/legal/LegalModal";
 
@@ -57,8 +58,8 @@ export function Footer() {
         {/* Info grid */}
         <div className="container-x relative grid gap-10 py-16 sm:grid-cols-2 lg:grid-cols-4">
           <div>
-            <div className="font-[family-name:var(--font-display)] text-2xl font-semibold">GJS</div>
-            <p className="mt-3 max-w-[15rem] text-sm text-black/55">
+            <BrandLogo size={40} className="!items-start" />
+            <p className="mt-5 max-w-[15rem] text-sm text-black/55">
               Studio digital sur‑mesure. On crée, automatise, scrape et conseille.
             </p>
           </div>

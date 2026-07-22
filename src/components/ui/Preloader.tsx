@@ -3,6 +3,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useLenis } from "@/components/providers/SmoothScroll";
+import { BrandLogo } from "./BrandLogo";
 
 const WORDS = ["INITIALISATION", "CHARGEMENT ASSETS", "COMPILATION SHADERS", "PRÊT"];
 
@@ -69,9 +70,7 @@ export function Preloader({ onComplete }: { onComplete: () => void }) {
           >
             {/* top row */}
             <div className="flex items-start justify-between">
-              <span className="font-[family-name:var(--font-display)] text-xl font-semibold tracking-tight text-[var(--color-highlight)]">
-                GJS<span className="text-[var(--color-accent)]">©</span>
-              </span>
+              <BrandLogo size={26} showGroup={false} className="text-[var(--color-highlight)]" />
               <span className="font-[family-name:var(--font-mono)] text-[0.65rem] uppercase tracking-[0.3em] text-[var(--color-text-mute)]">
                 Studio digital · Paris
               </span>
