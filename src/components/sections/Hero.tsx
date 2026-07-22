@@ -9,7 +9,7 @@ import {
 } from "framer-motion";
 import { ArrowUpRight, Sparkles } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { HeroBackground } from "@/components/canvas/HeroBackground";
+import { HeroVideo } from "@/components/canvas/HeroVideo";
 import { MagneticButton } from "@/components/ui/MagneticButton";
 import { useLenis } from "@/components/providers/SmoothScroll";
 
@@ -48,7 +48,7 @@ export function Hero({ active }: { active: boolean }) {
       id="hero"
       className="relative flex min-h-[100svh] items-center overflow-hidden pt-28"
     >
-      <HeroBackground />
+      <HeroVideo />
 
       <motion.div style={{ y, opacity }} className="container-x relative z-10">
         <motion.div
