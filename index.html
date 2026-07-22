@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#FAF6EE" />
+  <title>Maison Jolie — Bespoke Wedding Planning in France</title>
+  <meta name="description" content="Maison Jolie is a French bespoke wedding planning atelier crafting sun-drenched, unforgettable celebrations across Provence, the Riviera and beyond." />
+
+  <!-- Fonts: Fraunces (editorial optical serif) + Hanken Grotesk (clean humanist sans) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..700&family=Hanken+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8C%B8%3C/text%3E%3C/svg%3E" />
+</head>
+<body>
+
+  <!-- ============================================================
+       A. ULTRA-CUSTOM BRANDED PRELOADER
+       ============================================================ -->
+  <div class="preloader" id="preloader" aria-hidden="true">
+    <div class="preloader__inner">
+      <div class="preloader__mark">
+        <!-- Blooming ring / floral SVG that draws itself -->
+        <svg class="bloom" viewBox="0 0 120 120" fill="none" aria-hidden="true">
+          <g class="bloom__petals" stroke="var(--terracotta)" stroke-width="1.4">
+            <circle cx="60" cy="60" r="34" class="draw" />
+            <ellipse cx="60" cy="60" rx="34" ry="14" class="draw" />
+            <ellipse cx="60" cy="60" rx="14" ry="34" class="draw" />
+            <ellipse cx="60" cy="60" rx="30" ry="30" transform="rotate(45 60 60)" class="draw" style="transform-box:fill-box;transform-origin:center" />
+          </g>
+          <circle cx="60" cy="60" r="6" fill="var(--gold)" class="bloom__core" />
+        </svg>
+      </div>
+      <div class="preloader__wordmark">
+        <span class="preloader__line">Maison</span>
+        <span class="preloader__line preloader__line--italic">Jolie</span>
+      </div>
+      <div class="preloader__meta">
+        <span class="preloader__tag">Bespoke Weddings · France</span>
+        <span class="preloader__count" id="preloaderCount">0%</span>
+      </div>
+      <div class="preloader__bar"><span class="preloader__fill" id="preloaderFill"></span></div>
+    </div>
+    <div class="preloader__curtain preloader__curtain--top"></div>
+    <div class="preloader__curtain preloader__curtain--bottom"></div>
+  </div>
+
+  <!-- ============================================================
+       B. CUSTOM MAGNETIC / INTERACTIVE CURSOR
+       ============================================================ -->
+  <div class="cursor" id="cursor" aria-hidden="true">
+    <span class="cursor__dot" id="cursorDot"></span>
+    <span class="cursor__ring" id="cursorRing"><span class="cursor__label" id="cursorLabel"></span></span>
+  </div>
+
+  <!-- ============================================================
+       ATMOSPHERE — animated mesh gradient + floating petals
+       ============================================================ -->
+  <div class="atmosphere" aria-hidden="true">
+    <div class="mesh"></div>
+    <div class="rays"></div>
+    <div class="petals" id="petals"></div>
+    <div class="grain"></div>
+  </div>
+
+  <!-- ============================================================
+       NAVIGATION
+       ============================================================ -->
+  <header class="nav" id="nav">
+    <a href="#top" class="nav__brand" data-cursor="View" data-magnetic>
+      <span class="nav__monogram" aria-hidden="true">
+        <svg viewBox="0 0 40 40" fill="none"><path d="M6 32V10l8 12 8-12v22M27 10c6 0 9 4 9 8s-3 8-9 8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+      <span class="nav__name">Maison&nbsp;Jolie</span>
+    </a>
+    <nav class="nav__links" id="navLinks" aria-label="Primary">
+      <a href="#story" data-cursor="Read">Atelier</a>
+      <a href="#services" data-cursor="Explore">Services</a>
+      <a href="#game" data-cursor="Play">Your Vibe</a>
+      <a href="#stories" data-cursor="View">Love Stories</a>
+      <a href="#contact" class="nav__cta" data-cursor="Say hi" data-magnetic>Book a Consultation</a>
+    </nav>
+    <button class="nav__burger" id="navBurger" aria-label="Open menu" aria-expanded="false">
+      <span></span><span></span>
+    </button>
+  </header>
+
+  <main id="top">
+
+    <!-- ============================================================
+         C. HERO
+         ============================================================ -->
+    <section class="hero" id="hero">
+      <div class="hero__inner">
+        <div class="hero__intro reveal">
+          <span class="eyebrow"><span class="eyebrow__dot"></span>French Bespoke Wedding Atelier · Est. 2014</span>
+          <h1 class="hero__title">
+            <span class="line"><span>We plan the</span></span>
+            <span class="line"><span class="serif-italic">sun-drenched</span></span>
+            <span class="line"><span>weddings you'll</span></span>
+            <span class="line"><span>never forget.</span></span>
+          </h1>
+          <p class="hero__lead">
+            From a château in Provence to a secret Tuscan garden — Maison Jolie designs
+            joyful, poetic celebrations where every detail feels like golden hour.
+          </p>
+          <div class="hero__actions">
+            <a href="#contact" class="btn btn--primary" data-magnetic data-cursor="Let's talk">
+              <span class="btn__label">Plan Your Dream Wedding</span>
+              <span class="btn__blob" aria-hidden="true"></span>
+            </a>
+            <a href="#game" class="btn btn--ghost" data-cursor="Play">
+              <span>Find Your Wedding Vibe</span>
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+          </div>
+          <div class="hero__stats">
+            <div><strong>180+</strong><span>weddings styled</span></div>
+            <div><strong>12</strong><span>regions of France</span></div>
+            <div><strong>98%</strong><span>couples referred us</span></div>
+          </div>
+        </div>
+
+        <!-- Framed dynamic gallery with 3D parallax tilt -->
+        <div class="hero__gallery" id="heroGallery" aria-hidden="true">
+          <figure class="frame frame--a" data-depth="0.05" data-cursor="View">
+            <div class="frame__img art art--chateau"></div>
+            <figcaption>Château · Provence</figcaption>
+          </figure>
+          <figure class="frame frame--b" data-depth="0.11" data-cursor="View">
+            <div class="frame__img art art--riviera"></div>
+            <figcaption>Golden Hour · Riviera</figcaption>
+          </figure>
+          <figure class="frame frame--c" data-depth="0.08" data-cursor="View">
+            <div class="frame__img art art--table"></div>
+            <figcaption>Candlelit Feast</figcaption>
+          </figure>
+          <span class="hero__badge" data-depth="0.16">
+            <svg viewBox="0 0 100 100" aria-hidden="true"><defs><path id="circlePath" d="M50,50 m-36,0 a36,36 0 1,1 72,0 a36,36 0 1,1 -72,0"/></defs><text><textPath href="#circlePath">· joie de vivre · sun · love · maison jolie </textPath></text></svg>
+            <span class="hero__badge-core">✦</span>
+          </span>
+        </div>
+      </div>
+
+      <a href="#story" class="hero__scroll" data-cursor="Scroll">
+        <span>Scroll to explore</span>
+        <span class="hero__scroll-line"></span>
+      </a>
+    </section>
+
+    <!-- Marquee ribbon -->
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee__track">
+        <span>Full Planning</span><span class="dot">✦</span>
+        <span>Design &amp; Styling</span><span class="dot">✦</span>
+        <span>Destination Weddings</span><span class="dot">✦</span>
+        <span>Day-of Coordination</span><span class="dot">✦</span>
+        <span>Elopements</span><span class="dot">✦</span>
+        <span>Full Planning</span><span class="dot">✦</span>
+        <span>Design &amp; Styling</span><span class="dot">✦</span>
+        <span>Destination Weddings</span><span class="dot">✦</span>
+        <span>Day-of Coordination</span><span class="dot">✦</span>
+        <span>Elopements</span><span class="dot">✦</span>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         STORY / ATELIER
+         ============================================================ -->
+    <section class="story" id="story">
+      <div class="story__grid">
+        <div class="story__media reveal">
+          <div class="art art--founder story__portrait" data-cursor="Meet Éloïse"></div>
+          <div class="story__signature">
+            <svg viewBox="0 0 220 80" fill="none" aria-hidden="true"><path d="M8 54c14-30 24-30 26-14s-8 30 2 30 20-40 30-40 6 30 16 30 16-34 26-34 4 24 14 24 18-20 30-20" stroke="var(--wine)" stroke-width="2.4" stroke-linecap="round"/></svg>
+            <span>Éloïse — Founder</span>
+          </div>
+        </div>
+        <div class="story__body reveal">
+          <span class="eyebrow"><span class="eyebrow__dot"></span>The Atelier</span>
+          <h2 class="section-title">A little house of <span class="serif-italic">joy</span>, obsessed with the details others forget.</h2>
+          <p>Maison Jolie began with a single belief: your wedding should feel like the warmest day of your life, poured into a single golden afternoon. We are a small French atelier of planners, stylists and dreamers — and we take on only a handful of couples each season.</p>
+          <p>We handle the invisible logistics so you can stay drunk on the moment. Then we style everything — from the light on the linen to the last petal on the aisle — so it looks unmistakably, joyfully <em>you</em>.</p>
+          <ul class="story__list">
+            <li><span>01</span> Human-first planning, zero overwhelm</li>
+            <li><span>02</span> Editorial design, not templates</li>
+            <li><span>03</span> On-the-day calm we guarantee</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         E. SERVICE & EXPERIENCE SHOWCASE
+         ============================================================ -->
+    <section class="services" id="services">
+      <div class="section-head reveal">
+        <span class="eyebrow"><span class="eyebrow__dot"></span>What we do</span>
+        <h2 class="section-title">Three ways to <span class="serif-italic">work together</span></h2>
+        <p class="section-sub">Hover a card to open it. Every collaboration is tailored, but most couples begin with one of these.</p>
+      </div>
+
+      <div class="services__list" id="servicesList">
+        <article class="svc" data-svc="0" data-cursor="Open">
+          <div class="svc__index">01</div>
+          <div class="svc__main">
+            <h3 class="svc__title">Full Planning</h3>
+            <p class="svc__tag">12–18 months · concept to last dance</p>
+            <div class="svc__reveal">
+              <div class="svc__art art art--riviera"></div>
+              <div class="svc__detail">
+                <p>Complete design and production. We build your vendor dream-team, choreograph the timeline, and manage every euro and every minute so you never touch a spreadsheet.</p>
+                <div class="svc__figs">
+                  <div><strong>40+</strong><span>vetted artisans</span></div>
+                  <div><strong>∞</strong><span>revisions, zero stress</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="svc__plus" aria-hidden="true"></div>
+        </article>
+
+        <article class="svc" data-svc="1" data-cursor="Open">
+          <div class="svc__index">02</div>
+          <div class="svc__main">
+            <h3 class="svc__title">Design &amp; Styling</h3>
+            <p class="svc__tag">The art direction of your day</p>
+            <div class="svc__reveal">
+              <div class="svc__art art art--chateau"></div>
+              <div class="svc__detail">
+                <p>For couples who have the logistics handled but crave the magic. Full creative direction: palette, florals, tablescapes, lighting, stationery — one cohesive, editorial world.</p>
+                <div class="svc__figs">
+                  <div><strong>1</strong><span>bespoke moodboard</span></div>
+                  <div><strong>360°</strong><span>styling &amp; scenography</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="svc__plus" aria-hidden="true"></div>
+        </article>
+
+        <article class="svc" data-svc="2" data-cursor="Open">
+          <div class="svc__index">03</div>
+          <div class="svc__main">
+            <h3 class="svc__title">Day-of Coordination</h3>
+            <p class="svc__tag">Your calm in the storm</p>
+            <div class="svc__reveal">
+              <div class="svc__art art art--table"></div>
+              <div class="svc__detail">
+                <p>You planned it — we make it flow. In the final weeks we absorb your plans, run the rehearsal, and command the day invisibly, so your only job is to feel everything.</p>
+                <div class="svc__figs">
+                  <div><strong>6wk</strong><span>hand-off runway</span></div>
+                  <div><strong>2+</strong><span>coordinators on site</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="svc__plus" aria-hidden="true"></div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         D. SIGNATURE MINI-GAME: FIND YOUR WEDDING VIBE
+         ============================================================ -->
+    <section class="game" id="game">
+      <div class="game__glow" aria-hidden="true"></div>
+      <div class="section-head reveal">
+        <span class="eyebrow eyebrow--light"><span class="eyebrow__dot"></span>The 60-second game</span>
+        <h2 class="section-title">Find your <span class="serif-italic">wedding vibe</span></h2>
+        <p class="section-sub">Three little choices. One personalised moodboard — with a note from Éloïse.</p>
+      </div>
+
+      <div class="game__stage reveal" id="gameStage">
+        <!-- Progress -->
+        <div class="game__progress" id="gameProgress">
+          <span class="step is-active" data-dot="0"></span>
+          <span class="step" data-dot="1"></span>
+          <span class="step" data-dot="2"></span>
+        </div>
+
+        <!-- STEP 1 · Setting -->
+        <div class="game__step is-active" data-step="0">
+          <p class="game__q"><span class="game__qn">01</span> Choose your setting</p>
+          <div class="game__options">
+            <button class="opt art--chateau" data-key="setting" data-value="Château in Provence" data-cursor="Pick">
+              <span class="opt__title">Château in Provence</span>
+              <span class="opt__sub">Lavender fields &amp; old stone</span>
+            </button>
+            <button class="opt art--riviera" data-key="setting" data-value="Seaside Riviera" data-cursor="Pick">
+              <span class="opt__title">Seaside Riviera</span>
+              <span class="opt__sub">Blue water, warm light</span>
+            </button>
+            <button class="opt art--garden" data-key="setting" data-value="Secret Tuscan Garden" data-cursor="Pick">
+              <span class="opt__title">Secret Tuscan Garden</span>
+              <span class="opt__sub">Cypress, roses &amp; hush</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- STEP 2 · Mood -->
+        <div class="game__step" data-step="1">
+          <p class="game__q"><span class="game__qn">02</span> Select your colour mood</p>
+          <div class="game__options">
+            <button class="opt swatch swatch--sunset" data-key="mood" data-value="Golden Hour Sunset" data-cursor="Pick">
+              <span class="opt__title">Golden Hour Sunset</span>
+              <span class="opt__sub">Amber · rose · copper</span>
+            </button>
+            <button class="opt swatch swatch--pastel" data-key="mood" data-value="Pastel Romance" data-cursor="Pick">
+              <span class="opt__title">Pastel Romance</span>
+              <span class="opt__sub">Blossom · cream · sky</span>
+            </button>
+            <button class="opt swatch swatch--editorial" data-key="mood" data-value="Editorial Chic" data-cursor="Pick">
+              <span class="opt__title">Editorial Chic</span>
+              <span class="opt__sub">Ivory · ink · terracotta</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- STEP 3 · Signature touch -->
+        <div class="game__step" data-step="2">
+          <p class="game__q"><span class="game__qn">03</span> Pick your signature touch</p>
+          <div class="game__options">
+            <button class="opt icon-opt" data-key="touch" data-value="Champagne Tower" data-cursor="Pick">
+              <span class="opt__emoji">🥂</span>
+              <span class="opt__title">Champagne Tower</span>
+              <span class="opt__sub">A glittering pour</span>
+            </button>
+            <button class="opt icon-opt" data-key="touch" data-value="Candlelit Feast" data-cursor="Pick">
+              <span class="opt__emoji">🕯️</span>
+              <span class="opt__title">Candlelit Feast</span>
+              <span class="opt__sub">A thousand flames</span>
+            </button>
+            <button class="opt icon-opt" data-key="touch" data-value="Midnight Fireworks" data-cursor="Pick">
+              <span class="opt__emoji">✨</span>
+              <span class="opt__title">Midnight Fireworks</span>
+              <span class="opt__sub">A sky that gasps</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="game__controls" id="gameControls">
+          <button class="game__back" id="gameBack" data-cursor="Back" hidden>← Back</button>
+          <span class="game__hint" id="gameHint">Tap a card to choose</span>
+        </div>
+
+        <!-- RESULT · Moodboard card -->
+        <div class="game__result" data-step="result">
+          <div class="moodboard" id="moodboard">
+            <div class="moodboard__art" id="moodboardArt"></div>
+            <div class="moodboard__body">
+              <span class="moodboard__kicker">Your Maison Jolie moodboard</span>
+              <h3 class="moodboard__title" id="moodboardTitle">The Golden Provençal</h3>
+              <ul class="moodboard__chips" id="moodboardChips"></ul>
+              <p class="moodboard__note" id="moodboardNote"></p>
+              <span class="moodboard__sign">— Éloïse, Founder ✎</span>
+            </div>
+          </div>
+          <div class="game__result-actions">
+            <button class="btn btn--primary" id="sendVibe" data-magnetic data-cursor="Send">
+              <span class="btn__label">Send This Vibe to the Planner</span>
+              <span class="btn__blob" aria-hidden="true"></span>
+            </button>
+            <button class="btn btn--ghost" id="replayGame" data-cursor="Replay">Play again ↺</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         F. PORTFOLIO & LOVE STORIES  (drag-to-scroll reel)
+         ============================================================ -->
+    <section class="stories" id="stories">
+      <div class="section-head reveal">
+        <span class="eyebrow"><span class="eyebrow__dot"></span>Love Stories</span>
+        <h2 class="section-title">Real couples, <span class="serif-italic">real light</span></h2>
+        <p class="section-sub">Drag to wander through recent celebrations.</p>
+      </div>
+
+      <div class="reel" id="reel" data-cursor="Drag">
+        <div class="reel__track" id="reelTrack">
+          <figure class="story-card" data-cursor="View">
+            <div class="art art--chateau story-card__img"></div>
+            <figcaption>
+              <span class="story-card__meta">Château de Roussan · Provence</span>
+              <blockquote>"They turned our chaos into the calmest, most beautiful day of our lives."</blockquote>
+              <cite>— Camille &amp; Louis</cite>
+            </figcaption>
+          </figure>
+          <figure class="story-card" data-cursor="View">
+            <div class="art art--riviera story-card__img"></div>
+            <figcaption>
+              <span class="story-card__meta">Cap-Ferrat · Riviera</span>
+              <blockquote>"Golden hour by the sea, every detail glowing. We still can't believe it was ours."</blockquote>
+              <cite>— Sofia &amp; James</cite>
+            </figcaption>
+          </figure>
+          <figure class="story-card" data-cursor="View">
+            <div class="art art--garden story-card__img"></div>
+            <figcaption>
+              <span class="story-card__meta">Val d'Orcia · Tuscany</span>
+              <blockquote>"A secret garden, a thousand candles. Maison Jolie read our minds."</blockquote>
+              <cite>— Amara &amp; Théo</cite>
+            </figcaption>
+          </figure>
+          <figure class="story-card" data-cursor="View">
+            <div class="art art--table story-card__img"></div>
+            <figcaption>
+              <span class="story-card__meta">Domaine des Andéols</span>
+              <blockquote>"The tablescape made grown adults cry. Worth every single moment."</blockquote>
+              <cite>— Inès &amp; Marco</cite>
+            </figcaption>
+          </figure>
+          <figure class="story-card" data-cursor="View">
+            <div class="art art--sunset story-card__img"></div>
+            <figcaption>
+              <span class="story-card__meta">Menton · Côte d'Azur</span>
+              <blockquote>"Fireworks over the bay at midnight. Our guests still talk about it."</blockquote>
+              <cite>— Lena &amp; Adrien</cite>
+            </figcaption>
+          </figure>
+        </div>
+      </div>
+      <div class="reel__progress"><span id="reelProgress"></span></div>
+    </section>
+
+    <!-- ============================================================
+         G. INTERACTIVE CONTACT & FORM
+         ============================================================ -->
+    <section class="contact" id="contact">
+      <div class="contact__grid">
+        <div class="contact__aside reveal">
+          <span class="eyebrow"><span class="eyebrow__dot"></span>Let's begin</span>
+          <h2 class="section-title">Tell us about <span class="serif-italic">your day</span></h2>
+          <p>We take a handful of weddings each season. Share a few details and Éloïse will personally reply within two days — with a coffee-length call, no pressure.</p>
+          <ul class="contact__links">
+            <li><a href="mailto:bonjour@maisonjoliewedding.com" data-cursor="Email">bonjour@maisonjoliewedding.com</a></li>
+            <li><a href="tel:+33000000000" data-cursor="Call">+33 (0)0 00 00 00 00</a></li>
+            <li><span>Aix-en-Provence · Paris · Everywhere love is</span></li>
+          </ul>
+          <div class="contact__seal" aria-hidden="true">
+            <svg viewBox="0 0 120 120"><defs><path id="sealPath" d="M60,60 m-40,0 a40,40 0 1,1 80,0 a40,40 0 1,1 -80,0"/></defs><text><textPath href="#sealPath">· maison jolie · bespoke weddings · maison jolie · </textPath></text></svg>
+            <span>✦</span>
+          </div>
+        </div>
+
+        <!-- Step-by-step inquiry form -->
+        <form class="inquiry" id="inquiry" novalidate>
+          <div class="inquiry__progress">
+            <span class="inquiry__count"><b id="fstepNow">1</b> / 3</span>
+            <div class="inquiry__bar"><span id="fstepFill"></span></div>
+          </div>
+
+          <!-- Form step 1 -->
+          <fieldset class="fstep is-active" data-fstep="0">
+            <legend>First, the dream</legend>
+            <label class="field">
+              <span>Your name(s)</span>
+              <input type="text" name="names" placeholder="Camille &amp; Louis" data-cursor="Type" />
+            </label>
+            <label class="field">
+              <span>Where will love happen?</span>
+              <input type="text" name="place" id="fPlace" placeholder="A château in Provence…" data-cursor="Type" />
+            </label>
+            <label class="field">
+              <span>Approximate date</span>
+              <input type="date" name="date" data-cursor="Pick" />
+            </label>
+          </fieldset>
+
+          <!-- Form step 2 -->
+          <fieldset class="fstep" data-fstep="1">
+            <legend>Now, the scope</legend>
+            <div class="field">
+              <span>Guest count</span>
+              <div class="chips" data-single>
+                <button type="button" class="chip" data-cursor="Pick">Intimate · &lt;40</button>
+                <button type="button" class="chip" data-cursor="Pick">Classic · 40–100</button>
+                <button type="button" class="chip" data-cursor="Pick">Grand · 100+</button>
+              </div>
+            </div>
+            <div class="field">
+              <span>Budget range <b id="budgetOut">€45,000</b></span>
+              <input type="range" name="budget" id="budget" min="15000" max="200000" step="5000" value="45000" data-cursor="Drag" />
+              <div class="field__scale"><span>€15k</span><span>€200k+</span></div>
+            </div>
+            <div class="field">
+              <span>Which service calls to you?</span>
+              <div class="chips" id="serviceChips" data-single>
+                <button type="button" class="chip" data-cursor="Pick">Full Planning</button>
+                <button type="button" class="chip" data-cursor="Pick">Design &amp; Styling</button>
+                <button type="button" class="chip" data-cursor="Pick">Day-of Coordination</button>
+              </div>
+            </div>
+          </fieldset>
+
+          <!-- Form step 3 -->
+          <fieldset class="fstep" data-fstep="2">
+            <legend>Finally, the feeling</legend>
+            <label class="field">
+              <span>Paint us your vision</span>
+              <textarea name="vision" id="fVision" rows="4" placeholder="Golden hour, long tables, our people laughing until midnight…" data-cursor="Type"></textarea>
+            </label>
+            <label class="field">
+              <span>Email so Éloïse can reply</span>
+              <input type="email" name="email" placeholder="you@lovebirds.com" data-cursor="Type" />
+            </label>
+          </fieldset>
+
+          <div class="inquiry__nav">
+            <button type="button" class="btn btn--ghost" id="fBack" data-cursor="Back" hidden>← Back</button>
+            <button type="button" class="btn btn--primary" id="fNext" data-magnetic data-cursor="Next">
+              <span class="btn__label">Continue</span><span class="btn__blob" aria-hidden="true"></span>
+            </button>
+          </div>
+
+          <!-- Success -->
+          <div class="inquiry__done" id="inquiryDone" hidden>
+            <div class="inquiry__done-mark">🌸</div>
+            <h3>It's on its way!</h3>
+            <p>Thank you — your vision just landed in our atelier. Keep an eye on your inbox; Éloïse replies personally within two days.</p>
+            <button type="button" class="btn btn--ghost" id="fReset" data-cursor="Again">Send another →</button>
+          </div>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============================================================
+       FOOTER
+       ============================================================ -->
+  <footer class="footer">
+    <div class="footer__big" aria-hidden="true">Maison&nbsp;Jolie</div>
+    <div class="footer__cols">
+      <div class="footer__col">
+        <span class="footer__mono">MJ</span>
+        <p>A little French house of joy, planning sun-drenched weddings across Provence, the Riviera, Tuscany and beyond.</p>
+      </div>
+      <nav class="footer__col" aria-label="Footer">
+        <span class="footer__label">Explore</span>
+        <a href="#story" data-cursor="Go">Atelier</a>
+        <a href="#services" data-cursor="Go">Services</a>
+        <a href="#game" data-cursor="Go">Your Vibe</a>
+        <a href="#stories" data-cursor="Go">Love Stories</a>
+      </nav>
+      <div class="footer__col">
+        <span class="footer__label">Say bonjour</span>
+        <a href="mailto:bonjour@maisonjoliewedding.com" data-cursor="Email">bonjour@maisonjoliewedding.com</a>
+        <a href="#" data-cursor="Follow">Instagram</a>
+        <a href="#" data-cursor="Follow">Pinterest</a>
+      </div>
+    </div>
+    <div class="footer__base">
+      <span>© <span id="year"></span> Maison Jolie Wedding — Made with joie de vivre.</span>
+      <a href="#top" data-cursor="Up" data-magnetic>Back to top ↑</a>
+    </div>
+  </footer>
+
+  <!-- Celebration canvas for petal/confetti burst -->
+  <canvas class="celebrate" id="celebrate" aria-hidden="true"></canvas>
+
+  <script src="script.js"></script>
+</body>
+</html>
