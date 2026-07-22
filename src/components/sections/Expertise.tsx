@@ -9,6 +9,7 @@ import {
 import { ArrowUpRight } from "lucide-react";
 import { PILLARS, type Pillar } from "@/lib/data";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { Em } from "@/components/ui/Em";
 import { useIsMobile } from "@/hooks/useMediaQuery";
 
 export function Expertise() {
@@ -17,11 +18,11 @@ export function Expertise() {
       <div className="container-x">
         <div className="flex flex-col items-start justify-between gap-8 lg:flex-row lg:items-end">
           <SectionHeading
-            kicker="Nos expertises · 4 piliers"
+            kicker="Nos expertises"
+            index="01"
             title={
               <>
-                Un studio,{" "}
-                <span className="text-gradient">quatre superpouvoirs</span>.
+                Un studio, <Em accent>quatre</Em> superpouvoirs.
               </>
             }
             intro="De la première ligne de design au dernier octet de donnée, on couvre toute la chaîne de valeur digitale."

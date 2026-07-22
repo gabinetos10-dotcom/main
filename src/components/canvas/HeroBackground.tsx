@@ -31,7 +31,7 @@ export function HeroBackground() {
 
       {/* Static luminous fallback so the section never looks empty. */}
       {reduce && (
-        <div className="absolute inset-0 bg-[radial-gradient(50%_50%_at_50%_40%,rgba(123,97,255,0.18),transparent_70%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(50%_50%_at_50%_40%,rgba(255,90,44,0.14),transparent_70%)]" />
       )}
     </div>
   );

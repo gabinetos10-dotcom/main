@@ -17,9 +17,9 @@ export function ParticleField({ count }: Props) {
   const outer = useRef<THREE.Points>(null);
   const { viewport } = useThree();
 
-  const innerData = useMemo(() => buildShell(count, 5, ["#7b61ff", "#2de2e6"]), [count]);
+  const innerData = useMemo(() => buildShell(count, 5, ["#f2efe8", "#ff5a2c"]), [count]);
   const outerData = useMemo(
-    () => buildShell(Math.floor(count * 0.55), 9, ["#c4b5fd", "#7b61ff"]),
+    () => buildShell(Math.floor(count * 0.55), 9, ["#cbc6ba", "#f2efe8"]),
     [count]
   );
 
@@ -50,8 +50,8 @@ export function ParticleField({ count }: Props) {
 
   return (
     <group ref={group} scale={Math.min(1, viewport.width / 10)}>
-      <Shell reference={inner} data={innerData} size={0.05} opacity={0.95} />
-      <Shell reference={outer} data={outerData} size={0.08} opacity={0.6} />
+      <Shell reference={inner} data={innerData} size={0.045} opacity={0.8} />
+      <Shell reference={outer} data={outerData} size={0.075} opacity={0.45} />
     </group>
   );
 }

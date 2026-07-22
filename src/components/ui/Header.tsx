@@ -45,7 +45,7 @@ export function Header() {
         <div
           className={`flex w-full max-w-[var(--container)] items-center justify-between gap-4 rounded-full px-4 py-2.5 transition-all duration-500 ease-[var(--ease-out-expo)] sm:px-5 ${
             scrolled
-              ? "glass border-gradient shadow-[0_20px_60px_-30px_rgba(0,0,0,0.9)]"
+              ? "border-gradient border border-[var(--color-line)] bg-[rgba(10,10,12,0.62)] shadow-[0_20px_60px_-30px_rgba(0,0,0,0.9)] backdrop-blur-xl [backdrop-filter:blur(20px)_saturate(140%)]"
               : "border border-transparent bg-transparent"
           }`}
         >

@@ -8,6 +8,7 @@ import {
   BUDGET_RANGES,
   TIMELINES,
 } from "@/lib/data";
+import { Em } from "@/components/ui/Em";
 import { cn } from "@/lib/utils";
 
 type Form = {
@@ -49,9 +50,14 @@ export function Contact() {
         <div className="grid gap-12 lg:grid-cols-12">
           {/* Left */}
           <div className="lg:col-span-5">
-            <span className="kicker mb-6">Contact · Estimation ludique</span>
-            <h2 className="font-[family-name:var(--font-display)] text-4xl font-semibold leading-[1.05] tracking-[-0.02em] sm:text-5xl">
-              Estimons votre projet <span className="text-gradient">en 4 étapes</span>.
+            <div className="mb-6 flex items-center gap-4">
+              <span className="kicker">Contact</span>
+              <span className="font-[family-name:var(--font-mono)] text-xs text-[var(--color-text-mute)]">
+                (05)
+              </span>
+            </div>
+            <h2 className="font-[family-name:var(--font-display)] text-4xl font-semibold leading-[1.04] tracking-[-0.03em] text-[var(--color-highlight)] sm:text-5xl">
+              Estimons votre projet <Em accent>en 4 étapes</Em>.
             </h2>
             <p className="mt-6 max-w-md text-lg leading-relaxed text-[var(--color-text-dim)]">
               Pas de formulaire interminable. Quelques clics et on revient vers

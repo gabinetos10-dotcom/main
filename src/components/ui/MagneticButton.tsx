@@ -14,16 +14,17 @@ type BaseProps = {
 };
 
 const variants: Record<Variant, string> = {
+  // Solid warm‑paper pill with ink text — quietly premium, not a gradient.
   primary:
-    "text-white bg-[linear-gradient(120deg,var(--color-accent),var(--color-accent-2))] shadow-[0_10px_40px_-12px_rgba(123,97,255,0.7)] hover:shadow-[0_16px_50px_-10px_rgba(45,226,230,0.6)]",
+    "text-[var(--color-ink)] bg-[var(--color-highlight)] hover:bg-white shadow-[0_20px_50px_-24px_rgba(0,0,0,0.9)]",
   ghost:
     "text-[var(--color-text)] bg-[var(--color-surface)] hover:bg-[var(--color-surface-strong)] border border-[var(--color-line)]",
   outline:
-    "text-[var(--color-text)] bg-transparent border-gradient hover:bg-[var(--color-surface)]",
+    "text-[var(--color-text)] bg-transparent border border-[var(--color-line-strong)] hover:border-[var(--color-text-dim)] hover:bg-[var(--color-surface)]",
 };
 
 const base =
-  "relative inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-medium tracking-wide transition-[box-shadow,background-color,transform] duration-500 ease-[var(--ease-out-expo)] will-change-transform select-none";
+  "relative inline-flex items-center justify-center gap-2 rounded-full px-7 py-3.5 text-[0.9rem] font-medium tracking-tight transition-[box-shadow,background-color,border-color,transform,color] duration-500 ease-[var(--ease-out-expo)] will-change-transform select-none";
 
 /** Magnetic call‑to‑action, polymorphic across button & anchor. */
 export const MagneticButton = forwardRef<

@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Radar, Workflow } from "lucide-react";
 import { useState } from "react";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { Em } from "@/components/ui/Em";
 import { ScrapingSimulator } from "@/components/games/ScrapingSimulator";
 import { AutomationFlowBuilder } from "@/components/games/AutomationFlowBuilder";
 
@@ -30,11 +31,11 @@ export function Playground() {
     <section id="playground" className="relative py-28 sm:py-36">
       <div className="container-x">
         <SectionHeading
-          kicker="Playground · Interactif"
+          kicker="Playground"
+          index="02"
           title={
             <>
-              Ne nous croyez pas sur parole.{" "}
-              <span className="text-gradient">Essayez.</span>
+              Ne nous croyez pas sur parole. <Em accent>Essayez.</Em>
             </>
           }
           intro="Deux démos jouables qui montrent, concrètement, ce qu'on fabrique au quotidien."

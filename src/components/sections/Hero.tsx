@@ -66,23 +66,23 @@ export function Hero({ active }: { active: boolean }) {
           </div>
 
           {/* Kinetic headline */}
-          <h1 className="font-[family-name:var(--font-display)] text-[13vw] font-semibold leading-[0.95] tracking-[-0.03em] sm:text-[8.5vw] lg:text-[6.4rem]">
+          <h1 className="font-[family-name:var(--font-display)] text-[14vw] font-semibold leading-[0.92] tracking-[-0.045em] text-[var(--color-highlight)] sm:text-[9vw] lg:text-[7.1rem]">
             <span className="block overflow-hidden">
               <motion.span variants={lineUp} className="block">
                 On sait
               </motion.span>
             </span>
-            <span className="block overflow-hidden py-[0.05em]">
+            <span className="block overflow-hidden py-[0.06em]">
               <motion.span variants={lineUp} className="block">
-                <span className="relative inline-flex min-w-[5ch] align-top">
+                <span className="relative inline-flex min-w-[6ch] align-top">
                   <AnimatePresence mode="wait">
                     <motion.span
                       key={word}
-                      initial={{ y: "60%", opacity: 0, filter: "blur(8px)" }}
+                      initial={{ y: "55%", opacity: 0, filter: "blur(10px)" }}
                       animate={{ y: "0%", opacity: 1, filter: "blur(0px)" }}
-                      exit={{ y: "-60%", opacity: 0, filter: "blur(8px)" }}
-                      transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
-                      className="text-accent-gradient inline-block"
+                      exit={{ y: "-55%", opacity: 0, filter: "blur(10px)" }}
+                      transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                      className="em inline-block pr-[0.08em] text-[var(--color-accent)]"
                     >
                       {CYCLE[word]}
                     </motion.span>

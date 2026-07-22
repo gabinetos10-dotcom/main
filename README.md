@@ -49,19 +49,28 @@ npm run start      # sert le build
 
 ## 🎨 Design system
 
+Parti pris **éditorial** : quasi‑monochrome chaud, **un seul accent** (ember),
+la typographie et le vide font le travail — pas de dégradé arc‑en‑ciel.
+
+Typographie : **Bricolage Grotesque** (display), **Instrument Serif** en
+italique pour les mots‑clés (la signature `.em` / `<Em>`), Inter (texte),
+JetBrains Mono (labels techniques). Curseur sur‑mesure (`CustomCursor`) en
+`mix-blend-difference`.
+
 Toute la marque se re‑skinne depuis les tokens CSS dans
 [`src/app/globals.css`](src/app/globals.css) :
 
 ```css
---color-bg:        #06070f;  /* fond spatial profond   */
---color-surface:   rgba(255,255,255,.035);
---color-accent:    #7b61ff;  /* indigo électrique      */
---color-accent-2:  #2de2e6;  /* cyan néon              */
---color-highlight: #c4b5fd;
---color-text:      #eceef7;
+--color-bg:        #0a0a0b;  /* near‑black chaud        */
+--color-surface:   rgba(255,255,255,.028);
+--color-accent:    #ff5a2c;  /* ember — l'unique accent */
+--color-highlight: #ede9e1;  /* off‑white (emphase)     */
+--color-text:      #ece8e0;  /* papier chaud            */
+--color-ivory:     #f1ece2;  /* rupture claire du footer */
 ```
 
-Changez ces valeurs et l'ensemble du site (dégradés, glows, bordures) s'adapte.
+Changez ces valeurs et l'ensemble du site (accents, glows, bordures, footer)
+s'adapte.
 
 ## 📁 Architecture
 

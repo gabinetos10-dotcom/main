@@ -4,6 +4,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { PROJECTS, type Project } from "@/lib/data";
+import { Em } from "@/components/ui/Em";
 import { useIsMobile } from "@/hooks/useMediaQuery";
 
 export function CaseStudies() {
@@ -13,9 +14,14 @@ export function CaseStudies() {
       <div className="container-x">
         <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
           <div>
-            <span className="kicker mb-5">Projets · Case studies</span>
-            <h2 className="max-w-xl font-[family-name:var(--font-display)] text-4xl font-semibold leading-[1.05] tracking-[-0.02em] sm:text-5xl">
-              Des idées devenues <span className="text-gradient">réalités vivantes</span>.
+            <div className="mb-5 flex items-center gap-4">
+              <span className="kicker">Projets — Case studies</span>
+              <span className="font-[family-name:var(--font-mono)] text-xs text-[var(--color-text-mute)]">
+                (04)
+              </span>
+            </div>
+            <h2 className="max-w-xl font-[family-name:var(--font-display)] text-4xl font-semibold leading-[1.04] tracking-[-0.03em] text-[var(--color-highlight)] sm:text-5xl">
+              Des idées devenues <Em accent>réalités</Em> vivantes.
             </h2>
           </div>
           <p className="max-w-xs text-sm text-[var(--color-text-dim)] md:text-right">

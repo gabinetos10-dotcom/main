@@ -4,6 +4,7 @@ import { motion, useInView } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { STATS, VALUES, type Stat } from "@/lib/data";
 import { Reveal } from "@/components/ui/Reveal";
+import { Em } from "@/components/ui/Em";
 
 export function About() {
   return (
@@ -12,14 +13,19 @@ export function About() {
         <div className="grid gap-14 lg:grid-cols-12">
           {/* Left — manifesto */}
           <div className="lg:col-span-7">
-            <span className="kicker mb-6">L'ADN GJS · Qui sommes‑nous</span>
+            <div className="mb-6 flex items-center gap-4">
+              <span className="kicker">L'ADN GJS</span>
+              <span className="font-[family-name:var(--font-mono)] text-xs text-[var(--color-text-mute)]">
+                (03)
+              </span>
+            </div>
             <Reveal>
-              <h2 className="font-[family-name:var(--font-display)] text-3xl font-semibold leading-[1.1] tracking-[-0.02em] sm:text-[2.9rem]">
-                On est une petite équipe française
+              <h2 className="font-[family-name:var(--font-display)] text-[2.4rem] font-semibold leading-[1.04] tracking-[-0.03em] text-[var(--color-highlight)] sm:text-[3rem]">
+                Une petite équipe française
                 <span className="text-[var(--color-text-mute)]"> qui déteste </span>
                 le tiède.
                 <br />
-                <span className="text-gradient">Le sur‑mesure, ou rien.</span>
+                Le sur‑mesure, <Em accent>ou rien.</Em>
               </h2>
             </Reveal>
             <Reveal delay={0.1}>
@@ -103,9 +109,9 @@ function StatBlock({ stat }: { stat: Stat }) {
 
   return (
     <div ref={ref}>
-      <div className="font-[family-name:var(--font-display)] text-4xl font-semibold tracking-tight tabular-nums sm:text-5xl">
+      <div className="font-[family-name:var(--font-display)] text-4xl font-semibold tracking-tight tabular-nums text-[var(--color-highlight)] sm:text-5xl">
         {value}
-        <span className="text-accent-gradient">{stat.suffix}</span>
+        <span className="text-[var(--color-accent)]">{stat.suffix}</span>
       </div>
       <p className="mt-1 text-sm text-[var(--color-text-dim)]">{stat.label}</p>
     </div>

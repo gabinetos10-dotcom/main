@@ -8,9 +8,9 @@ type Pt = { x: number; y: number };
 type LinkId = "a" | "b"; // a: node0→node1, b: node1→node2
 
 const NODES = [
-  { id: 0, label: "Formulaire client", sub: "Typeform · trigger", icon: FileInput, hue: "#7b61ff" },
-  { id: 1, label: "IA Webhook", sub: "GPT · enrichissement", icon: Bot, hue: "#2de2e6" },
-  { id: 2, label: "CRM Notion", sub: "Base · destination", icon: Database, hue: "#c4b5fd" },
+  { id: 0, label: "Formulaire client", sub: "Typeform · trigger", icon: FileInput, hue: "#ff5a2c" },
+  { id: 1, label: "IA Webhook", sub: "GPT · enrichissement", icon: Bot, hue: "#e0a458" },
+  { id: 2, label: "CRM Notion", sub: "Base · destination", icon: Database, hue: "#c97b5a" },
 ];
 
 export function AutomationFlowBuilder() {
@@ -165,8 +165,8 @@ export function AutomationFlowBuilder() {
         <svg className="pointer-events-none absolute inset-0 h-full w-full overflow-visible">
           <defs>
             <linearGradient id="wire" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stopColor="#7b61ff" />
-              <stop offset="100%" stopColor="#2de2e6" />
+              <stop offset="0%" stopColor="#ff5a2c" />
+              <stop offset="100%" stopColor="#e0a458" />
             </linearGradient>
           </defs>
           {links.a && pts.o0 && pts.i1 && <Wire from={pts.o0} to={pts.i1} />}
@@ -256,7 +256,7 @@ export function AutomationFlowBuilder() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
-              className="flex items-center justify-between rounded-2xl border border-[var(--color-accent-2)]/30 bg-[linear-gradient(120deg,rgba(123,97,255,0.12),rgba(45,226,230,0.08))] px-4 py-3"
+              className="flex items-center justify-between rounded-2xl border border-[var(--color-accent)]/30 bg-[linear-gradient(120deg,rgba(255,90,44,0.12),rgba(224,164,88,0.07))] px-4 py-3"
             >
               <span className="text-sm font-medium text-[var(--color-text)]">
                 ⚡ Workflow optimisé

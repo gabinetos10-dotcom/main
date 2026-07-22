@@ -36,7 +36,7 @@ export const PILLARS: Pillar[] = [
     description:
       "Des sites vitrines et applications web taillés main : design system unique, animations 60fps et performances Lighthouse au vert.",
     icon: Code2,
-    accent: "#7b61ff",
+    accent: "#ff5a2c",
     features: ["Next.js / React", "Design system", "SEO & Core Web Vitals", "Headless CMS"],
   },
   {
@@ -47,7 +47,7 @@ export const PILLARS: Pillar[] = [
     description:
       "On relie vos outils, on supprime les tâches répétitives et on orchestre des workflows fiables qui tournent 24/7 sans vous.",
     icon: Workflow,
-    accent: "#2de2e6",
+    accent: "#e0a458",
     features: ["Make / n8n", "Webhooks & API", "IA générative", "Notion / CRM"],
   },
   {
@@ -58,7 +58,7 @@ export const PILLARS: Pillar[] = [
     description:
       "Extraction de données à grande échelle, nettoyage, structuration et livraison — de la veille tarifaire au lead‑gen ciblé.",
     icon: Radar,
-    accent: "#c4b5fd",
+    accent: "#c97b5a",
     features: ["Crawlers résilients", "Anti‑bot & proxies", "Parsing structuré", "Export API/CSV"],
   },
   {
@@ -69,7 +69,7 @@ export const PILLARS: Pillar[] = [
     description:
       "Audit, architecture et accompagnement : on éclaire vos choix techniques pour investir juste et scaler sereinement.",
     icon: Compass,
-    accent: "#ff7a59",
+    accent: "#a89b84",
     features: ["Audit & cadrage", "Architecture", "Choix de stack", "Formation équipe"],
   },
 ];
@@ -116,7 +116,7 @@ export const PROJECTS: Project[] = [
     year: "2025",
     blurb: "Une expérience produit immersive pour une startup deeptech.",
     metric: "+38% de conversion",
-    hue: "#7b61ff",
+    hue: "#ff5a2c",
   },
   {
     id: "fluxo",
@@ -125,7 +125,7 @@ export const PROJECTS: Project[] = [
     year: "2025",
     blurb: "Pipeline lead‑to‑cash entièrement automatisé, zéro saisie manuelle.",
     metric: "9h gagnées / semaine",
-    hue: "#2de2e6",
+    hue: "#e0a458",
   },
   {
     id: "prisme",
@@ -134,7 +134,7 @@ export const PROJECTS: Project[] = [
     year: "2024",
     blurb: "Veille concurrentielle temps réel sur 2 400 sources.",
     metric: "2.4k sources suivies",
-    hue: "#c4b5fd",
+    hue: "#c97b5a",
   },
   {
     id: "atelier",
@@ -143,7 +143,7 @@ export const PROJECTS: Project[] = [
     year: "2024",
     blurb: "Refonte complète et stratégie tech pour une maison de design.",
     metric: "x3 trafic organique",
-    hue: "#ff7a59",
+    hue: "#a89b84",
   },
 ];
 

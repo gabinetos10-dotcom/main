@@ -1,71 +1,64 @@
 @import "tailwindcss";
 
 /* ============================================================================
-   GJS DESIGN SYSTEM — Deep‑space, luminous, airy. Not cyberpunk clutter.
-   All colours are tokenised so the whole brand re‑skins from :root.
+   GJS DESIGN SYSTEM v2 — Editorial, near‑monochrome, one warm accent.
+   Deliberately not a rainbow‑gradient agency template: type does the talking,
+   colour is rationed, whitespace is the luxury.
    ========================================================================== */
 
 :root {
-  /* --- Core palette (easily swappable brand tokens) --- */
-  --color-bg: #06070f;          /* deep spatial base            */
-  --color-bg-2: #0a0c1a;        /* raised base                  */
-  --color-surface: rgba(255, 255, 255, 0.035);
+  /* --- Core palette (swap these to re‑skin the brand) --- */
+  --color-bg: #0a0a0b;          /* warm near‑black base           */
+  --color-bg-2: #0d0d0e;        /* raised base                    */
+  --color-surface: rgba(255, 255, 255, 0.028);
   --color-surface-strong: rgba(255, 255, 255, 0.06);
-  --color-accent: #7b61ff;      /* electric indigo              */
-  --color-accent-2: #2de2e6;    /* neon cyan                    */
-  --color-accent-3: #ff7a59;    /* warm ember (rare contrast)   */
-  --color-highlight: #c4b5fd;   /* soft violet glow             */
-  --color-text: #eceef7;
-  --color-text-dim: #9498b6;
-  --color-text-mute: #5b5f7d;
-  --color-line: rgba(255, 255, 255, 0.08);
-  --color-line-strong: rgba(255, 255, 255, 0.14);
+  --color-accent: #ff5a2c;      /* the single accent — ember      */
+  --color-accent-2: #ff9166;    /* lighter ember (tonal only)     */
+  --color-highlight: #ede9e1;   /* warm off‑white (emphasis)      */
+  --color-text: #ece8e0;        /* warm paper white               */
+  --color-text-dim: #9c988e;    /* warm grey                      */
+  --color-text-mute: #605d55;
+  --color-line: rgba(255, 255, 255, 0.09);
+  --color-line-strong: rgba(255, 255, 255, 0.16);
 
-  /* --- Signature gradients --- */
-  --grad-accent: linear-gradient(120deg, var(--color-accent), var(--color-accent-2));
+  /* On‑light tokens for the footer rupture */
+  --color-ivory: #f1ece2;
+  --color-ink: #0a0a0b;
+
+  --color-live: #7bd88f;        /* muted green status dot         */
+
+  /* --- Gradients (used sparingly) --- */
+  --grad-accent: linear-gradient(110deg, var(--color-accent), var(--color-accent-2));
   --grad-aurora: radial-gradient(
-    120% 120% at 50% 0%,
-    rgba(123, 97, 255, 0.22) 0%,
-    rgba(45, 226, 230, 0.08) 35%,
-    transparent 70%
+    110% 90% at 50% -10%,
+    rgba(255, 90, 44, 0.12) 0%,
+    rgba(255, 145, 102, 0.04) 34%,
+    transparent 64%
   );
-  --grad-text: linear-gradient(
-    92deg,
-    #ffffff 0%,
-    #d7d3ff 40%,
-    var(--color-accent-2) 100%
-  );
+  --grad-text: linear-gradient(90deg, var(--color-text) 0%, var(--color-highlight) 100%);
 
-  /* --- Elevation --- */
-  --shadow-glow: 0 0 0 1px rgba(123, 97, 255, 0.25),
-    0 20px 60px -20px rgba(123, 97, 255, 0.45);
-  --shadow-soft: 0 30px 80px -40px rgba(0, 0, 0, 0.8);
+  --shadow-soft: 0 40px 120px -50px rgba(0, 0, 0, 0.9);
 
-  /* --- Motion --- */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out-quint: cubic-bezier(0.83, 0, 0.17, 1);
 
-  /* --- Rhythm --- */
-  --radius: 18px;
-  --radius-lg: 28px;
-  --container: 1280px;
+  --radius: 16px;
+  --radius-lg: 26px;
+  --container: 1320px;
 }
 
-/* Map tokens into Tailwind's theme so `text-accent`, `bg-surface`, etc. work. */
 @theme inline {
   --color-bg: var(--color-bg);
   --color-surface: var(--color-surface);
   --color-accent: var(--color-accent);
-  --color-accent-2: var(--color-accent-2);
   --color-highlight: var(--color-highlight);
   --color-ink: var(--color-text);
   --color-dim: var(--color-text-dim);
 
   --font-display: var(--font-display);
+  --font-serif: var(--font-serif);
   --font-sans: var(--font-sans);
   --font-mono: var(--font-mono);
-
-  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 * {
@@ -73,7 +66,7 @@
 }
 
 html {
-  scroll-behavior: auto; /* Lenis owns scrolling */
+  scroll-behavior: auto;
   -webkit-text-size-adjust: 100%;
 }
 
@@ -81,14 +74,20 @@ body {
   background-color: var(--color-bg);
   color: var(--color-text);
   font-family: var(--font-sans), system-ui, sans-serif;
-  font-feature-settings: "ss01", "cv01", "cv11";
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
   text-rendering: optimizeLegibility;
 }
 
-/* Living background: layered gradients that "breathe" behind the WebGL. */
+/* Custom cursor takes over on precise pointers. */
+@media (hover: hover) and (pointer: fine) {
+  body { cursor: none; }
+  a, button, [role="button"], [data-cursor] { cursor: none; }
+  input, textarea, select { cursor: auto; }
+}
+
+/* Living background — warm, restrained. */
 body::before {
   content: "";
   position: fixed;
@@ -96,54 +95,72 @@ body::before {
   z-index: -2;
   background:
     var(--grad-aurora),
-    radial-gradient(90% 60% at 80% 100%, rgba(45, 226, 230, 0.06), transparent 60%),
     linear-gradient(180deg, var(--color-bg) 0%, var(--color-bg-2) 100%);
   pointer-events: none;
 }
 
-/* Fine film grain to kill banding and add texture. */
+/* Fine film grain. */
 body::after {
   content: "";
   position: fixed;
   inset: 0;
   z-index: -1;
-  opacity: 0.04;
+  opacity: 0.035;
   pointer-events: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
 ::selection {
-  background: color-mix(in srgb, var(--color-accent) 45%, transparent);
+  background: color-mix(in srgb, var(--color-accent) 85%, transparent);
   color: #fff;
 }
 
-/* Slim luminous scrollbar (desktop). */
-::-webkit-scrollbar {
-  width: 10px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
+::-webkit-scrollbar { width: 9px; }
+::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(var(--color-accent), var(--color-accent-2));
+  background: var(--color-line-strong);
   border-radius: 99px;
   border: 3px solid var(--color-bg);
+}
+
+/* ============================================================================
+   TYPOGRAPHY HELPERS
+   ========================================================================== */
+
+/* Serif italic emphasis — the editorial signature. */
+.em {
+  font-family: var(--font-serif), Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+.text-gradient {
+  background: var(--grad-text);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.text-accent-gradient {
+  background: var(--grad-accent);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 /* ============================================================================
    COMPONENT UTILITIES
    ========================================================================== */
 
-/* Immersive glass panel. */
 .glass {
   background: var(--color-surface);
-  backdrop-filter: blur(18px) saturate(140%);
-  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  backdrop-filter: blur(16px) saturate(120%);
+  -webkit-backdrop-filter: blur(16px) saturate(120%);
   border: 1px solid var(--color-line);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), var(--shadow-soft);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), var(--shadow-soft);
 }
 
-/* Luminous gradient border via mask (no ugly box-shadow rings). */
+/* Hairline gradient border — now monochrome/warm, not rainbow. */
 .border-gradient {
   position: relative;
   isolation: isolate;
@@ -155,10 +172,10 @@ body::after {
   border-radius: inherit;
   padding: 1px;
   background: linear-gradient(
-    135deg,
-    color-mix(in srgb, var(--color-accent) 70%, transparent),
-    transparent 40%,
-    color-mix(in srgb, var(--color-accent-2) 60%, transparent)
+    140deg,
+    rgba(255, 255, 255, 0.22),
+    transparent 42%,
+    color-mix(in srgb, var(--color-accent) 40%, transparent)
   );
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   -webkit-mask-composite: xor;
@@ -167,78 +184,83 @@ body::after {
   z-index: -1;
 }
 
-.text-gradient {
-  background: var(--grad-text);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-.text-accent-gradient {
-  background: var(--grad-accent);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-/* Reactive grid lines used behind hero / sections. */
 .grid-lines {
   background-image:
     linear-gradient(var(--color-line) 1px, transparent 1px),
     linear-gradient(90deg, var(--color-line) 1px, transparent 1px);
-  background-size: 64px 64px;
-  mask-image: radial-gradient(70% 70% at 50% 40%, #000 0%, transparent 100%);
+  background-size: 72px 72px;
+  mask-image: radial-gradient(75% 75% at 50% 40%, #000 0%, transparent 100%);
 }
 
 .container-x {
   width: 100%;
   max-width: var(--container);
   margin-inline: auto;
-  padding-inline: clamp(1.25rem, 4vw, 3rem);
+  padding-inline: clamp(1.25rem, 5vw, 4rem);
 }
 
-/* Eyebrow / kicker label. */
+/* Editorial eyebrow with index rule. */
 .kicker {
   display: inline-flex;
   align-items: center;
-  gap: 0.55rem;
+  gap: 0.7rem;
   font-family: var(--font-mono), monospace;
-  font-size: 0.72rem;
-  letter-spacing: 0.28em;
+  font-size: 0.7rem;
+  letter-spacing: 0.24em;
   text-transform: uppercase;
   color: var(--color-text-dim);
 }
 .kicker::before {
   content: "";
-  width: 22px;
+  width: 28px;
   height: 1px;
-  background: var(--grad-accent);
+  background: var(--color-accent);
 }
 
-/* Live status dot. */
 .pulse-dot {
   position: relative;
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
   border-radius: 99px;
-  background: #34d399;
-  box-shadow: 0 0 12px #34d399;
+  background: var(--color-live);
+  box-shadow: 0 0 10px var(--color-live);
 }
 .pulse-dot::after {
   content: "";
   position: absolute;
   inset: -4px;
   border-radius: inherit;
-  border: 1px solid #34d399;
-  animation: ping 2s var(--ease-out-expo) infinite;
+  border: 1px solid var(--color-live);
+  animation: ping 2.4s var(--ease-out-expo) infinite;
+}
+
+/* Animated link underline (nav / inline). */
+.link-underline {
+  position: relative;
+}
+.link-underline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  height: 1px;
+  width: 100%;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.5s var(--ease-out-expo);
+}
+.link-underline:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
 }
 
 /* ============================================================================
    KEYFRAMES
    ========================================================================== */
 @keyframes ping {
-  0% { transform: scale(0.6); opacity: 0.9; }
-  100% { transform: scale(2.4); opacity: 0; }
+  0% { transform: scale(0.6); opacity: 0.8; }
+  100% { transform: scale(2.6); opacity: 0; }
 }
 @keyframes marquee {
   from { transform: translateX(0); }
@@ -248,14 +270,6 @@ body::after {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-14px); }
 }
-@keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-}
-@keyframes gradient-pan {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-}
 @keyframes caret-blink {
   0%, 49% { opacity: 1; }
   50%, 100% { opacity: 0; }
@@ -263,13 +277,12 @@ body::after {
 
 .animate-float { animation: float-y 6s ease-in-out infinite; }
 .caret::after {
-  content: "▊";
+  content: "▌";
   margin-left: 1px;
   animation: caret-blink 1s steps(1) infinite;
-  color: var(--color-accent-2);
+  color: var(--color-accent);
 }
 
-/* Respect reduced motion. */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -280,6 +293,5 @@ body::after {
   }
 }
 
-/* Utility to hide scrollbars on horizontal rails. */
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
