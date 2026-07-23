@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script>document.documentElement.classList.add('js');</script>
   <title>Loc'n'Joy — Roulez dans des histoires qui valent le détour</title>
   <meta name="description" content="Choisissez la voiture qui vous ressemble et récupérez-la où vous voulez, quand vous voulez. Citadines, cabriolets, SUV — livrés partout à Paris et en Île-de-France. Assurance incluse, sans engagement." />
 
@@ -56,8 +57,8 @@
     <!-- ══════════ HERO ══════════ -->
     <section class="hero">
       <div class="hero-grid">
-        <div class="hero-left reveal">
-          <h1 class="hero-title">Roulez dans des histoires<br>qui valent le détour.</h1>
+        <div class="hero-left">
+          <h1 class="hero-title" data-split>Roulez dans des histoires qui valent le détour.</h1>
           <p class="hero-sub">Choisissez jusqu'à 3 voitures coup de cœur chaque mois — de la citadine maligne au cabriolet des grands jours — et récupérez-les au pied de chez vous.</p>
           <div class="hero-actions">
             <a href="#flotte" class="btn btn-red btn-big">Réserver ma voiture</a>
@@ -66,7 +67,7 @@
           <p class="hero-ship"><span class="ship-dot" aria-hidden="true">📍</span> Disponible partout à Paris &amp; en Île-de-France</p>
         </div>
 
-        <div class="hero-right reveal">
+        <div class="hero-right">
           <div class="hero-block">
             <span class="sticker sticker-yellow" aria-hidden="true">dès 39€/j</span>
             <svg viewBox="0 0 340 220" class="hero-car" role="img" aria-label="Une citadine rouge Loc'n'Joy">
@@ -84,6 +85,14 @@
         </div>
       </div>
     </section>
+
+    <!-- ══════════ MARQUEE ══════════ -->
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee-track" id="marquee">
+        <span class="mq">Livrée chez vous <b>★</b> Assurance incluse <b>★</b> Sans engagement <b>★</b> Kilomètres offerts le week-end <b>★</b> Paris &amp; Île-de-France <b>★</b> Assistance 24/7 <b>★</b>&nbsp;</span>
+        <span class="mq">Livrée chez vous <b>★</b> Assurance incluse <b>★</b> Sans engagement <b>★</b> Kilomètres offerts le week-end <b>★</b> Paris &amp; Île-de-France <b>★</b> Assistance 24/7 <b>★</b>&nbsp;</span>
+      </div>
+    </div>
 
     <!-- ══════════ SÉLECTION DU MOIS ══════════ -->
     <section class="section" id="flotte">
@@ -554,6 +563,9 @@
     </div>
   </footer>
 
+  <script src="lib/lenis.min.js"></script>
+  <script src="lib/gsap.min.js"></script>
+  <script src="lib/ScrollTrigger.min.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

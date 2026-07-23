@@ -35,21 +35,37 @@ filtrables · application mobile · offres & tarifs · carte cadeau · presse ·
 voiture de l'année · exclusivité « La Belle Époque » · FAQ · pied de page — un
 enchaînement calqué sur celui du site de référence.
 
+## Mouvement (comme le site de référence)
+
+La « mécanique » d'animation reprend celle du modèle, avec les mêmes
+librairies open-source (Lenis + GSAP), pilotée par du code maison :
+
+- **Scroll fluide à inertie** (Lenis) — la signature du site d'origine
+- **Entrée du hero façon SplitText** : le titre apparaît mot par mot
+- **Révélations au défilement** en cascade par lot (GSAP ScrollTrigger)
+- **Parallaxe** sur le bloc hero, la carte cadeau et la voiture de collection
+- **Bandeau défilant (marquee)** dont la vitesse et le sens suivent le défilement
+- **Boutons magnétiques** (les CTA principaux suivent le curseur)
+- **Repli propre** : si les librairies ne se chargent pas, révélations via
+  IntersectionObserver ; respect complet de `prefers-reduced-motion`
+
+Les librairies (MIT) sont **embarquées dans `lib/`** : le site reste
+autonome, sans dépendance à un CDN.
+
 ## Interactions
 
 - Menu mobile (hamburger), en-tête qui se densifie au défilement
 - Galerie de catégories **filtrable** (rendue en JavaScript)
-- Révélations au défilement en cascade (IntersectionObserver)
 - Accordéon FAQ (une réponse ouverte à la fois), formulaire newsletter
-- Respect complet de `prefers-reduced-motion`
 
 ## Fichiers
 
-| Fichier       | Rôle                                             |
-|---------------|--------------------------------------------------|
-| `index.html`  | Structure, contenu et illustrations SVG inline   |
-| `styles.css`  | Palette, typographie, composants, responsive     |
-| `script.js`   | Menu, filtres, révélations, FAQ, newsletter      |
+| Fichier        | Rôle                                                     |
+|----------------|----------------------------------------------------------|
+| `index.html`   | Structure, contenu et illustrations SVG inline           |
+| `styles.css`   | Palette, typographie, composants, responsive             |
+| `script.js`    | Scroll fluide, animations, filtres, FAQ, menu…           |
+| `lib/`         | Lenis + GSAP + ScrollTrigger (MIT), embarqués localement  |
 
 ---
 
