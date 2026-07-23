@@ -28,6 +28,23 @@
   else window.addEventListener('load', scheduleFinish);
   setTimeout(finishLoad, 4000); // filet de sécurité
 
+  /* ── Bascule de thème jour / nuit ─────────────────────── */
+  const themeToggle = document.getElementById('themeToggle');
+  if (themeToggle) {
+    const root = document.documentElement;
+    const setLabel = () => {
+      const dark = root.getAttribute('data-theme') === 'dark';
+      themeToggle.setAttribute('aria-label', dark ? 'Passer en mode jour' : 'Passer en mode nuit');
+    };
+    setLabel();
+    themeToggle.addEventListener('click', () => {
+      const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      root.setAttribute('data-theme', next);
+      try { localStorage.setItem('lnj-theme', next); } catch (e) {}
+      setLabel();
+    });
+  }
+
   /* ── Header + barre de progression de défilement ──────── */
   const header = document.getElementById('siteHeader');
   const progress = document.getElementById('scrollProgress');
@@ -136,6 +153,153 @@
       cancelAnimationFrame(raf);
       scene.style.transform = '';
     });
+  }
+
+  /* ── Toast ────────────────────────────────────────────── */
+  let toastEl, toastTimer;
+  function showToast(msg) {
+    if (!toastEl) {
+      toastEl = document.createElement('div');
+      toastEl.className = 'toast';
+      toastEl.setAttribute('role', 'status');
+      document.body.appendChild(toastEl);
+    }
+    toastEl.innerHTML = '<span class="toast-dot"></span>' + msg;
+    requestAnimationFrame(() => toastEl.classList.add('show'));
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toastEl.classList.remove('show'), 3800);
+  }
+
+  /* ── Barre de réservation ─────────────────────────────── */
+  const booking = document.getElementById('booking');
+  if (booking) {
+    const start = document.getElementById('bkStart');
+    const end = document.getElementById('bkEnd');
+    const place = document.getElementById('bkPlace');
+    const iso = (d) => d.toISOString().slice(0, 10);
+    const day = 864e5;
+    if (start) { start.value = iso(new Date(Date.now() + day)); start.min = iso(new Date()); }
+    if (end) { end.value = iso(new Date(Date.now() + 3 * day)); end.min = iso(new Date(Date.now() + day)); }
+    if (start && end) {
+      start.addEventListener('change', () => {
+        end.min = start.value;
+        if (end.value < start.value) end.value = start.value;
+      });
+    }
+    booking.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (booking.classList.contains('loading')) return;
+      booking.classList.add('loading');
+      setTimeout(() => {
+        booking.classList.remove('loading');
+        const n = 8 + Math.floor(Math.random() * 12);
+        const where = place ? place.value.split('—')[0].trim() : 'Paris';
+        showToast(n + ' voitures disponibles à ' + where);
+        const flotte = document.getElementById('flotte');
+        if (flotte) flotte.scrollIntoView({ behavior: 'smooth' });
+      }, 1100);
+    });
+  }
+
+  /* ── Cartes en relief 3D (suivi du curseur) ───────────── */
+  const canTilt = window.matchMedia('(pointer: fine)').matches && !reduce;
+  const bindTilt = (el, mx, my) => {
+    el.addEventListener('mouseenter', () => el.classList.add('tilting'));
+    el.addEventListener('mousemove', (e) => {
+      const r = el.getBoundingClientRect();
+      const px = (e.clientX - r.left) / r.width - 0.5;
+      const py = (e.clientY - r.top) / r.height - 0.5;
+      el.style.transform =
+        `perspective(900px) rotateX(${(-py * my).toFixed(2)}deg) rotateY(${(px * mx).toFixed(2)}deg) translateY(-8px)`;
+    });
+    el.addEventListener('mouseleave', () => {
+      el.classList.remove('tilting');
+      el.style.transform = '';
+    });
+  };
+  if (canTilt) {
+    document.querySelectorAll('.car-card').forEach((el) => bindTilt(el, 7, 5));
+    document.querySelectorAll('.winner:not(.winner-next)').forEach((el) => bindTilt(el, 6, 4));
+  }
+
+  /* ── Carte des points de retrait ──────────────────────── */
+  const mapInfo = document.getElementById('mapInfo');
+  if (mapInfo) {
+    const pins = document.querySelectorAll('.paris-map .pin');
+    const miName = mapInfo.querySelector('.mi-name');
+    const miAddr = mapInfo.querySelector('.mi-addr');
+    const miHours = mapInfo.querySelector('.mi-hours');
+    const miCars = mapInfo.querySelector('.mi-cars');
+    const selectPin = (pin) => {
+      pins.forEach((p) => p.classList.remove('is-active'));
+      pin.classList.add('is-active');
+      pin.parentNode.appendChild(pin); // passe au premier plan
+      miName.textContent = pin.dataset.name;
+      miAddr.textContent = pin.dataset.addr;
+      miHours.textContent = pin.dataset.hours;
+      miCars.textContent = pin.dataset.cars + ' voitures';
+    };
+    pins.forEach((pin) => {
+      pin.addEventListener('click', () => selectPin(pin));
+      pin.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectPin(pin); }
+      });
+    });
+  }
+
+  /* ── Carrousel de témoignages ─────────────────────────── */
+  const testi = document.getElementById('testi');
+  if (testi) {
+    const track = document.getElementById('testiTrack');
+    const dotsWrap = document.getElementById('testiDots');
+    const total = track.children.length;
+    let idx = 0, timer = 0;
+    for (let i = 0; i < total; i++) {
+      const b = document.createElement('button');
+      b.className = 'testi-dot' + (i === 0 ? ' is-active' : '');
+      b.setAttribute('role', 'tab');
+      b.setAttribute('aria-label', 'Témoignage ' + (i + 1));
+      b.addEventListener('click', () => go(i, true));
+      dotsWrap.appendChild(b);
+    }
+    const dots = dotsWrap.children;
+    const go = (n, manual) => {
+      idx = (n + total) % total;
+      track.style.transform = 'translateX(-' + idx * 100 + '%)';
+      for (let i = 0; i < total; i++) dots[i].classList.toggle('is-active', i === idx);
+      if (manual) restart();
+    };
+    const next = () => go(idx + 1);
+    const start = () => { if (!reduce) timer = setInterval(next, 5200); };
+    const restart = () => { clearInterval(timer); start(); };
+    testi.querySelectorAll('.testi-arrow').forEach((btn) =>
+      btn.addEventListener('click', () => go(idx + parseInt(btn.dataset.dir, 10), true))
+    );
+    testi.addEventListener('mouseenter', () => clearInterval(timer));
+    testi.addEventListener('mouseleave', start);
+    start();
+  }
+
+  /* ── Bouton retour en haut ────────────────────────────── */
+  const toTop = document.getElementById('toTop');
+  if (toTop) {
+    const tw = () => toTop.classList.toggle('show', window.scrollY > 700);
+    tw();
+    window.addEventListener('scroll', tw, { passive: true });
+    toTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' }));
+  }
+
+  /* ── Bandeau cookies ──────────────────────────────────── */
+  const cookie = document.getElementById('cookie');
+  if (cookie) {
+    let saved = null;
+    try { saved = localStorage.getItem('lnj-cookie'); } catch (e) {}
+    if (!saved) setTimeout(() => { cookie.hidden = false; }, 1800);
+    const close = (v) => { try { localStorage.setItem('lnj-cookie', v); } catch (e) {} cookie.hidden = true; };
+    const acc = document.getElementById('cookieAccept');
+    const ref = document.getElementById('cookieRefuse');
+    if (acc) acc.addEventListener('click', () => close('accepted'));
+    if (ref) ref.addEventListener('click', () => close('refused'));
   }
 
   /* ── Silhouettes SVG réutilisables ────────────────────── */

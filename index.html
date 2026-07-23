@@ -3,7 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <script>document.documentElement.classList.add('js');</script>
+  <script>(function () {
+    var d = document.documentElement;
+    d.classList.add('js');
+    try {
+      var t = localStorage.getItem('lnj-theme') ||
+        (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      d.setAttribute('data-theme', t);
+    } catch (e) { d.setAttribute('data-theme', 'light'); }
+  })();</script>
   <title>Loc'n'Joy — La location de voiture qui a le goût de Paris</title>
   <meta name="description" content="Louez la voiture qui vous ressemble à Paris. De la citadine maligne au cabriolet des grands jours, livrée où vous voulez, quand vous voulez. Assurance incluse, sans engagement." />
 
@@ -93,6 +101,10 @@
       </nav>
 
       <div class="header-actions">
+        <button class="theme-toggle" id="themeToggle" aria-label="Basculer en mode nuit" title="Paris de jour / de nuit">
+          <svg class="ic-sun" viewBox="0 0 24 24" width="19" height="19" aria-hidden="true"><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.9"/><g stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M12 3v2.4M12 18.6V21M3 12h2.4M18.6 12H21M5.6 5.6l1.7 1.7M16.7 16.7l1.7 1.7M18.4 5.6l-1.7 1.7M7.3 16.7l-1.7 1.7"/></g></svg>
+          <svg class="ic-moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.3 6.3 0 0 0 10.5 10.5z" fill="currentColor"/></svg>
+        </button>
         <div class="lang" aria-label="Langue">
           <span class="flag" aria-hidden="true"></span>FR
         </div>
@@ -155,7 +167,7 @@
         <div class="hero-art" aria-hidden="true">
           <svg class="paris-scene" viewBox="0 0 520 460" role="img" aria-label="Une voiture rouge devant la Tour Eiffel et les immeubles de Paris">
             <!-- halo soleil -->
-            <circle cx="392" cy="120" r="120" fill="url(#sun)"/>
+            <circle cx="392" cy="120" r="120" fill="url(#sun)" class="sun-halo"/>
             <defs>
               <radialGradient id="sun" cx="50%" cy="50%" r="50%">
                 <stop offset="0%" stop-color="#FFE7C2" stop-opacity=".9"/>
@@ -165,7 +177,17 @@
             </defs>
 
             <g clip-path="url(#disc)">
-              <circle cx="260" cy="230" r="210" fill="#FDF3EC"/>
+              <circle cx="260" cy="230" r="210" fill="#FDF3EC" class="scene-sky"/>
+              <!-- lune + étoiles (mode nuit) -->
+              <g class="night-sky">
+                <circle cx="392" cy="118" r="30" fill="#FBE3B8"/>
+                <circle cx="380" cy="110" r="30" fill="#FDF3EC" class="scene-sky moon-cut"/>
+                <g fill="#FDF3EC" class="stars">
+                  <circle cx="150" cy="96" r="2"/><circle cx="200" cy="70" r="1.5"/><circle cx="110" cy="140" r="1.6"/>
+                  <circle cx="330" cy="80" r="1.8"/><circle cx="430" cy="150" r="2"/><circle cx="250" cy="60" r="1.4"/>
+                  <circle cx="90" cy="190" r="1.6"/><circle cx="440" cy="200" r="1.5"/><circle cx="300" cy="140" r="1.4"/>
+                </g>
+              </g>
               <!-- nuages -->
               <g class="clouds" fill="#fff">
                 <ellipse cx="120" cy="96" rx="42" ry="15"/>
@@ -178,7 +200,7 @@
               <g class="s-ink" opacity=".9">
                 <rect x="26" y="150" width="70" height="150" rx="3" fill="#F0E4DA" stroke="#241C19" stroke-width="2"/>
                 <path d="M24 150l36-22 38 22z" fill="#E7D8CC" stroke="#241C19" stroke-width="2"/>
-                <g fill="#241C19">
+                <g fill="#241C19" class="bldg-win">
                   <rect x="36" y="172" width="10" height="16" rx="2"/><rect x="55" y="172" width="10" height="16" rx="2"/><rect x="74" y="172" width="10" height="16" rx="2"/>
                   <rect x="36" y="200" width="10" height="16" rx="2"/><rect x="55" y="200" width="10" height="16" rx="2"/><rect x="74" y="200" width="10" height="16" rx="2"/>
                   <rect x="36" y="228" width="10" height="16" rx="2"/><rect x="55" y="228" width="10" height="16" rx="2"/><rect x="74" y="228" width="10" height="16" rx="2"/>
@@ -190,7 +212,7 @@
               <g opacity=".92">
                 <rect x="420" y="168" width="74" height="132" rx="3" fill="#F4E7Dd" stroke="#241C19" stroke-width="2"/>
                 <path d="M418 168l37-20 39 20z" fill="#EAD9CC" stroke="#241C19" stroke-width="2"/>
-                <g fill="#241C19">
+                <g fill="#241C19" class="bldg-win">
                   <rect x="432" y="188" width="11" height="17" rx="2"/><rect x="452" y="188" width="11" height="17" rx="2"/><rect x="472" y="188" width="11" height="17" rx="2"/>
                   <rect x="432" y="218" width="11" height="17" rx="2"/><rect x="452" y="218" width="11" height="17" rx="2"/><rect x="472" y="218" width="11" height="17" rx="2"/>
                 </g>
@@ -279,6 +301,47 @@
             </g>
           </svg>
         </div>
+      </div>
+
+      <!-- barre de réservation -->
+      <div class="wrap booking-wrap">
+        <form class="booking" id="booking" autocomplete="off">
+          <div class="bk-field">
+            <span class="bk-label">Prise en charge</span>
+            <div class="bk-control">
+              <svg viewBox="0 0 24 24" class="bk-ic" aria-hidden="true"><path d="M12 21s7-6.6 7-12a7 7 0 1 0-14 0c0 5.4 7 12 7 12z" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="9" r="2.6" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+              <select aria-label="Lieu de prise en charge" id="bkPlace">
+                <option>Le Marais — Paris 4e</option>
+                <option>Champs-Élysées — Paris 8e</option>
+                <option>Montmartre — Paris 18e</option>
+                <option>Bastille — Paris 11e</option>
+                <option>Gare de Lyon — Paris 12e</option>
+                <option>Gare du Nord — Paris 10e</option>
+                <option>La Défense — Puteaux</option>
+                <option>Aéroport Orly</option>
+                <option>Aéroport Roissy-CDG</option>
+              </select>
+            </div>
+          </div>
+          <div class="bk-field">
+            <span class="bk-label">Départ</span>
+            <div class="bk-control">
+              <svg viewBox="0 0 24 24" class="bk-ic" aria-hidden="true"><rect x="3.5" y="5" width="17" height="16" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3.5 9.5h17M8 3.5v3M16 3.5v3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+              <input type="date" aria-label="Date de départ" id="bkStart" />
+            </div>
+          </div>
+          <div class="bk-field">
+            <span class="bk-label">Retour</span>
+            <div class="bk-control">
+              <svg viewBox="0 0 24 24" class="bk-ic" aria-hidden="true"><rect x="3.5" y="5" width="17" height="16" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3.5 9.5h17M8 3.5v3M16 3.5v3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+              <input type="date" aria-label="Date de retour" id="bkEnd" />
+            </div>
+          </div>
+          <button type="submit" class="btn btn-red bk-submit" id="bkSubmit">
+            <span class="bk-submit-txt">Rechercher</span>
+            <span class="bk-spinner" aria-hidden="true"></span>
+          </button>
+        </form>
       </div>
 
       <!-- vague de séparation -->
@@ -594,6 +657,115 @@
       </div>
     </section>
 
+    <!-- ░░░░░░░░░░ CARTE DES POINTS DE RETRAIT ░░░░░░░░░░ -->
+    <section class="section map-sec" id="agences">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <span class="kicker">On n'est jamais loin</span>
+            <h2 class="section-title">Nos points de retrait dans Paris</h2>
+          </div>
+          <p class="section-lead">Récupérez votre voiture près de chez vous — ou faites-la livrer. Cliquez sur un point pour tout savoir.</p>
+        </div>
+
+        <div class="map-layout">
+          <div class="map-canvas reveal">
+            <svg class="paris-map" viewBox="0 0 600 440" role="img" aria-label="Carte stylisée de Paris avec les points de retrait Loc'n'Joy">
+              <rect width="600" height="440" rx="30" class="map-bg"/>
+              <!-- espaces verts -->
+              <ellipse cx="66" cy="250" rx="46" ry="66" class="map-green"/>
+              <ellipse cx="548" cy="250" rx="42" ry="58" class="map-green"/>
+              <!-- Paris intra-muros + périphérique -->
+              <path d="M170 66 C 300 40 430 60 486 150 C 520 205 505 300 430 360 C 350 420 210 415 140 350 C 86 300 84 200 110 140 C 128 96 145 74 170 66 Z" class="map-city"/>
+              <!-- rues discrètes -->
+              <g class="map-streets">
+                <path d="M300 60 V 405"/><path d="M110 220 H 500"/><path d="M185 85 L 455 375"/><path d="M455 85 L 165 375"/>
+              </g>
+              <!-- la Seine -->
+              <path d="M70 175 C 170 150 250 235 330 238 C 420 241 470 300 545 288" class="map-seine"/>
+              <ellipse cx="330" cy="238" rx="20" ry="7" class="map-isle"/>
+              <!-- repères -->
+              <g class="map-mark">
+                <path d="M185 262 l-8 -22 l8 6 l8 -6 z" transform="translate(0 -6)"/>
+                <text x="185" y="272" class="map-mark-t">Tour Eiffel</text>
+              </g>
+              <g class="map-mark">
+                <path d="M318 96 a10 10 0 0 1 20 0 z"/><rect x="326" y="86" width="4" height="8"/>
+                <text x="328" y="118" class="map-mark-t">Sacré-Cœur</text>
+              </g>
+              <g class="map-mark">
+                <path d="M206 150 h16 v14 h-16 z M210 164 v-9 a4 4 0 0 1 8 0 v9" fill="none"/>
+                <text x="214" y="180" class="map-mark-t">Arc de Triomphe</text>
+              </g>
+
+              <!-- pins agences -->
+              <g class="pin is-active" tabindex="0" role="button"
+                 data-name="Le Marais" data-addr="12 rue de Bretagne, 75003 Paris"
+                 data-hours="7h – 23h · 7j/7" data-cars="18" transform="translate(356 206)">
+                <circle class="pin-pulse" cx="0" cy="-2" r="8"/>
+                <path class="pin-body" d="M0 0 C -9 -12 -9 -20 0 -24 C 9 -20 9 -12 0 0 Z"/>
+                <circle class="pin-dot" cx="0" cy="-16" r="3.5"/>
+                <circle class="pin-hit" cx="0" cy="-13" r="22" fill="transparent"/>
+              </g>
+              <g class="pin" tabindex="0" role="button"
+                 data-name="Champs-Élysées" data-addr="55 av. des Champs-Élysées, 75008 Paris"
+                 data-hours="6h – minuit · 7j/7" data-cars="14" transform="translate(214 166)">
+                <circle class="pin-pulse" cx="0" cy="-2" r="8"/>
+                <path class="pin-body" d="M0 0 C -9 -12 -9 -20 0 -24 C 9 -20 9 -12 0 0 Z"/>
+                <circle class="pin-dot" cx="0" cy="-16" r="3.5"/>
+                <circle class="pin-hit" cx="0" cy="-13" r="22" fill="transparent"/>
+              </g>
+              <g class="pin" tabindex="0" role="button"
+                 data-name="Montmartre" data-addr="3 place des Abbesses, 75018 Paris"
+                 data-hours="8h – 22h · 7j/7" data-cars="9" transform="translate(322 108)">
+                <circle class="pin-pulse" cx="0" cy="-2" r="8"/>
+                <path class="pin-body" d="M0 0 C -9 -12 -9 -20 0 -24 C 9 -20 9 -12 0 0 Z"/>
+                <circle class="pin-dot" cx="0" cy="-16" r="3.5"/>
+                <circle class="pin-hit" cx="0" cy="-13" r="22" fill="transparent"/>
+              </g>
+              <g class="pin" tabindex="0" role="button"
+                 data-name="Bastille" data-addr="8 rue de la Roquette, 75011 Paris"
+                 data-hours="7h – 23h · 7j/7" data-cars="12" transform="translate(404 252)">
+                <circle class="pin-pulse" cx="0" cy="-2" r="8"/>
+                <path class="pin-body" d="M0 0 C -9 -12 -9 -20 0 -24 C 9 -20 9 -12 0 0 Z"/>
+                <circle class="pin-dot" cx="0" cy="-16" r="3.5"/>
+                <circle class="pin-hit" cx="0" cy="-13" r="22" fill="transparent"/>
+              </g>
+              <g class="pin" tabindex="0" role="button"
+                 data-name="Gare de Lyon" data-addr="Place Louis-Armand, 75012 Paris"
+                 data-hours="24h/24 · 7j/7" data-cars="16" transform="translate(438 300)">
+                <circle class="pin-pulse" cx="0" cy="-2" r="8"/>
+                <path class="pin-body" d="M0 0 C -9 -12 -9 -20 0 -24 C 9 -20 9 -12 0 0 Z"/>
+                <circle class="pin-dot" cx="0" cy="-16" r="3.5"/>
+                <circle class="pin-hit" cx="0" cy="-13" r="22" fill="transparent"/>
+              </g>
+              <g class="pin" tabindex="0" role="button"
+                 data-name="La Défense" data-addr="Parvis de la Défense, 92800 Puteaux"
+                 data-hours="6h – minuit · 7j/7" data-cars="22" transform="translate(78 150)">
+                <circle class="pin-pulse" cx="0" cy="-2" r="8"/>
+                <path class="pin-body" d="M0 0 C -9 -12 -9 -20 0 -24 C 9 -20 9 -12 0 0 Z"/>
+                <circle class="pin-dot" cx="0" cy="-16" r="3.5"/>
+                <circle class="pin-hit" cx="0" cy="-13" r="22" fill="transparent"/>
+              </g>
+            </svg>
+          </div>
+
+          <aside class="map-info reveal" id="mapInfo" aria-live="polite">
+            <span class="mi-tag">Point de retrait</span>
+            <h3 class="mi-name">Le Marais</h3>
+            <p class="mi-addr">12 rue de Bretagne, 75003 Paris</p>
+            <div class="mi-rows">
+              <div class="mi-row"><span class="mi-k">Horaires</span><span class="mi-v mi-hours">7h – 23h · 7j/7</span></div>
+              <div class="mi-row"><span class="mi-k">Disponibles</span><span class="mi-v mi-cars">18 voitures</span></div>
+              <div class="mi-row"><span class="mi-k">Livraison</span><span class="mi-v">dès 90 min</span></div>
+            </div>
+            <a href="#flotte" class="btn btn-red btn-block">Réserver dans cette agence</a>
+            <p class="mi-foot">6 agences ouvertes dans Paris &amp; en petite couronne.</p>
+          </aside>
+        </div>
+      </div>
+    </section>
+
     <!-- ░░░░░░░░░░ APPLICATION ░░░░░░░░░░ -->
     <section class="section app">
       <div class="wrap app-inner">
@@ -760,6 +932,66 @@
           <span class="press-logo">SORTIR À PARIS</span>
           <span class="press-logo press-serif">Le Périph' Mag</span>
           <span class="press-logo">ROULEZ MALIN</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ░░░░░░░░░░ TÉMOIGNAGES ░░░░░░░░░░ -->
+    <section class="section testis">
+      <div class="wrap">
+        <div class="section-head center">
+          <div>
+            <span class="kicker">Ils ont pris le volant</span>
+            <h2 class="section-title">La parole aux conducteurs</h2>
+            <p class="section-lead center-lead">Des milliers de virées parisiennes — et quelques mots qui font plaisir.</p>
+          </div>
+        </div>
+
+        <div class="testi reveal" id="testi">
+          <div class="testi-viewport">
+            <div class="testi-track" id="testiTrack">
+              <div class="testi-slide">
+                <article class="testi-card">
+                  <div class="testi-stars" aria-hidden="true">★★★★★</div>
+                  <blockquote class="testi-quote">« J'ai réservé à 19h, la voiture était devant chez moi à 20h30. On est partis à Deauville dans la foulée, sans même faire le plein. »</blockquote>
+                  <div class="testi-author"><span class="ta-avatar" style="--av:#E4002B">CR</span><span class="ta-meta"><b>Camille R.</b><span>Paris 11e · membre depuis 2024</span></span></div>
+                </article>
+              </div>
+              <div class="testi-slide">
+                <article class="testi-card">
+                  <div class="testi-stars" aria-hidden="true">★★★★★</div>
+                  <blockquote class="testi-quote">« Le cabriolet pour l'anniversaire de ma mère : elle a cru qu'on avait gagné au loto. Service impeccable, du premier au dernier virage. »</blockquote>
+                  <div class="testi-author"><span class="ta-avatar" style="--av:#B8123B">KB</span><span class="ta-meta"><b>Karim B.</b><span>Paris 9e · membre depuis 2023</span></span></div>
+                </article>
+              </div>
+              <div class="testi-slide">
+                <article class="testi-card">
+                  <div class="testi-stars" aria-hidden="true">★★★★★</div>
+                  <blockquote class="testi-quote">« Zéro paperasse, zéro stress. L'appli fait tout — elle m'a même rappelé dans quelle rue je m'étais garée. »</blockquote>
+                  <div class="testi-author"><span class="ta-avatar" style="--av:#E4522B">ÉM</span><span class="ta-meta"><b>Élodie M.</b><span>Vincennes · membre depuis 2025</span></span></div>
+                </article>
+              </div>
+              <div class="testi-slide">
+                <article class="testi-card">
+                  <div class="testi-stars" aria-hidden="true">★★★★★</div>
+                  <blockquote class="testi-quote">« L'abonnement Joy a remplacé ma voiture. Moins cher, jamais de contrôle technique, et je change de modèle selon l'envie du week-end. »</blockquote>
+                  <div class="testi-author"><span class="ta-avatar" style="--av:#9A1030">TL</span><span class="ta-meta"><b>Thomas L.</b><span>Paris 15e · membre depuis 2023</span></span></div>
+                </article>
+              </div>
+              <div class="testi-slide">
+                <article class="testi-card">
+                  <div class="testi-stars" aria-hidden="true">★★★★★</div>
+                  <blockquote class="testi-quote">« Livrée propre, pleine, à l'heure. Rendue en deux clics au pied de l'immeuble. Honnêtement, je ne loue plus ailleurs. »</blockquote>
+                  <div class="testi-author"><span class="ta-avatar" style="--av:#D23A2B">SD</span><span class="ta-meta"><b>Sofia D.</b><span>Montreuil · membre depuis 2024</span></span></div>
+                </article>
+              </div>
+            </div>
+          </div>
+          <div class="testi-controls">
+            <button class="testi-arrow" data-dir="-1" aria-label="Témoignage précédent">←</button>
+            <div class="testi-dots" id="testiDots" role="tablist" aria-label="Choisir un témoignage"></div>
+            <button class="testi-arrow" data-dir="1" aria-label="Témoignage suivant">→</button>
+          </div>
         </div>
       </div>
     </section>
@@ -967,6 +1199,20 @@
       </nav>
     </div>
   </footer>
+
+  <!-- Retour en haut -->
+  <button class="to-top" id="toTop" aria-label="Revenir en haut de page">
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M12 19V6M6 12l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+
+  <!-- Bandeau cookies -->
+  <div class="cookie" id="cookie" hidden>
+    <p>On utilise des cookies pour améliorer votre virée et retenir vos préférences (comme le mode nuit 🌙). <a href="#">En savoir plus</a></p>
+    <div class="cookie-btns">
+      <button class="btn btn-ghost btn-sm" id="cookieRefuse">Refuser</button>
+      <button class="btn btn-red btn-sm" id="cookieAccept">Tout accepter</button>
+    </div>
+  </div>
 
   <script src="script.js"></script>
   <script>
