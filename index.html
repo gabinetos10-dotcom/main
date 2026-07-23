@@ -3,644 +3,279 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <script>(function () {
-    var d = document.documentElement;
-    d.classList.add('js');
-    try {
-      var t = localStorage.getItem('lnj-theme') ||
-        (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-      d.setAttribute('data-theme', t);
-    } catch (e) { d.setAttribute('data-theme', 'light'); }
-  })();</script>
-  <title>Loc'n'Joy — La location de voiture qui a le goût de Paris</title>
-  <meta name="description" content="Louez la voiture qui vous ressemble à Paris. De la citadine maligne au cabriolet des grands jours, livrée où vous voulez, quand vous voulez. Assurance incluse, sans engagement." />
+  <title>Loc'n'Joy — Roulez dans des histoires qui valent le détour</title>
+  <meta name="description" content="Choisissez la voiture qui vous ressemble et récupérez-la où vous voulez, quand vous voulez. Citadines, cabriolets, SUV — livrés partout à Paris et en Île-de-France. Assurance incluse, sans engagement." />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..900;1,9..144,400..800&family=Hanken+Grotesk:wght@300..800&family=Spline+Sans+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600;700&family=Caveat:wght@600;700&display=swap" rel="stylesheet" />
 
   <link rel="stylesheet" href="styles.css" />
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%23E4002B'/><text x='50' y='72' font-size='58' text-anchor='middle' fill='white' font-family='Georgia,serif' font-style='italic'>J</text></svg>" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%23E4002B'/><text x='50' y='70' font-size='60' text-anchor='middle' fill='white' font-family='Georgia,serif'>J</text></svg>" />
 </head>
 <body>
 
-  <!-- ░░░░░░░░░░ ÉCRAN DE CHARGEMENT ░░░░░░░░░░ -->
-  <div id="preloader" class="preloader" role="status" aria-label="Chargement du site">
-    <div class="pl-inner">
-      <div class="pl-brand">
-        <span class="brand-badge" aria-hidden="true">
-          <svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="23" class="s-red"/><path d="M11 30c0-1 .7-2 1.9-2.2l2.2-.4 2.6-4.3c.7-1.2 2-1.9 3.4-1.9h6.3c1.2 0 2.3.5 3.1 1.4l3 3.3 3.1.7c1.2.3 2 1.3 2 2.5v1c0 .8-.6 1.4-1.4 1.4h-2.1a3.3 3.3 0 0 1-6.5 0h-6.7a3.3 3.3 0 0 1-6.5 0h-1.5c-.8 0-1.4-.6-1.4-1.4z" fill="#fff"/><circle cx="19.4" cy="31.2" r="2.1" class="s-ink"/><circle cx="31.9" cy="31.2" r="2.1" class="s-ink"/></svg>
+  <!-- ══════════ NAV ══════════ -->
+  <header class="nav" id="nav">
+    <div class="nav-inner">
+      <a href="#top" class="logo" aria-label="Loc'n'Joy — accueil">
+        <span class="logo-mark" aria-hidden="true">
+          <svg viewBox="0 0 44 44"><circle cx="22" cy="22" r="22" fill="#E4002B"/><path d="M10 27c0-.9.6-1.7 1.6-1.9l2-.4 2.3-3.8c.6-1.1 1.8-1.7 3-1.7h5.6c1.1 0 2.1.4 2.8 1.2l2.7 3 2.8.6c1.1.2 1.8 1.2 1.8 2.3v.9c0 .7-.5 1.2-1.2 1.2h-1.9a3 3 0 0 1-5.8 0h-6a3 3 0 0 1-5.8 0h-1.3c-.7 0-1.3-.5-1.3-1.2z" fill="#fff"/><circle cx="17.6" cy="28" r="1.9" fill="#0B0A0A"/><circle cx="28.8" cy="28" r="1.9" fill="#0B0A0A"/></svg>
         </span>
-        <span class="pl-word">Loc<span class="brand-tick">'n'</span>Joy</span>
-      </div>
-
-      <div class="pl-stage" aria-hidden="true">
-        <div class="pl-dashes"></div>
-        <svg class="pl-car" viewBox="0 0 300 130">
-          <ellipse class="pl-shadow" cx="150" cy="118" rx="118" ry="10" fill="#241C19" opacity=".14"/>
-          <g class="pl-body">
-            <path d="M40 96c-6 0-10-4-10-10v-8c0-7 5-12 12-13l22-3 16-18c5-6 12-9 20-9h44c8 0 16 4 20 11l10 16 24 4c8 1 14 7 14 15v5c0 6-4 10-10 10z" class="s-red"/>
-            <path d="M40 96c-6 0-10-4-10-10v-8c0-7 5-12 12-13l22-3 16-18c5-6 12-9 20-9h44c8 0 16 4 20 11l10 16 24 4c8 1 14 7 14 15v5c0 6-4 10-10 10z" fill="none" stroke="#241C19" stroke-width="3.4" stroke-linejoin="round"/>
-            <path d="M92 38c-5 0-10 2-13 6l-12 15h40V38zM120 38v21h34l-9-14c-3-4-8-7-13-7z" fill="#DCEAF0" stroke="#241C19" stroke-width="3"/>
-            <line x1="114" y1="38" x2="114" y2="59" stroke="#241C19" stroke-width="3"/>
-            <path d="M214 62h9c2 0 4 1 4 3v3h-13z" fill="#FFE7C2" stroke="#241C19" stroke-width="2"/>
-            <rect x="128" y="74" width="16" height="4" rx="2" class="s-ink"/>
-          </g>
-          <g class="pl-wheel"><circle cx="88" cy="94" r="20" class="s-ink"/><circle cx="88" cy="94" r="9" fill="#EFE7DF"/><circle cx="88" cy="94" r="2.6" class="s-red"/><g stroke="#241C19" stroke-width="1.5"><path d="M88 85v18M79 94h18M82 88l12 12M82 100l12-12"/></g></g>
-          <g class="pl-wheel"><circle cx="182" cy="94" r="20" class="s-ink"/><circle cx="182" cy="94" r="9" fill="#EFE7DF"/><circle cx="182" cy="94" r="2.6" class="s-red"/><g stroke="#241C19" stroke-width="1.5"><path d="M182 85v18M173 94h18M176 88l12 12M176 100l12-12"/></g></g>
-        </svg>
-      </div>
-
-      <div class="pl-bar"><span class="pl-bar-fill"></span></div>
-      <span class="pl-tag">On prépare votre voiture…</span>
-    </div>
-  </div>
-
-  <!-- barre de progression de défilement -->
-  <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
-
-  <!-- ░░░░░░░░░░ BANDEAU PROMO ░░░░░░░░░░ -->
-  <div class="promo-bar" id="top">
-    <div class="promo-track" aria-hidden="true">
-      <span>−50&nbsp;% sur votre première location avec le code <strong>BONJOUR50</strong></span>
-      <span aria-hidden="true">·</span>
-      <span>Livraison offerte dans Paris intra-muros</span>
-      <span aria-hidden="true">·</span>
-      <span>Assurance &amp; assistance 24/7 incluses</span>
-      <span aria-hidden="true">·</span>
-      <span>−50&nbsp;% sur votre première location avec le code <strong>BONJOUR50</strong></span>
-      <span aria-hidden="true">·</span>
-      <span>Livraison offerte dans Paris intra-muros</span>
-      <span aria-hidden="true">·</span>
-      <span>Assurance &amp; assistance 24/7 incluses</span>
-      <span aria-hidden="true">·</span>
-    </div>
-  </div>
-
-  <!-- ░░░░░░░░░░ EN-TÊTE / NAVIGATION ░░░░░░░░░░ -->
-  <header class="site-header" id="siteHeader">
-    <div class="wrap header-inner">
-      <a href="#top" class="brand" aria-label="Loc'n'Joy — accueil">
-        <span class="brand-badge" aria-hidden="true">
-          <svg viewBox="0 0 48 48" role="img">
-            <circle cx="24" cy="24" r="23" class="s-red"/>
-            <circle cx="24" cy="24" r="23" fill="none" stroke="#fff" stroke-width="1.4" stroke-dasharray="2 3" opacity=".55"/>
-            <path d="M11 30c0-1 .7-2 1.9-2.2l2.2-.4 2.6-4.3c.7-1.2 2-1.9 3.4-1.9h6.3c1.2 0 2.3.5 3.1 1.4l3 3.3 3.1.7c1.2.3 2 1.3 2 2.5v1c0 .8-.6 1.4-1.4 1.4h-2.1a3.3 3.3 0 0 1-6.5 0h-6.7a3.3 3.3 0 0 1-6.5 0h-1.5c-.8 0-1.4-.6-1.4-1.4z" fill="#fff"/>
-            <circle cx="19.4" cy="31.2" r="2.1" class="s-ink"/>
-            <circle cx="31.9" cy="31.2" r="2.1" class="s-ink"/>
-            <path d="M20.7 22.6h4.6l.5 3.9h-7z" fill="#fff" opacity=".0"/>
-          </svg>
-        </span>
-        <span class="brand-word">Loc<span class="brand-tick">'n'</span>Joy</span>
+        <span class="logo-word">Loc<span>'n'</span>Joy</span>
       </a>
 
-      <nav class="main-nav" aria-label="Navigation principale">
+      <nav class="nav-links" aria-label="Navigation principale">
         <a href="#flotte">Nos voitures</a>
-        <a href="#tarifs">Nos offres</a>
+        <a href="#cadeau">Cadeau</a>
         <a href="#faq">FAQ</a>
       </nav>
 
-      <div class="header-actions">
-        <button class="theme-toggle" id="themeToggle" aria-label="Basculer en mode nuit" title="Paris de jour / de nuit">
-          <svg class="ic-sun" viewBox="0 0 24 24" width="19" height="19" aria-hidden="true"><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.9"/><g stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M12 3v2.4M12 18.6V21M3 12h2.4M18.6 12H21M5.6 5.6l1.7 1.7M16.7 16.7l1.7 1.7M18.4 5.6l-1.7 1.7M7.3 16.7l-1.7 1.7"/></g></svg>
-          <svg class="ic-moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.3 6.3 0 0 0 10.5 10.5z" fill="currentColor"/></svg>
-        </button>
-        <div class="lang" aria-label="Langue">
-          <span class="flag" aria-hidden="true"></span>FR
+      <div class="nav-right">
+        <span class="nav-lang"><span class="fr-flag" aria-hidden="true"></span>FR</span>
+        <div class="nav-socials">
+          <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" width="20" height="20"><rect x="3" y="3" width="18" height="18" rx="5.5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="17.3" cy="6.7" r="1.3" fill="currentColor"/></svg></a>
+          <a href="#" aria-label="TikTok"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M13 3.5v9.8a3.1 3.1 0 1 1-2.4-3v2.5a.7.7 0 0 0-.7.6.7.7 0 1 0 1.3-.1V3.5H13c.3 1.9 1.6 3.4 3.6 3.7v2.4c-1.3-.1-2.5-.5-3.6-1.2" fill="currentColor"/></svg></a>
         </div>
-        <div class="socials" aria-hidden="false">
-          <a href="#" aria-label="Instagram" class="soc">
-            <svg viewBox="0 0 24 24" width="18" height="18"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="17.2" cy="6.8" r="1.2" fill="currentColor"/></svg>
-          </a>
-          <a href="#" aria-label="TikTok" class="soc">
-            <svg viewBox="0 0 24 24" width="18" height="18"><path d="M13 3.5v9.8a3.1 3.1 0 1 1-2.4-3v2.5a.7.7 0 0 0-.7.6.7.7 0 1 0 1.3-.1V3.5H13c.3 1.9 1.6 3.4 3.6 3.7v2.4c-1.3-.1-2.5-.5-3.6-1.2" fill="currentColor"/></svg>
-          </a>
-        </div>
-        <a href="#tarifs" class="btn btn-ink btn-sm">Connexion / Inscription</a>
-        <button class="burger" id="burger" aria-label="Ouvrir le menu" aria-expanded="false">
-          <span></span><span></span><span></span>
-        </button>
+        <a href="#tarifs" class="btn btn-red nav-cta">Connexion / Inscription</a>
+        <button class="nav-burger" id="burger" aria-label="Ouvrir le menu" aria-expanded="false"><span></span><span></span><span></span></button>
       </div>
     </div>
-
-    <!-- Menu mobile -->
     <div class="mobile-menu" id="mobileMenu" hidden>
       <a href="#flotte">Nos voitures</a>
       <a href="#comment">Comment ça marche</a>
       <a href="#categories">Catégories</a>
-      <a href="#tarifs">Nos offres</a>
+      <a href="#cadeau">Cadeau</a>
       <a href="#faq">FAQ</a>
       <a href="#tarifs" class="btn btn-red">Connexion / Inscription</a>
     </div>
   </header>
 
-  <main>
+  <main id="top">
 
-    <!-- ░░░░░░░░░░ HERO ░░░░░░░░░░ -->
+    <!-- ══════════ HERO ══════════ -->
     <section class="hero">
-      <div class="hero-grain" aria-hidden="true"></div>
-      <div class="wrap hero-inner">
-        <div class="hero-copy">
-          <span class="eyebrow"><span class="eyebrow-dot"></span>Location de voitures · Paris &amp; Île-de-France</span>
-          <h1 class="hero-title">
-            Roulez dans Paris<br>
-            comme si la ville<br>
-            <span class="ital-red">vous appartenait.</span>
-          </h1>
-          <p class="hero-sub">
-            Choisissez parmi une flotte pensée pour la capitale — de la citadine
-            qui se faufile partout au cabriolet des grands jours — et récupérez-la
-            au pied de chez vous, quand vous voulez.
-          </p>
-          <div class="hero-cta">
-            <a href="#flotte" class="btn btn-red btn-lg">Réserver ma voiture <span class="btn-arrow" aria-hidden="true">→</span></a>
-            <a href="#comment" class="btn btn-ghost btn-lg">Comment ça marche</a>
+      <div class="hero-grid">
+        <div class="hero-left reveal">
+          <h1 class="hero-title">Roulez dans des histoires<br>qui valent le détour.</h1>
+          <p class="hero-sub">Choisissez jusqu'à 3 voitures coup de cœur chaque mois — de la citadine maligne au cabriolet des grands jours — et récupérez-les au pied de chez vous.</p>
+          <div class="hero-actions">
+            <a href="#flotte" class="btn btn-red btn-big">Réserver ma voiture</a>
+            <span class="hand hand-red hero-hand">livrée en 90 min !</span>
           </div>
-          <ul class="hero-trust">
-            <li><svg viewBox="0 0 24 24" class="tick"><path d="M5 13l4 4L19 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Sans engagement</li>
-            <li><svg viewBox="0 0 24 24" class="tick"><path d="M5 13l4 4L19 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Assurance incluse</li>
-            <li><svg viewBox="0 0 24 24" class="tick"><path d="M5 13l4 4L19 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Livraison à domicile</li>
-          </ul>
+          <p class="hero-ship"><span class="ship-dot" aria-hidden="true">📍</span> Disponible partout à Paris &amp; en Île-de-France</p>
         </div>
 
-        <!-- Illustration Paris -->
-        <div class="hero-art" aria-hidden="true">
-          <svg class="paris-scene" viewBox="0 0 520 460" role="img" aria-label="Une voiture rouge devant la Tour Eiffel et les immeubles de Paris">
-            <!-- halo soleil -->
-            <circle cx="392" cy="120" r="120" fill="url(#sun)" class="sun-halo"/>
-            <defs>
-              <radialGradient id="sun" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stop-color="#FFE7C2" stop-opacity=".9"/>
-                <stop offset="100%" stop-color="#FFE7C2" stop-opacity="0"/>
-              </radialGradient>
-              <clipPath id="disc"><circle cx="260" cy="230" r="210"/></clipPath>
-            </defs>
-
-            <g clip-path="url(#disc)">
-              <circle cx="260" cy="230" r="210" fill="#FDF3EC" class="scene-sky"/>
-              <!-- lune + étoiles (mode nuit) -->
-              <g class="night-sky">
-                <circle cx="392" cy="118" r="30" fill="#FBE3B8"/>
-                <circle cx="380" cy="110" r="30" fill="#FDF3EC" class="scene-sky moon-cut"/>
-                <g fill="#FDF3EC" class="stars">
-                  <circle cx="150" cy="96" r="2"/><circle cx="200" cy="70" r="1.5"/><circle cx="110" cy="140" r="1.6"/>
-                  <circle cx="330" cy="80" r="1.8"/><circle cx="430" cy="150" r="2"/><circle cx="250" cy="60" r="1.4"/>
-                  <circle cx="90" cy="190" r="1.6"/><circle cx="440" cy="200" r="1.5"/><circle cx="300" cy="140" r="1.4"/>
-                </g>
-              </g>
-              <!-- nuages -->
-              <g class="clouds" fill="#fff">
-                <ellipse cx="120" cy="96" rx="42" ry="15"/>
-                <ellipse cx="150" cy="88" rx="30" ry="13"/>
-                <ellipse cx="405" cy="70" rx="34" ry="12"/>
-                <ellipse cx="430" cy="78" rx="24" ry="10"/>
-              </g>
-
-              <!-- immeubles haussmanniens gauche -->
-              <g class="s-ink" opacity=".9">
-                <rect x="26" y="150" width="70" height="150" rx="3" fill="#F0E4DA" stroke="#241C19" stroke-width="2"/>
-                <path d="M24 150l36-22 38 22z" fill="#E7D8CC" stroke="#241C19" stroke-width="2"/>
-                <g fill="#241C19" class="bldg-win">
-                  <rect x="36" y="172" width="10" height="16" rx="2"/><rect x="55" y="172" width="10" height="16" rx="2"/><rect x="74" y="172" width="10" height="16" rx="2"/>
-                  <rect x="36" y="200" width="10" height="16" rx="2"/><rect x="55" y="200" width="10" height="16" rx="2"/><rect x="74" y="200" width="10" height="16" rx="2"/>
-                  <rect x="36" y="228" width="10" height="16" rx="2"/><rect x="55" y="228" width="10" height="16" rx="2"/><rect x="74" y="228" width="10" height="16" rx="2"/>
-                </g>
-                <rect x="30" y="192" width="62" height="3" fill="#241C19"/>
-              </g>
-
-              <!-- immeubles droite -->
-              <g opacity=".92">
-                <rect x="420" y="168" width="74" height="132" rx="3" fill="#F4E7Dd" stroke="#241C19" stroke-width="2"/>
-                <path d="M418 168l37-20 39 20z" fill="#EAD9CC" stroke="#241C19" stroke-width="2"/>
-                <g fill="#241C19" class="bldg-win">
-                  <rect x="432" y="188" width="11" height="17" rx="2"/><rect x="452" y="188" width="11" height="17" rx="2"/><rect x="472" y="188" width="11" height="17" rx="2"/>
-                  <rect x="432" y="218" width="11" height="17" rx="2"/><rect x="452" y="218" width="11" height="17" rx="2"/><rect x="472" y="218" width="11" height="17" rx="2"/>
-                </g>
-              </g>
-
-              <!-- Tour Eiffel -->
-              <g class="eiffel" transform="translate(260 40)">
-                <path d="M0 0c-2 0-3 1-3 3l-2 22h10l-2-22c0-2-1-3-3-3z" fill="#B98E5E"/>
-                <path d="M-5 25c-3 14-7 30-12 52h34c-5-22-9-38-12-52z" fill="#C89A66"/>
-                <path d="M-17 77c-6 26-15 60-28 108h90C32 137 23 103 17 77z" fill="#B98E5E"/>
-                <path d="M-45 185c-8 32-18 66-30 104h150c-12-38-22-72-30-104z" fill="#C89A66"/>
-                <!-- plateformes -->
-                <rect x="-20" y="74" width="40" height="7" fill="#241C19"/>
-                <rect x="-48" y="182" width="96" height="8" fill="#241C19"/>
-                <!-- arche -->
-                <path d="M-40 289c8-26 34-30 40-30s32 4 40 30z" fill="#FDF3EC"/>
-                <path d="M-40 289c8-26 34-30 40-30s32 4 40 30" fill="none" stroke="#241C19" stroke-width="2"/>
-                <!-- treillis -->
-                <g stroke="#8B6A44" stroke-width="1.4" opacity=".7">
-                  <path d="M-15 82L15 175M15 82L-15 175M-42 190L42 289M42 190L-42 289"/>
-                </g>
-                <!-- drapeau -->
-                <rect x="-1" y="-16" width="2" height="16" fill="#241C19"/>
-                <path d="M1 -16h12v7H1z" class="s-red"/>
-              </g>
-
-              <!-- lampadaire -->
-              <g transform="translate(150 250)" stroke="#241C19" stroke-width="2.4" fill="#241C19">
-                <line x1="0" y1="0" x2="0" y2="70"/>
-                <path d="M-9 4a9 6 0 0 1 18 0z" fill="#FFE7C2" stroke="#241C19" stroke-width="2"/>
-                <circle cx="0" cy="-2" r="2.5"/>
-              </g>
-
-              <!-- route -->
-              <path d="M-10 372c120-34 400-34 540 0v120H-10z" fill="#2A2320"/>
-              <path d="M-10 372c120-34 400-34 540 0" fill="none" stroke="#4A3F3A" stroke-width="2"/>
-              <g stroke="#FBE5C9" stroke-width="5" stroke-linecap="round" stroke-dasharray="20 26" class="road-dashes">
-                <path d="M-10 408c120-28 400-28 540 0" fill="none"/>
-              </g>
-            </g>
-
-            <!-- disque contour -->
-            <circle cx="260" cy="230" r="210" fill="none" stroke="#241C19" stroke-width="3"/>
-
-            <!-- VOITURE ROUGE au premier plan -->
-            <g class="hero-car" transform="translate(150 300)">
-              <ellipse cx="112" cy="120" rx="118" ry="16" fill="#241C19" opacity=".14"/>
-              <!-- corps -->
-              <path d="M6 92c-3 0-5-2-5-5v-9c0-6 4-11 10-13l24-6 20-20c6-6 14-9 22-9h58c8 0 15 3 20 9l16 18 28 7c8 2 13 8 13 16v7c0 3-2 5-5 5z" class="s-red"/>
-              <path d="M6 92c-3 0-5-2-5-5v-9c0-6 4-11 10-13l24-6 20-20c6-6 14-9 22-9h58c8 0 15 3 20 9l16 18 28 7c8 2 13 8 13 16v7c0 3-2 5-5 5z" fill="none" stroke="#241C19" stroke-width="3.2" stroke-linejoin="round"/>
-              <!-- reflet capot -->
-              <path d="M158 40l14 16 24 6c5 1 8 4 9 8-30-6-42-18-47-30z" fill="#fff" opacity=".18"/>
-              <!-- vitres -->
-              <path d="M74 34c-4 0-8 2-11 5L48 55h50V34zM106 34v21h44l-13-15c-4-4-9-6-14-6z" fill="#DCEAF0" stroke="#241C19" stroke-width="3" stroke-linejoin="round"/>
-              <line x1="100" y1="34" x2="100" y2="55" stroke="#241C19" stroke-width="3"/>
-              <!-- bas de caisse -->
-              <path d="M20 82c0 4 0 8 2 10M204 82c0 4 0 7-2 10" stroke="#A80020" stroke-width="0"/>
-              <!-- phares -->
-              <path d="M214 72h9c2 0 4 1 4 3v3h-13z" fill="#FFE7C2" stroke="#241C19" stroke-width="2.4"/>
-              <rect x="1" y="72" width="9" height="7" rx="2" fill="#E9463A" stroke="#241C19" stroke-width="2.4"/>
-              <!-- poignée -->
-              <rect x="120" y="66" width="16" height="4" rx="2" class="s-ink"/>
-              <!-- roues -->
-              <g class="wheel">
-                <circle cx="62" cy="94" r="24" class="s-ink"/>
-                <circle cx="62" cy="94" r="24" fill="none" stroke="#241C19" stroke-width="3"/>
-                <circle cx="62" cy="94" r="11" fill="#EFE7DF"/>
-                <circle cx="62" cy="94" r="3.4" class="s-red"/>
-                <g stroke="#241C19" stroke-width="1.6"><path d="M62 84v20M52 94h20M55 87l14 14M55 101l14-14"/></g>
-              </g>
-              <g class="wheel">
-                <circle cx="170" cy="94" r="24" class="s-ink"/>
-                <circle cx="170" cy="94" r="24" fill="none" stroke="#241C19" stroke-width="3"/>
-                <circle cx="170" cy="94" r="11" fill="#EFE7DF"/>
-                <circle cx="170" cy="94" r="3.4" class="s-red"/>
-                <g stroke="#241C19" stroke-width="1.6"><path d="M170 84v20M160 94h20M163 87l14 14M163 101l14-14"/></g>
-              </g>
-            </g>
-
-            <!-- badge flottant -->
-            <g class="float-badge">
-              <circle cx="452" cy="342" r="46" fill="#fff" stroke="#241C19" stroke-width="3"/>
-              <text x="452" y="332" text-anchor="middle" class="fb-num">39€</text>
-              <text x="452" y="352" text-anchor="middle" class="fb-lbl">/ JOUR</text>
-              <text x="452" y="368" text-anchor="middle" class="fb-sml">dès</text>
-            </g>
-          </svg>
-        </div>
-      </div>
-
-      <!-- barre de réservation -->
-      <div class="wrap booking-wrap">
-        <form class="booking" id="booking" autocomplete="off">
-          <div class="bk-field">
-            <span class="bk-label">Prise en charge</span>
-            <div class="bk-control">
-              <svg viewBox="0 0 24 24" class="bk-ic" aria-hidden="true"><path d="M12 21s7-6.6 7-12a7 7 0 1 0-14 0c0 5.4 7 12 7 12z" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="9" r="2.6" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
-              <select aria-label="Lieu de prise en charge" id="bkPlace">
-                <option>Le Marais — Paris 4e</option>
-                <option>Champs-Élysées — Paris 8e</option>
-                <option>Montmartre — Paris 18e</option>
-                <option>Bastille — Paris 11e</option>
-                <option>Gare de Lyon — Paris 12e</option>
-                <option>Gare du Nord — Paris 10e</option>
-                <option>La Défense — Puteaux</option>
-                <option>Aéroport Orly</option>
-                <option>Aéroport Roissy-CDG</option>
-              </select>
-            </div>
+        <div class="hero-right reveal">
+          <div class="hero-block">
+            <span class="sticker sticker-yellow" aria-hidden="true">dès 39€/j</span>
+            <svg viewBox="0 0 340 220" class="hero-car" role="img" aria-label="Une citadine rouge Loc'n'Joy">
+              <ellipse cx="170" cy="188" rx="140" ry="16" fill="#0B0A0A" opacity=".08"/>
+              <g class="hc-wheel"><circle cx="98" cy="150" r="30" fill="#0B0A0A"/><circle cx="98" cy="150" r="30" fill="none" stroke="#0B0A0A" stroke-width="4"/><circle cx="98" cy="150" r="14" fill="#FBFAF8"/><circle cx="98" cy="150" r="4" fill="#E4002B"/><g stroke="#0B0A0A" stroke-width="2"><path d="M98 136v28M84 150h28M88 140l20 20M88 160l20-20"/></g></g>
+              <g class="hc-wheel"><circle cx="246" cy="150" r="30" fill="#0B0A0A"/><circle cx="246" cy="150" r="30" fill="none" stroke="#0B0A0A" stroke-width="4"/><circle cx="246" cy="150" r="14" fill="#FBFAF8"/><circle cx="246" cy="150" r="4" fill="#E4002B"/><g stroke="#0B0A0A" stroke-width="2"><path d="M246 136v28M232 150h28M236 140l20 20M236 160l20-20"/></g></g>
+              <path d="M42 150c-8 0-14-6-14-14v-12c0-9 7-16 16-18l30-5 24-28c7-8 17-13 28-13h62c11 0 22 5 28 15l14 22 34 6c11 2 19 11 19 22v11c0 8-6 14-14 14z" fill="#E4002B"/>
+              <path d="M42 150c-8 0-14-6-14-14v-12c0-9 7-16 16-18l30-5 24-28c7-8 17-13 28-13h62c11 0 22 5 28 15l14 22 34 6c11 2 19 11 19 22v11c0 8-6 14-14 14z" fill="none" stroke="#0B0A0A" stroke-width="4.5" stroke-linejoin="round"/>
+              <path d="M128 60c-6 0-12 3-16 8l-18 24h56V60zM168 60v32h52l-14-22c-5-6-12-10-20-10z" fill="#DDF6F6" stroke="#0B0A0A" stroke-width="4.5" stroke-linejoin="round"/>
+              <line x1="160" y1="60" x2="160" y2="92" stroke="#0B0A0A" stroke-width="4.5"/>
+              <rect x="180" y="118" width="22" height="6" rx="3" fill="#0B0A0A"/>
+              <path d="M282 108h12c3 0 5 2 5 5v6h-17z" fill="#FFE7A6" stroke="#0B0A0A" stroke-width="3.5"/>
+            </svg>
           </div>
-          <div class="bk-field">
-            <span class="bk-label">Départ</span>
-            <div class="bk-control">
-              <svg viewBox="0 0 24 24" class="bk-ic" aria-hidden="true"><rect x="3.5" y="5" width="17" height="16" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3.5 9.5h17M8 3.5v3M16 3.5v3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-              <input type="date" aria-label="Date de départ" id="bkStart" />
-            </div>
-          </div>
-          <div class="bk-field">
-            <span class="bk-label">Retour</span>
-            <div class="bk-control">
-              <svg viewBox="0 0 24 24" class="bk-ic" aria-hidden="true"><rect x="3.5" y="5" width="17" height="16" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3.5 9.5h17M8 3.5v3M16 3.5v3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-              <input type="date" aria-label="Date de retour" id="bkEnd" />
-            </div>
-          </div>
-          <button type="submit" class="btn btn-red bk-submit" id="bkSubmit">
-            <span class="bk-submit-txt">Rechercher</span>
-            <span class="bk-spinner" aria-hidden="true"></span>
-          </button>
-        </form>
-      </div>
-
-      <!-- vague de séparation -->
-      <div class="hero-strip">
-        <div class="wrap strip-inner">
-          <span><span class="stars-sm" aria-hidden="true">★</span> <span class="count" data-to="4.9" data-dec="1">4,9</span>/5 sur <span class="count" data-to="12400">12&nbsp;400</span> avis</span>
-          <span class="dot">•</span>
-          <span><span class="count" data-to="120">120</span>+ voitures dans la flotte</span>
-          <span class="dot">•</span>
-          <span>Livraison en <span class="count" data-to="90">90</span>&nbsp;min</span>
-          <span class="dot">•</span>
-          <span><span class="count" data-to="0">0</span>€ de caution sur l'abonnement Joy</span>
         </div>
       </div>
     </section>
 
-    <!-- ░░░░░░░░░░ SÉLECTION DU MOIS ░░░░░░░░░░ -->
-    <section class="section flotte" id="flotte">
+    <!-- ══════════ SÉLECTION DU MOIS ══════════ -->
+    <section class="section" id="flotte">
       <div class="wrap">
-        <div class="section-head">
-          <div>
-            <span class="kicker">La sélection de juillet</span>
-            <h2 class="section-title">Nos coups de cœur du mois</h2>
-          </div>
-          <p class="section-lead">Six voitures triées sur le volet par notre équipe. Un modèle pour chaque humeur, chaque trajet, chaque folie parisienne.</p>
+        <div class="sec-head reveal">
+          <h2 class="sec-title">La sélection de juillet</h2>
+          <p class="sec-sub">Six voitures triées sur le volet. Ajoutez-en jusqu'à 3 à votre mois — <span class="hand hand-peri">à vous de composer&nbsp;!</span></p>
         </div>
 
-        <div class="car-grid">
-
-          <!-- Carte 1 — Citadine électrique -->
-          <article class="car-card reveal">
-            <div class="car-media wash-1">
-              <span class="ribbon">Zéro émission</span>
-              <svg viewBox="0 0 300 150" class="car-illu" role="img" aria-label="La Pigalle, petite citadine électrique">
-                <ellipse cx="150" cy="128" rx="120" ry="12" fill="#241C19" opacity=".1"/>
-                <path d="M40 108c-6 0-10-4-10-10v-8c0-7 5-12 12-13l22-3 16-18c5-6 12-9 20-9h44c8 0 16 4 20 11l10 16 24 4c8 1 14 7 14 15v5c0 6-4 10-10 10z" class="s-red"/>
-                <path d="M40 108c-6 0-10-4-10-10v-8c0-7 5-12 12-13l22-3 16-18c5-6 12-9 20-9h44c8 0 16 4 20 11l10 16 24 4c8 1 14 7 14 15v5c0 6-4 10-10 10z" fill="none" stroke="#241C19" stroke-width="3.4" stroke-linejoin="round"/>
-                <path d="M92 50c-5 0-10 2-13 6l-12 15h40V50zM120 50v21h34l-9-14c-3-4-8-7-13-7z" fill="#DCEAF0" stroke="#241C19" stroke-width="3"/>
-                <line x1="114" y1="50" x2="114" y2="71" stroke="#241C19" stroke-width="3"/>
-                <rect x="128" y="86" width="16" height="4" rx="2" class="s-ink"/>
-                <path d="M200 78l-6 8h6z" fill="#39B54A" stroke="#241C19" stroke-width="1.6"/>
-                <circle cx="88" cy="106" r="20" class="s-ink"/><circle cx="88" cy="106" r="9" fill="#EFE7DF"/><circle cx="88" cy="106" r="2.6" class="s-red"/>
-                <circle cx="182" cy="106" r="20" class="s-ink"/><circle cx="182" cy="106" r="9" fill="#EFE7DF"/><circle cx="182" cy="106" r="2.6" class="s-red"/>
+        <div class="cards">
+          <!-- 1 -->
+          <article class="card reveal">
+            <div class="card-media" style="--bg:var(--pink)">
+              <span class="card-badge">Zéro émission</span>
+              <svg viewBox="0 0 300 160" class="card-car" role="img" aria-label="La Pigalle, citadine électrique">
+                <ellipse cx="150" cy="138" rx="120" ry="12" fill="#0B0A0A" opacity=".08"/>
+                <path d="M40 116c-6 0-10-4-10-10v-8c0-7 5-12 12-13l22-3 16-18c5-6 12-9 20-9h44c8 0 16 4 20 11l10 16 24 4c8 1 14 7 14 15v5c0 6-4 10-10 10z" fill="#E4002B"/>
+                <path d="M40 116c-6 0-10-4-10-10v-8c0-7 5-12 12-13l22-3 16-18c5-6 12-9 20-9h44c8 0 16 4 20 11l10 16 24 4c8 1 14 7 14 15v5c0 6-4 10-10 10z" fill="none" stroke="#0B0A0A" stroke-width="4" stroke-linejoin="round"/>
+                <path d="M92 58c-5 0-10 2-13 6l-12 15h40V58zM120 58v21h34l-9-14c-3-4-8-7-13-7z" fill="#fff" stroke="#0B0A0A" stroke-width="4"/>
+                <line x1="114" y1="58" x2="114" y2="79" stroke="#0B0A0A" stroke-width="4"/>
+                <path d="M200 86l-6 8h6z" fill="#2FBF6A" stroke="#0B0A0A" stroke-width="2"/>
+                <circle cx="88" cy="114" r="20" fill="#0B0A0A"/><circle cx="88" cy="114" r="9" fill="#fff"/><circle cx="88" cy="114" r="3" fill="#E4002B"/>
+                <circle cx="182" cy="114" r="20" fill="#0B0A0A"/><circle cx="182" cy="114" r="9" fill="#fff"/><circle cx="182" cy="114" r="3" fill="#E4002B"/>
               </svg>
             </div>
-            <div class="car-body">
-              <div class="car-tags"><span class="tag">Citadine</span><span class="tag tag-red">Électrique</span></div>
-              <h3 class="car-name">La Pigalle</h3>
-              <p class="car-desc">La reine des ruelles : compacte, silencieuse, increvable. Elle se gare là où les autres tournent en rond.</p>
-              <ul class="car-specs">
-                <li><span class="spec-i">◔</span>320 km</li>
-                <li><span class="spec-i">⚙</span>Auto</li>
-                <li><span class="spec-i">◇</span>4 places</li>
-              </ul>
-              <div class="car-foot">
-                <span class="car-price"><b>39€</b><span>/jour</span></span>
-                <a href="#tarifs" class="link-more">Découvrir <span aria-hidden="true">→</span></a>
-              </div>
+            <div class="card-body">
+              <div class="pills"><span class="pill pill-pink">Citadine</span><span class="pill pill-green">Électrique</span></div>
+              <h3 class="card-name">La Pigalle</h3>
+              <p class="card-desc">La reine des ruelles : compacte, silencieuse, increvable. Elle se gare là où les autres tournent en rond.</p>
+              <div class="card-foot"><span class="price">39€ <small>/jour</small></span><a href="#tarifs" class="more">Découvrir →</a></div>
             </div>
           </article>
 
-          <!-- Carte 2 — Cabriolet -->
-          <article class="car-card reveal">
-            <div class="car-media wash-2">
-              <span class="ribbon">Toit ouvrant</span>
-              <svg viewBox="0 0 300 150" class="car-illu" role="img" aria-label="Le Cabriolet Rivoli, décapotable">
-                <ellipse cx="150" cy="128" rx="122" ry="12" fill="#241C19" opacity=".1"/>
-                <path d="M34 110c-6 0-10-4-10-10v-9c0-6 4-11 10-13l30-8 26-9c5-2 10-3 15-3h72c9 0 17 4 22 12l9 14 20 4c8 1 13 7 13 15v4c0 6-4 10-10 10z" class="s-red"/>
-                <path d="M34 110c-6 0-10-4-10-10v-9c0-6 4-11 10-13l30-8 26-9c5-2 10-3 15-3h72c9 0 17 4 22 12l9 14 20 4c8 1 13 7 13 15v4c0 6-4 10-10 10z" fill="none" stroke="#241C19" stroke-width="3.4" stroke-linejoin="round"/>
-                <path d="M96 70l14-9c4-2 9-3 13-3h55c6 0 8 3 4 5l-16 7z" fill="#8A0A22"/>
-                <path d="M96 70h74" stroke="#241C19" stroke-width="3" stroke-linecap="round"/>
-                <rect x="150" y="52" width="4" height="16" rx="2" class="s-ink"/>
-                <rect x="118" y="86" width="16" height="4" rx="2" class="s-ink"/>
-                <path d="M232 80h10c2 0 4 2 4 4v3h-14z" fill="#FFE7C2" stroke="#241C19" stroke-width="2"/>
-                <circle cx="86" cy="108" r="21" class="s-ink"/><circle cx="86" cy="108" r="9.5" fill="#EFE7DF"/><circle cx="86" cy="108" r="2.8" class="s-red"/>
-                <circle cx="196" cy="108" r="21" class="s-ink"/><circle cx="196" cy="108" r="9.5" fill="#EFE7DF"/><circle cx="196" cy="108" r="2.8" class="s-red"/>
+          <!-- 2 -->
+          <article class="card reveal">
+            <div class="card-media" style="--bg:var(--peach)">
+              <span class="card-badge">Toit ouvrant</span>
+              <svg viewBox="0 0 300 160" class="card-car" role="img" aria-label="Le Cabriolet Rivoli">
+                <ellipse cx="150" cy="138" rx="122" ry="12" fill="#0B0A0A" opacity=".08"/>
+                <path d="M34 118c-6 0-10-4-10-10v-9c0-6 4-11 10-13l30-8 26-9c5-2 10-3 15-3h72c9 0 17 4 22 12l9 14 20 4c8 1 13 7 13 15v4c0 6-4 10-10 10z" fill="#E4002B"/>
+                <path d="M34 118c-6 0-10-4-10-10v-9c0-6 4-11 10-13l30-8 26-9c5-2 10-3 15-3h72c9 0 17 4 22 12l9 14 20 4c8 1 13 7 13 15v4c0 6-4 10-10 10z" fill="none" stroke="#0B0A0A" stroke-width="4" stroke-linejoin="round"/>
+                <path d="M96 78l14-9c4-2 9-3 13-3h55c6 0 8 3 4 5l-16 7z" fill="#B7001F"/>
+                <path d="M96 78h74" stroke="#0B0A0A" stroke-width="4" stroke-linecap="round"/>
+                <rect x="150" y="60" width="5" height="16" rx="2" fill="#0B0A0A"/>
+                <circle cx="86" cy="116" r="21" fill="#0B0A0A"/><circle cx="86" cy="116" r="9.5" fill="#fff"/><circle cx="86" cy="116" r="3" fill="#E4002B"/>
+                <circle cx="196" cy="116" r="21" fill="#0B0A0A"/><circle cx="196" cy="116" r="9.5" fill="#fff"/><circle cx="196" cy="116" r="3" fill="#E4002B"/>
               </svg>
             </div>
-            <div class="car-body">
-              <div class="car-tags"><span class="tag">Cabriolet</span><span class="tag">Balade</span></div>
-              <h3 class="car-name">Le Cabriolet Rivoli</h3>
-              <p class="car-desc">Cheveux au vent le long des quais, coude à la portière. Le dimanche a enfin trouvé sa voiture.</p>
-              <ul class="car-specs">
-                <li><span class="spec-i">◔</span>640 km</li>
-                <li><span class="spec-i">⚙</span>Auto</li>
-                <li><span class="spec-i">◇</span>2 places</li>
-              </ul>
-              <div class="car-foot">
-                <span class="car-price"><b>89€</b><span>/jour</span></span>
-                <a href="#tarifs" class="link-more">Découvrir <span aria-hidden="true">→</span></a>
-              </div>
+            <div class="card-body">
+              <div class="pills"><span class="pill pill-peach">Cabriolet</span><span class="pill">Balade</span></div>
+              <h3 class="card-name">Le Cabriolet Rivoli</h3>
+              <p class="card-desc">Cheveux au vent le long des quais, coude à la portière. Le dimanche a enfin trouvé sa voiture.</p>
+              <div class="card-foot"><span class="price">89€ <small>/jour</small></span><a href="#tarifs" class="more">Découvrir →</a></div>
             </div>
           </article>
 
-          <!-- Carte 3 — SUV familial -->
-          <article class="car-card reveal">
-            <div class="car-media wash-3">
-              <span class="ribbon">Coffre XXL</span>
-              <svg viewBox="0 0 300 150" class="car-illu" role="img" aria-label="La Bastille, SUV familial">
-                <ellipse cx="150" cy="128" rx="124" ry="12" fill="#241C19" opacity=".1"/>
-                <path d="M30 106c-5 0-9-4-9-9V78c0-7 5-13 12-14l18-3 14-22c5-8 13-12 22-12h50c9 0 17 4 22 12l14 22 20 4c8 2 13 8 13 16v12c0 5-4 9-9 9z" class="s-red"/>
-                <path d="M30 106c-5 0-9-4-9-9V78c0-7 5-13 12-14l18-3 14-22c5-8 13-12 22-12h50c9 0 17 4 22 12l14 22 20 4c8 2 13 8 13 16v12c0 5-4 9-9 9z" fill="none" stroke="#241C19" stroke-width="3.4" stroke-linejoin="round"/>
-                <path d="M84 44c-4 0-8 2-10 6l-13 21h44V44zM120 44v27h48l-14-21c-3-4-8-6-13-6z" fill="#DCEAF0" stroke="#241C19" stroke-width="3"/>
-                <line x1="114" y1="44" x2="114" y2="71" stroke="#241C19" stroke-width="3"/>
-                <rect x="30" y="94" width="222" height="8" rx="3" fill="#8A0A22"/>
-                <rect x="128" y="84" width="16" height="4" rx="2" class="s-ink"/>
-                <path d="M238 76h10c2 0 4 2 4 4v4h-14z" fill="#FFE7C2" stroke="#241C19" stroke-width="2"/>
-                <circle cx="82" cy="106" r="24" class="s-ink"/><circle cx="82" cy="106" r="11" fill="#EFE7DF"/><circle cx="82" cy="106" r="3" class="s-red"/>
-                <circle cx="200" cy="106" r="24" class="s-ink"/><circle cx="200" cy="106" r="11" fill="#EFE7DF"/><circle cx="200" cy="106" r="3" class="s-red"/>
+          <!-- 3 -->
+          <article class="card reveal">
+            <div class="card-media" style="--bg:var(--blue)">
+              <span class="card-badge">Coffre XXL</span>
+              <svg viewBox="0 0 300 160" class="card-car" role="img" aria-label="La Bastille, SUV familial">
+                <ellipse cx="150" cy="138" rx="124" ry="12" fill="#0B0A0A" opacity=".08"/>
+                <path d="M30 114c-5 0-9-4-9-9V86c0-7 5-13 12-14l18-3 14-22c5-8 13-12 22-12h50c9 0 17 4 22 12l14 22 20 4c8 2 13 8 13 16v12c0 5-4 9-9 9z" fill="#E4002B"/>
+                <path d="M30 114c-5 0-9-4-9-9V86c0-7 5-13 12-14l18-3 14-22c5-8 13-12 22-12h50c9 0 17 4 22 12l14 22 20 4c8 2 13 8 13 16v12c0 5-4 9-9 9z" fill="none" stroke="#0B0A0A" stroke-width="4" stroke-linejoin="round"/>
+                <path d="M84 52c-4 0-8 2-10 6l-13 21h44V52zM120 52v27h48l-14-21c-3-4-8-6-13-6z" fill="#fff" stroke="#0B0A0A" stroke-width="4"/>
+                <line x1="114" y1="52" x2="114" y2="79" stroke="#0B0A0A" stroke-width="4"/>
+                <rect x="30" y="102" width="222" height="8" rx="3" fill="#B7001F"/>
+                <circle cx="82" cy="114" r="24" fill="#0B0A0A"/><circle cx="82" cy="114" r="11" fill="#fff"/><circle cx="82" cy="114" r="3" fill="#E4002B"/>
+                <circle cx="200" cy="114" r="24" fill="#0B0A0A"/><circle cx="200" cy="114" r="11" fill="#fff"/><circle cx="200" cy="114" r="3" fill="#E4002B"/>
               </svg>
             </div>
-            <div class="car-body">
-              <div class="car-tags"><span class="tag">SUV</span><span class="tag">Familiale</span></div>
-              <h3 class="car-name">La Bastille</h3>
-              <p class="car-desc">Cinq vraies places, un coffre qui avale les valises et les poussettes. Les vacances commencent au pas de la porte.</p>
-              <ul class="car-specs">
-                <li><span class="spec-i">◔</span>780 km</li>
-                <li><span class="spec-i">⚙</span>Auto</li>
-                <li><span class="spec-i">◇</span>5 places</li>
-              </ul>
-              <div class="car-foot">
-                <span class="car-price"><b>69€</b><span>/jour</span></span>
-                <a href="#tarifs" class="link-more">Découvrir <span aria-hidden="true">→</span></a>
-              </div>
+            <div class="card-body">
+              <div class="pills"><span class="pill pill-blue">SUV</span><span class="pill">Familiale</span></div>
+              <h3 class="card-name">La Bastille</h3>
+              <p class="card-desc">Cinq vraies places, un coffre qui avale valises et poussettes. Les vacances commencent au pas de la porte.</p>
+              <div class="card-foot"><span class="price">69€ <small>/jour</small></span><a href="#tarifs" class="more">Découvrir →</a></div>
             </div>
           </article>
 
-          <!-- Carte 4 — Berline confort -->
-          <article class="car-card reveal">
-            <div class="car-media wash-4">
-              <span class="ribbon">Grand confort</span>
-              <svg viewBox="0 0 300 150" class="car-illu" role="img" aria-label="Le Faubourg, berline confort">
-                <ellipse cx="150" cy="128" rx="124" ry="12" fill="#241C19" opacity=".1"/>
-                <path d="M26 108c-6 0-10-4-10-10v-7c0-7 5-12 12-13l26-5 20-19c5-5 12-8 19-8h58c8 0 15 3 20 9l15 17 26 5c8 2 13 8 13 16v5c0 6-4 10-10 10z" class="s-red"/>
-                <path d="M26 108c-6 0-10-4-10-10v-7c0-7 5-12 12-13l26-5 20-19c5-5 12-8 19-8h58c8 0 15 3 20 9l15 17 26 5c8 2 13 8 13 16v5c0 6-4 10-10 10z" fill="none" stroke="#241C19" stroke-width="3.4" stroke-linejoin="round"/>
-                <path d="M82 52c-4 0-8 2-10 5L60 71h44V52zM110 52v19h42l-11-14c-4-3-8-5-13-5z" fill="#DCEAF0" stroke="#241C19" stroke-width="3"/>
-                <line x1="104" y1="52" x2="104" y2="71" stroke="#241C19" stroke-width="3"/>
-                <rect x="120" y="86" width="16" height="4" rx="2" class="s-ink"/>
-                <path d="M236 78h10c2 0 4 2 4 4v3h-14z" fill="#FFE7C2" stroke="#241C19" stroke-width="2"/>
-                <circle cx="84" cy="106" r="21" class="s-ink"/><circle cx="84" cy="106" r="9.5" fill="#EFE7DF"/><circle cx="84" cy="106" r="2.8" class="s-red"/>
-                <circle cx="196" cy="106" r="21" class="s-ink"/><circle cx="196" cy="106" r="9.5" fill="#EFE7DF"/><circle cx="196" cy="106" r="2.8" class="s-red"/>
+          <!-- 4 -->
+          <article class="card reveal">
+            <div class="card-media" style="--bg:var(--peri)">
+              <span class="card-badge">Grand confort</span>
+              <svg viewBox="0 0 300 160" class="card-car" role="img" aria-label="Le Faubourg, berline">
+                <ellipse cx="150" cy="138" rx="124" ry="12" fill="#0B0A0A" opacity=".08"/>
+                <path d="M26 116c-6 0-10-4-10-10v-7c0-7 5-12 12-13l26-5 20-19c5-5 12-8 19-8h58c8 0 15 3 20 9l15 17 26 5c8 2 13 8 13 16v5c0 6-4 10-10 10z" fill="#E4002B"/>
+                <path d="M26 116c-6 0-10-4-10-10v-7c0-7 5-12 12-13l26-5 20-19c5-5 12-8 19-8h58c8 0 15 3 20 9l15 17 26 5c8 2 13 8 13 16v5c0 6-4 10-10 10z" fill="none" stroke="#0B0A0A" stroke-width="4" stroke-linejoin="round"/>
+                <path d="M82 60c-4 0-8 2-10 5L60 79h44V60zM110 60v19h42l-11-14c-4-3-8-5-13-5z" fill="#fff" stroke="#0B0A0A" stroke-width="4"/>
+                <line x1="104" y1="60" x2="104" y2="79" stroke="#0B0A0A" stroke-width="4"/>
+                <circle cx="84" cy="114" r="21" fill="#0B0A0A"/><circle cx="84" cy="114" r="9.5" fill="#fff"/><circle cx="84" cy="114" r="3" fill="#E4002B"/>
+                <circle cx="196" cy="114" r="21" fill="#0B0A0A"/><circle cx="196" cy="114" r="9.5" fill="#fff"/><circle cx="196" cy="114" r="3" fill="#E4002B"/>
               </svg>
             </div>
-            <div class="car-body">
-              <div class="car-tags"><span class="tag">Berline</span><span class="tag">Longue route</span></div>
-              <h3 class="car-name">Le Faubourg</h3>
-              <p class="car-desc">Silencieuse, feutrée, taillée pour dévorer l'autoroute. Deauville, Honfleur, la Bourgogne — sans jamais froisser un pli.</p>
-              <ul class="car-specs">
-                <li><span class="spec-i">◔</span>900 km</li>
-                <li><span class="spec-i">⚙</span>Auto</li>
-                <li><span class="spec-i">◇</span>5 places</li>
-              </ul>
-              <div class="car-foot">
-                <span class="car-price"><b>59€</b><span>/jour</span></span>
-                <a href="#tarifs" class="link-more">Découvrir <span aria-hidden="true">→</span></a>
-              </div>
+            <div class="card-body">
+              <div class="pills"><span class="pill pill-peri">Berline</span><span class="pill">Longue route</span></div>
+              <h3 class="card-name">Le Faubourg</h3>
+              <p class="card-desc">Silencieuse, feutrée, taillée pour dévorer l'autoroute. Deauville, Honfleur, la Bourgogne — sans froisser un pli.</p>
+              <div class="card-foot"><span class="price">59€ <small>/jour</small></span><a href="#tarifs" class="more">Découvrir →</a></div>
             </div>
           </article>
 
-          <!-- Carte 5 — Compacte hybride -->
-          <article class="car-card reveal">
-            <div class="car-media wash-5">
-              <span class="ribbon">Hybride</span>
-              <svg viewBox="0 0 300 150" class="car-illu" role="img" aria-label="La Sorbonne, compacte hybride">
-                <ellipse cx="150" cy="128" rx="118" ry="12" fill="#241C19" opacity=".1"/>
-                <path d="M38 108c-6 0-10-4-10-10v-8c0-7 5-12 12-13l24-4 16-19c5-6 12-9 20-9h46c8 0 16 4 20 11l11 16 22 4c8 1 14 7 14 15v6c0 6-4 10-10 10z" class="s-red"/>
-                <path d="M38 108c-6 0-10-4-10-10v-8c0-7 5-12 12-13l24-4 16-19c5-6 12-9 20-9h46c8 0 16 4 20 11l11 16 22 4c8 1 14 7 14 15v6c0 6-4 10-10 10z" fill="none" stroke="#241C19" stroke-width="3.4" stroke-linejoin="round"/>
-                <path d="M90 51c-5 0-10 2-13 6L64 72h42V51zM116 51v21h40l-10-15c-3-4-8-6-13-6z" fill="#DCEAF0" stroke="#241C19" stroke-width="3"/>
-                <line x1="110" y1="51" x2="110" y2="72" stroke="#241C19" stroke-width="3"/>
-                <rect x="126" y="87" width="16" height="4" rx="2" class="s-ink"/>
-                <path d="M204 79h9c2 0 4 1 4 3v3h-13z" fill="#FFE7C2" stroke="#241C19" stroke-width="2"/>
-                <circle cx="86" cy="107" r="20" class="s-ink"/><circle cx="86" cy="107" r="9" fill="#EFE7DF"/><circle cx="86" cy="107" r="2.6" class="s-red"/>
-                <circle cx="188" cy="107" r="20" class="s-ink"/><circle cx="188" cy="107" r="9" fill="#EFE7DF"/><circle cx="188" cy="107" r="2.6" class="s-red"/>
+          <!-- 5 -->
+          <article class="card reveal">
+            <div class="card-media" style="--bg:var(--yellow)">
+              <span class="card-badge">Hybride</span>
+              <svg viewBox="0 0 300 160" class="card-car" role="img" aria-label="La Sorbonne, compacte hybride">
+                <ellipse cx="150" cy="138" rx="118" ry="12" fill="#0B0A0A" opacity=".08"/>
+                <path d="M38 116c-6 0-10-4-10-10v-8c0-7 5-12 12-13l24-4 16-19c5-6 12-9 20-9h46c8 0 16 4 20 11l11 16 22 4c8 1 14 7 14 15v6c0 6-4 10-10 10z" fill="#E4002B"/>
+                <path d="M38 116c-6 0-10-4-10-10v-8c0-7 5-12 12-13l24-4 16-19c5-6 12-9 20-9h46c8 0 16 4 20 11l11 16 22 4c8 1 14 7 14 15v6c0 6-4 10-10 10z" fill="none" stroke="#0B0A0A" stroke-width="4" stroke-linejoin="round"/>
+                <path d="M90 59c-5 0-10 2-13 6L64 80h42V59zM116 59v21h40l-10-15c-3-4-8-6-13-6z" fill="#fff" stroke="#0B0A0A" stroke-width="4"/>
+                <line x1="110" y1="59" x2="110" y2="80" stroke="#0B0A0A" stroke-width="4"/>
+                <circle cx="86" cy="114" r="20" fill="#0B0A0A"/><circle cx="86" cy="114" r="9" fill="#fff"/><circle cx="86" cy="114" r="3" fill="#E4002B"/>
+                <circle cx="188" cy="114" r="20" fill="#0B0A0A"/><circle cx="188" cy="114" r="9" fill="#fff"/><circle cx="188" cy="114" r="3" fill="#E4002B"/>
               </svg>
             </div>
-            <div class="car-body">
-              <div class="car-tags"><span class="tag">Compacte</span><span class="tag tag-red">Hybride</span></div>
-              <h3 class="car-name">La Sorbonne</h3>
-              <p class="car-desc">Sage comme une image et économe comme une étudiante. Elle enchaîne les trajets sans jamais voir une pompe.</p>
-              <ul class="car-specs">
-                <li><span class="spec-i">◔</span>1 100 km</li>
-                <li><span class="spec-i">⚙</span>Auto</li>
-                <li><span class="spec-i">◇</span>5 places</li>
-              </ul>
-              <div class="car-foot">
-                <span class="car-price"><b>45€</b><span>/jour</span></span>
-                <a href="#tarifs" class="link-more">Découvrir <span aria-hidden="true">→</span></a>
-              </div>
+            <div class="card-body">
+              <div class="pills"><span class="pill pill-yellow">Compacte</span><span class="pill pill-green">Hybride</span></div>
+              <h3 class="card-name">La Sorbonne</h3>
+              <p class="card-desc">Sage comme une image et économe comme une étudiante. Elle enchaîne les trajets sans jamais voir une pompe.</p>
+              <div class="card-foot"><span class="price">45€ <small>/jour</small></span><a href="#tarifs" class="more">Découvrir →</a></div>
             </div>
           </article>
 
-          <!-- Carte 6 — Sportive -->
-          <article class="car-card reveal">
-            <div class="car-media wash-6">
-              <span class="ribbon">Sensations</span>
-              <svg viewBox="0 0 300 150" class="car-illu" role="img" aria-label="Le Bolide Vendôme, sportive">
-                <ellipse cx="150" cy="130" rx="126" ry="11" fill="#241C19" opacity=".1"/>
-                <path d="M20 112c-4 0-6-3-5-7l3-9c2-6 7-10 13-11l40-6 44-14c8-3 16-4 24-4h44c10 0 15 5 12 12l32 5c8 1 13 6 14 13 0 4-3 7-7 7z" class="s-red"/>
-                <path d="M20 112c-4 0-6-3-5-7l3-9c2-6 7-10 13-11l40-6 44-14c8-3 16-4 24-4h44c10 0 15 5 12 12l32 5c8 1 13 6 14 13 0 4-3 7-7 7z" fill="none" stroke="#241C19" stroke-width="3.4" stroke-linejoin="round"/>
-                <path d="M108 66l10-10c4-4 9-6 15-6h42c6 0 8 3 4 6l-9 10z" fill="#DCEAF0" stroke="#241C19" stroke-width="3"/>
-                <line x1="152" y1="50" x2="146" y2="66" stroke="#241C19" stroke-width="3"/>
-                <path d="M120 100h60" stroke="#8A0A22" stroke-width="5" stroke-linecap="round"/>
-                <path d="M244 84h12c3 0 5 2 5 5v3h-17z" fill="#FFE7C2" stroke="#241C19" stroke-width="2"/>
-                <circle cx="78" cy="110" r="22" class="s-ink"/><circle cx="78" cy="110" r="10" fill="#EFE7DF"/><circle cx="78" cy="110" r="3" class="s-red"/>
-                <circle cx="206" cy="110" r="22" class="s-ink"/><circle cx="206" cy="110" r="10" fill="#EFE7DF"/><circle cx="206" cy="110" r="3" class="s-red"/>
+          <!-- 6 -->
+          <article class="card reveal">
+            <div class="card-media" style="--bg:var(--rose)">
+              <span class="card-badge">Sensations</span>
+              <svg viewBox="0 0 300 160" class="card-car" role="img" aria-label="Le Bolide Vendôme, sportive">
+                <ellipse cx="150" cy="140" rx="126" ry="11" fill="#0B0A0A" opacity=".08"/>
+                <path d="M20 120c-4 0-6-3-5-7l3-9c2-6 7-10 13-11l40-6 44-14c8-3 16-4 24-4h44c10 0 15 5 12 12l32 5c8 1 13 6 14 13 0 4-3 7-7 7z" fill="#E4002B"/>
+                <path d="M20 120c-4 0-6-3-5-7l3-9c2-6 7-10 13-11l40-6 44-14c8-3 16-4 24-4h44c10 0 15 5 12 12l32 5c8 1 13 6 14 13 0 4-3 7-7 7z" fill="none" stroke="#0B0A0A" stroke-width="4" stroke-linejoin="round"/>
+                <path d="M108 74l10-10c4-4 9-6 15-6h42c6 0 8 3 4 6l-9 10z" fill="#fff" stroke="#0B0A0A" stroke-width="4"/>
+                <line x1="152" y1="58" x2="146" y2="74" stroke="#0B0A0A" stroke-width="4"/>
+                <circle cx="78" cy="118" r="22" fill="#0B0A0A"/><circle cx="78" cy="118" r="10" fill="#fff"/><circle cx="78" cy="118" r="3" fill="#E4002B"/>
+                <circle cx="206" cy="118" r="22" fill="#0B0A0A"/><circle cx="206" cy="118" r="10" fill="#fff"/><circle cx="206" cy="118" r="3" fill="#E4002B"/>
               </svg>
             </div>
-            <div class="car-body">
-              <div class="car-tags"><span class="tag">Sportive</span><span class="tag">Prestige</span></div>
-              <h3 class="car-name">Le Bolide Vendôme</h3>
-              <p class="car-desc">Pour les jours où l'on veut se faire plaisir sans se poser de questions. Le grondement en prime, l'assurance déjà comprise.</p>
-              <ul class="car-specs">
-                <li><span class="spec-i">◔</span>560 km</li>
-                <li><span class="spec-i">⚙</span>Séquentielle</li>
-                <li><span class="spec-i">◇</span>2 places</li>
-              </ul>
-              <div class="car-foot">
-                <span class="car-price"><b>149€</b><span>/jour</span></span>
-                <a href="#tarifs" class="link-more">Découvrir <span aria-hidden="true">→</span></a>
-              </div>
+            <div class="card-body">
+              <div class="pills"><span class="pill pill-rose">Sportive</span><span class="pill">Prestige</span></div>
+              <h3 class="card-name">Le Bolide Vendôme</h3>
+              <p class="card-desc">Pour les jours où l'on veut se faire plaisir sans se poser de questions. Le grondement en prime, l'assurance comprise.</p>
+              <div class="card-foot"><span class="price">149€ <small>/jour</small></span><a href="#tarifs" class="more">Découvrir →</a></div>
             </div>
           </article>
-
-        </div>
-
-        <div class="section-cta">
-          <a href="#categories" class="btn btn-ink btn-lg">Voir toute la flotte <span class="btn-arrow" aria-hidden="true">→</span></a>
         </div>
       </div>
     </section>
 
-    <!-- ░░░░░░░░░░ COMMENT ÇA MARCHE ░░░░░░░░░░ -->
-    <section class="section how" id="comment">
+    <!-- ══════════ COMMENT ÇA MARCHE ══════════ -->
+    <section class="section band-yellow" id="comment">
       <div class="wrap">
-        <div class="section-head center">
-          <div>
-            <span class="kicker">Simple comme un trajet</span>
-            <h2 class="section-title">Prendre le volant, en 4 temps</h2>
-            <p class="section-lead center-lead">Pas de comptoir, pas de queue, pas de petites lignes. On a réinventé la location pour qu'elle tienne dans votre poche.</p>
-          </div>
+        <div class="sec-head center reveal">
+          <h2 class="sec-title">Comment ça roule ?</h2>
+          <p class="sec-sub">Pas de comptoir, pas de queue, pas de petites lignes. <span class="hand hand-red">tout tient dans votre poche&nbsp;!</span></p>
         </div>
-
         <div class="steps">
           <article class="step reveal">
-            <span class="step-num">01</span>
-            <div class="step-ic">
-              <svg viewBox="0 0 64 64"><circle cx="28" cy="28" r="16" fill="none" stroke="currentColor" stroke-width="4"/><line x1="40" y1="40" x2="54" y2="54" stroke="currentColor" stroke-width="4" stroke-linecap="round"/><path d="M22 28h12M28 22v12" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>
-            </div>
+            <span class="step-num">1</span>
+            <div class="step-ic" style="--bg:var(--pink)"><svg viewBox="0 0 64 64"><circle cx="28" cy="28" r="15" fill="none" stroke="#0B0A0A" stroke-width="4"/><line x1="39" y1="39" x2="53" y2="53" stroke="#0B0A0A" stroke-width="4" stroke-linecap="round"/><path d="M22 28h12M28 22v12" stroke="#0B0A0A" stroke-width="4" stroke-linecap="round"/></svg></div>
             <h3>Choisissez</h3>
-            <p>Parcourez la flotte et filtrez selon l'envie du jour : citadine futée, cabriolet, break familial, sportive… Chaque voiture est notée par la communauté.</p>
+            <p>Parcourez la flotte et filtrez par envie : citadine, cabriolet, break, sportive… Chaque voiture est notée par la communauté.</p>
           </article>
-
           <article class="step reveal">
-            <span class="step-num">02</span>
-            <div class="step-ic">
-              <svg viewBox="0 0 64 64"><rect x="14" y="12" width="36" height="44" rx="6" fill="none" stroke="currentColor" stroke-width="4"/><path d="M24 30l6 6 12-12" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><line x1="24" y1="46" x2="40" y2="46" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>
-            </div>
+            <span class="step-num">2</span>
+            <div class="step-ic" style="--bg:var(--blue)"><svg viewBox="0 0 64 64"><rect x="14" y="12" width="36" height="44" rx="6" fill="none" stroke="#0B0A0A" stroke-width="4"/><path d="M24 30l6 6 12-12" fill="none" stroke="#0B0A0A" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
             <h3>Réservez</h3>
-            <p>Deux minutes, montre en main. Permis scanné une bonne fois pour toutes, assurance et assistance déjà incluses. Aucune caution sur l'abonnement Joy.</p>
+            <p>Deux minutes, montre en main. Permis scanné une bonne fois pour toutes, assurance et assistance déjà incluses.</p>
           </article>
-
           <article class="step reveal">
-            <span class="step-num">03</span>
-            <div class="step-ic">
-              <svg viewBox="0 0 64 64"><path d="M10 40h6l4-12c1-3 3-4 6-4h16c3 0 5 1 6 4l4 12h6" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/><rect x="10" y="40" width="44" height="8" rx="3" fill="none" stroke="currentColor" stroke-width="4"/><circle cx="20" cy="50" r="4" fill="currentColor"/><circle cx="44" cy="50" r="4" fill="currentColor"/></svg>
-            </div>
+            <span class="step-num">3</span>
+            <div class="step-ic" style="--bg:var(--peri)"><svg viewBox="0 0 64 64"><path d="M10 40h6l4-12c1-3 3-4 6-4h16c3 0 5 1 6 4l4 12h6" fill="none" stroke="#0B0A0A" stroke-width="4" stroke-linejoin="round"/><rect x="10" y="40" width="44" height="8" rx="3" fill="none" stroke="#0B0A0A" stroke-width="4"/><circle cx="20" cy="50" r="4" fill="#0B0A0A"/><circle cx="44" cy="50" r="4" fill="#0B0A0A"/></svg></div>
             <h3>On vous livre</h3>
-            <p>Un Joyrider dépose la voiture au pied de chez vous, clés en main, réservoir plein et sourire compris. Jusqu'à Paris intra-muros en 90 minutes.</p>
+            <p>Un Joyrider dépose la voiture au pied de chez vous, clés en main, réservoir plein et sourire compris. Jusqu'à Paris en 90 min.</p>
           </article>
-
           <article class="step reveal">
-            <span class="step-num">04</span>
-            <div class="step-ic">
-              <svg viewBox="0 0 64 64"><path d="M32 50s-16-10-16-22a10 10 0 0 1 16-6 10 10 0 0 1 16 6c0 12-16 22-16 22z" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/></svg>
-            </div>
+            <span class="step-num">4</span>
+            <div class="step-ic" style="--bg:var(--peach)"><svg viewBox="0 0 64 64"><path d="M32 50s-16-10-16-22a10 10 0 0 1 16-6 10 10 0 0 1 16 6c0 12-16 22-16 22z" fill="none" stroke="#0B0A0A" stroke-width="4" stroke-linejoin="round"/></svg></div>
             <h3>Profitez</h3>
-            <p>Rendez la voiture où ça vous arrange, à l'heure qui vous va. Partagez vos plus belles routes avec #LocnJoy et gagnez des kilomètres offerts.</p>
+            <p>Rendez la voiture où ça vous arrange, à l'heure qui vous va. Partagez vos plus belles routes et gagnez des kilomètres offerts.</p>
           </article>
-        </div>
-
-        <div class="how-note reveal">
-          <span class="how-note-ic" aria-hidden="true">🅹</span>
-          <p><strong>Chaque location fait le plein d'attentions&nbsp;:</strong> assistance 24/7, kilomètres offerts le week-end, siège enfant sur simple demande et notre carte des plus belles routes autour de Paris glissée dans la boîte à gants.</p>
         </div>
       </div>
     </section>
 
-    <!-- ░░░░░░░░░░ CATÉGORIES ░░░░░░░░░░ -->
-    <section class="section categories" id="categories">
+    <!-- ══════════ CATÉGORIES ══════════ -->
+    <section class="section" id="categories">
       <div class="wrap">
-        <div class="section-head">
-          <div>
-            <span class="kicker">Pour chaque trajet, une voiture</span>
-            <h2 class="section-title">Choisissez par envie</h2>
-          </div>
-          <p class="section-lead">Une occasion, une humeur, un budget — on a forcément le modèle qu'il vous faut. Cliquez pour explorer.</p>
+        <div class="sec-head reveal">
+          <h2 class="sec-title">Faites votre choix</h2>
+          <p class="sec-sub">On a une voiture pour chaque envie, chaque occasion, chaque budget.</p>
         </div>
-
-        <div class="cat-chips" role="tablist" aria-label="Catégories de véhicules">
+        <div class="chips reveal">
           <button class="chip is-active" data-cat="all">Tout voir</button>
           <button class="chip" data-cat="citadine">Citadine</button>
           <button class="chip" data-cat="berline">Berline</button>
@@ -652,191 +287,54 @@
           <button class="chip" data-cat="prestige">Prestige</button>
           <button class="chip" data-cat="utilitaire">Utilitaire</button>
         </div>
-
-        <div class="gallery" id="gallery"><!-- rempli par script.js --></div>
+        <div class="gallery" id="gallery"></div>
       </div>
     </section>
 
-    <!-- ░░░░░░░░░░ CARTE DES POINTS DE RETRAIT ░░░░░░░░░░ -->
-    <section class="section map-sec" id="agences">
-      <div class="wrap">
-        <div class="section-head">
-          <div>
-            <span class="kicker">On n'est jamais loin</span>
-            <h2 class="section-title">Nos points de retrait dans Paris</h2>
+    <!-- ══════════ APPLICATION ══════════ -->
+    <section class="section band-blue">
+      <div class="wrap app-grid">
+        <div class="app-left reveal">
+          <h2 class="sec-title">Pensée par des amoureux<br>de la route.</h2>
+          <p class="sec-sub">Réservez, ouvrez, verrouillez et prolongez votre location du bout du pouce. L'appli Loc'n'Joy, c'est la clé de toute la ville.</p>
+          <div class="stores">
+            <a href="#" class="store" aria-label="Télécharger sur l'App Store"><svg viewBox="0 0 24 24" width="24" height="24"><path d="M16.4 12.6c0-2 1.6-3 1.7-3-1-1.3-2.4-1.5-2.9-1.6-1.2-.1-2.4.7-3 .7-.6 0-1.6-.7-2.6-.7-1.3 0-2.6.8-3.3 2-1.4 2.4-.4 6 1 8 .7 1 1.5 2 2.5 2 1 0 1.4-.6 2.6-.6s1.5.6 2.6.6 1.7-1 2.4-2c.7-1.1 1-2.2 1-2.3-.1 0-2-.8-2-3.1zM14.5 6.3c.5-.7.9-1.6.8-2.5-.8 0-1.7.5-2.3 1.2-.5.6-1 1.5-.8 2.4.9 0 1.8-.5 2.3-1.1z" fill="currentColor"/></svg><span><small>Télécharger sur</small><b>App Store</b></span></a>
+            <a href="#" class="store" aria-label="Disponible sur Google Play"><svg viewBox="0 0 24 24" width="22" height="22"><path d="M4 3.2v17.6c0 .5.5.8.9.5l9.4-8.8c.4-.3.4-.9 0-1.2L4.9 2.7c-.4-.3-.9 0-.9.5z" fill="#EA4335"/><path d="M17.3 9.4l-2.7-1.6-2.9 2.7 2.9 2.7 2.8-1.6c1-.6 1-1.6-.1-2.2z" fill="#FBBC04"/><path d="M4.9 2.7l7.8 7.8 2.9-2.7L6.2 2.3c-.5-.3-1-.1-1.3.4z" fill="#34A853"/><path d="M4.9 21.3l9.5-5.5-2.9-2.7-7.9 7.8c.3.5.8.7 1.3.4z" fill="#4285F4"/></svg><span><small>Disponible sur</small><b>Google Play</b></span></a>
           </div>
-          <p class="section-lead">Récupérez votre voiture près de chez vous — ou faites-la livrer. Cliquez sur un point pour tout savoir.</p>
+          <p class="app-note"><span class="hand hand-red">4,9/5</span> — 12&nbsp;400 conducteurs conquis ★★★★★</p>
         </div>
-
-        <div class="map-layout">
-          <div class="map-canvas reveal">
-            <svg class="paris-map" viewBox="0 0 600 440" role="img" aria-label="Carte stylisée de Paris avec les points de retrait Loc'n'Joy">
-              <rect width="600" height="440" rx="30" class="map-bg"/>
-              <!-- espaces verts -->
-              <ellipse cx="66" cy="250" rx="46" ry="66" class="map-green"/>
-              <ellipse cx="548" cy="250" rx="42" ry="58" class="map-green"/>
-              <!-- Paris intra-muros + périphérique -->
-              <path d="M170 66 C 300 40 430 60 486 150 C 520 205 505 300 430 360 C 350 420 210 415 140 350 C 86 300 84 200 110 140 C 128 96 145 74 170 66 Z" class="map-city"/>
-              <!-- rues discrètes -->
-              <g class="map-streets">
-                <path d="M300 60 V 405"/><path d="M110 220 H 500"/><path d="M185 85 L 455 375"/><path d="M455 85 L 165 375"/>
-              </g>
-              <!-- la Seine -->
-              <path d="M70 175 C 170 150 250 235 330 238 C 420 241 470 300 545 288" class="map-seine"/>
-              <ellipse cx="330" cy="238" rx="20" ry="7" class="map-isle"/>
-              <!-- repères -->
-              <g class="map-mark">
-                <path d="M185 262 l-8 -22 l8 6 l8 -6 z" transform="translate(0 -6)"/>
-                <text x="185" y="272" class="map-mark-t">Tour Eiffel</text>
-              </g>
-              <g class="map-mark">
-                <path d="M318 96 a10 10 0 0 1 20 0 z"/><rect x="326" y="86" width="4" height="8"/>
-                <text x="328" y="118" class="map-mark-t">Sacré-Cœur</text>
-              </g>
-              <g class="map-mark">
-                <path d="M206 150 h16 v14 h-16 z M210 164 v-9 a4 4 0 0 1 8 0 v9" fill="none"/>
-                <text x="214" y="180" class="map-mark-t">Arc de Triomphe</text>
-              </g>
-
-              <!-- pins agences -->
-              <g class="pin is-active" tabindex="0" role="button"
-                 data-name="Le Marais" data-addr="12 rue de Bretagne, 75003 Paris"
-                 data-hours="7h – 23h · 7j/7" data-cars="18" transform="translate(356 206)">
-                <circle class="pin-pulse" cx="0" cy="-2" r="8"/>
-                <path class="pin-body" d="M0 0 C -9 -12 -9 -20 0 -24 C 9 -20 9 -12 0 0 Z"/>
-                <circle class="pin-dot" cx="0" cy="-16" r="3.5"/>
-                <circle class="pin-hit" cx="0" cy="-13" r="22" fill="transparent"/>
-              </g>
-              <g class="pin" tabindex="0" role="button"
-                 data-name="Champs-Élysées" data-addr="55 av. des Champs-Élysées, 75008 Paris"
-                 data-hours="6h – minuit · 7j/7" data-cars="14" transform="translate(214 166)">
-                <circle class="pin-pulse" cx="0" cy="-2" r="8"/>
-                <path class="pin-body" d="M0 0 C -9 -12 -9 -20 0 -24 C 9 -20 9 -12 0 0 Z"/>
-                <circle class="pin-dot" cx="0" cy="-16" r="3.5"/>
-                <circle class="pin-hit" cx="0" cy="-13" r="22" fill="transparent"/>
-              </g>
-              <g class="pin" tabindex="0" role="button"
-                 data-name="Montmartre" data-addr="3 place des Abbesses, 75018 Paris"
-                 data-hours="8h – 22h · 7j/7" data-cars="9" transform="translate(322 108)">
-                <circle class="pin-pulse" cx="0" cy="-2" r="8"/>
-                <path class="pin-body" d="M0 0 C -9 -12 -9 -20 0 -24 C 9 -20 9 -12 0 0 Z"/>
-                <circle class="pin-dot" cx="0" cy="-16" r="3.5"/>
-                <circle class="pin-hit" cx="0" cy="-13" r="22" fill="transparent"/>
-              </g>
-              <g class="pin" tabindex="0" role="button"
-                 data-name="Bastille" data-addr="8 rue de la Roquette, 75011 Paris"
-                 data-hours="7h – 23h · 7j/7" data-cars="12" transform="translate(404 252)">
-                <circle class="pin-pulse" cx="0" cy="-2" r="8"/>
-                <path class="pin-body" d="M0 0 C -9 -12 -9 -20 0 -24 C 9 -20 9 -12 0 0 Z"/>
-                <circle class="pin-dot" cx="0" cy="-16" r="3.5"/>
-                <circle class="pin-hit" cx="0" cy="-13" r="22" fill="transparent"/>
-              </g>
-              <g class="pin" tabindex="0" role="button"
-                 data-name="Gare de Lyon" data-addr="Place Louis-Armand, 75012 Paris"
-                 data-hours="24h/24 · 7j/7" data-cars="16" transform="translate(438 300)">
-                <circle class="pin-pulse" cx="0" cy="-2" r="8"/>
-                <path class="pin-body" d="M0 0 C -9 -12 -9 -20 0 -24 C 9 -20 9 -12 0 0 Z"/>
-                <circle class="pin-dot" cx="0" cy="-16" r="3.5"/>
-                <circle class="pin-hit" cx="0" cy="-13" r="22" fill="transparent"/>
-              </g>
-              <g class="pin" tabindex="0" role="button"
-                 data-name="La Défense" data-addr="Parvis de la Défense, 92800 Puteaux"
-                 data-hours="6h – minuit · 7j/7" data-cars="22" transform="translate(78 150)">
-                <circle class="pin-pulse" cx="0" cy="-2" r="8"/>
-                <path class="pin-body" d="M0 0 C -9 -12 -9 -20 0 -24 C 9 -20 9 -12 0 0 Z"/>
-                <circle class="pin-dot" cx="0" cy="-16" r="3.5"/>
-                <circle class="pin-hit" cx="0" cy="-13" r="22" fill="transparent"/>
-              </g>
-            </svg>
-          </div>
-
-          <aside class="map-info reveal" id="mapInfo" aria-live="polite">
-            <span class="mi-tag">Point de retrait</span>
-            <h3 class="mi-name">Le Marais</h3>
-            <p class="mi-addr">12 rue de Bretagne, 75003 Paris</p>
-            <div class="mi-rows">
-              <div class="mi-row"><span class="mi-k">Horaires</span><span class="mi-v mi-hours">7h – 23h · 7j/7</span></div>
-              <div class="mi-row"><span class="mi-k">Disponibles</span><span class="mi-v mi-cars">18 voitures</span></div>
-              <div class="mi-row"><span class="mi-k">Livraison</span><span class="mi-v">dès 90 min</span></div>
-            </div>
-            <a href="#flotte" class="btn btn-red btn-block">Réserver dans cette agence</a>
-            <p class="mi-foot">6 agences ouvertes dans Paris &amp; en petite couronne.</p>
-          </aside>
-        </div>
-      </div>
-    </section>
-
-    <!-- ░░░░░░░░░░ APPLICATION ░░░░░░░░░░ -->
-    <section class="section app">
-      <div class="wrap app-inner">
-        <div class="app-copy reveal">
-          <span class="kicker light">Dans votre poche</span>
-          <h2 class="section-title white">Conçue par des Parisiens,<br>pour rouler dans Paris.</h2>
-          <p class="app-lead">Réservez, ouvrez, verrouillez et prolongez votre location du bout du pouce. L'appli Loc'n'Joy, c'est la clé de toute la ville — et un peu au-delà du périph'.</p>
-          <div class="store-btns">
-            <a href="#" class="store-btn" aria-label="Télécharger sur l'App Store">
-              <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M16.4 12.6c0-2 1.6-3 1.7-3-1-1.3-2.4-1.5-2.9-1.6-1.2-.1-2.4.7-3 .7-.6 0-1.6-.7-2.6-.7-1.3 0-2.6.8-3.3 2-1.4 2.4-.4 6 1 8 .7 1 1.5 2 2.5 2 1 0 1.4-.6 2.6-.6s1.5.6 2.6.6 1.7-1 2.4-2c.7-1.1 1-2.2 1-2.3-.1 0-2-.8-2-3.1zM14.5 6.3c.5-.7.9-1.6.8-2.5-.8 0-1.7.5-2.3 1.2-.5.6-1 1.5-.8 2.4.9 0 1.8-.5 2.3-1.1z" fill="currentColor"/></svg>
-              <span><small>Télécharger sur</small><b>App Store</b></span>
-            </a>
-            <a href="#" class="store-btn" aria-label="Disponible sur Google Play">
-              <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M4 3.2v17.6c0 .5.5.8.9.5l9.4-8.8c.4-.3.4-.9 0-1.2L4.9 2.7c-.4-.3-.9 0-.9.5z" fill="#EA4335"/><path d="M17.3 9.4l-2.7-1.6-2.9 2.7 2.9 2.7 2.8-1.6c1-.6 1-1.6-.1-2.2z" fill="#FBBC04"/><path d="M4.9 2.7l7.8 7.8 2.9-2.7L6.2 2.3c-.5-.3-1-.1-1.3.4z" fill="#34A853"/><path d="M4.9 21.3l9.5-5.5-2.9-2.7-7.9 7.8c.3.5.8.7 1.3.4z" fill="#4285F4"/></svg>
-              <span><small>Disponible sur</small><b>Google Play</b></span>
-            </a>
-          </div>
-          <div class="app-rating">
-            <span class="stars" aria-hidden="true">★★★★★</span>
-            <span>4,9/5 — <b>12&nbsp;400</b> conducteurs conquis</span>
-          </div>
-        </div>
-
-        <div class="app-visual reveal" aria-hidden="true">
+        <div class="app-right reveal">
           <div class="phone">
-            <div class="phone-notch"></div>
-            <div class="phone-screen">
-              <div class="ps-top">
-                <span class="ps-hi">Bonjour Camille 👋</span>
-                <span class="ps-loc">◈ Le Marais, Paris 4e</span>
-              </div>
+            <div class="phone-scr">
+              <span class="ps-hi">Bonjour Camille 👋</span>
+              <span class="ps-loc">📍 Le Marais, Paris 4e</span>
               <div class="ps-card">
-                <div class="ps-car">
-                  <svg viewBox="0 0 200 90"><path d="M22 68c-4 0-7-3-7-7v-5c0-4 3-8 8-9l14-2 12-13c3-4 8-6 13-6h30c5 0 10 2 13 7l7 11 16 3c5 1 9 5 9 10v3c0 4-3 8-8 8z" class="s-red"/><path d="M22 68c-4 0-7-3-7-7v-5c0-4 3-8 8-9l14-2 12-13c3-4 8-6 13-6h30c5 0 10 2 13 7l7 11 16 3c5 1 9 5 9 10v3c0 4-3 8-8 8z" fill="none" stroke="#241C19" stroke-width="2.4"/><path d="M58 34c-3 0-6 1-8 4l-8 12h28V34zM78 34v16h26l-6-11c-2-3-6-5-9-5z" fill="#DCEAF0" stroke="#241C19" stroke-width="2.4"/><circle cx="56" cy="66" r="13" class="s-ink"/><circle cx="56" cy="66" r="5" fill="#EFE7DF"/><circle cx="126" cy="66" r="13" class="s-ink"/><circle cx="126" cy="66" r="5" fill="#EFE7DF"/></svg>
+                <div class="ps-media" style="--bg:var(--pink)">
+                  <svg viewBox="0 0 200 90"><path d="M22 68c-4 0-7-3-7-7v-5c0-4 3-8 8-9l14-2 12-13c3-4 8-6 13-6h30c5 0 10 2 13 7l7 11 16 3c5 1 9 5 9 10v3c0 4-3 8-8 8z" fill="#E4002B"/><path d="M22 68c-4 0-7-3-7-7v-5c0-4 3-8 8-9l14-2 12-13c3-4 8-6 13-6h30c5 0 10 2 13 7l7 11 16 3c5 1 9 5 9 10v3c0 4-3 8-8 8z" fill="none" stroke="#0B0A0A" stroke-width="3"/><path d="M58 34c-3 0-6 1-8 4l-8 12h28V34zM78 34v16h26l-6-11c-2-3-6-5-9-5z" fill="#fff" stroke="#0B0A0A" stroke-width="3"/><circle cx="56" cy="66" r="13" fill="#0B0A0A"/><circle cx="56" cy="66" r="5" fill="#fff"/><circle cx="126" cy="66" r="13" fill="#0B0A0A"/><circle cx="126" cy="66" r="5" fill="#fff"/></svg>
                 </div>
-                <div class="ps-info">
-                  <b>La Pigalle</b>
-                  <span>Citadine · Électrique · 4 places</span>
-                  <div class="ps-row"><span class="ps-price">39€ <i>/jour</i></span><span class="ps-badge">Dispo. maintenant</span></div>
-                </div>
-                <button class="ps-btn">Réserver — livrée en 90 min</button>
-              </div>
-              <div class="ps-mini">
-                <div class="ps-chip">⚡ Recharge incluse</div>
-                <div class="ps-chip">🅿 Stationnement offert</div>
+                <b>La Pigalle</b>
+                <span class="ps-meta">Citadine · Électrique · 4 places</span>
+                <div class="ps-row"><span class="ps-price">39€ <i>/jour</i></span><span class="ps-tag">Dispo.</span></div>
+                <span class="ps-btn">Réserver — livrée en 90 min</span>
               </div>
             </div>
           </div>
-          <div class="app-blur"></div>
         </div>
       </div>
     </section>
 
-    <!-- ░░░░░░░░░░ TARIFS / OFFRES ░░░░░░░░░░ -->
-    <section class="section pricing" id="tarifs">
+    <!-- ══════════ TARIFS ══════════ -->
+    <section class="section" id="tarifs">
       <div class="wrap">
-        <div class="section-head center">
-          <div>
-            <span class="kicker">Des prix qui ne cachent rien</span>
-            <h2 class="section-title">Trois façons de rouler</h2>
-            <p class="section-lead center-lead">Assurance, assistance et kilomètres de base toujours inclus. Pas de frais surprise au moment de rendre les clés — promis.</p>
-          </div>
+        <div class="sec-head center reveal">
+          <h2 class="sec-title">Trois façons de rouler</h2>
+          <p class="sec-sub">Assurance, assistance et kilomètres de base toujours inclus. <span class="hand hand-peri">promis, pas de frais surprise&nbsp;!</span></p>
         </div>
-
         <div class="plans">
           <article class="plan reveal">
-            <header class="plan-head">
-              <h3>À la carte</h3>
-              <p>Un besoin ponctuel, zéro engagement.</p>
-            </header>
-            <div class="plan-price"><span class="pp-from">dès</span><span class="pp-num">39€</span><span class="pp-per">/ jour</span></div>
+            <h3 class="plan-name">À la carte</h3>
+            <p class="plan-desc">Un besoin ponctuel, zéro engagement.</p>
+            <div class="plan-price"><b>39€</b><span>/jour</span></div>
             <ul class="plan-feats">
               <li>La voiture de votre choix, à la journée</li>
               <li>200 km inclus par jour</li>
@@ -845,30 +343,23 @@
             </ul>
             <a href="#flotte" class="btn btn-outline btn-block">Choisir une voiture</a>
           </article>
-
-          <article class="plan plan-featured reveal">
+          <article class="plan plan-hot reveal">
             <span class="plan-flag">Le plus choisi</span>
-            <header class="plan-head">
-              <h3>Abonnement Joy</h3>
-              <p>La liberté d'une voiture, sans les tracas d'en posséder une.</p>
-            </header>
-            <div class="plan-price"><span class="pp-num">199€</span><span class="pp-per">/ mois</span></div>
+            <h3 class="plan-name">Abonnement Joy</h3>
+            <p class="plan-desc">La liberté d'une voiture, sans les tracas d'en posséder une.</p>
+            <div class="plan-price"><b>199€</b><span>/mois</span></div>
             <ul class="plan-feats">
               <li><b>8 jours de conduite</b> inclus chaque mois</li>
               <li>Changez de modèle quand vous voulez</li>
               <li><b>0€ de caution</b>, résiliable en un clic</li>
               <li>Kilomètres offerts tous les week-ends</li>
-              <li>Livraison &amp; reprise prioritaires</li>
             </ul>
             <a href="#flotte" class="btn btn-red btn-block">Démarrer mon abonnement</a>
           </article>
-
           <article class="plan reveal">
-            <header class="plan-head">
-              <h3>Prestige &amp; sur-mesure</h3>
-              <p>Cabriolets, sportives, grandes occasions.</p>
-            </header>
-            <div class="plan-price"><span class="pp-from">sur</span><span class="pp-num">devis</span><span class="pp-per"></span></div>
+            <h3 class="plan-name">Prestige</h3>
+            <p class="plan-desc">Cabriolets, sportives, grandes occasions.</p>
+            <div class="plan-price"><b>sur</b><span>devis</span></div>
             <ul class="plan-feats">
               <li>Le haut de la flotte, cabriolets &amp; bolides</li>
               <li>Chauffeur en option pour vos soirées</li>
@@ -878,353 +369,191 @@
             <a href="#faq" class="btn btn-outline btn-block">Demander un devis</a>
           </article>
         </div>
-
-        <div class="promo-callout reveal">
-          <div class="promo-left">
-            <span class="promo-tag">Offre de bienvenue</span>
-            <h3>Votre première virée à moitié prix.</h3>
-            <p>Entrez le code <span class="code">BONJOUR50</span> à la réservation et profitez de <b>−50 %</b> sur votre première location. Parce que Paris, ça se savoure dès le premier tour de roue.</p>
-          </div>
-          <a href="#flotte" class="btn btn-ink btn-lg">J'en profite <span class="btn-arrow" aria-hidden="true">→</span></a>
+        <div class="promo reveal">
+          <p>Votre première virée à <b>−50 %</b> avec le code <span class="code">BONJOUR50</span></p>
+          <a href="#flotte" class="btn btn-black">J'en profite</a>
         </div>
       </div>
     </section>
 
-    <!-- ░░░░░░░░░░ CADEAU ░░░░░░░░░░ -->
-    <section class="section gift">
-      <div class="wrap gift-inner">
-        <div class="gift-art reveal" aria-hidden="true">
-          <div class="gift-card-3d">
-            <div class="gc-shine"></div>
-            <div class="gc-top">
-              <span class="gc-brand">Loc<span>'n'</span>Joy</span>
-              <span class="gc-chip"></span>
-            </div>
+    <!-- ══════════ CADEAU ══════════ -->
+    <section class="section band-peri" id="cadeau">
+      <div class="wrap gift-grid">
+        <div class="gift-left reveal">
+          <div class="giftcard">
+            <span class="gc-brand">Loc<span>'n'</span>Joy</span>
             <span class="gc-label">Carte cadeau</span>
             <span class="gc-amount">150 €</span>
-            <div class="gc-bottom">
-              <span>La route en cadeau</span>
-              <span class="gc-num">•• •• •• 24</span>
-            </div>
+            <span class="gc-foot">La route en cadeau</span>
           </div>
+          <span class="hand hand-red gift-hand">joyeux anniversaire&nbsp;!</span>
         </div>
-        <div class="gift-copy reveal">
-          <span class="kicker">Le cadeau qui roule</span>
-          <h2 class="section-title">Offrez un bol d'air,<br>pas un objet de plus.</h2>
-          <p class="gift-lead">Pas besoin de deviner ses goûts : vous offrez la liberté, il choisit sa voiture. Une escapade en cabriolet, un week-end en famille ou juste l'envie de filer voir la mer — la carte cadeau Loc'n'Joy s'envoie en un instant et se dépense à sa guise.</p>
-          <ul class="gift-points">
-            <li><span class="gp-ic">✓</span> Envoi immédiat par e-mail, joliment présenté</li>
-            <li><span class="gp-ic">✓</span> Valable 12 mois sur toute la flotte</li>
-            <li><span class="gp-ic">✓</span> Montant libre, de 50 € à l'escapade complète</li>
+        <div class="gift-right reveal">
+          <h2 class="sec-title">Offrez un bol d'air,<br>pas un objet de plus.</h2>
+          <p class="sec-sub">Pas besoin de deviner ses goûts : vous offrez la liberté, il choisit sa voiture. Une escapade en cabriolet, un week-end en famille, ou juste l'envie de filer voir la mer.</p>
+          <ul class="gift-list">
+            <li>Envoi immédiat par e-mail, joliment présenté</li>
+            <li>Valable 12 mois sur toute la flotte</li>
+            <li>Montant libre, de 50 € à l'escapade complète</li>
           </ul>
-          <a href="#" class="btn btn-red btn-lg">Offrir une virée <span class="btn-arrow" aria-hidden="true">→</span></a>
+          <a href="#" class="btn btn-red btn-big">Offrir une virée</a>
         </div>
       </div>
     </section>
 
-    <!-- ░░░░░░░░░░ PRESSE ░░░░░░░░░░ -->
+    <!-- ══════════ PRESSE ══════════ -->
     <section class="press">
       <div class="wrap">
-        <p class="press-label">Ils parlent de nous</p>
-        <div class="press-logos">
-          <span class="press-logo">La&nbsp;Gazette&nbsp;de&nbsp;Paris</span>
-          <span class="press-logo press-serif">Auto Passion</span>
-          <span class="press-logo">SORTIR À PARIS</span>
-          <span class="press-logo press-serif">Le Périph' Mag</span>
-          <span class="press-logo">ROULEZ MALIN</span>
+        <p class="press-lbl">Ils parlent de nous</p>
+        <div class="press-row">
+          <span>La&nbsp;Gazette&nbsp;de&nbsp;Paris</span>
+          <span>AUTO PASSION</span>
+          <span>Sortir à Paris</span>
+          <span>Le Périph' Mag</span>
+          <span>ROULEZ MALIN</span>
         </div>
       </div>
     </section>
 
-    <!-- ░░░░░░░░░░ TÉMOIGNAGES ░░░░░░░░░░ -->
-    <section class="section testis">
+    <!-- ══════════ VOITURE DE L'ANNÉE ══════════ -->
+    <section class="section">
       <div class="wrap">
-        <div class="section-head center">
-          <div>
-            <span class="kicker">Ils ont pris le volant</span>
-            <h2 class="section-title">La parole aux conducteurs</h2>
-            <p class="section-lead center-lead">Des milliers de virées parisiennes — et quelques mots qui font plaisir.</p>
-          </div>
+        <div class="sec-head reveal">
+          <h2 class="sec-title">La voiture de l'année <span class="heart">♥</span></h2>
+          <p class="sec-sub">Chaque hiver, nos conducteurs votent pour leur chouchoute. Voici le palmarès.</p>
         </div>
-
-        <div class="testi reveal" id="testi">
-          <div class="testi-viewport">
-            <div class="testi-track" id="testiTrack">
-              <div class="testi-slide">
-                <article class="testi-card">
-                  <div class="testi-stars" aria-hidden="true">★★★★★</div>
-                  <blockquote class="testi-quote">« J'ai réservé à 19h, la voiture était devant chez moi à 20h30. On est partis à Deauville dans la foulée, sans même faire le plein. »</blockquote>
-                  <div class="testi-author"><span class="ta-avatar" style="--av:#E4002B">CR</span><span class="ta-meta"><b>Camille R.</b><span>Paris 11e · membre depuis 2024</span></span></div>
-                </article>
-              </div>
-              <div class="testi-slide">
-                <article class="testi-card">
-                  <div class="testi-stars" aria-hidden="true">★★★★★</div>
-                  <blockquote class="testi-quote">« Le cabriolet pour l'anniversaire de ma mère : elle a cru qu'on avait gagné au loto. Service impeccable, du premier au dernier virage. »</blockquote>
-                  <div class="testi-author"><span class="ta-avatar" style="--av:#B8123B">KB</span><span class="ta-meta"><b>Karim B.</b><span>Paris 9e · membre depuis 2023</span></span></div>
-                </article>
-              </div>
-              <div class="testi-slide">
-                <article class="testi-card">
-                  <div class="testi-stars" aria-hidden="true">★★★★★</div>
-                  <blockquote class="testi-quote">« Zéro paperasse, zéro stress. L'appli fait tout — elle m'a même rappelé dans quelle rue je m'étais garée. »</blockquote>
-                  <div class="testi-author"><span class="ta-avatar" style="--av:#E4522B">ÉM</span><span class="ta-meta"><b>Élodie M.</b><span>Vincennes · membre depuis 2025</span></span></div>
-                </article>
-              </div>
-              <div class="testi-slide">
-                <article class="testi-card">
-                  <div class="testi-stars" aria-hidden="true">★★★★★</div>
-                  <blockquote class="testi-quote">« L'abonnement Joy a remplacé ma voiture. Moins cher, jamais de contrôle technique, et je change de modèle selon l'envie du week-end. »</blockquote>
-                  <div class="testi-author"><span class="ta-avatar" style="--av:#9A1030">TL</span><span class="ta-meta"><b>Thomas L.</b><span>Paris 15e · membre depuis 2023</span></span></div>
-                </article>
-              </div>
-              <div class="testi-slide">
-                <article class="testi-card">
-                  <div class="testi-stars" aria-hidden="true">★★★★★</div>
-                  <blockquote class="testi-quote">« Livrée propre, pleine, à l'heure. Rendue en deux clics au pied de l'immeuble. Honnêtement, je ne loue plus ailleurs. »</blockquote>
-                  <div class="testi-author"><span class="ta-avatar" style="--av:#D23A2B">SD</span><span class="ta-meta"><b>Sofia D.</b><span>Montreuil · membre depuis 2024</span></span></div>
-                </article>
-              </div>
-            </div>
-          </div>
-          <div class="testi-controls">
-            <button class="testi-arrow" data-dir="-1" aria-label="Témoignage précédent">←</button>
-            <div class="testi-dots" id="testiDots" role="tablist" aria-label="Choisir un témoignage"></div>
-            <button class="testi-arrow" data-dir="1" aria-label="Témoignage suivant">→</button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ░░░░░░░░░░ COUPS DE CŒUR / PALMARÈS ░░░░░░░░░░ -->
-    <section class="section winners">
-      <div class="wrap">
-        <div class="section-head">
-          <div>
-            <span class="kicker"><span class="heart">♥</span> Élues par la communauté</span>
-            <h2 class="section-title">La voiture de l'année</h2>
-          </div>
-          <p class="section-lead">Chaque hiver, nos conducteurs votent pour leur chouchoute. Voici le palmarès — et le prochain scrutin ouvre bientôt.</p>
-        </div>
-
-        <div class="winners-grid">
-          <article class="winner winner-next reveal">
+        <div class="winners">
+          <article class="winner win-next reveal">
             <span class="win-year">2026</span>
-            <div class="win-badge">Vote à venir</div>
-            <p class="win-title">À vous de jouer</p>
-            <p class="win-meta">Les urnes ouvrent en décembre. Votre chouchoute est peut-être déjà dans la flotte.</p>
-            <a href="#flotte" class="link-more">Découvrir les prétendantes <span aria-hidden="true">→</span></a>
+            <span class="win-flag">Vote à venir</span>
+            <h3>À vous de jouer</h3>
+            <p>Les urnes ouvrent en décembre. Votre chouchoute est peut-être déjà dans la flotte.</p>
+            <a href="#flotte" class="more more-w">Voir les prétendantes →</a>
           </article>
-
           <article class="winner reveal">
-            <span class="win-year">2025</span>
-            <div class="win-illu wash-2">
-              <svg viewBox="0 0 220 110" class="car-illu"><path d="M26 82c-5 0-8-3-8-8v-6c0-5 3-9 8-10l22-6 18-6c4-2 8-2 11-2h52c7 0 13 3 16 9l6 10 15 3c6 1 10 5 10 11v3c0 5-3 8-8 8z" class="s-red"/><path d="M26 82c-5 0-8-3-8-8v-6c0-5 3-9 8-10l22-6 18-6c4-2 8-2 11-2h52c7 0 13 3 16 9l6 10 15 3c6 1 10 5 10 11v3c0 5-3 8-8 8z" fill="none" stroke="#241C19" stroke-width="2.8"/><path d="M70 52l10-6c3-2 7-3 10-3h40c4 0 6 2 3 4l-12 5z" fill="#8A0A22"/><path d="M70 52h53" stroke="#241C19" stroke-width="2.6"/><circle cx="62" cy="80" r="15" class="s-ink"/><circle cx="62" cy="80" r="6.5" fill="#EFE7DF"/><circle cx="150" cy="80" r="15" class="s-ink"/><circle cx="150" cy="80" r="6.5" fill="#EFE7DF"/></svg>
+            <div class="win-media" style="--bg:var(--peach)">
+              <svg viewBox="0 0 220 110" class="card-car"><path d="M26 82c-5 0-8-3-8-8v-6c0-5 3-9 8-10l22-6 18-6c4-2 8-2 11-2h52c7 0 13 3 16 9l6 10 15 3c6 1 10 5 10 11v3c0 5-3 8-8 8z" fill="#E4002B"/><path d="M26 82c-5 0-8-3-8-8v-6c0-5 3-9 8-10l22-6 18-6c4-2 8-2 11-2h52c7 0 13 3 16 9l6 10 15 3c6 1 10 5 10 11v3c0 5-3 8-8 8z" fill="none" stroke="#0B0A0A" stroke-width="3.4"/><path d="M70 52l10-6c3-2 7-3 10-3h40c4 0 6 2 3 4l-12 5z" fill="#B7001F"/><path d="M70 52h53" stroke="#0B0A0A" stroke-width="3.4"/><circle cx="62" cy="80" r="15" fill="#0B0A0A"/><circle cx="62" cy="80" r="6.5" fill="#fff"/><circle cx="150" cy="80" r="15" fill="#0B0A0A"/><circle cx="150" cy="80" r="6.5" fill="#fff"/></svg>
             </div>
-            <p class="win-title">Le Cabriolet Rivoli</p>
-            <p class="win-meta">Grande gagnante 2025 — « la voiture des dimanches heureux », selon vous.</p>
+            <span class="win-year small">2025</span>
+            <h3>Le Cabriolet Rivoli</h3>
+            <p>Grande gagnante — « la voiture des dimanches heureux », selon vous.</p>
           </article>
-
           <article class="winner reveal">
-            <span class="win-year">2024</span>
-            <div class="win-illu wash-3">
-              <svg viewBox="0 0 220 110" class="car-illu"><path d="M22 80c-4 0-7-3-7-7V58c0-5 4-10 9-11l13-2 11-16c4-6 10-9 16-9h37c7 0 13 3 16 9l11 16 15 3c6 1 10 6 10 12v9c0 4-3 7-7 7z" class="s-red"/><path d="M22 80c-4 0-7-3-7-7V58c0-5 4-10 9-11l13-2 11-16c4-6 10-9 16-9h37c7 0 13 3 16 9l11 16 15 3c6 1 10 6 10 12v9c0 4-3 7-7 7z" fill="none" stroke="#241C19" stroke-width="2.8"/><path d="M62 33c-3 0-6 1-8 5L44 54h33V33zM88 33v21h36l-11-16c-2-3-6-5-9-5z" fill="#DCEAF0" stroke="#241C19" stroke-width="2.6"/><line x1="83" y1="33" x2="83" y2="54" stroke="#241C19" stroke-width="2.6"/><circle cx="61" cy="80" r="17" class="s-ink"/><circle cx="61" cy="80" r="8" fill="#EFE7DF"/><circle cx="150" cy="80" r="17" class="s-ink"/><circle cx="150" cy="80" r="8" fill="#EFE7DF"/></svg>
+            <div class="win-media" style="--bg:var(--blue)">
+              <svg viewBox="0 0 220 110" class="card-car"><path d="M22 80c-4 0-7-3-7-7V58c0-5 4-10 9-11l13-2 11-16c4-6 10-9 16-9h37c7 0 13 3 16 9l11 16 15 3c6 1 10 6 10 12v9c0 4-3 7-7 7z" fill="#E4002B"/><path d="M22 80c-4 0-7-3-7-7V58c0-5 4-10 9-11l13-2 11-16c4-6 10-9 16-9h37c7 0 13 3 16 9l11 16 15 3c6 1 10 6 10 12v9c0 4-3 7-7 7z" fill="none" stroke="#0B0A0A" stroke-width="3.4"/><path d="M62 33c-3 0-6 1-8 5L44 54h33V33zM88 33v21h36l-11-16c-2-3-6-5-9-5z" fill="#fff" stroke="#0B0A0A" stroke-width="3.4"/><line x1="83" y1="33" x2="83" y2="54" stroke="#0B0A0A" stroke-width="3.4"/><circle cx="61" cy="80" r="17" fill="#0B0A0A"/><circle cx="61" cy="80" r="8" fill="#fff"/><circle cx="150" cy="80" r="17" fill="#0B0A0A"/><circle cx="150" cy="80" r="8" fill="#fff"/></svg>
             </div>
-            <p class="win-title">La Bastille</p>
-            <p class="win-meta">Sacrée en 2024 — l'increvable compagne des départs en week-end.</p>
+            <span class="win-year small">2024</span>
+            <h3>La Bastille</h3>
+            <p>Sacrée en 2024 — l'increvable compagne des départs en week-end.</p>
           </article>
         </div>
       </div>
     </section>
 
-    <!-- ░░░░░░░░░░ EXCLUSIVITÉ ░░░░░░░░░░ -->
-    <section class="section exclu">
-      <div class="wrap exclu-inner">
-        <div class="exclu-media reveal">
-          <span class="exclu-flag">Exclusivité Loc'n'Joy</span>
-          <svg viewBox="0 0 360 190" class="car-illu vintage" role="img" aria-label="La Belle Époque, voiture de collection">
-            <ellipse cx="180" cy="162" rx="150" ry="14" fill="#241C19" opacity=".12"/>
-            <!-- corps arrondi façon ancienne -->
-            <path d="M40 128c-8 0-14-6-14-14 0-10 6-16 16-17 4-14 8-30 12-40 3-8 10-13 19-13h58c9 0 17 5 21 13l10 22c26 2 46 6 60 12 12 5 18 12 18 22 0 9-6 15-15 15z" class="s-red"/>
-            <path d="M40 128c-8 0-14-6-14-14 0-10 6-16 16-17 4-14 8-30 12-40 3-8 10-13 19-13h58c9 0 17 5 21 13l10 22c26 2 46 6 60 12 12 5 18 12 18 22 0 9-6 15-15 15z" fill="none" stroke="#241C19" stroke-width="4" stroke-linejoin="round"/>
-            <!-- toit bombé -->
-            <path d="M70 60c2-8 8-13 18-13h50c8 0 15 4 19 11l6 12H66z" fill="#8A0A22" stroke="#241C19" stroke-width="4" stroke-linejoin="round"/>
-            <!-- vitres rondes -->
-            <path d="M78 58c1-4 4-6 9-6h20v18H74zM116 52h18c4 0 8 2 10 6l4 12h-32z" fill="#DCEAF0" stroke="#241C19" stroke-width="3.4"/>
-            <line x1="110" y1="52" x2="110" y2="70" stroke="#241C19" stroke-width="3.4"/>
-            <!-- marche-pied -->
-            <rect x="150" y="118" width="120" height="10" rx="4" fill="#241C19"/>
-            <!-- phare rond chromé -->
-            <circle cx="300" cy="96" r="13" fill="#FFE7C2" stroke="#241C19" stroke-width="4"/>
-            <circle cx="300" cy="96" r="5" fill="#fff"/>
-            <!-- calandre -->
-            <path d="M312 100v18" stroke="#241C19" stroke-width="4" stroke-linecap="round"/>
-            <!-- roues à rayons -->
-            <g><circle cx="92" cy="130" r="30" class="s-ink"/><circle cx="92" cy="130" r="30" fill="none" stroke="#241C19" stroke-width="4"/><circle cx="92" cy="130" r="15" fill="#EFE7DF"/><g stroke="#241C19" stroke-width="1.6"><path d="M92 100v60M62 130h60M71 109l42 42M71 151l42-42"/></g><circle cx="92" cy="130" r="4" class="s-red"/></g>
-            <g><circle cx="234" cy="130" r="30" class="s-ink"/><circle cx="234" cy="130" r="30" fill="none" stroke="#241C19" stroke-width="4"/><circle cx="234" cy="130" r="15" fill="#EFE7DF"/><g stroke="#241C19" stroke-width="1.6"><path d="M234 100v60M204 130h60M213 109l42 42M213 151l42-42"/></g><circle cx="234" cy="130" r="4" class="s-red"/></g>
-            <!-- fanion -->
-            <g transform="translate(150 30)"><rect x="-1" y="0" width="2.5" height="20" fill="#241C19"/><path d="M1.5 0h16l-4 5 4 5h-16z" class="s-red"/></g>
+    <!-- ══════════ EXCLUSIVITÉ ══════════ -->
+    <section class="section">
+      <div class="wrap exclu">
+        <div class="exclu-media reveal" style="--bg:var(--rose)">
+          <span class="card-badge">Exclusivité Loc'n'Joy</span>
+          <svg viewBox="0 0 360 190" class="card-car" role="img" aria-label="La Belle Époque, voiture de collection">
+            <ellipse cx="180" cy="162" rx="150" ry="14" fill="#0B0A0A" opacity=".1"/>
+            <path d="M40 128c-8 0-14-6-14-14 0-10 6-16 16-17 4-14 8-30 12-40 3-8 10-13 19-13h58c9 0 17 5 21 13l10 22c26 2 46 6 60 12 12 5 18 12 18 22 0 9-6 15-15 15z" fill="#E4002B"/>
+            <path d="M40 128c-8 0-14-6-14-14 0-10 6-16 16-17 4-14 8-30 12-40 3-8 10-13 19-13h58c9 0 17 5 21 13l10 22c26 2 46 6 60 12 12 5 18 12 18 22 0 9-6 15-15 15z" fill="none" stroke="#0B0A0A" stroke-width="4.5" stroke-linejoin="round"/>
+            <path d="M70 60c2-8 8-13 18-13h50c8 0 15 4 19 11l6 12H66z" fill="#B7001F" stroke="#0B0A0A" stroke-width="4.5" stroke-linejoin="round"/>
+            <path d="M78 58c1-4 4-6 9-6h20v18H74zM116 52h18c4 0 8 2 10 6l4 12h-32z" fill="#fff" stroke="#0B0A0A" stroke-width="3.6"/>
+            <line x1="110" y1="52" x2="110" y2="70" stroke="#0B0A0A" stroke-width="3.6"/>
+            <rect x="150" y="118" width="120" height="10" rx="4" fill="#0B0A0A"/>
+            <circle cx="300" cy="96" r="13" fill="#FFE7A6" stroke="#0B0A0A" stroke-width="4"/><circle cx="300" cy="96" r="5" fill="#fff"/>
+            <g><circle cx="92" cy="130" r="30" fill="#0B0A0A"/><circle cx="92" cy="130" r="15" fill="#fff"/><g stroke="#0B0A0A" stroke-width="1.8"><path d="M92 100v60M62 130h60M71 109l42 42M71 151l42-42"/></g><circle cx="92" cy="130" r="4" fill="#E4002B"/></g>
+            <g><circle cx="234" cy="130" r="30" fill="#0B0A0A"/><circle cx="234" cy="130" r="15" fill="#fff"/><g stroke="#0B0A0A" stroke-width="1.8"><path d="M234 100v60M204 130h60M213 109l42 42M213 151l42-42"/></g><circle cx="234" cy="130" r="4" fill="#E4002B"/></g>
           </svg>
         </div>
-
         <div class="exclu-copy reveal">
-          <div class="exclu-tags"><span class="tag tag-red">Édition limitée</span><span class="tag">Collection</span></div>
-          <h2 class="section-title">La Belle Époque</h2>
-          <div class="exclu-rating">
-            <span class="stars" aria-hidden="true">★★★★★</span>
-            <b>4,9</b><span>/ 5 — l'introuvable préférée</span>
-          </div>
-          <p class="exclu-lead">Une pièce de collection entièrement restaurée dans nos ateliers, rien que pour vos plus belles balades. Le cuir patiné, le grondement d'époque, les regards sur les Champs — et une seule adresse pour la conduire. Non, vous ne la trouverez nulle part ailleurs.</p>
-          <blockquote class="exclu-quote">« On a roulé jusqu'à Giverny, capote baissée. Trois passants nous ont demandé si on se mariait. »<cite>— Léa &amp; Sacha, membres depuis 2024</cite></blockquote>
-          <div class="exclu-cta">
-            <a href="#flotte" class="btn btn-red btn-lg">Ajouter à ma réservation</a>
-            <span class="exclu-note">Disponible sur créneaux — réservation conseillée</span>
-          </div>
+          <div class="pills"><span class="pill pill-rose">Édition limitée</span><span class="pill">Collection</span></div>
+          <h2 class="sec-title">La Belle Époque</h2>
+          <p class="exclu-rate">★★★★★ <b>4,9</b> — l'introuvable préférée</p>
+          <p class="sec-sub">Une pièce de collection entièrement restaurée dans nos ateliers, rien que pour vos plus belles balades. Le cuir patiné, le grondement d'époque, les regards sur les Champs. <span class="hand hand-red">introuvable ailleurs&nbsp;!</span></p>
+          <a href="#flotte" class="btn btn-red btn-big">Ajouter à ma réservation</a>
         </div>
       </div>
     </section>
 
-    <!-- ░░░░░░░░░░ FAQ ░░░░░░░░░░ -->
-    <section class="section faq" id="faq">
-      <div class="wrap faq-inner">
-        <div class="faq-head">
-          <span class="kicker">On vous dit tout</span>
-          <h2 class="section-title">Questions fréquentes</h2>
-          <p class="section-lead">Une interrogation qui n'est pas là ? Notre équipe répond en moins de 10 minutes, 7j/7.</p>
+    <!-- ══════════ FAQ ══════════ -->
+    <section class="section band-pink" id="faq">
+      <div class="wrap faq-wrap">
+        <div class="faq-head reveal">
+          <h2 class="sec-title">Des questions ?</h2>
+          <p class="sec-sub">Notre équipe répond en moins de 10 minutes, 7j/7.</p>
           <a href="#" class="btn btn-outline">Voir toutes les questions</a>
         </div>
-
-        <div class="faq-list">
+        <div class="faq-list reveal">
           <details class="faq-item" open>
-            <summary><span>Combien coûte une location&nbsp;?</span><span class="faq-plus" aria-hidden="true"></span></summary>
-            <div class="faq-answer"><p>À partir de <b>39 € par jour</b>, assurance tous risques et assistance 24/7 comprises, avec 200 km inclus. L'abonnement Joy revient à 199 €/mois pour 8 jours de conduite et zéro caution. Et avec le code <span class="code">BONJOUR50</span>, votre première location est à moitié prix.</p></div>
+            <summary>Combien coûte une location ?<span class="faq-plus" aria-hidden="true"></span></summary>
+            <div class="faq-a"><p>À partir de <b>39 € par jour</b>, assurance tous risques et assistance 24/7 comprises, avec 200 km inclus. L'abonnement Joy revient à 199 €/mois pour 8 jours de conduite et zéro caution. Avec le code <span class="code">BONJOUR50</span>, votre première location est à moitié prix.</p></div>
           </details>
-
           <details class="faq-item">
-            <summary><span>Où livrez-vous les voitures&nbsp;?</span><span class="faq-plus" aria-hidden="true"></span></summary>
-            <div class="faq-answer"><p>Partout dans <b>Paris intra-muros</b> et en petite couronne (92, 93, 94), au pied de chez vous en 90 minutes. Sur le reste de l'Île-de-France et dans les gares &amp; aéroports parisiens, la livraison se planifie à l'avance depuis l'appli. Une adresse particulière&nbsp;? Écrivez-nous, on s'arrange presque toujours.</p></div>
+            <summary>Où livrez-vous les voitures ?<span class="faq-plus" aria-hidden="true"></span></summary>
+            <div class="faq-a"><p>Partout dans <b>Paris intra-muros</b> et en petite couronne, au pied de chez vous en 90 minutes. Sur le reste de l'Île-de-France et dans les gares &amp; aéroports, la livraison se planifie depuis l'appli.</p></div>
           </details>
-
           <details class="faq-item">
-            <summary><span>Comment réserver&nbsp;?</span><span class="faq-plus" aria-hidden="true"></span></summary>
-            <div class="faq-answer"><p>Tout se passe sur l'<b>appli Loc'n'Joy</b> ou sur ce site, en deux minutes&nbsp;: choisissez votre voiture, scannez votre permis une bonne fois pour toutes, réglez, et on vous livre. Aucun comptoir, aucune file d'attente, aucune petite ligne.</p></div>
+            <summary>Comment réserver ?<span class="faq-plus" aria-hidden="true"></span></summary>
+            <div class="faq-a"><p>Tout se passe sur l'<b>appli Loc'n'Joy</b> ou sur ce site, en deux minutes : choisissez votre voiture, scannez votre permis une bonne fois pour toutes, réglez, et on vous livre. Aucun comptoir, aucune file d'attente.</p></div>
           </details>
-
           <details class="faq-item">
-            <summary><span>Faut-il verser une caution&nbsp;?</span><span class="faq-plus" aria-hidden="true"></span></summary>
-            <div class="faq-answer"><p>Sur l'<b>abonnement Joy, aucune caution</b>. En location à la carte, une empreinte bancaire réduite est demandée puis libérée dès le retour du véhicule. Tout est transparent, affiché avant paiement.</p></div>
+            <summary>Faut-il verser une caution ?<span class="faq-plus" aria-hidden="true"></span></summary>
+            <div class="faq-a"><p>Sur l'<b>abonnement Joy, aucune caution</b>. En location à la carte, une empreinte bancaire réduite est demandée puis libérée dès le retour du véhicule. Tout est affiché avant paiement.</p></div>
           </details>
-
-          <details class="faq-item">
-            <summary><span>Puis-je annuler ou prolonger&nbsp;?</span><span class="faq-plus" aria-hidden="true"></span></summary>
-            <div class="faq-answer"><p>Annulation <b>gratuite jusqu'à 24 h</b> avant la livraison. Envie de garder la voiture une journée de plus&nbsp;? Prolongez d'un simple geste dans l'appli, sous réserve de disponibilité — et souvent, c'est oui.</p></div>
-          </details>
-        </div>
-      </div>
-    </section>
-
-    <!-- ░░░░░░░░░░ APPEL FINAL ░░░░░░░░░░ -->
-    <section class="finalcta">
-      <div class="wrap finalcta-inner reveal">
-        <div class="fc-route" aria-hidden="true">
-          <svg viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M0 90c200-60 420-60 620-30s380 40 580-20" fill="none" stroke="#fff" stroke-width="3" stroke-dasharray="14 18" opacity=".5"/></svg>
-        </div>
-        <h2 class="fc-title">Paris n'attend que vous.<br>Et la voiture aussi.</h2>
-        <p class="fc-sub">Votre prochaine échappée commence par un tour de clé. Prenez le volant dès aujourd'hui.</p>
-        <div class="fc-btns">
-          <a href="#flotte" class="btn btn-red btn-lg">Réserver ma voiture</a>
-          <a href="#tarifs" class="btn btn-ghost-w btn-lg">Découvrir l'abonnement</a>
         </div>
       </div>
     </section>
 
   </main>
 
-  <!-- ░░░░░░░░░░ PIED DE PAGE ░░░░░░░░░░ -->
-  <footer class="site-footer">
-    <div class="wrap footer-top">
-      <div class="footer-brand">
-        <a href="#top" class="brand brand-footer">
-          <span class="brand-badge" aria-hidden="true">
-            <svg viewBox="0 0 48 48" role="img"><circle cx="24" cy="24" r="23" class="s-red"/><path d="M11 30c0-1 .7-2 1.9-2.2l2.2-.4 2.6-4.3c.7-1.2 2-1.9 3.4-1.9h6.3c1.2 0 2.3.5 3.1 1.4l3 3.3 3.1.7c1.2.3 2 1.3 2 2.5v1c0 .8-.6 1.4-1.4 1.4h-2.1a3.3 3.3 0 0 1-6.5 0h-6.7a3.3 3.3 0 0 1-6.5 0h-1.5c-.8 0-1.4-.6-1.4-1.4z" fill="#fff"/><circle cx="19.4" cy="31.2" r="2.1" class="s-ink"/><circle cx="31.9" cy="31.2" r="2.1" class="s-ink"/></svg>
-          </span>
-          <span class="brand-word">Loc<span class="brand-tick">'n'</span>Joy</span>
-        </a>
-        <p class="footer-tag">La location de voiture qui a le goût de Paris. Prenez la route, on vous laisse la joie.</p>
-        <div class="store-btns small">
-          <a href="#" class="store-btn" aria-label="Télécharger sur l'App Store"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M16.4 12.6c0-2 1.6-3 1.7-3-1-1.3-2.4-1.5-2.9-1.6-1.2-.1-2.4.7-3 .7-.6 0-1.6-.7-2.6-.7-1.3 0-2.6.8-3.3 2-1.4 2.4-.4 6 1 8 .7 1 1.5 2 2.5 2 1 0 1.4-.6 2.6-.6s1.5.6 2.6.6 1.7-1 2.4-2c.7-1.1 1-2.2 1-2.3-.1 0-2-.8-2-3.1zM14.5 6.3c.5-.7.9-1.6.8-2.5-.8 0-1.7.5-2.3 1.2-.5.6-1 1.5-.8 2.4.9 0 1.8-.5 2.3-1.1z" fill="currentColor"/></svg><span><small>Sur</small><b>App Store</b></span></a>
-          <a href="#" class="store-btn" aria-label="Disponible sur Google Play"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M4 3.2v17.6c0 .5.5.8.9.5l9.4-8.8c.4-.3.4-.9 0-1.2L4.9 2.7c-.4-.3-.9 0-.9.5z" fill="#EA4335"/><path d="M17.3 9.4l-2.7-1.6-2.9 2.7 2.9 2.7 2.8-1.6c1-.6 1-1.6-.1-2.2z" fill="#FBBC04"/><path d="M4.9 2.7l7.8 7.8 2.9-2.7L6.2 2.3c-.5-.3-1-.1-1.3.4z" fill="#34A853"/><path d="M4.9 21.3l9.5-5.5-2.9-2.7-7.9 7.8c.3.5.8.7 1.3.4z" fill="#4285F4"/></svg><span><small>Sur</small><b>Google Play</b></span></a>
-        </div>
+  <!-- ══════════ FOOTER ══════════ -->
+  <footer class="footer">
+    <div class="wrap">
+      <div class="foot-cta reveal">
+        <h2>Paris n'attend que vous.</h2>
+        <a href="#flotte" class="btn btn-red btn-big">Réserver ma voiture</a>
       </div>
-
-      <div class="footer-cols">
-        <div class="footer-col">
+      <div class="foot-grid">
+        <div class="foot-brand">
+          <a href="#top" class="logo logo-foot">
+            <span class="logo-mark"><svg viewBox="0 0 44 44"><circle cx="22" cy="22" r="22" fill="#E4002B"/><path d="M10 27c0-.9.6-1.7 1.6-1.9l2-.4 2.3-3.8c.6-1.1 1.8-1.7 3-1.7h5.6c1.1 0 2.1.4 2.8 1.2l2.7 3 2.8.6c1.1.2 1.8 1.2 1.8 2.3v.9c0 .7-.5 1.2-1.2 1.2h-1.9a3 3 0 0 1-5.8 0h-6a3 3 0 0 1-5.8 0h-1.3c-.7 0-1.3-.5-1.3-1.2z" fill="#fff"/><circle cx="17.6" cy="28" r="1.9" fill="#0B0A0A"/><circle cx="28.8" cy="28" r="1.9" fill="#0B0A0A"/></svg></span>
+            <span class="logo-word">Loc<span>'n'</span>Joy</span>
+          </a>
+          <p>La location de voiture qui a le goût de Paris.</p>
+          <div class="stores small">
+            <a href="#" class="store" aria-label="App Store"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M16.4 12.6c0-2 1.6-3 1.7-3-1-1.3-2.4-1.5-2.9-1.6-1.2-.1-2.4.7-3 .7-.6 0-1.6-.7-2.6-.7-1.3 0-2.6.8-3.3 2-1.4 2.4-.4 6 1 8 .7 1 1.5 2 2.5 2 1 0 1.4-.6 2.6-.6s1.5.6 2.6.6 1.7-1 2.4-2c.7-1.1 1-2.2 1-2.3-.1 0-2-.8-2-3.1zM14.5 6.3c.5-.7.9-1.6.8-2.5-.8 0-1.7.5-2.3 1.2-.5.6-1 1.5-.8 2.4.9 0 1.8-.5 2.3-1.1z" fill="currentColor"/></svg><span><small>Sur</small><b>App Store</b></span></a>
+            <a href="#" class="store" aria-label="Google Play"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M4 3.2v17.6c0 .5.5.8.9.5l9.4-8.8c.4-.3.4-.9 0-1.2L4.9 2.7c-.4-.3-.9 0-.9.5z" fill="#EA4335"/><path d="M17.3 9.4l-2.7-1.6-2.9 2.7 2.9 2.7 2.8-1.6c1-.6 1-1.6-.1-2.2z" fill="#FBBC04"/><path d="M4.9 2.7l7.8 7.8 2.9-2.7L6.2 2.3c-.5-.3-1-.1-1.3.4z" fill="#34A853"/><path d="M4.9 21.3l9.5-5.5-2.9-2.7-7.9 7.8c.3.5.8.7 1.3.4z" fill="#4285F4"/></svg><span><small>Sur</small><b>Google Play</b></span></a>
+          </div>
+        </div>
+        <div class="foot-col">
           <h4>Louer</h4>
-          <a href="#flotte">Nos voitures</a>
-          <a href="#categories">Par catégorie</a>
-          <a href="#tarifs">Abonnement Joy</a>
-          <a href="#exclu">La Belle Époque</a>
+          <a href="#flotte">Nos voitures</a><a href="#categories">Par catégorie</a><a href="#tarifs">Abonnement Joy</a><a href="#cadeau">Carte cadeau</a>
         </div>
-        <div class="footer-col">
+        <div class="foot-col">
           <h4>La maison</h4>
-          <a href="#comment">Comment ça marche</a>
-          <a href="#">Nos ateliers</a>
-          <a href="#">Devenir Joyrider</a>
-          <a href="#faq">FAQ</a>
+          <a href="#comment">Comment ça marche</a><a href="#">Devenir Joyrider</a><a href="#faq">FAQ</a>
         </div>
-        <div class="footer-col footer-news">
+        <div class="foot-col foot-news">
           <h4>Rejoignez la route</h4>
-          <p>Les nouveautés de la flotte, nos plus belles routes et un code promo de temps en temps.</p>
-          <form class="news-form" id="newsForm">
-            <input type="email" placeholder="votre@email.fr" aria-label="Votre e-mail" required />
-            <button type="submit" aria-label="S'inscrire">→</button>
-          </form>
-          <p class="news-ok" id="newsOk" hidden>Merci&nbsp;! Bienvenue à bord 🚗</p>
-          <div class="socials footer-socials">
-            <a href="#" aria-label="Instagram" class="soc"><svg viewBox="0 0 24 24" width="20" height="20"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="17.2" cy="6.8" r="1.2" fill="currentColor"/></svg></a>
-            <a href="#" aria-label="TikTok" class="soc"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M13 3.5v9.8a3.1 3.1 0 1 1-2.4-3v2.5a.7.7 0 0 0-.7.6.7.7 0 1 0 1.3-.1V3.5H13c.3 1.9 1.6 3.4 3.6 3.7v2.4c-1.3-.1-2.5-.5-3.6-1.2" fill="currentColor"/></svg></a>
-            <a href="#" aria-label="LinkedIn" class="soc"><svg viewBox="0 0 24 24" width="20" height="20"><rect x="3" y="3" width="18" height="18" rx="4" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M8 10v7M8 7v.01M12 17v-4a2 2 0 0 1 4 0v4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></a>
+          <p>Les nouveautés de la flotte et un code promo de temps en temps.</p>
+          <form class="news" id="news"><input type="email" placeholder="votre@email.fr" aria-label="E-mail" required /><button type="submit" aria-label="S'inscrire">→</button></form>
+          <p class="news-ok" id="newsOk" hidden>Merci — bienvenue à bord 🚗</p>
+          <div class="nav-socials foot-soc">
+            <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" width="20" height="20"><rect x="3" y="3" width="18" height="18" rx="5.5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="17.3" cy="6.7" r="1.3" fill="currentColor"/></svg></a>
+            <a href="#" aria-label="TikTok"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M13 3.5v9.8a3.1 3.1 0 1 1-2.4-3v2.5a.7.7 0 0 0-.7.6.7.7 0 1 0 1.3-.1V3.5H13c.3 1.9 1.6 3.4 3.6 3.7v2.4c-1.3-.1-2.5-.5-3.6-1.2" fill="currentColor"/></svg></a>
           </div>
         </div>
       </div>
-    </div>
-
-    <div class="wrap footer-bottom">
-      <p>© 2026 Loc'n'Joy · Paris, France. Tous droits réservés.</p>
-      <nav class="footer-legal">
-        <a href="#">Conditions générales</a>
-        <a href="#">Confidentialité</a>
-        <a href="#">Mentions légales</a>
-        <a href="#">Cookies</a>
-      </nav>
+      <div class="foot-bottom">
+        <p>© 2026 Loc'n'Joy · Paris, France</p>
+        <nav><a href="#">Conditions générales</a><a href="#">Confidentialité</a><a href="#">Mentions légales</a></nav>
+      </div>
     </div>
   </footer>
 
-  <!-- Retour en haut -->
-  <button class="to-top" id="toTop" aria-label="Revenir en haut de page">
-    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M12 19V6M6 12l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-  </button>
-
-  <!-- Bandeau cookies -->
-  <div class="cookie" id="cookie" hidden>
-    <p>On utilise des cookies pour améliorer votre virée et retenir vos préférences (comme le mode nuit 🌙). <a href="#">En savoir plus</a></p>
-    <div class="cookie-btns">
-      <button class="btn btn-ghost btn-sm" id="cookieRefuse">Refuser</button>
-      <button class="btn btn-red btn-sm" id="cookieAccept">Tout accepter</button>
-    </div>
-  </div>
-
   <script src="script.js"></script>
-  <script>
-    /* Filet de sécurité : si le script principal échoue, on révèle quand même la page */
-    setTimeout(function () {
-      var p = document.getElementById('preloader');
-      if (p && !p.classList.contains('done')) {
-        p.classList.add('done');
-        setTimeout(function () { p.style.display = 'none'; }, 1000);
-      }
-      document.body.classList.add('is-loaded');
-    }, 4500);
-  </script>
 </body>
 </html>

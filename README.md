@@ -1,67 +1,58 @@
 # Loc'n'Joy
 
 Site vitrine d'une société **fictive** de location de voitures à Paris.
-*La location de voiture qui a le goût de Paris — prenez la route, on vous laisse la joie.*
+*Roulez dans des histoires qui valent le détour.*
 
 Landing page statique, sans dépendance ni étape de build : il suffit d'ouvrir
 `index.html` dans un navigateur.
 
-## Univers & direction artistique
+## Direction artistique
 
-- **Concept** : « Paris chic × automobile ». Base ivoire chaleureuse, **rouge
-  signature** vif, encre profonde — dominante rouge & blanc.
-- **Mode nuit « Paris de nuit »** : thème sombre complet, mémorisé, avec ciel
-  étoilé, lune et fenêtres allumées dans la scène du hero.
-- **Typographies** : *Fraunces* (serif éditorial, l'élégance parisienne),
-  *Hanken Grotesk* (sans moderne pour l'interface), *Spline Sans Mono* (chiffres
-  « tableau de bord » : prix, stats, plaques).
-- **Illustrations** : toutes réalisées en **SVG maison** (voitures de profil,
-  Tour Eiffel, immeubles haussmanniens, voiture de collection, carte de Paris…).
-  Aucune image externe : le site s'affiche partout, tout de suite.
+La mise en page et le langage visuel s'inspirent fidèlement de la structure du
+site de référence (Aardvark Book Club, réalisé sous Webflow), **réinterprétés
+pour l'automobile** : tout le texte, les noms et les illustrations sont
+**originaux**.
+
+- **Palette** : fond blanc cassé, **rouge signature** comme couleur d'accent, et
+  des **blocs pastel** (rose, pêche, jaune, bleu, pervenche) pour les cartes et
+  les bandes de section — l'esprit coloré et joyeux du modèle, en rouge & blanc.
+- **Typographies** : *Bricolage Grotesque* pour les gros titres, *Hanken
+  Grotesk* pour le corps, et *Caveat* pour les **annotations manuscrites**
+  (« livrée en 90 min ! ») — des équivalents libres proches des polices du
+  modèle (Champ / Degular / Hello Organichand).
+- **Boutons pilules**, coins très arrondis, grands titres, stickers pivotés :
+  les codes visuels du modèle, adaptés au contexte.
+- **Illustrations** : voitures dessinées en **SVG maison** (contour noir, corps
+  rouge), posées dans des blocs pastel comme les couvertures du site d'origine.
 - **Noms de véhicules** inventés à consonance parisienne (La Pigalle, Le
   Cabriolet Rivoli, La Bastille, Le Bolide Vendôme…).
 
-## Contenu de la page
+## Structure de la page
 
-Écran de chargement · bandeau promo · navigation collante · hero avec scène de
-Paris et **barre de réservation** · sélection du mois (6 voitures) · « Comment ça
-marche » en 4 temps · catégories filtrables · **carte interactive des points de
-retrait** · application mobile · offres & tarifs · carte cadeau · presse ·
-**carrousel de témoignages** · voiture de l'année · exclusivité « La Belle
-Époque » · FAQ · appel à l'action · pied de page.
+Navigation collante · hero (titre géant + bloc pastel avec voiture) · sélection
+du mois (6 voitures) · « Comment ça roule ? » en 4 étapes · catégories
+filtrables · application mobile · offres & tarifs · carte cadeau · presse ·
+voiture de l'année · exclusivité « La Belle Époque » · FAQ · pied de page — un
+enchaînement calqué sur celui du site de référence.
 
-## Interactions & animations
+## Interactions
 
-- **Écran de chargement** de marque (voiture qui roule + barre de progression),
-  puis entrée orchestrée du hero en cascade
-- **Bascule jour / nuit** avec mémorisation (localStorage) et respect du thème
-  système au premier chargement
-- **Barre de réservation** : lieu + dates pré-remplies, recherche animée et
-  notification (toast)
-- **Carte de Paris interactive** : points de retrait cliquables mettant à jour
-  la fiche agence
-- **Carrousel de témoignages** auto-défilant (flèches, pastilles, pause au survol)
-- **Cartes voitures en relief 3D** suivant le curseur
-- Galerie de catégories **filtrable**, barre de progression de défilement,
-  compteurs animés, parallaxe souris sur la scène de Paris, reflets sur les boutons
-- Menu mobile, accordéon FAQ, formulaire newsletter, bandeau cookies, retour en haut
+- Menu mobile (hamburger), en-tête qui se densifie au défilement
+- Galerie de catégories **filtrable** (rendue en JavaScript)
+- Révélations au défilement en cascade (IntersectionObserver)
+- Accordéon FAQ (une réponse ouverte à la fois), formulaire newsletter
+- Respect complet de `prefers-reduced-motion`
 
 ## Fichiers
 
-| Fichier       | Rôle                                                       |
-|---------------|------------------------------------------------------------|
-| `index.html`  | Structure, contenu et illustrations SVG inline             |
-| `styles.css`  | Thème clair/sombre, mise en page, composants, responsive   |
-| `script.js`   | Chargement, thème, réservation, carte, carrousel, filtres… |
-
-## Accessibilité & responsive
-
-Contrastes soignés en thème clair **et** sombre, `aria-label` sur les éléments
-interactifs, points de carte navigables au clavier, respect complet de
-`prefers-reduced-motion` (animations et défilement automatique désactivés), et
-mise en page fluide du mobile (~360 px) au grand écran.
+| Fichier       | Rôle                                             |
+|---------------|--------------------------------------------------|
+| `index.html`  | Structure, contenu et illustrations SVG inline   |
+| `styles.css`  | Palette, typographie, composants, responsive     |
+| `script.js`   | Menu, filtres, révélations, FAQ, newsletter      |
 
 ---
 
-Projet de démonstration. « Loc'n'Joy », les agences, les médias et les
-témoignages cités sont fictifs.
+Projet de démonstration. « Loc'n'Joy », les médias cités et les tarifs sont
+fictifs. Le contenu (textes, noms, illustrations) est original ; seule la
+grammaire visuelle s'inspire du site de référence.
