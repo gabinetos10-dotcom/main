@@ -77,6 +77,7 @@ body::before {
 /* ── Layout ────────────────────────────────────────────── */
 .wrap { width: 100%; max-width: var(--wrap); margin-inline: auto; padding-inline: 24px; }
 .section { padding-block: clamp(64px, 9vw, 128px); position: relative; }
+section[id], [id].section, main [id] { scroll-margin-top: 92px; }
 
 /* ══════════════════════════════════════════════════════════
    BANDEAU PROMO
@@ -160,9 +161,17 @@ body::before {
   font-weight: 600; font-size: 15px; letter-spacing: -.01em;
   transition: transform .25s var(--ease), box-shadow .25s var(--ease), background .25s;
   white-space: nowrap;
+  position: relative; overflow: hidden; isolation: isolate;
 }
 .btn:hover { transform: translateY(-2px); }
 .btn:active { transform: translateY(0); }
+.btn::after {
+  content: ""; position: absolute; top: 0; bottom: 0; left: -80%; width: 55%;
+  background: linear-gradient(100deg, transparent, rgba(255,255,255,.42), transparent);
+  transform: skewX(-18deg); pointer-events: none; opacity: 0; z-index: 2;
+}
+.btn:hover::after { animation: btnsheen .75s var(--ease); }
+@keyframes btnsheen { 0% { left: -80%; opacity: 0; } 22% { opacity: 1; } 100% { left: 135%; opacity: 0; } }
 .btn-sm { padding: 10px 17px; font-size: 14px; }
 .btn-lg { padding: 16px 30px; font-size: 16.5px; }
 .btn-block { display: flex; width: 100%; }
@@ -691,6 +700,76 @@ body::before {
 .reveal:nth-child(2) { transition-delay: .08s; }
 .reveal:nth-child(3) { transition-delay: .16s; }
 .reveal:nth-child(4) { transition-delay: .24s; }
+
+/* ══════════════════════════════════════════════════════════
+   ÉCRAN DE CHARGEMENT + ANIMATIONS D'ENTRÉE
+   ══════════════════════════════════════════════════════════ */
+
+/* — Barre de progression de défilement — */
+.scroll-progress {
+  position: fixed; top: 0; left: 0; height: 3px; width: 0;
+  background: linear-gradient(90deg, var(--red), var(--red-bright));
+  z-index: 400; pointer-events: none; box-shadow: 0 0 10px rgba(228,0,43,.6);
+}
+
+/* — Préchargeur — */
+.preloader { display: none; }
+.js .preloader {
+  display: flex; position: fixed; inset: 0; z-index: 1000;
+  align-items: center; justify-content: center; background: var(--ivory);
+  transition: transform .8s var(--ease), opacity .6s ease;
+}
+.preloader.done { transform: translateY(-100%); opacity: 0; pointer-events: none; }
+.pl-inner { display: flex; flex-direction: column; align-items: center; gap: 22px; width: min(360px, 76vw); }
+.pl-brand { display: flex; align-items: center; gap: 12px; opacity: 0; animation: plBrandIn .6s var(--ease) .1s forwards; }
+.pl-brand .brand-badge { width: 46px; height: 46px; filter: drop-shadow(0 6px 12px rgba(228,0,43,.3)); }
+.pl-word { font-family: var(--serif); font-size: 30px; font-weight: 600; color: var(--ink); letter-spacing: -.02em; }
+.pl-word .brand-tick { color: var(--red); font-style: italic; }
+@keyframes plBrandIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+.pl-stage { position: relative; width: 100%; height: 108px; overflow: hidden; }
+.pl-dashes {
+  position: absolute; left: -44px; right: -44px; bottom: 16px; height: 5px; border-radius: 4px; opacity: .26;
+  background: repeating-linear-gradient(90deg, var(--ink) 0 22px, transparent 22px 44px);
+  animation: plRoad .55s linear infinite;
+}
+@keyframes plRoad { to { transform: translateX(-44px); } }
+.pl-car { position: absolute; left: 50%; bottom: 2px; width: 152px; transform: translateX(-50%); animation: plBob 1s ease-in-out infinite; }
+@keyframes plBob { 0%,100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(-3px); } }
+.pl-wheel { transform-box: fill-box; transform-origin: center; animation: spin .55s linear infinite; }
+.preloader.done .pl-car { animation: plDriveOff .8s var(--ease) forwards; }
+@keyframes plDriveOff { to { transform: translateX(340px) translateY(0); opacity: 0; } }
+
+.pl-bar { width: 100%; height: 4px; background: var(--line); border-radius: 100px; overflow: hidden; }
+.pl-bar-fill { display: block; height: 100%; width: 4%; border-radius: 100px; background: linear-gradient(90deg, var(--red), var(--red-bright)); animation: plFill 1.7s var(--ease) forwards; }
+@keyframes plFill { 0% { width: 4%; } 55% { width: 68%; } 100% { width: 100%; } }
+.pl-tag { font-family: var(--mono); font-size: 12px; letter-spacing: .05em; color: var(--muted); }
+
+/* — Entrée orchestrée du hero — */
+.js .hero-copy > *, .js .hero-art { opacity: 0; }
+.is-loaded .hero-copy > * { animation: heroUp .8s var(--ease) forwards; }
+.is-loaded .hero-copy > *:nth-child(1) { animation-delay: .05s; }
+.is-loaded .hero-copy > *:nth-child(2) { animation-delay: .16s; }
+.is-loaded .hero-copy > *:nth-child(3) { animation-delay: .28s; }
+.is-loaded .hero-copy > *:nth-child(4) { animation-delay: .4s; }
+.is-loaded .hero-copy > *:nth-child(5) { animation-delay: .52s; }
+@keyframes heroUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
+.is-loaded .hero-art { animation: heroArt 1s var(--ease) .18s forwards; }
+@keyframes heroArt { from { opacity: 0; transform: translateY(30px) scale(.96); } to { opacity: 1; transform: none; } }
+
+/* parallaxe souris sur la scène */
+.paris-scene { will-change: transform; transition: transform .25s ease-out; }
+
+/* compteurs */
+.count { font-variant-numeric: tabular-nums; font-feature-settings: "tnum"; }
+.stars-sm { color: var(--gold); }
+
+/* Respect de prefers-reduced-motion pour le chargement */
+@media (prefers-reduced-motion: reduce) {
+  .js .hero-copy > *, .js .hero-art { opacity: 1 !important; animation: none !important; }
+  .pl-car, .pl-dashes, .pl-wheel, .pl-brand, .hero-car, .clouds, .float-badge, .road-dashes, .phone, .promo-track { animation: none !important; }
+  .paris-scene { transition: none !important; }
+}
 
 /* ══════════════════════════════════════════════════════════
    RESPONSIVE

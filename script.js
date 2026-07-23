@@ -4,11 +4,45 @@
 (function () {
   'use strict';
 
-  /* ── Header : état "scrolled" ─────────────────────────── */
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ── Écran de chargement + entrée ─────────────────────── */
+  const preloader = document.getElementById('preloader');
+  const START = Date.now();
+  const MIN_SHOW = reduce ? 200 : 1500;
+  let loadDone = false;
+  const finishLoad = () => {
+    if (loadDone) return;
+    loadDone = true;
+    document.body.classList.add('is-loaded');
+    if (preloader) {
+      preloader.classList.add('done');
+      const hide = () => { preloader.style.display = 'none'; };
+      preloader.addEventListener('transitionend', hide, { once: true });
+      setTimeout(hide, 1100);
+    }
+  };
+  const scheduleFinish = () =>
+    setTimeout(finishLoad, Math.max(0, MIN_SHOW - (Date.now() - START)));
+  if (document.readyState === 'complete') scheduleFinish();
+  else window.addEventListener('load', scheduleFinish);
+  setTimeout(finishLoad, 4000); // filet de sécurité
+
+  /* ── Header + barre de progression de défilement ──────── */
   const header = document.getElementById('siteHeader');
-  const onScroll = () => header.classList.toggle('scrolled', window.scrollY > 12);
+  const progress = document.getElementById('scrollProgress');
+  const onScroll = () => {
+    const y = window.scrollY || document.documentElement.scrollTop;
+    header.classList.toggle('scrolled', y > 12);
+    if (progress) {
+      const doc = document.documentElement;
+      const max = doc.scrollHeight - doc.clientHeight;
+      progress.style.width = (max > 0 ? (y / max) * 100 : 0) + '%';
+    }
+  };
   onScroll();
   window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll, { passive: true });
 
   /* ── Menu mobile ──────────────────────────────────────── */
   const burger = document.getElementById('burger');
@@ -23,9 +57,17 @@
     a.addEventListener('click', () => toggleMenu(false))
   );
 
-  /* ── Révélations au scroll ────────────────────────────── */
+  /* ── Révélations au scroll (avec cascade) ─────────────── */
   const reveals = document.querySelectorAll('.reveal');
-  if ('IntersectionObserver' in window) {
+  // cascade : décalage selon la position parmi les frères "reveal"
+  reveals.forEach((el) => {
+    const sibs = Array.from(el.parentElement.children).filter((c) =>
+      c.classList.contains('reveal')
+    );
+    const idx = sibs.indexOf(el);
+    if (idx > 0) el.style.transitionDelay = Math.min(idx * 70, 420) + 'ms';
+  });
+  if ('IntersectionObserver' in window && !reduce) {
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((e) => {
@@ -40,6 +82,60 @@
     reveals.forEach((el) => io.observe(el));
   } else {
     reveals.forEach((el) => el.classList.add('in'));
+  }
+
+  /* ── Compteurs animés ─────────────────────────────────── */
+  const fmtFr = (v, dec) =>
+    v.toLocaleString('fr-FR', { minimumFractionDigits: dec, maximumFractionDigits: dec });
+  const runCount = (el) => {
+    const to = parseFloat(el.dataset.to);
+    const dec = parseInt(el.dataset.dec || '0', 10);
+    if (reduce) { el.textContent = fmtFr(to, dec); return; }
+    const dur = 1500, t0 = performance.now();
+    const step = (now) => {
+      const t = Math.min(1, (now - t0) / dur);
+      const eased = 1 - Math.pow(1 - t, 3);
+      el.textContent = fmtFr(to * eased, dec);
+      if (t < 1) requestAnimationFrame(step);
+      else el.textContent = fmtFr(to, dec);
+    };
+    requestAnimationFrame(step);
+  };
+  const counts = document.querySelectorAll('.count');
+  if (counts.length) {
+    if ('IntersectionObserver' in window) {
+      const cio = new IntersectionObserver(
+        (entries, obs) => {
+          entries.forEach((e) => {
+            if (e.isIntersecting) { runCount(e.target); obs.unobserve(e.target); }
+          });
+        },
+        { threshold: 0.6 }
+      );
+      counts.forEach((el) => cio.observe(el));
+    } else {
+      counts.forEach(runCount);
+    }
+  }
+
+  /* ── Parallaxe souris sur la scène de Paris ───────────── */
+  const scene = document.querySelector('.paris-scene');
+  const heroSection = document.querySelector('.hero');
+  if (scene && heroSection && !reduce && window.matchMedia('(pointer: fine)').matches) {
+    let raf = 0;
+    heroSection.addEventListener('mousemove', (e) => {
+      const r = heroSection.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width - 0.5;
+      const y = (e.clientY - r.top) / r.height - 0.5;
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        scene.style.transform = `translate(${x * 16}px, ${y * 12}px)`;
+      });
+    });
+    heroSection.addEventListener('mouseleave', () => {
+      cancelAnimationFrame(raf);
+      scene.style.transform = '';
+    });
   }
 
   /* ── Silhouettes SVG réutilisables ────────────────────── */
