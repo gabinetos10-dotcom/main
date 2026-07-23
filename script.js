@@ -1,0 +1,134 @@
+/* ══════════════════════════════════════════════════════════════
+   LOC'N'JOY — Interactions
+   ══════════════════════════════════════════════════════════════ */
+(function () {
+  'use strict';
+
+  /* ── Header : état "scrolled" ─────────────────────────── */
+  const header = document.getElementById('siteHeader');
+  const onScroll = () => header.classList.toggle('scrolled', window.scrollY > 12);
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+
+  /* ── Menu mobile ──────────────────────────────────────── */
+  const burger = document.getElementById('burger');
+  const mobileMenu = document.getElementById('mobileMenu');
+  const toggleMenu = (open) => {
+    const show = open ?? mobileMenu.hidden;
+    mobileMenu.hidden = !show;
+    burger.setAttribute('aria-expanded', String(show));
+  };
+  burger.addEventListener('click', () => toggleMenu());
+  mobileMenu.querySelectorAll('a').forEach((a) =>
+    a.addEventListener('click', () => toggleMenu(false))
+  );
+
+  /* ── Révélations au scroll ────────────────────────────── */
+  const reveals = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            e.target.classList.add('in');
+            io.unobserve(e.target);
+          }
+        });
+      },
+      { threshold: 0.12, rootMargin: '0px 0px -8% 0px' }
+    );
+    reveals.forEach((el) => io.observe(el));
+  } else {
+    reveals.forEach((el) => el.classList.add('in'));
+  }
+
+  /* ── Silhouettes SVG réutilisables ────────────────────── */
+  const wheel = (cx, r) =>
+    `<circle cx="${cx}" cy="82" r="${r}" class="s-ink"/><circle cx="${cx}" cy="82" r="${r * 0.42}" fill="#EFE7DF"/><circle cx="${cx}" cy="82" r="2.4" class="s-red"/>`;
+
+  const silhouettes = {
+    citadine: `<svg viewBox="0 0 240 110"><ellipse cx="120" cy="98" rx="96" ry="9" fill="#241C19" opacity=".1"/><path d="M32 84c-5 0-8-3-8-8v-6c0-5 4-9 9-10l17-3 13-14c4-5 10-7 16-7h35c6 0 12 3 16 9l8 12 19 3c6 1 11 6 11 12v4c0 5-4 8-9 8z" class="s-red"/><path d="M32 84c-5 0-8-3-8-8v-6c0-5 4-9 9-10l17-3 13-14c4-5 10-7 16-7h35c6 0 12 3 16 9l8 12 19 3c6 1 11 6 11 12v4c0 5-4 8-9 8z" fill="none" stroke="#241C19" stroke-width="2.6"/><path d="M74 40c-4 0-8 2-10 5l-9 12h31V40zM95 40v17h27l-7-11c-3-4-6-6-11-6z" fill="#DCEAF0" stroke="#241C19" stroke-width="2.4"/>${wheel(70, 16)}${wheel(148, 16)}</svg>`,
+    berline: `<svg viewBox="0 0 240 110"><ellipse cx="120" cy="98" rx="100" ry="9" fill="#241C19" opacity=".1"/><path d="M22 84c-5 0-9-3-9-8v-6c0-5 4-9 9-10l21-4 16-14c4-4 9-6 15-6h46c6 0 12 3 16 7l12 13 21 4c6 1 11 6 11 12v4c0 5-4 8-9 8z" class="s-red"/><path d="M22 84c-5 0-9-3-9-8v-6c0-5 4-9 9-10l21-4 16-14c4-4 9-6 15-6h46c6 0 12 3 16 7l12 13 21 4c6 1 11 6 11 12v4c0 5-4 8-9 8z" fill="none" stroke="#241C19" stroke-width="2.6"/><path d="M66 42c-3 0-6 2-8 4l-9 12h35V42zM89 42v16h33l-9-11c-3-3-6-5-10-5z" fill="#DCEAF0" stroke="#241C19" stroke-width="2.4"/>${wheel(68, 16)}${wheel(156, 16)}</svg>`,
+    suv: `<svg viewBox="0 0 240 110"><ellipse cx="120" cy="98" rx="102" ry="9" fill="#241C19" opacity=".1"/><path d="M20 82c-4 0-7-3-7-7V60c0-5 4-10 9-11l14-2 12-16c4-6 10-9 16-9h40c6 0 13 3 17 9l11 17 16 3c6 1 11 6 11 12v9c0 4-3 7-7 7z" class="s-red"/><path d="M20 82c-4 0-7-3-7-7V60c0-5 4-10 9-11l14-2 12-16c4-6 10-9 16-9h40c6 0 13 3 17 9l11 17 16 3c6 1 11 6 11 12v9c0 4-3 7-7 7z" fill="none" stroke="#241C19" stroke-width="2.6"/><path d="M64 33c-3 0-6 2-8 5L45 55h35V33zM90 33v22h38l-11-17c-3-3-6-5-10-5z" fill="#DCEAF0" stroke="#241C19" stroke-width="2.4"/>${wheel(66, 18)}${wheel(158, 18)}</svg>`,
+    cabriolet: `<svg viewBox="0 0 240 110"><ellipse cx="120" cy="98" rx="102" ry="9" fill="#241C19" opacity=".1"/><path d="M24 86c-5 0-9-3-9-8v-7c0-5 4-9 9-10l24-6 20-7c4-2 8-2 12-2h56c7 0 13 3 17 9l7 11 16 3c6 1 10 6 10 12v3c0 5-4 8-9 8z" class="s-red"/><path d="M24 86c-5 0-9-3-9-8v-7c0-5 4-9 9-10l24-6 20-7c4-2 8-2 12-2h56c7 0 13 3 17 9l7 11 16 3c6 1 10 6 10 12v3c0 5-4 8-9 8z" fill="none" stroke="#241C19" stroke-width="2.6"/><path d="M74 55l11-7c3-2 7-2 10-2h44c5 0 6 2 3 4l-13 5z" fill="#8A0A22"/><path d="M74 55h58" stroke="#241C19" stroke-width="2.4"/>${wheel(68, 16)}${wheel(154, 16)}</svg>`,
+    sportive: `<svg viewBox="0 0 240 110"><ellipse cx="120" cy="100" rx="104" ry="8" fill="#241C19" opacity=".1"/><path d="M16 88c-3 0-5-2-4-5l2-7c2-5 6-8 11-9l32-5 35-11c6-2 13-3 19-3h35c8 0 12 4 10 9l26 4c6 1 10 5 11 10 0 3-2 5-6 5z" class="s-red"/><path d="M16 88c-3 0-5-2-4-5l2-7c2-5 6-8 11-9l32-5 35-11c6-2 13-3 19-3h35c8 0 12 4 10 9l26 4c6 1 10 5 11 10 0 3-2 5-6 5z" fill="none" stroke="#241C19" stroke-width="2.6"/><path d="M88 52l8-8c3-3 7-5 12-5h34c5 0 6 3 3 5l-7 8z" fill="#DCEAF0" stroke="#241C19" stroke-width="2.4"/>${wheel(62, 17)}${wheel(166, 17)}</svg>`,
+    utilitaire: `<svg viewBox="0 0 240 110"><ellipse cx="120" cy="98" rx="104" ry="9" fill="#241C19" opacity=".1"/><path d="M18 84c-4 0-7-3-7-7V44c0-5 4-9 9-9h60c5 0 10 2 13 7l14 20 66 3c6 0 11 5 11 11v1c0 5-4 8-9 8z" class="s-red"/><path d="M18 84c-4 0-7-3-7-7V44c0-5 4-9 9-9h60c5 0 10 2 13 7l14 20 66 3c6 0 11 5 11 11v1c0 5-4 8-9 8z" fill="none" stroke="#241C19" stroke-width="2.6"/><path d="M96 41v22h30l-14-19c-3-3-6-3-10-3z" fill="#DCEAF0" stroke="#241C19" stroke-width="2.4"/><rect x="24" y="42" width="60" height="20" rx="3" fill="#8A0A22"/>${wheel(64, 16)}${wheel(168, 16)}</svg>`,
+  };
+
+  /* ── Données flotte ───────────────────────────────────── */
+  const fleet = [
+    { name: 'La Pigalle', type: 'Citadine · Électrique', price: 39, sil: 'citadine', cats: ['citadine', 'electrique'] },
+    { name: 'Le Faubourg', type: 'Berline · Confort', price: 59, sil: 'berline', cats: ['berline', 'familiale'] },
+    { name: 'La Bastille', type: 'SUV · Familial', price: 69, sil: 'suv', cats: ['suv', 'familiale'] },
+    { name: 'Le Cabriolet Rivoli', type: 'Cabriolet · Balade', price: 89, sil: 'cabriolet', cats: ['cabriolet', 'prestige'] },
+    { name: 'La Sorbonne', type: 'Compacte · Hybride', price: 45, sil: 'citadine', cats: ['citadine', 'familiale'] },
+    { name: 'Le Bolide Vendôme', type: 'Sportive · Prestige', price: 149, sil: 'sportive', cats: ['sportive', 'prestige'] },
+    { name: "L'Opéra", type: 'Berline · Électrique', price: 79, sil: 'berline', cats: ['berline', 'electrique', 'prestige'] },
+    { name: 'Le Montparnasse', type: 'SUV · 7 places', price: 89, sil: 'suv', cats: ['suv', 'familiale'] },
+    { name: 'La Nation', type: 'Utilitaire · Déménagement', price: 55, sil: 'utilitaire', cats: ['utilitaire'] },
+    { name: 'Le Trocadéro', type: 'Cabriolet · Sportif', price: 179, sil: 'cabriolet', cats: ['cabriolet', 'sportive', 'prestige'] },
+    { name: 'La Villette', type: 'Citadine · Électrique', price: 35, sil: 'citadine', cats: ['citadine', 'electrique'] },
+    { name: "L'Étoile", type: 'Sportive · Coupé', price: 199, sil: 'sportive', cats: ['sportive', 'prestige'] },
+  ];
+
+  const gallery = document.getElementById('gallery');
+  const washes = ['wash-1', 'wash-2', 'wash-3', 'wash-4', 'wash-5', 'wash-6'];
+
+  const render = (cat) => {
+    const list = cat === 'all' ? fleet : fleet.filter((c) => c.cats.includes(cat));
+    if (!list.length) {
+      gallery.innerHTML = '<p class="g-empty">Aucun modèle dans cette catégorie pour le moment.</p>';
+      return;
+    }
+    gallery.innerHTML = list
+      .map(
+        (c, i) => `
+      <article class="gcard" style="animation-delay:${i * 40}ms">
+        <div class="gcard-media ${washes[i % washes.length]}">${silhouettes[c.sil]}</div>
+        <span class="g-type">${c.type}</span>
+        <h3>${c.name}</h3>
+        <div class="g-foot">
+          <span class="g-price">${c.price}€ <small>/jour</small></span>
+          <a href="#tarifs" class="link-more" aria-label="Réserver ${c.name}">Réserver <span aria-hidden="true">→</span></a>
+        </div>
+      </article>`
+      )
+      .join('');
+  };
+
+  render('all');
+
+  document.querySelectorAll('.cat-chips .chip').forEach((chip) => {
+    chip.addEventListener('click', () => {
+      document.querySelector('.cat-chips .chip.is-active')?.classList.remove('is-active');
+      chip.classList.add('is-active');
+      render(chip.dataset.cat);
+    });
+  });
+
+  /* ── FAQ : une seule ouverte à la fois ────────────────── */
+  const faqItems = document.querySelectorAll('.faq-item');
+  faqItems.forEach((item) => {
+    item.addEventListener('toggle', () => {
+      if (item.open) {
+        faqItems.forEach((other) => {
+          if (other !== item) other.open = false;
+        });
+      }
+    });
+  });
+
+  /* ── Newsletter ───────────────────────────────────────── */
+  const form = document.getElementById('newsForm');
+  const ok = document.getElementById('newsOk');
+  if (form) {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      form.hidden = true;
+      ok.hidden = false;
+    });
+  }
+
+  /* ── Année dynamique (footer déjà en 2026, garde-fou) ── */
+  // (statique volontairement — évite un flash de contenu)
+})();
