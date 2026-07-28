@@ -14,6 +14,28 @@
     gsap.registerPlugin(ScrollTrigger);
   }
 
+  // Marqueur global : le CSS ne masque un élément « en attente d'animation »
+  // que si le JS est réellement là pour le révéler.
+  if (hasGsap && !REDUCED) { document.documentElement.classList.add('has-motion'); }
+
+  // Les boutons roulent leur libellé au survol. On glisse un .btn__roll dans
+  // chaque .btn__text : c'est lui qui bouge, le doublon sort par data-text.
+  function setBtnLabel(el, txt) {
+    if (!el) { return; }
+    var roll = el.querySelector('.btn__roll');
+    if (!roll) {
+      roll = document.createElement('span');
+      roll.className = 'btn__roll';
+      el.textContent = '';
+      el.appendChild(roll);
+    }
+    roll.textContent = txt;
+    roll.setAttribute('data-text', txt);
+  }
+  document.querySelectorAll('.btn__text').forEach(function (el) {
+    setBtnLabel(el, el.textContent.trim());
+  });
+
   /* ============================================================
      1. LENIS — SMOOTH SCROLL
      ============================================================ */
@@ -174,19 +196,35 @@
       });
     });
 
-    // Parallax sur les visuels des projets + zoom dirigé par le curseur
+    // Projets : rideau d'ouverture, parallax, puis zoom dirigé par le curseur
     gsap.utils.toArray('.work').forEach(function (card) {
       var visual = card.querySelector('.work__visual');
       var wrap = card.querySelector('.work__visual-wrap');
+      var meta = card.querySelectorAll('.work__meta > *');
+
+      // La vignette se dévoile de bas en haut pendant que l'image se recadre :
+      // deux vitesses, c'est ce qui donne la profondeur.
+      gsap.timeline({ scrollTrigger: { trigger: card, start: 'top 84%', once: true } })
+        .fromTo(wrap,
+          { clipPath: 'inset(0% 0% 100% 0%)' },
+          {
+            clipPath: 'inset(0% 0% 0% 0%)', duration: 1.25, ease: 'expo.out',
+            // La clip-path rognerait l'ombre portée du survol : on la libère.
+            onComplete: function () { gsap.set(wrap, { clipPath: 'none' }); }
+          }, 0)
+        .fromTo(visual, { scale: 1.22 }, { scale: 1, duration: 1.5, ease: 'expo.out' }, 0)
+        .fromTo(meta, { y: 26, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.8, stagger: 0.07, ease: 'power3.out' }, 0.32);
+
       gsap.fromTo(visual, { yPercent: -7 }, {
         yPercent: 7, ease: 'none',
         scrollTrigger: { trigger: card, start: 'top bottom', end: 'bottom top', scrub: 1 }
       });
       card.addEventListener('mouseenter', function () {
-        gsap.to(visual, { scale: 1.13, duration: 0.8, ease: 'power3.out' });
+        gsap.to(visual, { scale: 1.13, duration: 0.8, ease: 'power3.out', overwrite: 'auto' });
       });
       card.addEventListener('mouseleave', function () {
-        gsap.to(visual, { scale: 1, duration: 0.8, ease: 'power3.out' });
+        gsap.to(visual, { scale: 1, duration: 0.8, ease: 'power3.out', overwrite: 'auto' });
         gsap.set(visual, { transformOrigin: '50% 50%' });
       });
       // Le zoom se concentre là où pointe le curseur
@@ -196,6 +234,24 @@
           transformOrigin: ((e.clientX - r.left) / r.width * 100) + '% ' +
                            ((e.clientY - r.top) / r.height * 100) + '%'
         });
+      });
+    });
+
+    // Filet d'ouverture des têtes de section : se trace à l'entrée
+    gsap.utils.toArray('.section__head, .section__label--solo').forEach(function (head) {
+      ScrollTrigger.create({
+        trigger: head, start: 'top 92%', once: true,
+        onEnter: function () { head.classList.add('is-drawn'); }
+      });
+    });
+
+    // Les points du process s'allument un à un, dans le sillage de la ligne
+    gsap.utils.toArray('.process__step').forEach(function (step, i) {
+      ScrollTrigger.create({
+        trigger: step, start: 'top 82%', once: true,
+        onEnter: function () {
+          gsap.delayedCall(i * 0.12, function () { step.classList.add('is-lit'); });
+        }
       });
     });
 
@@ -424,6 +480,26 @@
   })();
 
   /* ============================================================
+     12 bis. BOUTONS MAGNÉTIQUES
+     Le bouton vient chercher le curseur avant le clic : c'est le
+     détail qui fait « fini » sans rien coûter en perf (quickTo).
+     ============================================================ */
+  (function initMagnetic() {
+    if (!FINE_POINTER || !hasGsap || REDUCED) { return; }
+    document.querySelectorAll('[data-magnetic]').forEach(function (el) {
+      var xTo = gsap.quickTo(el, 'x', { duration: 0.5, ease: 'power3' });
+      var yTo = gsap.quickTo(el, 'y', { duration: 0.5, ease: 'power3' });
+      var PULL = 0.3;
+      el.addEventListener('mousemove', function (e) {
+        var r = el.getBoundingClientRect();
+        xTo((e.clientX - r.left - r.width / 2) * PULL);
+        yTo((e.clientY - r.top - r.height / 2) * PULL);
+      });
+      el.addEventListener('mouseleave', function () { xTo(0); yTo(0); });
+    });
+  })();
+
+  /* ============================================================
      13. BOUTON LIQUIDE (CTA final)
      ============================================================ */
   (function initLiquid() {
@@ -481,12 +557,21 @@
     var form = document.getElementById('contactForm');
     if (!form) { return; }
     var submitText = form.querySelector('.btn-liquid__text');
+    var status = document.getElementById('formStatus');
+
+    // Un seul canal de retour, annoncé aux lecteurs d'écran (aria-live)
+    function say(msg, kind) {
+      if (!status) { return; }
+      status.textContent = msg;
+      status.className = 'contact-form__status' + (kind ? ' is-' + kind : '');
+    }
 
     ['fName', 'fEmail', 'fMsg'].forEach(function (id) {
       var el = document.getElementById(id);
       if (el) {
         el.addEventListener('input', function () {
           el.closest('.field').classList.remove('is-error');
+          if (status && status.classList.contains('is-error')) { say(''); }
         });
       }
     });
@@ -496,12 +581,20 @@
       var name = document.getElementById('fName');
       var email = document.getElementById('fEmail');
       var msg = document.getElementById('fMsg');
-      var ok = true;
+      var first = null;
 
-      if (!name.value.trim()) { name.closest('.field').classList.add('is-error'); ok = false; }
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.value.trim())) { email.closest('.field').classList.add('is-error'); ok = false; }
-      if (!msg.value.trim()) { msg.closest('.field').classList.add('is-error'); ok = false; }
-      if (!ok) { return; }
+      function fail(input) {
+        input.closest('.field').classList.add('is-error');
+        if (!first) { first = input; }
+      }
+      if (!name.value.trim()) { fail(name); }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.value.trim())) { fail(email); }
+      if (!msg.value.trim()) { fail(msg); }
+      if (first) {
+        say('Il manque quelques informations — les champs en orange sont à compléter.', 'error');
+        first.focus();
+        return;
+      }
 
       var typeEl = form.querySelector('input[name="type"]:checked');
       var type = typeEl ? typeEl.value : 'Projet';
@@ -512,6 +605,7 @@
         '\n\nMessage :\n' + msg.value.trim();
 
       submitText.textContent = 'OUVERTURE DU MAIL…';
+      say('Votre application mail s’ouvre avec le message pré-rempli. Il ne reste qu’à l’envoyer.', 'ok');
       window.location.href = 'mailto:hello@gjs-studio.fr?subject=' +
         encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
       setTimeout(function () { submitText.textContent = 'ENVOYER LE MESSAGE'; }, 2600);
@@ -749,7 +843,7 @@
       overlayText.textContent = win
         ? 'Toutes les fondations d\u2019un bon site sont réunies.'
         : 'Trop de mauvaises pratiques accumulées.';
-      btn.querySelector('.btn__text').textContent = 'Rejouer';
+      setBtnLabel(btn.querySelector('.btn__text'), 'Rejouer');
       overlay.classList.remove('is-hidden');
     }
 

@@ -75,7 +75,7 @@
       <a href="#contact" class="nav__link" data-cursor="hover"><span data-text="Contact">Contact</span></a>
     </nav>
     <div class="nav__right">
-      <a href="#contact" class="nav__cta btn btn--small" data-cursor="hover"><span class="btn__text">Démarrer un projet</span></a>
+      <a href="#contact" class="nav__cta btn btn--small" data-magnetic data-cursor="hover"><span class="btn__text">Démarrer un projet</span></a>
     </div>
   </header>
   <button class="burger" id="burger" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="mobileMenu" data-cursor="hover">
@@ -133,9 +133,13 @@
         </h1>
         <div class="hero__bottom">
           <p class="hero__sub" data-intro>GJS conçoit des sites sur mesure, des automatisations intelligentes et des pipelines de données. Avec une obsession&nbsp;: <em class="serif-i">la finition</em>.</p>
+          <a href="#services" class="hero__scroll" data-intro data-cursor="hover" aria-label="Faire défiler jusqu'aux services">
+            <span class="hero__scroll-txt">DÉFILER</span>
+            <span class="hero__scroll-line" aria-hidden="true"></span>
+          </a>
           <div class="hero__ctas" data-intro>
-            <a href="#contact" class="btn btn--primary" data-cursor="hover"><span class="btn__text">Démarrer un projet</span></a>
-            <a href="#realisations" class="btn btn--ghost" data-cursor="hover"><span class="btn__text">Voir nos réalisations</span></a>
+            <a href="#contact" class="btn btn--primary" data-magnetic data-cursor="hover"><span class="btn__text">Démarrer un projet</span></a>
+            <a href="#realisations" class="btn btn--ghost" data-magnetic data-cursor="hover"><span class="btn__text">Voir nos réalisations</span></a>
           </div>
         </div>
       </div>
@@ -245,8 +249,10 @@
     <!-- ===== RÉALISATIONS =====
          ⚠️⚠️ ZONE À REMPLACER ⚠️⚠️
          Ces trois blocs sont des GABARITS. Remplace :
-         - le <span class="work__ph"> par une vraie <img src="..." alt="...">
-         - le nom, le rôle, l'année et surtout la ligne "résultat"
+         - le <div class="work__visual"> entier par une vraie
+           <img class="work__img" src="projets/xxx.webp" alt="…" loading="lazy">
+           (le wrapper garde le ratio, le masque et le parallax : rien d'autre à toucher)
+         - le nom, le rôle, l'année, les tags et surtout la ligne "résultat"
          Deux vrais projets valent mieux que quatre faux. Si tu n'en as qu'un,
          supprime les deux autres blocs : la section reste valide.
     -->
@@ -262,46 +268,67 @@
 
         <div class="works__grid">
 
-          <a href="#contact" class="work work--a" data-cursor="VOIR" data-reveal>
+          <a href="#contact" class="work work--a" data-cursor="VOIR">
             <div class="work__visual-wrap">
               <!-- Remplacer par : <img class="work__img" src="projets/xxx.webp" alt="Aperçu du site XXX" loading="lazy" width="1200" height="900"> -->
               <div class="work__visual work__visual--1">
-                <span class="work__ph">L</span>
+                <span class="work__mark" aria-hidden="true">
+                  <svg viewBox="0 0 100 100"><g fill="currentColor" transform="translate(50 50)"><rect x="-5" y="-42" width="10" height="84" rx="5"/><rect x="-5" y="-42" width="10" height="84" rx="5" transform="rotate(60)"/><rect x="-5" y="-42" width="10" height="84" rx="5" transform="rotate(120)"/></g></svg>
+                </span>
+                <span class="work__ph" aria-hidden="true">L</span>
               </div>
+              <span class="work__veil" aria-hidden="true"></span>
+              <span class="work__index" aria-hidden="true">01</span>
+              <span class="work__open" aria-hidden="true">VOIR LE PROJET <i>→</i></span>
             </div>
             <div class="work__meta">
-              <h3 class="work__name">MAISON LUBERON</h3>
-              <p class="work__role">E-commerce · Design + développement</p>
-              <p class="work__result"><span class="work__result-k">Résultat</span> à compléter avec un chiffre réel</p>
+              <h3 class="work__name"><span>MAISON LUBERON</span></h3>
               <p class="work__year">2025</p>
+              <p class="work__role">E-commerce · Design + développement</p>
+              <ul class="work__tags"><li>DIRECTION ARTISTIQUE</li><li>E-COMMERCE</li><li>MOTION</li></ul>
+              <p class="work__result"><span class="work__result-k">Résultat</span> à compléter avec un chiffre réel</p>
             </div>
           </a>
 
-          <a href="#contact" class="work work--b" data-cursor="VOIR" data-reveal>
+          <a href="#contact" class="work work--b" data-cursor="VOIR">
             <div class="work__visual-wrap">
               <div class="work__visual work__visual--2">
-                <span class="work__ph">N</span>
+                <span class="work__mark" aria-hidden="true">
+                  <svg viewBox="0 0 100 100"><g fill="currentColor" transform="translate(50 50)"><rect x="-5" y="-42" width="10" height="84" rx="5"/><rect x="-5" y="-42" width="10" height="84" rx="5" transform="rotate(60)"/><rect x="-5" y="-42" width="10" height="84" rx="5" transform="rotate(120)"/></g></svg>
+                </span>
+                <span class="work__ph" aria-hidden="true">N</span>
               </div>
+              <span class="work__veil" aria-hidden="true"></span>
+              <span class="work__index" aria-hidden="true">02</span>
+              <span class="work__open" aria-hidden="true">VOIR LE PROJET <i>→</i></span>
             </div>
             <div class="work__meta">
-              <h3 class="work__name">NEXA DATA</h3>
-              <p class="work__role">Plateforme SaaS · Pipelines de données</p>
-              <p class="work__result"><span class="work__result-k">Résultat</span> à compléter avec un chiffre réel</p>
+              <h3 class="work__name"><span>NEXA DATA</span></h3>
               <p class="work__year">2025</p>
+              <p class="work__role">Plateforme SaaS · Pipelines de données</p>
+              <ul class="work__tags"><li>PRODUIT</li><li>DATA</li><li>DASHBOARD</li></ul>
+              <p class="work__result"><span class="work__result-k">Résultat</span> à compléter avec un chiffre réel</p>
             </div>
           </a>
 
-          <a href="#contact" class="work work--c" data-cursor="VOIR" data-reveal>
+          <a href="#contact" class="work work--c" data-cursor="VOIR">
             <div class="work__visual-wrap">
               <div class="work__visual work__visual--3">
-                <span class="work__ph">A</span>
+                <span class="work__mark" aria-hidden="true">
+                  <svg viewBox="0 0 100 100"><g fill="currentColor" transform="translate(50 50)"><rect x="-5" y="-42" width="10" height="84" rx="5"/><rect x="-5" y="-42" width="10" height="84" rx="5" transform="rotate(60)"/><rect x="-5" y="-42" width="10" height="84" rx="5" transform="rotate(120)"/></g></svg>
+                </span>
+                <span class="work__ph" aria-hidden="true">A</span>
               </div>
+              <span class="work__veil" aria-hidden="true"></span>
+              <span class="work__index" aria-hidden="true">03</span>
+              <span class="work__open" aria-hidden="true">VOIR LE PROJET <i>→</i></span>
             </div>
             <div class="work__meta">
-              <h3 class="work__name">ATELIER 47</h3>
-              <p class="work__role">Site vitrine · Identité + intégration</p>
-              <p class="work__result"><span class="work__result-k">Résultat</span> à compléter avec un chiffre réel</p>
+              <h3 class="work__name"><span>ATELIER 47</span></h3>
               <p class="work__year">2024</p>
+              <p class="work__role">Site vitrine · Identité + intégration</p>
+              <ul class="work__tags"><li>IDENTITÉ</li><li>VITRINE</li><li>INTÉGRATION</li></ul>
+              <p class="work__result"><span class="work__result-k">Résultat</span> à compléter avec un chiffre réel</p>
             </div>
           </a>
 
@@ -403,7 +430,7 @@
             <div class="game__overlay" id="gameOverlay">
               <p class="game__overlay-title" id="gameOverlayTitle">PRÊT ?</p>
               <p class="game__overlay-text" id="gameOverlayText">Triez le bon grain de l'ivraie.</p>
-              <button class="btn btn--primary" id="gameBtn" data-cursor="hover"><span class="btn__text">Lancer la partie</span></button>
+              <button class="btn btn--primary" id="gameBtn" data-magnetic data-cursor="hover"><span class="btn__text">Lancer la partie</span></button>
             </div>
           </div>
           <aside class="game__side" data-reveal>
@@ -469,10 +496,11 @@
               <label for="fMsg">VOTRE PROJET</label>
               <textarea id="fMsg" rows="4" placeholder="Racontez-nous en quelques lignes…" required></textarea>
             </div>
-            <button type="submit" class="btn-liquid contact-form__submit" id="liquidBtn" data-cursor="hover">
+            <button type="submit" class="btn-liquid contact-form__submit" id="liquidBtn" data-magnetic data-cursor="hover">
               <span class="btn-liquid__fill"></span>
               <span class="btn-liquid__text">ENVOYER LE MESSAGE</span>
             </button>
+            <p class="contact-form__status" id="formStatus" role="status" aria-live="polite"></p>
             <p class="contact-form__note">À l'envoi, votre application mail s'ouvre avec le message pré-rempli — zéro donnée stockée.</p>
           </form>
         </div>
