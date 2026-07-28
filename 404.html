@@ -44,6 +44,11 @@
     }
     .e404__actions { display: flex; gap: .9rem; flex-wrap: wrap; margin-top: 2.6rem; }
     .e404 .btn--ghost { border-color: var(--cream-txt); color: var(--cream-txt); }
+    /* Bouton terracotta sur fond espresso : le remplissage de survol doit
+       inverser vers le crème, sinon le survol ne se voit pas. */
+    .e404 .btn--primary { background: var(--terracotta); color: var(--cream-txt); }
+    .e404 .btn--primary::before { background: var(--cream); }
+    .e404 .btn--primary:hover { color: var(--espresso); }
   </style>
 </head>
 <body>
@@ -66,7 +71,7 @@
       <h1 class="e404__title">Cette page n'existe pas<span class="accent">.</span></h1>
       <p class="e404__sub">Le lien est peut-être cassé, ou la page a été déplacée. <em class="serif-i">Rien de grave.</em></p>
       <div class="e404__actions">
-        <a href="/" class="btn btn--primary" style="background:var(--terracotta)"><span class="btn__text"><span class="btn__roll" data-text="Retour à l'accueil">Retour à l'accueil</span></span></a>
+        <a href="/" class="btn btn--primary"><span class="btn__text"><span class="btn__roll" data-text="Retour à l'accueil">Retour à l'accueil</span></span></a>
         <a href="/#contact" class="btn btn--ghost"><span class="btn__text"><span class="btn__roll" data-text="Nous écrire">Nous écrire</span></span></a>
       </div>
     </div>
