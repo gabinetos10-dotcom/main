@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404 — Page introuvable | GJS</title>
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#1C1611">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231C1611'/%3E%3Cg fill='%23E8612A' transform='translate(32 32)'%3E%3Crect x='-3' y='-19' width='6' height='38' rx='3'/%3E%3Crect x='-3' y='-19' width='6' height='38' rx='3' transform='rotate(60)'/%3E%3Crect x='-3' y='-19' width='6' height='38' rx='3' transform='rotate(120)'/%3E%3C/g%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://api.fontshare.com">
+  <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
+  <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f%5B%5D=clash-display@600&f%5B%5D=satoshi@400&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400&family=Instrument+Serif:ital@1&display=swap">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .e404 {
+      min-height: 100svh; display: grid; align-content: center;
+      background: var(--espresso); color: var(--cream-txt);
+      position: relative; overflow: hidden;
+    }
+    .e404__mark {
+      position: absolute; top: 50%; right: -12vw;
+      width: min(66vw, 640px); aspect-ratio: 1;
+      transform: translateY(-50%); color: var(--terracotta);
+      opacity: .16; pointer-events: none;
+    }
+    .e404__mark g { transform-origin: 200px 200px; animation: markSpin 52s linear infinite; }
+    .e404__inner { position: relative; z-index: 1; }
+    .e404__code {
+      font-family: var(--font-display); font-weight: 600;
+      font-size: clamp(5rem, 22vw, 18rem); line-height: .82;
+      letter-spacing: var(--track-hero); color: var(--terracotta);
+    }
+    .e404__title {
+      font-family: var(--font-display); font-weight: 600;
+      font-size: clamp(1.6rem, 5vw, 3.4rem); text-transform: uppercase;
+      letter-spacing: var(--track-h); line-height: 1; margin-top: 1.4rem;
+    }
+    .e404__sub { color: var(--cream-soft); max-width: 42ch; margin-top: 1.2rem; }
+    .e404__label {
+      font-family: var(--font-mono); font-size: var(--t-mono);
+      letter-spacing: var(--track-mono); text-transform: uppercase;
+      color: var(--cream-faint); margin-bottom: 2rem;
+    }
+    .e404__actions { display: flex; gap: .9rem; flex-wrap: wrap; margin-top: 2.6rem; }
+    .e404 .btn--ghost { border-color: var(--cream-txt); color: var(--cream-txt); }
+  </style>
+</head>
+<body>
+  <div class="grain" aria-hidden="true"></div>
+
+  <main class="e404">
+    <div class="e404__mark" aria-hidden="true">
+      <svg viewBox="0 0 400 400">
+        <g fill="currentColor">
+          <rect x="186" y="46" width="28" height="308" rx="14"/>
+          <rect x="186" y="46" width="28" height="308" rx="14" transform="rotate(60 200 200)"/>
+          <rect x="186" y="46" width="28" height="308" rx="14" transform="rotate(120 200 200)"/>
+        </g>
+      </svg>
+    </div>
+
+    <div class="container e404__inner">
+      <p class="e404__label">Erreur — Page introuvable</p>
+      <p class="e404__code">404</p>
+      <h1 class="e404__title">Cette page n'existe pas<span class="accent">.</span></h1>
+      <p class="e404__sub">Le lien est peut-être cassé, ou la page a été déplacée. <em class="serif-i">Rien de grave.</em></p>
+      <div class="e404__actions">
+        <a href="/" class="btn btn--primary" style="background:var(--terracotta)"><span class="btn__text">Retour à l'accueil</span></a>
+        <a href="/#contact" class="btn btn--ghost"><span class="btn__text">Nous écrire</span></a>
+      </div>
+    </div>
+  </main>
+</body>
+</html>
