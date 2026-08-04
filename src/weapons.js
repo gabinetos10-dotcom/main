@@ -347,7 +347,7 @@ export class WeaponSystem {
     this.switching = Math.max(0, this.switching - dt);
 
     // Visée
-    this.aiming = input.locked && input.mouseDown(2) && !this.player.sprinting;
+    this.aiming = input.active && input.mouseDown(2) && !this.player.sprinting;
     this.aimAmount = damp(this.aimAmount, this.aiming ? 1 : 0, 16, dt);
 
     // Rechargement
@@ -365,7 +365,7 @@ export class WeaponSystem {
 
     // Tir
     const wantsFire = s.def.auto ? input.mouseDown(0) : input.mouseClicked(0);
-    if (wantsFire && input.locked) {
+    if (wantsFire && input.active) {
       if (this.canFire()) {
         this.fire();
       } else if (s.ammo <= 0 && !this.reloading && this.cooldown <= 0) {

@@ -116,16 +116,23 @@ export class Player {
     return this._tmp.set(this.pos.x, this.pos.y + this.eyeHeight, this.pos.z);
   }
 
-  updateLook(input) {
-    if (!input.locked) return;
+  updateLook(input, dt) {
+    if (!input.active) return;
     this.yaw -= input.mouseDX * input.sensitivity;
     const dy = input.mouseDY * input.sensitivity * (input.invertY ? -1 : 1);
     this.pitch = clamp(this.pitch - dy, -Math.PI / 2 + 0.02, Math.PI / 2 - 0.02);
+
+    // Sans capture du pointeur, la souris finit par buter sur le bord de la
+    // fenêtre : approcher le curseur d'un bord fait pivoter en continu.
+    if (input.fallbackLook && input.edgeX !== 0) {
+      const t = Math.max(0, Math.abs(input.edgeX) - 0.72) / 0.28;
+      if (t > 0) this.yaw -= Math.sign(input.edgeX) * t * t * 3.2 * dt;
+    }
   }
 
   update(dt, input) {
     if (!this.alive) return;
-    this.updateLook(input);
+    this.updateLook(input, dt);
 
     const wantCrouch = input.down('ControlLeft') || input.down('KeyC');
     this.crouch = damp(this.crouch, wantCrouch ? 1 : 0, 14, dt);

@@ -103,7 +103,15 @@ export class Game {
     };
 
     this.input.onLockChange = (locked) => {
-      if (!locked && this.state === 'playing') this.pause();
+      if (locked) $('mouse-hint').classList.add('hidden');
+      else if (this.state === 'playing') this.pause();
+    };
+
+    // La capture du pointeur peut être refusée (page embarquée dans une iframe) :
+    // on bascule alors sur la visée sans capture, et on explique comment jouer.
+    this.input.onFallback = () => {
+      $('mouse-hint').classList.remove('hidden');
+      this.hud.toast('Souris non capturée — mode visée libre', '#7fdcff', '🖱');
     };
   }
 
