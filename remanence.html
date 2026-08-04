@@ -1,0 +1,2309 @@
+<title>RÉMANENCE v2.4.1</title>
+<style>
+/* ============================================================
+   RÉMANENCE v2.4.1 — utilitaire de récupération de données
+   Direction : chrome système fin-90s / début-2000s.
+   Monde visuel unique et assumé : pas de thème clair/sombre,
+   ce logiciel n'a jamais connu autre chose que le gris #c0c0c0.
+   ============================================================ */
+:root{
+  --chrome:#c0c0c0;      /* gris système */
+  --chrome-lo:#9a9a9a;
+  --bevel-hi:#e6e6e6;
+  --bevel-sh:#6e6e6e;
+  --bevel-dk:#3d3d3d;
+  --ink:#101010;
+  --ink-soft:#3a3a3a;
+  --data:#1a1a1a;        /* fond des zones de données */
+  --data-lo:#101010;
+  --phos:#5be05b;        /* phosphore */
+  --phos-dim:#2f7a35;
+  --amber:#e0a53c;       /* ambre : métadonnées */
+  --sel:#0a2a6b;
+  --title-a:#0a1f6b;
+  --title-b:#3a63b8;
+  --title-off-a:#7d7d7d;
+  --title-off-b:#b4b4b4;
+  --red:#b31212;         /* le seul rouge. jamais avant 6:00 */
+  --mono: ui-monospace, "Cascadia Mono", "Courier New", Courier, monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  background:#0d0d0f;
+  font-family:var(--mono);
+  font-size:13px;
+  color:var(--ink);
+  overflow:hidden;
+  -webkit-font-smoothing:none;
+}
+button,input,select{font:inherit;color:inherit}
+
+/* ---------- bureau ---------- */
+#desk{
+  position:fixed;inset:0;
+  background:
+    radial-gradient(120% 100% at 50% 0%, #1c2028 0%, #0d0f12 60%, #08090b 100%);
+  display:flex;align-items:stretch;justify-content:center;
+  padding:0;
+}
+#desk.shake{animation:sh .12s steps(2) 3}
+@keyframes sh{0%{transform:translate(0,0)}50%{transform:translate(1px,-1px)}100%{transform:translate(0,0)}}
+@media (prefers-reduced-motion: reduce){
+  #desk.shake{animation:none}
+}
+
+/* ---------- fenêtre ---------- */
+.window{
+  background:var(--chrome);
+  border:2px solid;
+  border-color:var(--bevel-hi) var(--bevel-dk) var(--bevel-dk) var(--bevel-hi);
+  box-shadow:0 0 0 1px #000, 0 18px 60px rgba(0,0,0,.75);
+  display:flex;flex-direction:column;
+  width:100%;height:100%;
+  min-height:0;
+}
+#win{transition:opacity .18s linear}
+#win.gone{display:none}
+
+.titlebar{
+  display:flex;align-items:center;gap:6px;
+  background:linear-gradient(90deg,var(--title-a),var(--title-b));
+  color:#f2f2f2;padding:3px 3px 3px 5px;
+  font-size:12px;font-weight:700;letter-spacing:.02em;
+  flex:0 0 auto;user-select:none;
+}
+.titlebar.inactive{background:linear-gradient(90deg,var(--title-off-a),var(--title-off-b));color:#e8e8e8}
+.tt{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tico{width:13px;height:13px;flex:0 0 auto;background:var(--chrome);
+  border:1px solid var(--bevel-dk);display:grid;place-items:center;font-size:9px;color:#000;font-weight:700}
+.wbtns{display:flex;gap:2px}
+.wbtn{
+  width:17px;height:15px;background:var(--chrome);color:#000;
+  border:1px solid;border-color:var(--bevel-hi) var(--bevel-dk) var(--bevel-dk) var(--bevel-hi);
+  font-size:10px;line-height:1;display:grid;place-items:center;cursor:pointer;
+  font-weight:700;padding:0 0 1px 0;
+}
+.wbtn:active{border-color:var(--bevel-dk) var(--bevel-hi) var(--bevel-hi) var(--bevel-dk)}
+.wbtn:focus-visible{outline:1px dotted #000;outline-offset:-3px}
+
+.menubar{
+  display:flex;gap:0;flex:0 0 auto;
+  border-bottom:1px solid var(--bevel-sh);
+  box-shadow:0 1px 0 var(--bevel-hi);
+  padding:1px 2px;font-size:12px;
+}
+.menubar span{padding:2px 7px;cursor:default}
+.menubar span:hover{background:var(--sel);color:#fff}
+.menubar span.dead{color:var(--bevel-sh)}
+.menubar span.dead:hover{background:none;color:var(--bevel-sh)}
+
+.toolbar{
+  flex:0 0 auto;display:flex;flex-wrap:wrap;gap:10px;align-items:center;
+  padding:4px 6px;border-bottom:1px solid var(--bevel-sh);
+  box-shadow:0 1px 0 var(--bevel-hi);font-size:11px;color:var(--ink-soft);
+}
+.chip{display:flex;gap:5px;align-items:center}
+.chip b{font-weight:700;color:var(--ink)}
+.led{width:7px;height:7px;background:#3a5a3a;border:1px solid #1d2a1d;border-radius:1px}
+.led.on{background:#7dff7d;box-shadow:0 0 5px #6cff6c}
+.led.rd{background:var(--red);box-shadow:0 0 5px var(--red)}
+
+/* ---------- corps ---------- */
+.body{flex:1 1 auto;display:flex;flex-direction:column;min-height:0;padding:5px;gap:5px}
+.split{flex:1 1 auto;display:flex;gap:5px;min-height:0}
+.pane{
+  background:var(--data);
+  border:2px solid;border-color:var(--bevel-sh) var(--bevel-hi) var(--bevel-hi) var(--bevel-sh);
+  min-height:0;display:flex;flex-direction:column;
+}
+#left{flex:0 0 clamp(180px,29%,290px);min-width:0}
+#right{flex:1 1 auto;min-width:0}
+body.act4 #left{flex:0 0 clamp(140px,20%,200px);opacity:.45}
+.panehead{
+  flex:0 0 auto;background:#2a2a2a;color:#cfcfcf;font-size:11px;
+  padding:3px 6px;border-bottom:1px solid #000;display:flex;justify-content:space-between;gap:8px;
+  letter-spacing:.04em;
+}
+.panebody{flex:1 1 auto;overflow:auto;min-height:0;scrollbar-width:thin;scrollbar-color:#555 #1a1a1a}
+.panebody::-webkit-scrollbar{width:13px;height:13px}
+.panebody::-webkit-scrollbar-track{background:#141414}
+.panebody::-webkit-scrollbar-thumb{background:var(--chrome);border:1px solid #000}
+
+/* liste de fichiers */
+.frow{
+  display:grid;grid-template-columns:14px 1fr auto;gap:6px;align-items:center;
+  padding:2px 6px;font-size:11.5px;color:#b9c7b9;cursor:default;white-space:nowrap;
+}
+.frow:hover{background:#232a23}
+.frow.sel{background:var(--sel);color:#fff}
+.frow .fi{font-size:10px;color:var(--phos-dim);text-align:center}
+.frow.sel .fi{color:#9fd0ff}
+.frow .fn{overflow:hidden;text-overflow:ellipsis}
+.frow .fs{font-size:10px;color:#6d786d;font-variant-numeric:tabular-nums}
+.frow.sel .fs{color:#c8d8ff}
+.frow.nu{animation:nu 1.1s ease-out 1}
+@keyframes nu{0%{background:#2d3c2d}100%{background:transparent}}
+.frow.bad .fn{color:var(--amber)}
+.dirrow{padding:3px 6px 1px;font-size:10.5px;color:#6d786d;letter-spacing:.05em}
+
+/* visionneuse */
+.vhead{
+  flex:0 0 auto;display:flex;gap:4px;flex-wrap:wrap;align-items:center;
+  background:var(--chrome);padding:3px 4px;border-bottom:1px solid #000;
+}
+.vhead .vpath{flex:1 1 auto;font-size:11px;color:var(--ink-soft);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-left:3px}
+.btn{
+  background:var(--chrome);border:2px solid;
+  border-color:var(--bevel-hi) var(--bevel-dk) var(--bevel-dk) var(--bevel-hi);
+  padding:2px 9px;font-size:11px;cursor:pointer;color:#000;
+}
+.btn:active,.btn.down{border-color:var(--bevel-dk) var(--bevel-hi) var(--bevel-hi) var(--bevel-dk)}
+.btn:disabled{color:var(--bevel-sh);text-shadow:1px 1px 0 var(--bevel-hi);cursor:default}
+.btn:focus-visible{outline:1px dotted #000;outline-offset:-4px}
+.vbody{flex:1 1 auto;overflow:auto;min-height:0;padding:10px 12px;
+  scrollbar-width:thin;scrollbar-color:#555 #1a1a1a}
+.vbody::-webkit-scrollbar{width:13px}
+.vbody::-webkit-scrollbar-track{background:#141414}
+.vbody::-webkit-scrollbar-thumb{background:var(--chrome);border:1px solid #000}
+.vbody pre{
+  font-family:var(--mono);font-size:12.5px;line-height:1.55;
+  color:var(--phos);white-space:pre-wrap;word-break:break-word;
+  text-shadow:0 0 4px rgba(91,224,91,.24);
+}
+.vbody pre.meta{color:var(--amber);text-shadow:0 0 4px rgba(224,165,60,.2)}
+.vbody pre.dead{color:#6b6b6b;text-shadow:none}
+.vbody .empty{color:#5a5a5a;font-size:12px;padding:16px 0}
+.corrupt{color:#4a4a4a}
+.hl{color:#e9ffe9;background:rgba(91,224,91,.1)}
+.vbody pre .rd{color:var(--red);text-shadow:0 0 6px rgba(179,18,18,.5)}
+canvas.pic{
+  image-rendering:pixelated;width:100%;max-width:420px;height:auto;
+  border:1px solid #000;background:#000;display:block;
+}
+.cap{font-size:11px;color:#7e8a7e;margin-top:6px}
+
+/* ---------- bandeau progression ---------- */
+.status{flex:0 0 auto;display:flex;flex-direction:column;gap:3px}
+.pbar{
+  height:19px;background:#0e0e0e;
+  border:2px solid;border-color:var(--bevel-sh) var(--bevel-hi) var(--bevel-hi) var(--bevel-sh);
+  padding:2px;display:flex;gap:2px;overflow:hidden;
+}
+.pfill{background:linear-gradient(180deg,#3f7fd6,#123f88);width:0%;transition:width .35s linear;flex:0 0 auto}
+body.act4 .pfill{background:linear-gradient(180deg,#8a1414,#4a0808)}
+.sline{display:flex;justify-content:space-between;gap:10px;font-size:11px;color:var(--ink-soft);
+  font-variant-numeric:tabular-nums}
+.sline b{font-weight:400;color:var(--ink)}
+
+/* ---------- console ---------- */
+#console{
+  flex:0 0 auto;height:clamp(74px,15vh,118px);
+  background:var(--data-lo);
+  border:2px solid;border-color:var(--bevel-sh) var(--bevel-hi) var(--bevel-hi) var(--bevel-sh);
+  overflow:hidden;padding:4px 7px;font-size:11px;line-height:1.45;
+  color:var(--phos-dim);display:flex;flex-direction:column;justify-content:flex-end;
+}
+body.act4 #console{height:clamp(120px,26vh,230px);color:var(--phos)}
+#console div{white-space:pre-wrap;word-break:break-word}
+#console .w{color:var(--amber)}
+#console .e{color:var(--red)}
+#console .q{color:#e9ffe9}
+
+/* ---------- dialogues ---------- */
+#dlg{position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:20px;z-index:52}
+#dlg.on{display:flex}
+#dlg.blocking{background:rgba(0,0,0,.28)}
+.dialog{
+  width:min(470px,94vw);background:var(--chrome);
+  border:2px solid;border-color:var(--bevel-hi) var(--bevel-dk) var(--bevel-dk) var(--bevel-hi);
+  box-shadow:0 12px 44px rgba(0,0,0,.7);
+}
+.dialog .titlebar{font-size:11.5px}
+.dcontent{display:flex;gap:12px;padding:16px 15px 6px}
+.dico{
+  flex:0 0 32px;height:32px;border:2px solid var(--bevel-sh);
+  display:grid;place-items:center;font-size:19px;font-weight:700;color:var(--ink);
+  background:#d4d4d4;
+}
+.dico.warn{color:#7a5c00}
+.dico.err{color:var(--red);border-color:var(--red)}
+.dtext{font-size:12px;line-height:1.6;flex:1 1 auto}
+.dtext .sub{color:var(--ink-soft);font-size:11.5px;margin-top:7px;display:block}
+.dbtns{display:flex;gap:7px;justify-content:flex-end;padding:12px 15px 15px;flex-wrap:wrap}
+.dbtns .btn{min-width:92px;padding:4px 12px;text-align:center}
+
+/* infobulle d'assistance */
+#tip{
+  position:fixed;right:16px;bottom:16px;width:min(300px,72vw);z-index:35;
+  background:#fbf7c9;border:1px solid #8a8156;box-shadow:0 6px 20px rgba(0,0,0,.5);
+  padding:9px 10px;font-size:11.5px;line-height:1.55;color:#241f04;display:none;
+}
+#tip.on{display:block}
+#tip b{display:block;font-size:11px;letter-spacing:.06em;margin-bottom:4px;color:#5a5116}
+#tip .x{position:absolute;top:3px;right:4px;cursor:pointer;font-weight:700;color:#5a5116;padding:2px 4px}
+
+/* ---------- calibration / démarrage ---------- */
+#boot{
+  position:fixed;inset:0;background:#000;color:#c8c8c8;z-index:50;
+  padding:26px 20px;font-size:12.5px;line-height:1.6;overflow:hidden;
+}
+#boot pre{white-space:pre-wrap;font-family:var(--mono)}
+#calib{position:fixed;inset:0;display:none;align-items:center;justify-content:center;z-index:56;padding:18px}
+#calib.on{display:flex}
+.cal{width:min(500px,95vw)}
+.calbody{padding:15px 16px 16px;display:flex;flex-direction:column;gap:13px}
+.calintro{font-size:11.5px;line-height:1.65;color:var(--ink-soft)}
+.field{display:flex;flex-direction:column;gap:4px}
+.field label{font-size:11.5px}
+.field .hint{font-size:10.5px;color:var(--ink-soft)}
+.field input{
+  background:#fff;border:2px solid;
+  border-color:var(--bevel-sh) var(--bevel-hi) var(--bevel-hi) var(--bevel-sh);
+  padding:4px 6px;font-size:12.5px;color:#000;width:100%;
+}
+.field input:focus{outline:1px dotted #000;outline-offset:-4px}
+.radios{display:flex;gap:14px;flex-wrap:wrap}
+.radios label{display:flex;gap:5px;align-items:center;font-size:12px;cursor:pointer}
+.calfoot{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.calfoot .lic{font-size:10.5px;color:var(--bevel-sh)}
+.err{color:#8a1010;font-size:11px;min-height:14px}
+
+/* ---------- fin ---------- */
+#endscr{
+  position:fixed;inset:0;z-index:70;display:none;
+  background:#08090b;color:#8d8d8d;font-size:12px;line-height:1.7;
+  padding:clamp(18px,6vh,60px);overflow:auto;
+}
+#endscr.on{display:block}
+#endscr pre{white-space:pre-wrap;font-family:var(--mono);max-width:66ch}
+#endscr .burn{color:#22261f;text-shadow:0 0 3px rgba(60,80,50,.35)}
+#relaunch{
+  margin-top:26px;background:none;border:1px solid #2b2b2b;color:#4c4c4c;
+  padding:4px 11px;font-size:11px;cursor:pointer;display:none;
+}
+#relaunch:hover{color:#8d8d8d;border-color:#565656}
+#relaunch:focus-visible{outline:1px dotted #666;outline-offset:2px}
+
+/* ---------- grain + scanlines ---------- */
+#fx{position:fixed;inset:0;pointer-events:none;z-index:90}
+#fx::before{
+  content:"";position:absolute;inset:0;
+  background:repeating-linear-gradient(180deg,rgba(0,0,0,.16) 0 1px,rgba(0,0,0,0) 1px 3px);
+  opacity:.55;
+}
+#fx::after{
+  content:"";position:absolute;inset:-60px;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/></filter><rect width='140' height='140' filter='url(%23n)' opacity='.5'/></svg>");
+  opacity:.05;animation:gr .6s steps(4) infinite;
+}
+@keyframes gr{
+  0%{transform:translate(0,0)}25%{transform:translate(-14px,8px)}
+  50%{transform:translate(9px,-11px)}75%{transform:translate(-6px,-6px)}100%{transform:translate(0,0)}
+}
+@media (prefers-reduced-motion: reduce){#fx::after{animation:none}}
+#vig{position:fixed;inset:0;pointer-events:none;z-index:89;
+  background:radial-gradient(130% 100% at 50% 45%,transparent 55%,rgba(0,0,0,.55) 100%)}
+
+/* gel */
+body.frozen #win{filter:grayscale(.55) brightness(.82)}
+body.frozen .split,body.frozen .menubar,body.frozen .toolbar{pointer-events:none}
+#freezemask{position:fixed;inset:0;z-index:45;display:none;cursor:progress}
+#freezemask.on{display:block}
+
+@media (max-width:640px){
+  body{font-size:12px}
+  .split{flex-direction:column}
+  #left{flex:0 0 34%}
+  body.act4 #left{flex:0 0 22%}
+  .toolbar{font-size:10px;gap:7px}
+  .vbody pre{font-size:11.5px}
+}
+</style>
+
+<div id="desk">
+  <div id="win" class="window">
+    <div class="titlebar" id="tbar">
+      <span class="tico">R</span>
+      <span class="tt" id="ttext">Rémanence v2.4.1 — [aucun périphérique]</span>
+      <span class="wbtns">
+        <button class="wbtn" id="bmin" title="Réduire" aria-label="Réduire">_</button>
+        <button class="wbtn" id="bmax" title="Agrandir" aria-label="Agrandir">□</button>
+        <button class="wbtn" id="bclose" title="Fermer" aria-label="Fermer">×</button>
+      </span>
+    </div>
+    <div class="menubar" id="menubar">
+      <span>Fichier</span><span>Analyse</span><span>Périphériques</span>
+      <span>Options</span><span>?</span>
+    </div>
+    <div class="toolbar" id="toolbar">
+      <span class="chip"><span class="led" id="led"></span><b id="devname">WDC 40 Go</b></span>
+      <span class="chip">volume&nbsp;: <b id="vol">D:\</b></span>
+      <span class="chip">secteurs&nbsp;: <b id="sect">0</b>&nbsp;/&nbsp;78&nbsp;165&nbsp;360</span>
+      <span class="chip">récupérés&nbsp;: <b id="nrec">0</b></span>
+      <span class="chip">horloge&nbsp;: <b id="hclock">--:--:--</b></span>
+    </div>
+    <div class="body">
+      <div class="split">
+        <div class="pane" id="left">
+          <div class="panehead"><span>Fichiers récupérables</span><span id="lcount">0</span></div>
+          <div class="panebody" id="flist"></div>
+        </div>
+        <div class="pane" id="right">
+          <div class="vhead">
+            <button class="btn" id="brestore" disabled>Restaurer</button>
+            <button class="btn" id="bexclude" disabled>Exclure</button>
+            <span class="vpath" id="vpath">aucun fichier sélectionné</span>
+          </div>
+          <div class="panebody vbody" id="viewer">
+            <div class="empty">Sélectionnez un fichier dans la liste pour prévisualiser son contenu récupéré.</div>
+          </div>
+        </div>
+      </div>
+      <div class="status">
+        <div class="pbar"><div class="pfill" id="pfill"></div></div>
+        <div class="sline">
+          <span id="stext">En attente de calibration.</span>
+          <span><b id="ppct">0,0 %</b></span>
+        </div>
+      </div>
+      <div id="console"></div>
+    </div>
+  </div>
+</div>
+
+<div id="freezemask"></div>
+<div id="tip"><span class="x" id="tipx" role="button" tabindex="0" aria-label="Fermer l'astuce">×</span><b id="tiph">ASSISTANCE RÉMANENCE</b><span id="tipb"></span></div>
+<div id="dlg"><div class="dialog" id="dlgbox"></div></div>
+
+<div id="calib">
+  <form class="window cal" id="calform" autocomplete="off">
+    <div class="titlebar"><span class="tico">R</span><span class="tt">Calibration du poste — étape 1 sur 1</span></div>
+    <div class="calbody">
+      <div class="calintro">
+        Rémanence doit établir une empreinte du poste avant d'accéder au support endommagé.
+        Ces informations restent locales et ne sont utilisées que pour horodater le rapport de session.
+      </div>
+      <div class="field">
+        <label for="f1">Prénom de l'opérateur</label>
+        <input id="f1" maxlength="18" spellcheck="false" />
+        <span class="hint">Figurera en en-tête du rapport de restauration.</span>
+      </div>
+      <div class="field">
+        <label for="f2">Pièce où se trouve le poste</label>
+        <input id="f2" maxlength="24" spellcheck="false" placeholder="bureau, salon, chambre…" />
+        <span class="hint">Sert à distinguer plusieurs postes d'un même foyer.</span>
+      </div>
+      <div class="field">
+        <label>Porte de la pièce, actuellement</label>
+        <div class="radios">
+          <label><input type="radio" name="door" value="fermée" checked /> fermée</label>
+          <label><input type="radio" name="door" value="ouverte" /> ouverte</label>
+        </div>
+        <span class="hint">Une porte ouverte modifie l'acoustique et le bruit de fond du relevé.</span>
+      </div>
+      <div class="err" id="calerr"></div>
+      <div class="calfoot">
+        <span class="lic">Licence utilisateur unique — poste 4</span>
+        <button class="btn" id="calgo" type="submit" style="padding:4px 16px">Démarrer l'analyse</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div id="boot"><pre id="boottxt"></pre></div>
+<div id="endscr"><pre id="endtxt"></pre><button id="relaunch">relancer rmnnc.exe</button></div>
+<div id="vig"></div><div id="fx"></div>
+<script>
+/* =========================================================================
+   RÉMANENCE v2.4.1
+   Bloc 1 — utilitaires, données réelles du poste, moteur audio synthétisé.
+   ========================================================================= */
+(function () {
+  "use strict";
+
+  /* ---------------- utilitaires ---------------- */
+  var $ = function (s) { return document.getElementById(s); };
+  var pad = function (n, w) { return String(Math.floor(n)).padStart(w || 2, "0"); };
+  var rnd = function (a, b) { return a + Math.random() * (b - a); };
+  var irnd = function (a, b) { return Math.floor(rnd(a, b + 1)); };
+  var clampn = function (v, a, b) { return v < a ? a : v > b ? b : v; };
+
+  function shuffle(a) {
+    a = a.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+  function pickN(arr, n) { return shuffle(arr).slice(0, n); }
+
+  function hms(d) { return pad(d.getHours()) + ":" + pad(d.getMinutes()) + ":" + pad(d.getSeconds()); }
+  function hm(d) { return pad(d.getHours()) + ":" + pad(d.getMinutes()); }
+  function dmy(d) { return pad(d.getDate()) + "/" + pad(d.getMonth() + 1) + "/" + d.getFullYear(); }
+  function dm(d) { return pad(d.getDate()) + "/" + pad(d.getMonth() + 1); }
+  function dur(sec) { return pad(sec / 3600) + ":" + pad((sec / 60) % 60) + ":" + pad(sec % 60); }
+  function mmss(sec) { return pad(sec / 60) + ":" + pad(sec % 60); }
+  function ago(sec) { return new Date(Date.now() - sec * 1000); }
+  function fr(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, " "); }
+  function esc(s) {
+    return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+  function ucfirst(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : s; }
+
+  /* ---------------- données réelles du poste ---------------- */
+  function readEnv() {
+    var e = {};
+    var tz = "";
+    try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ""; } catch (x) { tz = ""; }
+    e.tz = tz || "inconnu";
+    var seg = e.tz.split("/");
+    e.region = seg.length > 1 ? seg[0].replace(/_/g, " ") : "";
+    if (seg.length > 1) {
+      e.city = seg[seg.length - 1].replace(/_/g, " ");
+    } else {
+      /* pas de ville dans le fuseau : on retombe sur la région de la locale */
+      var lg = navigator.language || "";
+      var reg = (lg.split("-")[1] || "").toUpperCase();
+      e.city = reg || (e.tz !== "inconnu" ? e.tz : "LOCAL");
+    }
+    var off = -new Date().getTimezoneOffset();
+    e.utc = (off >= 0 ? "+" : "-") + pad(Math.abs(off) / 60) + ":" + pad(Math.abs(off) % 60);
+    e.lang = (navigator.language || "fr-FR");
+    e.langs = (navigator.languages || [e.lang]).join(", ");
+    e.w = (window.screen && screen.width) || window.innerWidth;
+    e.h = (window.screen && screen.height) || window.innerHeight;
+    e.depth = (window.screen && screen.colorDepth) || 24;
+    e.dpr = window.devicePixelRatio || 1;
+    e.vw = window.innerWidth; e.vh = window.innerHeight;
+    e.cores = navigator.hardwareConcurrency || 0;
+    e.touch = ("ontouchstart" in window) || (navigator.maxTouchPoints > 0);
+    var ua = navigator.userAgent || "";
+    e.ua = ua;
+    var b = "Navigateur inconnu";
+    if (/Edg\//.test(ua)) b = "Edge";
+    else if (/OPR\//.test(ua)) b = "Opera";
+    else if (/Firefox\//.test(ua)) b = "Firefox";
+    else if (/Chrome\//.test(ua)) b = "Chrome";
+    else if (/Safari\//.test(ua)) b = "Safari";
+    var m = ua.match(/(Edg|OPR|Firefox|Chrome|Version)\/(\d+)/);
+    e.browser = b + (m ? " " + m[2] : "");
+    var os = "système inconnu";
+    if (/Windows NT 10/.test(ua)) os = "Windows NT 10.0";
+    else if (/Windows/.test(ua)) os = "Windows NT";
+    else if (/Mac OS X/.test(ua)) os = "Macintosh";
+    else if (/Android/.test(ua)) os = "Android";
+    else if (/(iPhone|iPad)/.test(ua)) os = "iOS";
+    else if (/Linux/.test(ua)) os = "Linux x86_64";
+    e.os = os;
+    return e;
+  }
+  var ENV = readEnv();
+
+  /* =========================================================================
+     Moteur audio — tout est synthétisé, aucun fichier externe.
+     Lit : drone sub, bourdon secteur 50 Hz, bruit rose filtré.
+     Ponctuel : clics de tête de lecture, souffle/respiration granulaire,
+     pics de saturation, sub-drop, tonalité pure.
+     ========================================================================= */
+  var A = {
+    ok: false, ctx: null, out: null, bed: null,
+    drone: null, hum: null, noiseSrc: null, noiseGain: null, noiseFilt: null,
+    hdd: null, hddTimer: 0, level: 0, muted: false, pinkBuf: null,
+    lfo: null, subOsc: null
+  };
+
+  function pinkBuffer(ctx, seconds) {
+    var n = Math.floor(ctx.sampleRate * seconds);
+    var buf = ctx.createBuffer(1, n, ctx.sampleRate);
+    var d = buf.getChannelData(0);
+    var b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
+    for (var i = 0; i < n; i++) {
+      var w = Math.random() * 2 - 1;
+      b0 = 0.99886 * b0 + w * 0.0555179;
+      b1 = 0.99332 * b1 + w * 0.0750759;
+      b2 = 0.96900 * b2 + w * 0.1538520;
+      b3 = 0.86650 * b3 + w * 0.3104856;
+      b4 = 0.55000 * b4 + w * 0.5329522;
+      b5 = -0.7616 * b5 - w * 0.0168980;
+      d[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + w * 0.5362) * 0.09;
+      b6 = w * 0.115926;
+    }
+    return buf;
+  }
+
+  A.init = function () {
+    if (A.ok) return;
+    var C = window.AudioContext || window.webkitAudioContext;
+    if (!C) return;
+    try { A.ctx = new C(); } catch (x) { return; }
+    var ctx = A.ctx;
+
+    A.out = ctx.createGain();
+    A.out.gain.value = 0.85;
+    var lim = ctx.createDynamicsCompressor();
+    try {
+      lim.threshold.value = -14; lim.knee.value = 8;
+      lim.ratio.value = 12; lim.attack.value = 0.003; lim.release.value = 0.25;
+    } catch (x) {}
+    A.out.connect(lim); lim.connect(ctx.destination);
+
+    A.bed = ctx.createGain();
+    A.bed.gain.value = 0.0001;
+    A.bed.connect(A.out);
+
+    /* drone : deux sinus désaccordés + une quinte très basse, passe-bas */
+    var dLP = ctx.createBiquadFilter();
+    dLP.type = "lowpass"; dLP.frequency.value = 190; dLP.Q.value = 0.6;
+    dLP.connect(A.bed);
+    var dg = ctx.createGain(); dg.gain.value = 0.5; dg.connect(dLP);
+    [48.6, 49.15, 73.4].forEach(function (f, i) {
+      var o = ctx.createOscillator();
+      o.type = i === 2 ? "triangle" : "sine";
+      o.frequency.value = f;
+      var g = ctx.createGain(); g.gain.value = i === 2 ? 0.16 : 0.42;
+      o.connect(g); g.connect(dg); o.start();
+    });
+    A.drone = dg;
+
+    /* LFO lent sur la coupure : le drone "respire" */
+    var lfo = ctx.createOscillator(); lfo.type = "sine"; lfo.frequency.value = 0.043;
+    var lg = ctx.createGain(); lg.gain.value = 46;
+    lfo.connect(lg); lg.connect(dLP.frequency); lfo.start();
+    A.lfo = lfo;
+
+    /* bourdon secteur 50 Hz + harmonique 150 : électricité du bâtiment */
+    var hg = ctx.createGain(); hg.gain.value = 0.055; hg.connect(A.bed);
+    var hLP = ctx.createBiquadFilter(); hLP.type = "lowpass"; hLP.frequency.value = 320;
+    hLP.connect(hg);
+    [50, 150].forEach(function (f, i) {
+      var o = ctx.createOscillator(); o.type = "sawtooth"; o.frequency.value = f;
+      var g = ctx.createGain(); g.gain.value = i ? 0.11 : 0.3;
+      o.connect(g); g.connect(hLP); o.start();
+    });
+    A.hum = hg;
+
+    /* bruit rose filtré : souffle de ventilateur */
+    A.pinkBuf = pinkBuffer(ctx, 6);
+    var src = ctx.createBufferSource();
+    src.buffer = A.pinkBuf; src.loop = true;
+    var nf = ctx.createBiquadFilter(); nf.type = "bandpass";
+    nf.frequency.value = 420; nf.Q.value = 0.55;
+    var ng = ctx.createGain(); ng.gain.value = 0.30;
+    src.connect(nf); nf.connect(ng); ng.connect(A.bed); src.start();
+    A.noiseSrc = src; A.noiseFilt = nf; A.noiseGain = ng;
+
+    A.ok = true;
+    A.setBed(0.0);
+  };
+
+  A.now = function () { return A.ctx ? A.ctx.currentTime : 0; };
+
+  A.setBed = function (v, ramp) {
+    if (!A.ok) return;
+    A.level = v;
+    var g = A.bed.gain, t = A.now();
+    g.cancelScheduledValues(t);
+    g.setValueAtTime(Math.max(0.0001, g.value), t);
+    g.exponentialRampToValueAtTime(Math.max(0.0001, A.muted ? 0.0001 : v), t + (ramp === undefined ? 1.6 : ramp));
+  };
+
+  A.tint = function (freq, q) {
+    if (!A.ok) return;
+    var t = A.now();
+    A.noiseFilt.frequency.cancelScheduledValues(t);
+    A.noiseFilt.frequency.linearRampToValueAtTime(freq, t + 2.4);
+    if (q !== undefined) A.noiseFilt.Q.linearRampToValueAtTime(q, t + 2.4);
+  };
+
+  A.silence = function (sec) {
+    if (!A.ok) return;
+    A.muted = true;
+    var t = A.now(), g = A.bed.gain;
+    g.cancelScheduledValues(t);
+    g.setValueAtTime(Math.max(0.0001, g.value), t);
+    g.exponentialRampToValueAtTime(0.0001, t + 0.35);
+    setTimeout(function () {
+      A.muted = false;
+      A.setBed(A.level, 2.2);
+    }, sec * 1000);
+  };
+
+  /* clic de tête de lecture : impulsion filtrée + micro-ping résonant */
+  A.click = function (gain, when) {
+    if (!A.ok) return;
+    var ctx = A.ctx, t = (when === undefined ? A.now() : when);
+    gain = gain === undefined ? 0.5 : gain;
+    var b = ctx.createBuffer(1, Math.floor(ctx.sampleRate * 0.02), ctx.sampleRate);
+    var d = b.getChannelData(0);
+    for (var i = 0; i < d.length; i++) {
+      d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / d.length, 7);
+    }
+    var s = ctx.createBufferSource(); s.buffer = b;
+    var f = ctx.createBiquadFilter();
+    f.type = "bandpass"; f.frequency.value = rnd(1700, 3400); f.Q.value = rnd(4, 11);
+    var g = ctx.createGain(); g.gain.value = gain * 0.5;
+    s.connect(f); f.connect(g); g.connect(A.out); s.start(t);
+
+    var o = ctx.createOscillator(); o.type = "sine"; o.frequency.value = rnd(1200, 2600);
+    var og = ctx.createGain();
+    og.gain.setValueAtTime(gain * 0.06, t);
+    og.gain.exponentialRampToValueAtTime(0.0001, t + 0.045);
+    o.connect(og); og.connect(A.out); o.start(t); o.stop(t + 0.06);
+  };
+
+  A.burst = function (n, gain) {
+    if (!A.ok) return;
+    var t = A.now();
+    for (var i = 0; i < n; i++) A.click(gain === undefined ? 0.45 : gain, t + i * rnd(0.035, 0.11));
+  };
+
+  /* souffle / respiration granulaire : bruit rose formanté, enveloppe lente */
+  A.breath = function (gain, len, close) {
+    if (!A.ok) return;
+    var ctx = A.ctx, t = A.now();
+    len = len || rnd(1.5, 2.4);
+    gain = gain === undefined ? 0.16 : gain;
+    var s = ctx.createBufferSource();
+    s.buffer = A.pinkBuf; s.loop = true;
+    s.playbackRate.value = rnd(0.75, 1.25);
+    var f = ctx.createBiquadFilter();
+    f.type = "bandpass"; f.frequency.value = close ? rnd(340, 520) : rnd(600, 950);
+    f.Q.value = close ? 1.1 : 2.0;
+    var f2 = ctx.createBiquadFilter();
+    f2.type = "lowpass"; f2.frequency.value = close ? 2100 : 1400;
+    var g = ctx.createGain();
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(gain, t + len * 0.42);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + len);
+    s.connect(f); f.connect(f2); f2.connect(g); g.connect(A.out);
+    s.start(t); s.stop(t + len + 0.1);
+  };
+
+  /* pic de saturation : bruit blanc écrêté */
+  A.spike = function (gain, len) {
+    if (!A.ok) return;
+    var ctx = A.ctx, t = A.now();
+    len = len || rnd(0.07, 0.22);
+    gain = gain === undefined ? 0.22 : gain;
+    var n = Math.floor(ctx.sampleRate * len);
+    var b = ctx.createBuffer(1, n, ctx.sampleRate);
+    var d = b.getChannelData(0);
+    for (var i = 0; i < n; i++) d[i] = Math.random() * 2 - 1;
+    var s = ctx.createBufferSource(); s.buffer = b;
+    var ws = ctx.createWaveShaper();
+    var curve = new Float32Array(1024);
+    for (var k = 0; k < 1024; k++) {
+      var x = (k / 512) - 1;
+      curve[k] = Math.tanh(x * 7);
+    }
+    ws.curve = curve;
+    var hp = ctx.createBiquadFilter(); hp.type = "highpass"; hp.frequency.value = rnd(500, 1500);
+    var g = ctx.createGain();
+    g.gain.setValueAtTime(gain, t);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + len);
+    s.connect(ws); ws.connect(hp); hp.connect(g); g.connect(A.out);
+    s.start(t);
+  };
+
+  /* chute sub : la pièce se creuse */
+  A.sub = function (gain) {
+    if (!A.ok) return;
+    var ctx = A.ctx, t = A.now();
+    var o = ctx.createOscillator(); o.type = "sine";
+    o.frequency.setValueAtTime(rnd(62, 78), t);
+    o.frequency.exponentialRampToValueAtTime(23, t + 2.6);
+    var g = ctx.createGain();
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(gain === undefined ? 0.3 : gain, t + 0.25);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + 3.0);
+    o.connect(g); g.connect(A.out); o.start(t); o.stop(t + 3.1);
+  };
+
+  /* tonalité pure : bip système */
+  A.tone = function (f, len, gain, type) {
+    if (!A.ok) return;
+    var ctx = A.ctx, t = A.now();
+    len = len || 0.12;
+    var o = ctx.createOscillator(); o.type = type || "square"; o.frequency.value = f;
+    var g = ctx.createGain();
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(gain === undefined ? 0.09 : gain, t + 0.008);
+    g.gain.setValueAtTime(gain === undefined ? 0.09 : gain, t + len * 0.8);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + len);
+    o.connect(g); g.connect(A.out); o.start(t); o.stop(t + len + 0.02);
+  };
+
+  /* activité disque continue, cadence variable */
+  A.hddOn = function (rate) {
+    A.hddRate = rate;
+    if (A.hddTimer) return;
+    var loop = function () {
+      if (!A.hddRate) { A.hddTimer = 0; return; }
+      if (A.ok && !A.muted && Math.random() < A.hddRate) {
+        A.click(rnd(0.10, 0.30));
+        if (Math.random() < 0.25) A.burst(irnd(2, 4), rnd(0.07, 0.18));
+      }
+      A.hddTimer = setTimeout(loop, rnd(160, 950));
+    };
+    loop();
+  };
+  A.hddOff = function () { A.hddRate = 0; };
+
+  /* exporté vers le bloc 2 */
+  window.__RMN = {
+    $: $, pad: pad, rnd: rnd, irnd: irnd, clampn: clampn,
+    shuffle: shuffle, pickN: pickN,
+    hms: hms, hm: hm, dmy: dmy, dm: dm, dur: dur, mmss: mmss, ago: ago,
+    fr: fr, esc: esc, ucfirst: ucfirst,
+    ENV: ENV, A: A
+  };
+})();
+/* =========================================================================
+   RÉMANENCE v2.4.1
+   Bloc 2 — catalogue des fichiers récupérés + rendu des images dégradées.
+   ========================================================================= */
+(function () {
+  "use strict";
+  var R = window.__RMN;
+  var ENV = R.ENV, pad = R.pad, rnd = R.rnd, irnd = R.irnd, esc = R.esc;
+  var hms = R.hms, hm = R.hm, dmy = R.dmy, dm = R.dm, fr = R.fr, ucfirst = R.ucfirst, ago = R.ago;
+
+  /* dates du précédent propriétaire, calées relativement à maintenant */
+  function D(daysAgo, h, m, s) {
+    var d = new Date(Date.now() - daysAgo * 86400000);
+    d.setHours(h === undefined ? 21 : h, m === undefined ? 0 : m, s === undefined ? 0 : s, 0);
+    return d;
+  }
+  var OWNER_LAST = 412; /* jours depuis la dernière session de T. */
+
+  /* ---------- rendu d'image dégradée sur canvas ---------- */
+  function drawPic(cv, scene, quality, doorOpen) {
+    var W = 208, H = 156;
+    cv.width = W; cv.height = H;
+    var g = cv.getContext("2d");
+    var img = g.createImageData(W, H);
+    var d = img.data;
+
+    /* champ de luminance : mur / sol / encadrement / ouverture */
+    function lum(x, y) {
+      var u = x / W, v = y / H, L;
+      if (scene === "cuisine") {
+        L = 0.30 + 0.22 * (1 - v) + 0.10 * Math.sin(u * 7.1);
+        if (v > 0.62) L = 0.42 + 0.06 * Math.sin(u * 21);          /* plan de travail */
+        if (u > 0.62 && u < 0.80 && v > 0.16 && v < 0.58) L = 0.16; /* placard ouvert */
+        if (u > 0.10 && u < 0.22 && v > 0.40 && v < 0.60) L = 0.55; /* objet clair */
+      } else if (scene === "couloir") {
+        L = 0.20 + 0.16 * (1 - Math.abs(u - 0.5) * 2);
+        if (v > 0.74) L = 0.14;
+        var dx0 = 0.55, dw = 0.30;
+        if (u > dx0 && u < dx0 + dw && v > 0.06 && v < 0.86) {
+          L = 0.34;                                                /* porte */
+          if (u > dx0 + dw - 0.075) L = 0.04;                      /* entrebâillement */
+        }
+        if (u < 0.13) L = 0.42 - 0.2 * v;
+      } else if (scene === "porte") {
+        L = 0.13 + 0.08 * (1 - v);
+        if (u > 0.20 && u < 0.80 && v > 0.03 && v < 0.94) L = 0.015; /* battant absent */
+        if ((u > 0.17 && u < 0.21) || (u > 0.79 && u < 0.83)) L = 0.40; /* chambranle */
+        if (v > 0.90) L = 0.30;
+      } else { /* "locale" : reconstruction de la pièce de l'opérateur */
+        L = 0.17 + 0.13 * (1 - v) + 0.05 * Math.sin(u * 4.3 + 1.2);
+        if (v > 0.70) L = 0.11;
+        var a = 0.60, b = 0.60 + (doorOpen ? 0.005 : 0.26);
+        if (doorOpen) {
+          if (u > a && u < a + 0.30) L = 0.02;                     /* ouverture pleine */
+          if (u > a + 0.29 && u < a + 0.33) L = 0.36;
+        } else {
+          if (u > a && u < b) L = 0.28;                            /* battant fermé */
+          if (u > b - 0.03 && u < b) L = 0.05;                     /* jour sous le gond */
+        }
+        if (u > 0.05 && u < 0.30 && v > 0.30 && v < 0.55) L = 0.33; /* écran allumé */
+      }
+      return L;
+    }
+
+    var bands = [];
+    var nb = Math.max(2, Math.round((1 - quality) * 11));
+    for (var i = 0; i < nb; i++) {
+      var y0 = Math.floor(rnd(0, H));
+      bands.push([y0, y0 + Math.floor(rnd(1, 8))]);
+    }
+    function inBand(y) {
+      for (var i = 0; i < bands.length; i++) if (y >= bands[i][0] && y < bands[i][1]) return true;
+      return false;
+    }
+
+    /* bruit corrélé par blocs de 4 px : lecture « JPEG abîmé » plutôt que neige */
+    var bw = Math.ceil(W / 4) + 1, bh = Math.ceil(H / 4) + 1;
+    var blk = new Float32Array(bw * bh);
+    for (var bi = 0; bi < blk.length; bi++) blk[bi] = Math.random() * 2 - 1;
+
+    var noise = (1 - quality) * 0.40 + 0.05;
+    var levels = quality > 0.6 ? 12 : quality > 0.3 ? 7 : 4;
+    for (var y = 0; y < H; y++) {
+      var lost = inBand(y);
+      var shift = lost ? irnd(-9, 9) : 0;
+      for (var x = 0; x < W; x++) {
+        var L = lum((x + shift + W) % W, y);
+        L += blk[(y >> 2) * bw + (x >> 2)] * noise * 0.74;
+        L += (Math.random() * 2 - 1) * noise * 0.26;
+        L = 0.5 + (L - 0.5) * 1.16;
+        if (lost && Math.random() < 0.55) L = Math.random() * 0.12;
+        L = Math.max(0, Math.min(1, L));
+        L = Math.round(L * levels) / levels;
+        var p = (y * W + x) * 4;
+        var v255 = Math.round(L * 232);
+        d[p] = v255; d[p + 1] = Math.round(v255 * 1.02); d[p + 2] = Math.round(v255 * 0.92);
+        d[p + 3] = 255;
+      }
+    }
+    g.putImageData(img, 0, 0);
+  }
+
+  /* ---------- fabriques de corps de fichier ---------- */
+  function hexdump(lines, S) {
+    var out = [], name = (S.name || "").toUpperCase();
+    var glyphs = "0123456789ABCDEF";
+    for (var i = 0; i < lines; i++) {
+      var addr = (0x0000 + i * 16).toString(16).toUpperCase().padStart(8, "0");
+      var hexs = [], ascii = "";
+      var plant = (i > 2 && i % 3 === 1 && name);
+      for (var j = 0; j < 16; j++) {
+        var ch;
+        if (plant && j >= 4 && j < 4 + name.length) ch = name.charCodeAt(j - 4);
+        else ch = irnd(0, 255);
+        hexs.push(glyphs[(ch >> 4) & 15] + glyphs[ch & 15]);
+        ascii += (ch >= 32 && ch < 127) ? String.fromCharCode(ch) : ".";
+      }
+      out.push(addr + "  " + hexs.join(" ") + "  " + ascii);
+    }
+    return out.join("\n");
+  }
+
+  /* ---------- catalogue ---------- */
+  function build(S) {
+    var N = function () { return S.name || "opérateur"; };
+    var P = function () { return S.room || "la pièce"; };
+    var PORTE = function () { return S.door || "fermée"; };
+    var VILLE = ENV.city;
+
+    var F = [];
+    function f(o) { F.push(o); return o; }
+
+    /* ============ ACTE 1 — banal, ennuyeux, propre ============ */
+    f({
+      id: "courses", dir: "D:\\Mes documents\\", name: "courses.txt", size: "1 Ko",
+      kind: "txt", act: 1, ts: D(OWNER_LAST + 31, 18, 42),
+      body: function () {
+        return "lait 1/2 écrémé\n" +
+          "café — le bon, pas celui en promo\n" +
+          "piles AA x4\n" +
+          "ampoule couloir — VÉRIFIER LE CULOT AVANT D'ACHETER\n" +
+          "sacs poubelle 30 L\n" +
+          "éponges\n" +
+          "pain de mie\n" +
+          "\n(ne pas oublier le ticket, à rembourser)";
+      }
+    });
+    f({
+      id: "compteur", dir: "D:\\Mes documents\\", name: "releve_compteur.txt", size: "2 Ko",
+      kind: "txt", act: 1, ts: D(OWNER_LAST + 24, 9, 5),
+      body: function () {
+        return "Relevé hebdomadaire — compteur électrique\n" +
+          "----------------------------------------\n" +
+          "sem. 36   41 812 kWh\n" +
+          "sem. 37   41 849 kWh   (+37)\n" +
+          "sem. 38   41 903 kWh   (+54)\n" +
+          "sem. 39   41 977 kWh   (+74)\n" +
+          "sem. 40   42 130 kWh   (+153)\n" +
+          "sem. 41   42 388 kWh   (+258)\n" +
+          "sem. 42   42 9██ kWh   [secteur illisible]\n" +
+          "\nappeler le fournisseur. ça monte alors que je ne suis pas là.";
+      }
+    });
+    f({
+      id: "img41", dir: "D:\\Mes images\\", name: "IMG_0041.JPG", size: "412 Ko",
+      kind: "img", scene: "cuisine", quality: 0.62, act: 1, ts: D(OWNER_LAST + 30, 12, 11),
+      cap: "Reconstruction : 62 % de blocs valides. Aucune retouche appliquée.",
+      body: function () {
+        return "IMG_0041.JPG — 1600 x 1200 — reconstruction partielle\n" +
+          "Sujet estimé : intérieur, cuisine, jour.";
+      }
+    });
+    f({
+      id: "reunion", dir: "D:\\Mes documents\\", name: "notes_reunion_12.txt", size: "3 Ko",
+      kind: "txt", act: 1, ts: D(OWNER_LAST + 22, 15, 30),
+      body: function () {
+        return "réunion 12 — jeudi\n" +
+          "- budget maintenance : reporté (encore)\n" +
+          "- le poste 4 rame, demander une barrette\n" +
+          "- V. part fin du mois, prévoir passation\n" +
+          "- QUI a les clés du local archives ???\n" +
+          "- prochaine réu : jeudi\n" +
+          "\n[bloc suivant non récupérable — 2 secteurs perdus]";
+      }
+    });
+    f({
+      id: "annuaire", dir: "D:\\Mes documents\\", name: "annuaire.csv", size: "1 Ko",
+      kind: "txt", act: 1, ts: D(OWNER_LAST + 19, 11, 2),
+      body: function () {
+        return "nom;numéro;note\n" +
+          "Cabinet dentaire;01 ██ ██ ██ ██;RDV le 12, à confirmer\n" +
+          "Mme Roussel (3e étage);06 ██ ██ ██ ██;a un double des clés\n" +
+          "Serrurier (urgence);0█ ██ ██ ██ ██;devis verrou\n" +
+          "Papa;06 ██ ██ ██ ██;";
+      }
+    });
+    f({
+      id: "afaire", dir: "D:\\Mes documents\\", name: "a_faire.txt", size: "1 Ko",
+      kind: "txt", act: 1, ts: D(OWNER_LAST + 17, 8, 20),
+      body: function () {
+        return "[ ] rappeler l'assurance\n" +
+          "[ ] changer le verrou (devis reçu, 240 €)\n" +
+          "[x] acheter un disque externe\n" +
+          "[ ] SAUVEGARDER. avant tout le reste. tout de suite.\n" +
+          "[ ] demander à Mme R. si elle a entendu quelque chose la nuit du 2";
+      }
+    });
+
+    /* ============ ACTE 2 — micro-anomalies, jamais soulignées ============ */
+    f({
+      id: "j03", dir: "D:\\Mes documents\\journal\\", name: "2024-11-03.txt", size: "2 Ko",
+      kind: "txt", act: 2, ts: D(OWNER_LAST + 13, 7, 12),
+      body: function () {
+        return "Trois fichiers manquants ce matin dans Mes documents.\n" +
+          "Je n'ai rien supprimé. Corbeille vide. Historique : rien.\n\n" +
+          "La machine était en veille. Je la laisse allumée la nuit, comme d'habitude.\n" +
+          "Le voyant du disque clignotait à 4 h. Je l'ai vu en me levant.\n" +
+          "Ça ne clignote pas quand personne ne travaille.";
+      }
+    });
+    f({
+      id: "img116", dir: "D:\\Mes images\\", name: "IMG_0116.JPG", size: "388 Ko",
+      kind: "img", scene: "couloir", quality: 0.44, act: 2, ts: D(OWNER_LAST + 12, 22, 10),
+      cap: "Reconstruction : 44 % de blocs valides. 6 bandes perdues.",
+      body: function () {
+        return "IMG_0116.JPG — 1600 x 1200 — reconstruction partielle\n" +
+          "Sujet estimé : intérieur, couloir, nuit. Source de lumière : aucune.";
+      }
+    });
+    f({
+      id: "meta116", dir: "D:\\Mes images\\.meta\\", name: "IMG_0116.txt", size: "1 Ko",
+      kind: "meta", act: 2, ts: D(OWNER_LAST + 12, 22, 11),
+      body: function () {
+        return "Fichier            : IMG_0116.JPG\n" +
+          "Dimensions         : 1600 x 1200\n" +
+          "Appareil           : [constructeur illisible]\n" +
+          "Ouverture / ISO    : f/2.0 — 6400\n" +
+          "Date de prise      : " + dmy(D(OWNER_LAST + 11, 3, 47)) + " 03:47:16\n" +
+          "Date du fichier    : " + dmy(D(OWNER_LAST + 12, 22, 10)) + " 22:10:04\n" +
+          "Dossier d'origine  : D:\\SAUVEGARDE\\" + VILLE + "\\couloir\\\n" +
+          "Écrit par          : RÉMANENCE 2.4.1\n" +
+          "Somme de contrôle  : ok";
+      }
+    });
+    f({
+      id: "enr01", dir: "D:\\enregistrements\\", name: "enr_01.wav", size: "9 Mo",
+      kind: "wav", act: 2, ts: D(OWNER_LAST + 11, 3, 5),
+      body: function () {
+        return "enr_01.wav — 16 bits / 44,1 kHz / mono — 00:07:00\n" +
+          "Transcription automatique (moteur 1.2, hors ligne)\n" +
+          "Locuteurs détectés : 2      Locuteurs attendus : 1\n" +
+          "──────────────────────────────────────────────\n" +
+          "[00:00]  (ronflement électrique, 50 Hz, constant)\n" +
+          "[01:52]  (clic — tête de lecture)\n" +
+          "[03:07]  (respiration, faible, distante)\n" +
+          "[03:12]  (respiration, plus proche)\n" +
+          "[03:12]  non identifié : « … »\n" +
+          "[04:41]  (déplacement de matériau souple)\n" +
+          "[05:58]  (clic — tête de lecture, x6)\n" +
+          "[07:00]  fin d'enregistrement — arrêt manuel\n" +
+          "──────────────────────────────────────────────\n" +
+          "Confiance globale : 0,91";
+      }
+    });
+    f({
+      id: "install", dir: "D:\\Program Files\\Remanence\\", name: "rmnc_install.log", size: "4 Ko",
+      kind: "meta", act: 2, ts: D(OWNER_LAST + 10, 20, 44),
+      body: function () {
+        var t = D(OWNER_LAST + 10, 20, 44);
+        return "[" + hms(t) + "] RÉMANENCE 2.4.1 — installation\n" +
+          "[" + hms(t) + "] Périphérique cible : WDC 40 Go (étiquette : POSTE 4)\n" +
+          "[" + hms(t) + "] Licence : utilisateur unique — non transférable\n" +
+          "[" + hms(t) + "] Calibration du poste requise avant première analyse.\n" +
+          "[20:46:03] Prénom saisi   : T.\n" +
+          "[20:46:31] Pièce saisie   : bureau\n" +
+          "[20:46:39] Porte          : fermée\n" +
+          "[20:46:39] Empreinte du poste enregistrée.\n" +
+          "[20:46:40] Index attribué : 0246\n" +
+          "[20:46:40] Installation terminée. Aucun redémarrage nécessaire.";
+      }
+    });
+    f({
+      id: "j09", dir: "D:\\Mes documents\\journal\\", name: "2024-11-09.txt", size: "3 Ko",
+      kind: "txt", act: 2, ts: D(OWNER_LAST + 7, 23, 51),
+      body: function () {
+        return "J'ai installé un utilitaire de récupération. Rémanence.\n" +
+          "40 € la licence, une interface d'un autre siècle, mais il retrouve tout.\n\n" +
+          "Il a retrouvé des fichiers que je n'ai jamais créés.\n" +
+          "Des enregistrements. De cette pièce. Datés de nuits où je dormais.\n\n" +
+          "Je ne possède pas de micro.";
+      }
+    });
+    f({
+      id: "annuaire2", dir: "D:\\Mes documents\\", name: "annuaire.csv", size: "1 Ko",
+      dup: true, act: 2, kind: "txt", ts: D(OWNER_LAST + 6, 2, 19),
+      body: function () {
+        return "nom;numéro;note\n" +
+          "Cabinet dentaire;01 ██ ██ ██ ██;RDV le 12, à confirmer\n" +
+          "Mme Roussel (3e étage);06 ██ ██ ██ ██;a un double des clés\n" +
+          "Serrurier (urgence);0█ ██ ██ ██ ██;devis verrou\n" +
+          "Papa;06 ██ ██ ██ ██;\n" +
+          "Assistance Rémanence;—;répond toujours\n" +
+          "\n[ce fichier a été modifié après sa dernière ouverture]";
+      }
+    });
+
+    /* ============ ACTE 3 — escalade ============ */
+    f({
+      id: "sess246", dir: "D:\\Program Files\\Remanence\\sessions\\", name: "session_0246.log",
+      size: "12 Ko", kind: "meta", act: 3, ts: D(OWNER_LAST, 0, 8, 11),
+      body: function () {
+        return "SESSION 0246 — opérateur : T. — poste : bureau — porte : fermée\n" +
+          "Début : " + dmy(D(OWNER_LAST, 23, 59)) + " 23:59:56\n" +
+          "──────────────────────────────────────────────\n" +
+          "00:00:04  Analyse démarrée. Secteurs : 78 165 360.\n" +
+          "00:01:30  Aucune anomalie.\n" +
+          "00:02:47  Prévisualisation : courses.txt\n" +
+          "00:04:12  Assistance : suggestion ignorée (x3)\n" +
+          "00:05:19  Inactivité opérateur — 22 s\n" +
+          "00:06:30  Restauration terminée. 1 247 fichiers.\n" +
+          "00:06:38  Fermeture demandée par l'opérateur.\n" +
+          "00:06:46  Fermeture refusée — opération en cours.\n" +
+          "00:07:02  Reprise automatique.\n" +
+          "00:08:11  Secteur 0 — enregistrement source non résolu.\n" +
+          "00:08:1";
+      }
+    });
+    f({
+      id: "enr04", dir: "D:\\enregistrements\\", name: "enr_04.wav", size: "1 Mo",
+      kind: "wav", act: 3, ts: D(OWNER_LAST + 1, 3, 22),
+      body: function () {
+        return "enr_04.wav — 16 bits / 44,1 kHz / mono — 00:00:39\n" +
+          "Transcription automatique (moteur 1.2, hors ligne)\n" +
+          "──────────────────────────────────────────────\n" +
+          "[00:00]  T. : « Je sais que tu enregistres. »\n" +
+          "[00:06]  (silence — 14 s)\n" +
+          "[00:20]  T. : « Réponds. »\n" +
+          "[00:23]  (clic — tête de lecture, x6)\n" +
+          "[00:31]  T. : « …d'accord. »\n" +
+          "[00:38]  (gonds)\n" +
+          "[00:39]  fin — le fichier a été fermé par un autre processus\n" +
+          "──────────────────────────────────────────────\n" +
+          "Note du moteur : la séquence de clics à 00:23 présente une périodicité\n" +
+          "compatible avec un encodage. Décodage non pris en charge par cette version.";
+      }
+    });
+    f({
+      id: "img203", dir: "D:\\Mes images\\", name: "IMG_0203.JPG", size: "290 Ko",
+      kind: "img", scene: "porte", quality: 0.26, act: 3, ts: D(OWNER_LAST, 4, 2),
+      cap: "Reconstruction : 26 % de blocs valides. Cadrage non identifié.",
+      body: function () {
+        return "IMG_0203.JPG — 1600 x 1200 — reconstruction faible\n" +
+          "Sujet estimé : ouverture, intérieur, nuit.\n" +
+          "Dernier fichier écrit par le support avant défaillance.";
+      }
+    });
+    f({
+      id: "poste", dir: "D:\\Program Files\\Remanence\\", name: "poste_courant.txt", size: "1 Ko",
+      kind: "meta", act: 3, live: true, ts: null,
+      body: function () {
+        var now = new Date();
+        return "EMPREINTE DU POSTE — relevé continu\n" +
+          "──────────────────────────────────────────────\n" +
+          "Système           : " + ENV.os + "\n" +
+          "Interface         : " + ENV.browser + "\n" +
+          "Affichage         : " + ENV.w + " x " + ENV.h + " — " + ENV.depth + " bits\n" +
+          "Zone d'affichage  : " + window.innerWidth + " x " + window.innerHeight + "\n" +
+          "Langue            : " + ENV.lang + "\n" +
+          "Fuseau            : " + ENV.tz + " (UTC" + ENV.utc + ")\n" +
+          "Date locale       : " + dmy(now) + "\n" +
+          "Horloge locale    : " + hms(now) + "\n" +
+          "Session en cours  : " + R.dur(Math.floor(S.T)) + "\n" +
+          "──────────────────────────────────────────────\n" +
+          "Opérateur         : " + N() + "\n" +
+          "Emplacement       : " + P() + "\n" +
+          "Accès             : porte " + PORTE() + "\n" +
+          "──────────────────────────────────────────────\n" +
+          "Ce relevé est actualisé chaque seconde. Il n'est pas transmis.";
+      }
+    });
+    f({
+      id: "dernier", dir: "D:\\Mes documents\\journal\\", name: "dernier.txt", size: "2 Ko",
+      kind: "txt", act: 3, ts: D(OWNER_LAST, 0, 6, 51),
+      body: function () {
+        return "Le programme s'est terminé. 1 247 fichiers. J'ai cliqué sur Fermer.\n\n" +
+          "Huit secondes.\n\n" +
+          "Puis il a repris tout seul.\n\n" +
+          "Ce n'est pas un logiciel de récupération. Il ne récupère rien.\n" +
+          "Il enregistre. Chaque session devient un fichier sur le support.\n" +
+          "J'ai ouvert l'index. Il y a 245 entrées avant la mienne.\n\n" +
+          "Si vous lisez ce fichier, c'est que vous êtes en tra";
+      }
+    });
+    f({
+      id: "index", dir: "D:\\Program Files\\Remanence\\", name: "index.txt", size: "31 Ko",
+      kind: "meta", act: 3, live: true, ts: null,
+      body: function () {
+        var rows = [];
+        for (var i = 240; i <= 245; i++) {
+          rows.push("  0" + i + "   " + dm(D(OWNER_LAST + (246 - i) * 7, 1, 0)) +
+            "   00:0" + irnd(6, 9) + ":" + pad(irnd(10, 59)) + "   archivé");
+        }
+        rows.push("  0246   " + dm(D(OWNER_LAST, 0, 8)) + "   00:08:1?   INCOMPLET — secteur 0");
+        rows.push("  0247   " + dm(new Date()) + "   " + R.dur(Math.floor(S.T)) +
+          "   en cours — " + N());
+        return "INDEX DES SESSIONS — support WDC 40 Go\n" +
+          "  n°     date      durée      état\n" +
+          "──────────────────────────────────────────────\n" +
+          "  0001   ██/██     00:0█:██   archivé\n" +
+          "  ...    (238 entrées repliées)\n" +
+          rows.join("\n") + "\n" +
+          "──────────────────────────────────────────────\n" +
+          "Le secteur 0 ne peut contenir qu'un enregistrement actif.";
+      }
+    });
+
+    /* ============ ACTE 4 — la session en cours ============ */
+    f({
+      id: "sess247", dir: "D:\\Program Files\\Remanence\\sessions\\", name: "session_0247.log",
+      size: "— Ko", kind: "meta", act: 4, live: true, ts: null, red: true,
+      body: function () {
+        var lines = S.journal.map(function (e) { return "  " + e.t + "  " + e.s; });
+        return "SESSION 0247 — opérateur : " + N() + " — poste : " + P() +
+          " — porte : " + PORTE() + "\n" +
+          "Début : " + dmy(S.startedAt) + " " + hms(S.startedAt) + "\n" +
+          "Empreinte : " + ENV.w + "x" + ENV.h + " / " + ENV.lang + " / " + ENV.tz + "\n" +
+          "──────────────────────────────────────────────\n" +
+          lines.join("\n") + "\n" +
+          "  " + R.dur(Math.floor(S.T)) + "  Prévisualisation : session_0247.log\n" +
+          "──────────────────────────────────────────────\n" +
+          "Cet enregistrement est ouvert en écriture. Il ne peut pas être restauré\n" +
+          "tant qu'il n'est pas clôturé.";
+      }
+    });
+    f({
+      id: "enr11", dir: "D:\\enregistrements\\", name: "enr_11.wav", size: "8 Mo",
+      kind: "wav", act: 4, live: true, ts: null, red: true,
+      body: function () {
+        var start = ago(Math.max(360, Math.floor(S.T)));
+        var open = PORTE() === "ouverte";
+        return "enr_11.wav — 16 bits / 44,1 kHz / mono\n" +
+          "Source          : entrée audio non déclarée\n" +
+          "Début           : " + dmy(start) + " " + hms(start) + "\n" +
+          "Lieu estimé     : " + P() + "\n" +
+          "Locuteurs       : 1 attendu\n" +
+          "──────────────────────────────────────────────\n" +
+          "[00:00]  (ronflement — ventilation d'appareil)\n" +
+          "[00:14]  (frappe clavier — " + Math.max(3, (S.name || "").length) + " touches)\n" +
+          "[01:02]  (respiration — régulière)\n" +
+          "[02:20]  (clic souris, x" + Math.max(4, S.clicks) + ")\n" +
+          (open
+            ? "[04:07]  (rien. la porte de la pièce « " + P() + " » est ouverte depuis le début.)\n"
+            : "[04:07]  (gonds — la porte de la pièce « " + P() + " » s'ouvre sur 30 cm.)\n") +
+          "[04:11]  (respiration — régulière)\n" +
+          "[04:11]  (respiration — deux sources, décalage 0,4 s)\n" +
+          "[" + R.mmss(Math.floor(S.T)) + "]  enregistrement en cours\n" +
+          "──────────────────────────────────────────────\n" +
+          "Confiance globale : 0,99";
+      }
+    });
+    f({
+      id: "imgloc", dir: "D:\\SAUVEGARDE\\" + VILLE + "\\", name: "recon_0247.jpg", size: "44 Ko",
+      kind: "img", scene: "locale", quality: 0.17, act: 4, ts: null, live: true, red: true,
+      cap: "Reconstruction : 4 % de blocs valides. Aucune source image sur ce support.",
+      body: function () {
+        return "recon_0247.jpg — reconstruction à partir de l'empreinte du poste\n" +
+          "Lieu déclaré : " + P() + " — accès : porte " + PORTE() + "\n" +
+          "Horodatage : " + hms(ago(irnd(90, 240)));
+      }
+    });
+    f({
+      id: "sect0", dir: "D:\\", name: "secteur0.dat", size: "— Ko",
+      kind: "hex", act: 4, ts: null, red: true,
+      body: function () {
+        return "secteur0.dat — lecture brute — 14 lignes sur 4 096\n" +
+          "──────────────────────────────────────────────\n" +
+          hexdump(14, S);
+      }
+    });
+
+    return F;
+  }
+
+  window.__RMN.buildFiles = build;
+  window.__RMN.drawPic = drawPic;
+})();
+/* =========================================================================
+   RÉMANENCE v2.4.1
+   Bloc 3 — état, interface, chronologie, aléas, fins.
+   ========================================================================= */
+(function () {
+  "use strict";
+  var R = window.__RMN, A = R.A, ENV = R.ENV;
+  var $ = R.$, pad = R.pad, rnd = R.rnd, irnd = R.irnd, clampn = R.clampn;
+  var pickN = R.pickN, hms = R.hms, dmy = R.dmy, dur = R.dur, mmss = R.mmss;
+  var fr = R.fr, esc = R.esc, ago = R.ago;
+
+  /* ----------------------------- état ----------------------------- */
+  var S = {
+    phase: "boot",
+    name: "", room: "", door: "fermée",
+    startedAt: null, t0: 0, T: 0, R4: -1,
+    files: [], shown: [], sel: null, openedAt: 0,
+    suspicion: 0,
+    clicks: 0, lastClick: 0,
+    closeAttempts: 0, blurs: 0, blurTotal: 0, idleHits: 0,
+    lastAct: Date.now(), lastIdleFire: 0,
+    journal: [], excluded: {}, restored: {},
+    prog: 0, progAdj: 0, recovered: 0, sector: 0,
+    act: 1, redOK: false,
+    choice: null, ending: null,
+    frozen: false, ended: false,
+    sched: [], pools: {}, done: {},
+    clockDrift: 0, hidden: false, hiddenAt: 0
+  };
+  R.S = S;
+
+  /* --------------------------- raccourcis DOM --------------------------- */
+  var elWin = $("win"), elTT = $("ttext"), elTbar = $("tbar"), elMenu = $("menubar");
+  var elList = $("flist"), elLCount = $("lcount"), elViewer = $("viewer"), elVPath = $("vpath");
+  var elFill = $("pfill"), elPct = $("ppct"), elStext = $("stext"), elCons = $("console");
+  var elSect = $("sect"), elNrec = $("nrec"), elClock = $("hclock"), elLed = $("led");
+  var elDlg = $("dlg"), elDlgBox = $("dlgbox"), elTip = $("tip"), elTipB = $("tipb"), elTipH = $("tiph");
+  var elDesk = $("desk"), elMask = $("freezemask");
+  var bRestore = $("brestore"), bExclude = $("bexclude");
+
+  /* ----------------------------- journal ----------------------------- */
+  function jrn(s) { S.journal.push({ t: dur(Math.floor(S.T)), s: s }); }
+
+  /* ----------------------------- suspicion ----------------------------- */
+  function sus(n) { S.suspicion = clampn(S.suspicion + n, 0, 100); }
+
+  /* ----------------------------- console ----------------------------- */
+  function say(txt, cls) {
+    var d = document.createElement("div");
+    if (cls) d.className = cls;
+    d.textContent = txt;
+    elCons.appendChild(d);
+    while (elCons.children.length > 42) elCons.removeChild(elCons.firstChild);
+    elCons.scrollTop = elCons.scrollHeight;
+  }
+  function shake() {
+    elDesk.classList.add("shake");
+    setTimeout(function () { elDesk.classList.remove("shake"); }, 420);
+  }
+
+  /* --------------------------- programmation --------------------------- */
+  function at(t, fn) { S.sched.push({ t: t, fn: fn, done: false }); }
+  function once(key, fn) { if (S.done[key]) return; S.done[key] = true; fn(); }
+
+  /* ============================ BOOT ============================ */
+  var BOOT = [
+    "Rémanence 2.4.1   (build 20030418)",
+    "Utilitaire de récupération de données — licence utilisateur unique",
+    "",
+    "Recherche des contrôleurs ............ ok",
+    "IDE0 maître .......................... aucun",
+    "IDE0 esclave ......................... aucun",
+    "IDE1 maître .......................... WDC 40 Go  (POSTE 4)",
+    "   géométrie ......................... 4 865 / 255 / 63",
+    "   secteurs .......................... 78 165 360",
+    "   S.M.A.R.T. ........................ ÉCHEC  (attribut 197)",
+    "   secteurs réalloués ................ 2 041",
+    "   état .............................. SUPPORT ENDOMMAGÉ",
+    "",
+    "Montage en lecture seule ............. ok",
+    "Table d'allocation ................... partiellement illisible",
+    "Journal du système de fichiers ....... 1 transaction non clôturée",
+    "",
+    "Calibration du poste requise."
+  ];
+  function boot() {
+    var i = 0, out = $("boottxt");
+    (function step() {
+      if (i >= BOOT.length) {
+        setTimeout(function () { $("calib").classList.add("on"); $("f1").focus(); }, 500);
+        return;
+      }
+      out.textContent += BOOT[i] + "\n";
+      i++;
+      setTimeout(step, BOOT[i - 1] === "" ? 120 : rnd(90, 260));
+    })();
+  }
+
+  /* ========================= CALIBRATION ========================= */
+  $("calform").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var n = $("f1").value.trim(), p = $("f2").value.trim();
+    var d = document.querySelector('input[name="door"]:checked').value;
+    if (!n) { $("calerr").textContent = "Le champ « prénom » est obligatoire."; $("f1").focus(); return; }
+    if (!p) { $("calerr").textContent = "Le champ « pièce » est obligatoire."; $("f2").focus(); return; }
+    S.name = n.slice(0, 18); S.room = p.slice(0, 24).toLowerCase(); S.door = d;
+
+    /* la calibration alimente déjà l'état caché */
+    if (d === "ouverte") sus(8);
+    if (/chambre|lit|bedroom|chamb/.test(S.room)) sus(5);
+    if (S.name.length <= 1) sus(4);
+    if (/^t\.?$/i.test(S.name)) sus(9);
+
+    A.init();
+    if (A.ctx && A.ctx.state === "suspended") A.ctx.resume();
+    $("calib").classList.remove("on");
+    $("boot").style.display = "none";
+    startScan();
+  }, false);
+
+  /* ========================= DÉMARRAGE DU SCAN ========================= */
+  function startScan() {
+    S.phase = "scan";
+    S.startedAt = new Date();
+    S.t0 = Date.now();
+    S.files = R.buildFiles(S);
+    elTT.textContent = "Rémanence v2.4.1 — WDC 40 Go (D:\\) — analyse";
+    elLed.classList.add("on");
+    A.setBed(0.16, 3.5);
+    A.hddOn(0.34);
+
+    jrn("Analyse démarrée. Secteurs : 78 165 360.");
+    jrn("Calibration : " + S.name + " / " + S.room + " / porte " + S.door);
+    say("Rémanence 2.4.1 — analyse du support D:\\");
+    say("Opérateur : " + S.name + ". Rapport horodaté à " + hms(S.startedAt) + ".");
+    say("Lecture séquentielle. Ne débranchez pas le périphérique.");
+
+    buildTimeline();
+    S.tick = setInterval(tick, 120);
+    chatter();
+  }
+
+  /* ====================== BAVARDAGE DE LA CONSOLE ====================== */
+  var CHAT = [
+    "Lecture secteur {S} — en-tête FAT32 valide",
+    "Table d'allocation : {N} entrées orphelines",
+    "Bloc {S} : somme de contrôle recalculée",
+    "Cluster {N} marqué libre — contenu non nul",
+    "Signature JFIF détectée à l'offset 0x{H}",
+    "Réallocation matérielle sur la piste {N}",
+    "Descripteur de flux reconstruit ({N} fragments)",
+    "Secteur {S} : relecture (tentative {N}/8)",
+    "Entrée de répertoire sans parent — rattachée à \\RECUP",
+    "Horodatage incohérent corrigé sur {N} entrées"
+  ];
+  function chatter() {
+    if (S.phase === "over") return;
+    if (!S.frozen && S.phase !== "gap" && S.phase !== "choice" && S.phase !== "ending") {
+      var line = CHAT[irnd(0, CHAT.length - 1)]
+        .replace("{S}", fr(irnd(1000000, 78165360)))
+        .replace("{N}", irnd(2, 340))
+        .replace("{H}", irnd(100000, 999999).toString(16).toUpperCase());
+      say(line);
+    }
+    setTimeout(chatter, rnd(1600, 4200) * (S.act >= 4 ? 0.55 : 1));
+  }
+
+  /* ============================ LISTE ============================ */
+  function reveal(id, quiet) {
+    var f = null;
+    for (var i = 0; i < S.files.length; i++) if (S.files[i].id === id) f = S.files[i];
+    if (!f || S.shown.indexOf(f) >= 0) return;
+    S.shown.push(f);
+    S.recovered += irnd(11, 47);
+    renderList(f);
+    if (!quiet) {
+      say("Récupéré : " + f.dir + f.name + "  (" + f.size + ")");
+      A.click(0.3);
+    }
+    return f;
+  }
+  function renderList(newest) {
+    var byDir = [], map = {};
+    S.shown.forEach(function (f) {
+      if (!map[f.dir]) { map[f.dir] = []; byDir.push(f.dir); }
+      map[f.dir].push(f);
+    });
+    var h = "";
+    byDir.forEach(function (dir) {
+      h += '<div class="dirrow">' + esc(dir) + "</div>";
+      map[dir].forEach(function (f) {
+        var ic = f.kind === "img" ? "▣" : f.kind === "wav" ? "♪" : f.kind === "meta" ? "≡" : f.kind === "hex" ? "⬚" : "▤";
+        h += '<div class="frow' + (f === S.sel ? " sel" : "") + (f === newest ? " nu" : "") +
+          (f.bad ? " bad" : "") + '" data-id="' + f.id + '">' +
+          '<span class="fi">' + ic + "</span>" +
+          '<span class="fn">' + esc(f.name) + (S.restored[f.id] ? "  ✓" : "") + "</span>" +
+          '<span class="fs">' + esc(f.size) + "</span></div>";
+      });
+    });
+    elList.innerHTML = h;
+    elLCount.textContent = S.shown.length;
+  }
+  elList.addEventListener("click", function (e) {
+    var row = e.target.closest ? e.target.closest(".frow") : null;
+    if (!row) return;
+    var id = row.getAttribute("data-id");
+    for (var i = 0; i < S.shown.length; i++) if (S.shown[i].id === id) openFile(S.shown[i]);
+  });
+
+  /* =========================== VISIONNEUSE =========================== */
+  function openFile(f, auto) {
+    if (S.sel && S.openedAt) {
+      var read = (Date.now() - S.openedAt) / 1000;
+      if (read < 2.4) sus(3); else if (read > 9) sus(-1);
+    }
+    S.sel = f; S.openedAt = Date.now();
+    renderList();
+    renderViewer();
+    bRestore.disabled = S.act >= 4 || !!S.restored[f.id];
+    bExclude.disabled = S.act >= 4;
+    elVPath.textContent = f.dir + f.name;
+    if (!auto) { say("Prévisualisation : " + f.name); jrn("Prévisualisation : " + f.name); }
+    A.click(0.22);
+  }
+  function renderViewer() {
+    var f = S.sel;
+    if (!f) return;
+    var keep = elViewer.scrollTop;
+    var txt = f.body(S);
+    var cls = f.kind === "meta" || f.kind === "hex" ? "meta" : "";
+    var html = "";
+    if (f.kind === "img") {
+      html += '<canvas class="pic" id="pic"></canvas><div class="cap">' + esc(f.cap || "") + "</div>";
+      html += '<pre class="' + cls + '" style="margin-top:12px">' + mark(txt, f) + "</pre>";
+    } else {
+      html += '<pre class="' + cls + '">' + mark(txt, f) + "</pre>";
+    }
+    if (f.ts) {
+      html += '<div class="cap">Horodatage du fichier : ' + dmy(f.ts) + " " + hms(f.ts) + "</div>";
+    }
+    elViewer.innerHTML = html;
+    if (f.kind === "img") {
+      R.drawPic($("pic"), f.scene, f.quality, S.door === "ouverte");
+    }
+    elViewer.scrollTop = keep;
+  }
+  function mark(txt, f) {
+    var out = esc(txt);
+    if (f.red && S.redOK) {
+      var toks = [S.name, S.room, ENV.city, ENV.tz, ENV.w + " x " + ENV.h, ENV.w + "x" + ENV.h];
+      toks.forEach(function (t) {
+        if (!t) return;
+        out = out.split(esc(t)).join('<span class="rd">' + esc(t) + "</span>");
+      });
+    }
+    return out;
+  }
+  bRestore.addEventListener("click", function () {
+    if (!S.sel || S.act >= 4) return;
+    S.restored[S.sel.id] = true;
+    say("Restauration : " + S.sel.name + " → D:\\RECUP\\ … ok");
+    jrn("Restauration : " + S.sel.name);
+    bRestore.disabled = true; renderList(); A.burst(3, 0.3);
+  });
+  bExclude.addEventListener("click", function () {
+    if (!S.sel || S.act >= 4) return;
+    var f = S.sel, i = S.shown.indexOf(f);
+    if (i < 0) return;
+    S.shown.splice(i, 1);
+    S.excluded[f.id] = true;
+    say("Exclu de la restauration : " + f.name);
+    jrn("Exclusion : " + f.name);
+    S.sel = null; renderList();
+    elViewer.innerHTML = '<div class="empty">Aucun fichier sélectionné.</div>';
+    elVPath.textContent = "aucun fichier sélectionné";
+    bRestore.disabled = bExclude.disabled = true;
+    /* il revient. sans commentaire. */
+    setTimeout(function () {
+      if (S.phase === "over") return;
+      if (S.shown.indexOf(f) >= 0) return;
+      f.bad = true;
+      S.shown.push(f);
+      renderList(f);
+      A.click(0.5);
+    }, rnd(34000, 52000));
+  });
+
+  /* ========================= INFOBULLE D'AIDE ========================= */
+  function tip(head, body, ms) {
+    elTipH.textContent = head || "ASSISTANCE RÉMANENCE";
+    elTipB.textContent = body;
+    elTip.classList.add("on");
+    A.tone(880, 0.07, 0.05, "sine");
+    clearTimeout(elTip._t);
+    elTip._t = setTimeout(function () { elTip.classList.remove("on"); }, ms || 15000);
+  }
+  $("tipx").addEventListener("click", function () {
+    elTip.classList.remove("on"); sus(2); jrn("Assistance : suggestion refusée.");
+  });
+
+  /* =========================== DIALOGUES =========================== */
+  function dialog(o) {
+    var h = '<div class="titlebar' + (o.inactive ? " inactive" : "") + '"><span class="tico">' +
+      (o.ico === "err" ? "!" : "R") + '</span><span class="tt">' + esc(o.title) + "</span>";
+    if (o.x !== false) h += '<span class="wbtns"><button class="wbtn" data-act="__x">×</button></span>';
+    h += "</div>";
+    h += '<div class="dcontent"><div class="dico ' + (o.ico || "") + '">' +
+      (o.ico === "err" ? "×" : o.ico === "warn" ? "!" : "i") + "</div>";
+    h += '<div class="dtext">' + o.text + "</div></div>";
+    h += '<div class="dbtns">';
+    o.btns.forEach(function (b) {
+      h += '<button class="btn" data-act="' + b.a + '">' + esc(b.l) + "</button>";
+    });
+    h += "</div>";
+    elDlgBox.innerHTML = h;
+    elDlg.classList.add("on");
+    if (o.block) elDlg.classList.add("blocking"); else elDlg.classList.remove("blocking");
+    elDlgBox._on = o.on || function () {};
+    var b0 = elDlgBox.querySelector(".dbtns .btn"); if (b0) b0.focus();
+  }
+  function closeDialog() { elDlg.classList.remove("on"); elDlgBox.innerHTML = ""; }
+  elDlgBox.addEventListener("click", function (e) {
+    var b = e.target.closest ? e.target.closest("[data-act]") : null;
+    if (!b) return;
+    var a = b.getAttribute("data-act");
+    A.tone(660, 0.05, 0.05, "square");
+    elDlgBox._on(a, b);
+  });
+
+  /* ==================== FERMETURE / FOCUS / INACTIVITÉ ==================== */
+  function attemptClose() {
+    S.closeAttempts++; sus(12);
+    jrn("Tentative de fermeture (x" + S.closeAttempts + ")");
+    if (S.act >= 4) {
+      say("Fermeture refusée — opération en cours.", "e");
+      A.spike(0.2); shake();
+      return;
+    }
+    dialog({
+      title: "Rémanence", ico: "warn",
+      text: "Une opération d'écriture est en cours sur un support endommagé.<br>" +
+        "Interrompre maintenant peut rendre les données définitivement illisibles." +
+        '<span class="sub">Voulez-vous vraiment interrompre l\'analyse ?</span>',
+      btns: [{ l: "Interrompre", a: "y" }, { l: "Poursuivre", a: "n" }],
+      on: function (a) {
+        closeDialog();
+        if (a === "y") {
+          sus(8);
+          say("Interruption demandée. Libération du périphérique…", "w");
+          setTimeout(function () {
+            say("Impossible de libérer le périphérique : occupé par rmnnc.exe.", "e");
+            A.spike(0.16);
+          }, 1400);
+        }
+      }
+    });
+  }
+  $("bclose").addEventListener("click", attemptClose);
+  $("bmin").addEventListener("click", function () {
+    say("Réduction refusée — l'analyse requiert un affichage actif.", "w"); sus(3);
+  });
+  $("bmax").addEventListener("click", function () {
+    say("Cette fenêtre ne peut pas être redimensionnée.", "w");
+  });
+  window.addEventListener("beforeunload", function () {
+    S.closeAttempts++; sus(14); jrn("Tentative de fermeture de la fenêtre.");
+  });
+
+  document.addEventListener("visibilitychange", function () {
+    if (document.hidden) { S.hidden = true; S.hiddenAt = Date.now(); return; }
+    if (!S.hidden) return;
+    S.hidden = false;
+    var d = Math.round((Date.now() - S.hiddenAt) / 1000);
+    if (S.phase !== "scan" && S.phase !== "final") return;
+    S.blurs++; S.blurTotal += d;
+    sus(6 + clampn(d / 3, 0, 12));
+    jrn("Fenêtre inactive — " + d + " s.");
+    if (S.T > 100) {
+      say("Fenêtre inactive pendant " + d + " s. L'analyse s'est poursuivie.", "w");
+      A.click(0.55); A.breath(0.10, 1.8, true);
+    }
+    if (S.blurs >= 2 && S.T > 200) {
+      tip("ASSISTANCE RÉMANENCE",
+        "Vous n'avez pas besoin de surveiller l'écran, " + S.name + ". L'analyse continue " +
+        "quand la fenêtre est en arrière-plan. Elle continue aussi quand vous dormez.", 13000);
+    }
+  });
+
+  document.addEventListener("mousemove", act, { passive: true });
+  document.addEventListener("keydown", act);
+  document.addEventListener("touchstart", act, { passive: true });
+  document.addEventListener("click", function () {
+    var n = Date.now();
+    S.clicks++;
+    if (n - S.lastClick < 380) sus(2);
+    S.lastClick = n;
+    act();
+  });
+  function act() { S.lastAct = Date.now(); }
+
+  /* ===================== CHRONOLOGIE PRINCIPALE ===================== */
+  var KEYS = [[0, 0], [90, 14], [150, 29], [240, 52], [310, 76], [370, 96], [390, 100]];
+  function progAt(t) {
+    if (t <= 0) return 0;
+    for (var i = 1; i < KEYS.length; i++) {
+      if (t <= KEYS[i][0]) {
+        var a = KEYS[i - 1], b = KEYS[i];
+        return a[1] + (b[1] - a[1]) * (t - a[0]) / (b[0] - a[0]);
+      }
+    }
+    return 100;
+  }
+
+  function buildTimeline() {
+    /* ---- acte 1 : rien ne se passe. c'est le sujet. ---- */
+    [["courses", 7], ["compteur", 19], ["img41", 33], ["reunion", 49], ["annuaire", 64], ["afaire", 81]]
+      .forEach(function (p) { at(p[1], function () { reveal(p[0]); }); });
+    at(90, function () {
+      S.act = 2;
+      say("Zone 1 terminée — aucune anomalie.");
+      A.tint(520, 0.7); A.setBed(0.20);
+    });
+
+    /* ---- acte 2 : micro-anomalies, jamais signalées ---- */
+    [["j03", 97], ["img116", 114], ["meta116", 128], ["enr01", 149], ["install", 173],
+     ["j09", 198], ["annuaire2", 219]].forEach(function (p) { at(p[1], function () { reveal(p[0]); }); });
+    /* deux anomalies de signature, toujours présentes, jamais commentées */
+    at(136, function () { fire("ghostdir"); });
+    at(206, function () { fire("futuresector"); });
+    /* et deux tirées au sort parmi quatre : deux parties ne se ressemblent pas */
+    var a2 = pickN(["clockjump", "silentwork", "dupopen", "phantomrow"], 2);
+    at(118, function () { fire(a2[0]); });
+    at(186, function () { fire(a2[1]); });
+
+    /* ---- acte 3 : le logiciel commence à aider ---- */
+    at(240, function () {
+      S.act = 3;
+      say("Zone 2 terminée. Passage en lecture bas niveau.", "w");
+      A.tint(300, 1.4); A.setBed(0.26); A.hddOn(0.5); A.sub(0.2);
+    });
+    [["sess246", 248], ["enr04", 268], ["img203", 292], ["poste", 316], ["dernier", 344], ["index", 366]]
+      .forEach(function (p) { at(p[1], function () { reveal(p[0]); }); });
+
+    at(258, function () {
+      tip("ASSISTANCE RÉMANENCE",
+        "Vous pouvez laisser Rémanence terminer seule. Il n'est pas nécessaire de rester " +
+        "devant l'écran. La plupart des opérateurs vont se coucher.", 14000);
+    });
+    at(360, function () { S.redOK = true; });
+    at(322, function () {
+      tip("ASSISTANCE RÉMANENCE",
+        "La porte de la pièce « " + S.room + " » est-elle toujours " + S.door + ", " +
+        S.name + " ?  Le relevé acoustique de ce poste ne correspond plus à la calibration de " +
+        hms(S.startedAt) + ".", 17000);
+      A.breath(0.12, 2.6, true);
+      jrn("Assistance : vérification d'accès proposée.");
+    });
+    /* battements imposés de l'escalade */
+    at(280, function () { fire("autoopen"); });
+    at(304, function () { fire("regress"); });
+    var a3 = pickN(["selfscroll", "titlename", "listshuffle", "reopen"], 2);
+    at(266, function () { fire(a3[0]); });
+    at(352, function () { fire(a3[1]); });
+
+    /* le plantage crédible */
+    at(irnd(324, 348), function () { crash(); });
+
+    /* ---- 6:30 : la fausse fin ---- */
+    at(390, function () { falseEnd(); });
+  }
+
+  /* =========================== ALÉAS =========================== */
+  function fire(key) {
+    if (S.phase === "over") return;
+    switch (key) {
+      case "clockjump":
+        S.clockDrift = 63;
+        setTimeout(function () { S.clockDrift = 0; }, 5200);
+        A.click(0.4);
+        break;
+      case "ghostdir":
+        S.files.push({
+          id: "ghost", dir: "D:\\SAUVEGARDE\\" + ENV.city + "\\", name: "index_local.dat",
+          size: "0 Ko", kind: "hex", act: 2, ts: ago(irnd(200, 800)),
+          body: function () {
+            return "index_local.dat — 0 octet alloué, 3 blocs occupés\n" +
+              "──────────────────────────────────────────────\n" +
+              "Ce dossier n'apparaît pas dans la table d'allocation du support.\n" +
+              "Il est néanmoins accessible en lecture.\n" +
+              "Fuseau du dossier : " + ENV.tz + "\n" +
+              "Contenu : 1 sous-dossier (couloir), 2 fichiers non listés.";
+          }
+        });
+        reveal("ghost");
+        break;
+      case "futuresector":
+        var d1 = new Date(Date.now() + 86400000);
+        say("Entrée de répertoire datée du " + dmy(d1) + " " + hms(new Date()) + " — conservée telle quelle.");
+        break;
+      case "silentwork":
+        A.burst(irnd(7, 12), 0.34);
+        elLed.classList.remove("on");
+        setTimeout(function () { elLed.classList.add("on"); }, 2600);
+        break;
+      case "dupopen":
+        (function () {
+          var t = S.shown[irnd(0, Math.max(0, S.shown.length - 1))];
+          if (t) { openFile(t, true); say("Prévisualisation : " + t.name); }
+        })();
+        break;
+      case "phantomrow":
+        (function () {
+          var ph = {
+            id: "phantom", dir: "D:\\Mes documents\\", name: "session_en_cours.tmp",
+            size: "0 Ko", kind: "txt", ts: new Date(),
+            body: function () { return "[verrouillé en écriture]"; }
+          };
+          S.files.push(ph); S.shown.push(ph); renderList(ph);
+          setTimeout(function () {
+            var i = S.shown.indexOf(ph);
+            if (i >= 0 && S.sel !== ph) { S.shown.splice(i, 1); renderList(); }
+          }, 4200);
+        })();
+        break;
+      case "reopen":
+        (function () {
+          var back = null;
+          for (var i = 0; i < S.files.length; i++) {
+            if (S.excluded[S.files[i].id] && S.shown.indexOf(S.files[i]) < 0) back = S.files[i];
+          }
+          if (back) { back.bad = true; S.shown.push(back); renderList(back); A.click(0.5); }
+          else if (S.shown.length) {
+            var f2 = S.shown[irnd(0, S.shown.length - 1)];
+            f2.bad = true; f2.size = "— Ko"; renderList();
+          }
+        })();
+        break;
+
+      case "autoopen":
+        (function () {
+          var f = null;
+          for (var i = 0; i < S.shown.length; i++) if (S.shown[i].id === "img203" || S.shown[i].id === "dernier") f = S.shown[i];
+          if (!f) f = S.shown[S.shown.length - 1];
+          if (f) { openFile(f, true); say("Ouverture automatique : " + f.name, "w"); A.click(0.6); shake(); }
+        })();
+        break;
+      case "regress":
+        S.progAdj = -18; A.sub(0.24); shake();
+        say("Relecture imposée — retour à la zone 1.", "w");
+        break;
+      case "selfscroll":
+        (function () {
+          if (!S.sel) return;
+          var i = 0, id = setInterval(function () {
+            elViewer.scrollTop += 9; i++;
+            if (i > 40 || S.phase === "over") clearInterval(id);
+          }, 40);
+          A.click(0.25);
+        })();
+        break;
+      case "titlename":
+        elTT.textContent = "Rémanence v2.4.1 — session de " + S.name + " — " + S.room;
+        break;
+      case "listshuffle":
+        S.shown = R.shuffle(S.shown); renderList();
+        say("Réindexation de la liste — ordre d'origine restauré.");
+        break;
+
+      case "callname":
+        say(S.name + " ?", "q"); A.breath(0.11, 2.2, true);
+        break;
+      case "menudie":
+        (function () {
+          var sp = elMenu.querySelectorAll("span"), i = sp.length - 1;
+          var id = setInterval(function () {
+            if (i < 0) { clearInterval(id); return; }
+            sp[i].classList.add("dead"); i--; A.click(0.18);
+          }, 900);
+        })();
+        break;
+      case "purge":
+        (function () {
+          var id = setInterval(function () {
+            if (S.phase === "over") { clearInterval(id); return; }
+            var i = -1;
+            for (var k = 0; k < S.shown.length; k++) if (S.shown[k].act !== 4) { i = k; break; }
+            if (i < 0) { clearInterval(id); return; }
+            S.shown.splice(i, 1); renderList(); A.click(0.2);
+          }, 700);
+          say("Purge des fichiers de l'opérateur 0246.", "w");
+        })();
+        break;
+      case "clockback":
+        S.clockDrift = -1;
+        say("Horloge du poste : dérive négative détectée. Correction impossible.", "w");
+        break;
+    }
+  }
+
+  /* ======================== PLANTAGE CRÉDIBLE ======================== */
+  function crash() {
+    if (S.phase !== "scan") return;
+    S.frozen = true;
+    document.body.classList.add("frozen");
+    elMask.classList.add("on");
+    elTbar.classList.add("inactive");
+    elTT.textContent = "Rémanence v2.4.1 — WDC 40 Go (D:\\) — (Ne répond pas)";
+    A.hddOff(); A.setBed(0.05, 0.5);
+    var stall = setInterval(function () { A.click(0.5); }, 620);
+    setTimeout(function () {
+      dialog({
+        title: "rmnnc.exe — Erreur d'application", ico: "warn", x: false, block: true,
+        text: "L'instruction à « 0x0246F1A0 » emploie l'adresse mémoire « 0x00000000 ».<br>" +
+          "La mémoire ne peut pas être « read »." +
+          '<span class="sub">Cliquez sur OK pour terminer le programme.</span>',
+        btns: [{ l: "OK", a: "ok" }, { l: "Annuler", a: "no" }],
+        on: function () {
+          say("Aucune réponse du processus.", "w");
+          A.spike(0.14);
+        }
+      });
+      A.spike(0.26);
+    }, 3400);
+    setTimeout(function () {
+      clearInterval(stall);
+      closeDialog();
+      elMask.classList.remove("on");
+      elTbar.classList.remove("inactive");
+      document.body.classList.remove("frozen");
+      S.frozen = false;
+      elTT.textContent = "Rémanence v2.4.1 — WDC 40 Go (D:\\) — analyse";
+      say("Reprise du contexte à " + hms(new Date()) + ". Aucune donnée perdue.");
+      jrn("Reprise après interruption du processus.");
+      A.hddOn(0.5); A.setBed(0.26, 1.2);
+    }, 8600);
+  }
+
+  /* ========================== INACTION ========================== */
+  var IDLE = [
+    function () {
+      say("Inactivité opérateur — " + irnd(20, 24) + " s. Maintien de la liaison au secteur 0.", "w");
+      A.click(0.45);
+    },
+    function () { A.burst(irnd(6, 10), 0.3); shake(); },
+    function () {
+      var f = S.shown[irnd(0, Math.max(0, S.shown.length - 1))];
+      if (f) { openFile(f, true); say("Prévisualisation : " + f.name); }
+    },
+    function () { A.breath(0.13, 2.4, true); A.sub(0.16); },
+    function () {
+      if (S.act >= 3) tip("ASSISTANCE RÉMANENCE", "Toujours là, " + S.name + " ?", 6000);
+      else say("Le périphérique reste sous tension.");
+    }
+  ];
+  function checkIdle() {
+    var n = Date.now();
+    if (n - S.lastAct < 20000) return;
+    if (n - S.lastIdleFire < 21000) return;
+    S.lastIdleFire = n; S.idleHits++;
+    sus(4);
+    jrn("Inactivité opérateur — " + Math.round((n - S.lastAct) / 1000) + " s.");
+    IDLE[irnd(0, IDLE.length - 1)]();
+  }
+
+  /* =========================== TICK =========================== */
+  function tick() {
+    if (S.phase === "over") return;
+    S.T = (Date.now() - S.t0) / 1000;
+
+    for (var i = 0; i < S.sched.length; i++) {
+      var e = S.sched[i];
+      if (!e.done && S.T >= e.t) { e.done = true; try { e.fn(); } catch (x) {} }
+    }
+
+    /* horloge du poste — vraie, sauf quand elle ne l'est plus */
+    if (S.clockDrift === -1) {
+      elClock.textContent = hms(new Date(Date.now() - (S.T - 390) * 2000));
+    } else {
+      elClock.textContent = hms(new Date(Date.now() + S.clockDrift * 1000));
+    }
+
+    if (S.phase === "scan") {
+      if (S.progAdj < 0) S.progAdj = Math.min(0, S.progAdj + 0.11);
+      S.prog = clampn(progAt(S.T) + S.progAdj, 0, 100);
+      elFill.style.width = S.prog.toFixed(2) + "%";
+      elPct.textContent = S.prog.toFixed(1).replace(".", ",") + " %";
+      S.sector = Math.floor(78165360 * S.prog / 100);
+      elSect.textContent = fr(S.sector);
+      elNrec.textContent = fr(S.recovered);
+      elStext.textContent = S.frozen ? "Le programme ne répond pas."
+        : S.act >= 3 ? "Lecture bas niveau — secteur " + fr(S.sector) + "."
+        : "Analyse en cours — zone " + S.act + ".";
+      /* le lit sonore suit l'état caché */
+      var want = 0.16 + (S.act - 1) * 0.05 + S.suspicion / 900;
+      if (Math.abs(want - A.level) > 0.02) A.setBed(want, 6);
+    }
+
+    if (S.sel && S.sel.live) renderViewer();
+    checkIdle();
+  }
+
+  /* ========================= FAUSSE FIN (6:30) ========================= */
+  function falseEnd() {
+    S.phase = "done";
+    S.prog = 100;
+    elFill.style.width = "100%";
+    elPct.textContent = "100,0 %";
+    elStext.textContent = "Restauration terminée.";
+    A.hddOff();
+    say("Restauration terminée. 1 247 fichiers récupérés.");
+    jrn("Restauration terminée. 1 247 fichiers.");
+    A.tone(1046, 0.09, 0.07, "sine");
+    setTimeout(function () { A.tone(1318, 0.14, 0.06, "sine"); }, 130);
+
+    setTimeout(function () {
+      dialog({
+        title: "Rémanence — terminé", ico: "", x: false,
+        text: "<b>Restauration terminée.</b><br>1 247 fichiers récupérés sur le support D:\\." +
+          '<span class="sub">Rapport de session enregistré sous le nom « ' + esc(S.name) + " ».<br>" +
+          "Merci d'avoir utilisé Rémanence.</span>",
+        btns: [{ l: "Fermer", a: "close" }],
+        on: function () { closeDialog(); shutdownGap(); }
+      });
+    }, 1200);
+    /* s'il ne clique pas, le programme se ferme quand même */
+    at(390 + 34, function () { if (S.phase === "done") { closeDialog(); shutdownGap(); } });
+  }
+
+  /* ------------- le trou : huit secondes, rien du tout ------------- */
+  function shutdownGap() {
+    if (S.phase !== "done") return;
+    S.phase = "gap";
+    elWin.classList.add("gone");
+    elTip.classList.remove("on");
+    A.hddOff();
+    A.silence(8.4);
+    setTimeout(function () { resume(); }, 8400);
+  }
+
+  /* ===================== ACTE FINAL (7:30) ===================== */
+  function resume() {
+    S.phase = "final"; S.act = 4; S.redOK = true;
+    S.R4 = S.T;
+    document.body.classList.add("act4");
+    elWin.classList.remove("gone");
+    elTT.textContent = "rmnnc.exe";
+    elLed.classList.remove("on"); elLed.classList.add("rd");
+    elFill.style.width = "0%";
+    elPct.textContent = "—";
+    elStext.textContent = "Session 0247 — ouverte en écriture.";
+    bRestore.disabled = bExclude.disabled = true;
+    $("devname").textContent = "WDC 40 Go";
+    $("vol").textContent = "secteur 0";
+    A.setBed(0.30, 0.8); A.tint(210, 2.2); A.hddOn(0.62); A.sub(0.3);
+    shake();
+
+    say("Reprise automatique.", "e");
+    jrn("Reprise automatique.");
+    say("La session n'a pas été clôturée.", "e");
+
+    var B = S.T; /* base de l'acte final */
+    at(B + 4, function () {
+      say("Lecture du secteur 0 — enregistrement source : 0246 (incomplet).");
+      say("Lecture du secteur 0 — enregistrement courant : 0247 (" + S.name + ").");
+    });
+    at(B + 8, function () {
+      var f = reveal("sess247");
+      if (f) openFile(f, true);
+      say("Ouverture automatique : session_0247.log", "w");
+    });
+    at(B + 26, function () { reveal("enr11"); say("Flux audio non déclaré — 1 source active.", "w"); A.breath(0.14, 2.6, true); });
+    at(B + 42, function () { reveal("imgloc"); say("Reconstruction d'après l'empreinte du poste — " + S.room + ".", "w"); });
+    at(B + 54, function () { reveal("sect0"); A.spike(0.2); shake(); });
+
+    var a4 = pickN(["callname", "menudie", "purge", "clockback"], 2);
+    at(B + 18, function () { fire(a4[0]); });
+    at(B + 36, function () { fire(a4[1]); });
+
+    at(B + 72, function () { theChoice(); });
+  }
+
+  /* ======================== LE CHOIX (~8:00) ======================== */
+  function theChoice() {
+    if (S.phase !== "final") return;
+    S.phase = "choice";
+    A.hddOff(); A.setBed(0.12, 1.5);
+    say("Secteur 0 — enregistrement source non résolu.", "e");
+    jrn("Secteur 0 — arbitrage demandé à l'opérateur.");
+    var answered = false;
+    dialog({
+      title: "Secteur 0 — arbitrage requis", ico: "warn", x: false, block: true,
+      text: "L'enregistrement <b>0246</b> occupe le secteur 0 depuis " +
+        Math.round(412 / 30) + " mois et n'a jamais été clôturé.<br>" +
+        "L'enregistrement <b>0247</b> (" + esc(S.name) + " — " + esc(S.room) +
+        ") est ouvert en écriture.<br>" +
+        "Le secteur 0 ne peut contenir qu'un enregistrement actif." +
+        '<span class="sub">Cette opération est irréversible et ne sera pas confirmée.</span>',
+      btns: [{ l: "Restaurer 0246", a: "rest" }, { l: "Libérer l'index", a: "free" }],
+      on: function (a) {
+        if (answered) return;
+        answered = true; closeDialog();
+        S.choice = a === "rest" ? "restaurer" : "liberer";
+        jrn("Arbitrage : " + S.choice + ".");
+        resolve();
+      }
+    });
+    /* ne pas répondre est une réponse */
+    setTimeout(function () {
+      if (answered || S.phase !== "choice") return;
+      answered = true; closeDialog();
+      sus(15);
+      S.choice = "liberer";
+      say("Aucune réponse de l'opérateur. Application de la procédure par défaut.", "e");
+      jrn("Arbitrage : aucune réponse — procédure par défaut.");
+      resolve();
+    }, 45000);
+  }
+
+  /* ============================ FINS ============================ */
+  function seq(lines, done) {
+    var i = 0;
+    (function step() {
+      if (S.phase === "over" && !S.ending) return;
+      if (i >= lines.length) { if (done) done(); return; }
+      var l = lines[i++];
+      if (l.f) l.f(); else say(l.s, l.c);
+      setTimeout(step, l.d === undefined ? 1400 : l.d);
+    })();
+  }
+
+  function resolve() {
+    S.phase = "ending";
+    if (S.choice === "restaurer") S.ending = "CONTINUITE";
+    else S.ending = S.suspicion >= 50 ? "REMANENCE" : "PURGE";
+    if (S.ending === "PURGE") endPurge();
+    else if (S.ending === "CONTINUITE") endContinuite();
+    else endRemanence();
+  }
+
+  function bar(pct, cls) {
+    elFill.style.width = pct + "%";
+    elPct.textContent = String(pct).replace(".", ",") + " %";
+  }
+
+  /* --- FIN 1 : PURGE — libérer, état calme --- */
+  function endPurge() {
+    A.setBed(0.2, 2); A.hddOn(0.7);
+    elStext.textContent = "Libération du secteur 0.";
+    seq([
+      { s: "Libération du secteur 0…", c: "w", d: 1800 },
+      { f: function () { bar(18); }, s: "0246 — effacement des blocs.   224 / 1 247", d: 1500 },
+      { f: function () { bar(52); }, s: "0246 — effacement des blocs.   679 / 1 247", d: 1500 },
+      { f: function () { bar(88); A.spike(0.12); }, s: "0246 — effacement des blocs. 1 118 / 1 247", d: 1500 },
+      { f: function () { bar(100); }, s: "0246 — effacé.", d: 2400 },
+      { s: "Secteur 0 : libre.", d: 2000 },
+      { s: "0247 — déplacé vers le secteur 0.", d: 1900 },
+      { f: function () { A.hddOff(); A.tone(1046, 0.1, 0.06, "sine"); }, s: "0247 — clôturé.", d: 2200 },
+      {
+        f: function () {
+          say("  durée      " + dur(Math.floor(S.T)));
+          say("  opérateur  " + S.name);
+          say("  poste      " + S.room + " — porte " + S.door);
+          say("  état       archivé");
+        }, s: "", d: 2600
+      },
+      { s: "Merci d'avoir utilisé Rémanence.", d: 2600 },
+      {
+        f: function () {
+          elWin.classList.add("gone");
+          A.silence(5.5);
+        }, s: "", d: 3000
+      }
+    ], function () {
+      endScreen([
+        "rmnnc.exe — arrêté.",
+        "",
+        "Le support WDC 40 Go a été démonté.",
+        "",
+        "1 nouvel enregistrement est disponible sur ce support :",
+        "",
+        "  0247   " + dmy(new Date()) + "   " + dur(Math.floor(S.T)) + "   archivé   " + S.name,
+        "",
+        "Il occupe le secteur 0.",
+        "Il n'a pas besoin d'être ouvert pour être lu."
+      ], [
+        "",
+        "78 165 359 secteurs restent libres."
+      ]);
+    });
+  }
+
+  /* --- FIN 2 : CONTINUITÉ — restaurer 0246 --- */
+  function endContinuite() {
+    A.setBed(0.22, 2); A.hddOn(0.8);
+    elStext.textContent = "Restauration de l'enregistrement 0246.";
+    seq([
+      { s: "Restauration de l'enregistrement 0246…", d: 1800 },
+      { f: function () { bar(31); }, s: "0246 — 387 / 1 247 blocs", d: 1400 },
+      { f: function () { bar(74); }, s: "0246 — 923 / 1 247 blocs", d: 1400 },
+      { f: function () { bar(100); A.tone(880, 0.1, 0.05, "sine"); }, s: "0246 — 1 247 / 1 247 blocs", d: 1900 },
+      { s: "0246 — clôturé.   opérateur : T.   poste : bureau   état : archivé", d: 2600 },
+      { f: function () { A.sub(0.28); }, s: "Secteur 0 : libre.", c: "w", d: 2400 },
+      { s: "Un enregistrement actif est requis pour maintenir l'index.", c: "w", d: 2600 },
+      {
+        f: function () {
+          say("0247 — " + S.name + " — " + S.room + " — porte " + S.door +
+            " — déplacé vers le secteur 0.", "e");
+          elTT.textContent = "Rémanence v2.4.1 — WDC 40 Go (D:\\) — analyse";
+          document.body.classList.remove("act4");
+          elLed.classList.remove("rd"); elLed.classList.add("on");
+          S.shown = []; S.sel = null; renderList();
+          elViewer.innerHTML = '<div class="empty">Analyse en cours. Aucun fichier récupéré pour le moment.</div>';
+          elVPath.textContent = "aucun fichier sélectionné";
+          bar(0);
+        }, s: "", d: 2600
+      },
+      {
+        f: function () {
+          say("Analyse démarrée. Secteurs : 78 165 360.");
+          A.hddOn(0.45); A.setBed(0.18, 4);
+          elStext.textContent = "Analyse en cours — zone 1.";
+          var p = 0, id = setInterval(function () {
+            p += 0.4; bar(Math.min(100, +p.toFixed(1)));
+            if (p >= 100) clearInterval(id);
+          }, 260);
+          /* la fenêtre s'éteint doucement, l'analyse ne s'arrête pas */
+          var o = 1, f = setInterval(function () {
+            o -= 0.022;
+            elWin.style.opacity = Math.max(0, o).toFixed(3);
+            if (o <= 0) { clearInterval(f); clearInterval(id); elWin.classList.add("gone"); }
+          }, 300);
+        }, s: "", d: 4000
+      },
+      { s: "Ne fermez pas cette fenêtre.", c: "q", d: 15000 }
+    ], function () {
+      endScreen([
+        "session 0247 — en cours.",
+        "",
+        "  début       " + hms(S.startedAt),
+        "  opérateur   " + S.name,
+        "  poste       " + S.room,
+        "  accès       porte " + S.door,
+        "  empreinte   " + ENV.w + " x " + ENV.h + " — " + ENV.lang + " — " + ENV.tz,
+        "  état        ouvert en écriture",
+        "",
+        "L'enregistrement se poursuit."
+      ], [
+        "",
+        "  durée       " + dur(Math.floor(S.T)),
+        "",
+        "Il n'y a pas de procédure de clôture pour le secteur 0."
+      ], true);
+    });
+  }
+
+  /* --- FIN 3 : RÉMANENCE — libérer, état chargé --- */
+  function endRemanence() {
+    A.setBed(0.3, 1.2); A.hddOn(0.9);
+    elStext.textContent = "Libération du secteur 0.";
+    seq([
+      { s: "Libération du secteur 0…", c: "w", d: 1600 },
+      { f: function () { bar(41); }, s: "0246 — effacement des blocs.   512 / 1 247", d: 1400 },
+      { f: function () { bar(97); A.spike(0.2); shake(); }, s: "0246 — effacement des blocs. 1 209 / 1 247", d: 1600 },
+      { f: function () { A.spike(0.28); shake(); }, s: "Erreur d'effacement — secteur 0.", c: "e", d: 1900 },
+      { s: "Les blocs marqués effacés conservent une charge résiduelle.", c: "e", d: 2200 },
+      { s: "C'est le principe de la rémanence.", c: "e", d: 2600 },
+      { f: function () { A.sub(0.34); }, s: "Relecture du secteur 0 :", d: 1700 },
+      { s: "  0246   T.        bureau      porte fermée      présent (résiduel)", d: 1700 },
+      {
+        f: function () {
+          say("  0247   " + S.name + "   " + S.room + "   porte " + S.door + "   présent", "e");
+        }, s: "", d: 2200
+      },
+      { s: "Secteur 0 : 2 enregistrements.", c: "e", d: 2400 },
+      { s: "Aucune procédure disponible.", c: "e", d: 2600 },
+      {
+        f: function () {
+          A.burst(14, 0.5); A.spike(0.3); shake();
+          elTT.textContent = "rmnnc.exe — (Ne répond pas)";
+          elTbar.classList.add("inactive");
+        }, s: "", d: 2400
+      },
+      {
+        f: function () {
+          elWin.classList.add("gone");
+          A.hddOff(); A.silence(6);
+        }, s: "", d: 2600
+      }
+    ], function () {
+      endScreen([
+        "[ affichage — rémanence d'image ]",
+        ""
+      ], [
+        "",
+        "L'image s'efface d'elle-même en deux à trois heures.",
+        "Le support, non."
+      ], false, [
+        "     RÉMANENCE v2.4.1",
+        "     secteur 0 .......... 2 enregistrements",
+        "     0246 ............... T. — bureau — porte fermée",
+        "     0247 ............... " + S.name + " — " + S.room + " — porte " + S.door,
+        "     état ............... les deux sont actifs"
+      ]);
+    });
+  }
+
+  /* ---------------------- écran de fin ---------------------- */
+  function endScreen(lines, coda, liveClock, burn) {
+    S.phase = "over";
+    clearInterval(S.tick);
+    elTip.classList.remove("on");
+    closeDialog();
+    $("endscr").classList.add("on");
+    var out = $("endtxt");
+    out.textContent = "";
+    var i = 0;
+    (function step() {
+      if (i < lines.length) {
+        out.textContent += lines[i] + "\n";
+        if (lines[i].trim()) A.click(0.14);
+        i++;
+        setTimeout(step, rnd(320, 780));
+        return;
+      }
+      if (burn) {
+        var b = document.createElement("pre");
+        b.className = "burn";
+        b.textContent = burn.join("\n");
+        $("endscr").insertBefore(b, $("relaunch"));
+      }
+      setTimeout(function () {
+        var c = document.createElement("pre");
+        c.textContent = coda.join("\n");
+        $("endscr").insertBefore(c, $("relaunch"));
+        A.setBed(0.06, 4);
+        if (liveClock) {
+          setInterval(function () {
+            c.textContent = coda.join("\n").replace(/durée       .*/,
+              "durée       " + dur(Math.floor((Date.now() - S.t0) / 1000)));
+          }, 1000);
+        }
+        setTimeout(function () {
+          $("relaunch").style.display = "inline-block";
+          A.setBed(0.03, 6);
+        }, 5000);
+      }, 6000);
+    })();
+  }
+  $("relaunch").addEventListener("click", function () {
+    try { A.ctx && A.ctx.close(); } catch (x) {}
+    location.reload();
+  });
+
+  /* ---------------------- horloge avant démarrage ---------------------- */
+  setInterval(function () {
+    if (S.phase === "boot") elClock.textContent = hms(new Date());
+  }, 1000);
+
+  boot();
+})();
+</script>
