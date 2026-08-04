@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>DERNIÈRE LUEUR — Survie 3D contre les zombies</title>
+<link rel="stylesheet" href="styles/style.css" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧟</text></svg>" />
+<script type="importmap">
+{ "imports": { "three": "./vendor/three.module.js" } }
+</script>
+</head>
+<body>
+
+<canvas id="game"></canvas>
+
+<!-- ============================== HUD ============================== -->
+<div id="hud" class="hidden">
+  <div id="vignette"></div>
+  <div id="popup-layer"></div>
+  <div id="damage-dir"></div>
+
+  <!-- Réticule -->
+  <div id="crosshair">
+    <span class="ch ch-t"></span><span class="ch ch-b"></span>
+    <span class="ch ch-l"></span><span class="ch ch-r"></span>
+    <span class="ch-dot"></span>
+  </div>
+  <div id="hitmarker"><span></span><span></span><span></span><span></span></div>
+
+  <!-- Bandeau haut -->
+  <div id="top-bar">
+    <div class="stat"><label>VAGUE</label><b id="wave-value">0</b></div>
+    <div class="stat"><label>INFECTÉS</label><b id="enemies-value">0</b></div>
+    <div class="stat"><label>SCORE</label><b id="score-value">0</b></div>
+    <div class="stat"><label>ÉLIMINÉS</label><b id="kills-value">0</b></div>
+  </div>
+
+  <!-- Barre de boss -->
+  <div id="boss-bar" class="hidden">
+    <div id="boss-name">COLOSSE</div>
+    <div class="boss-track"><div id="boss-fill"></div></div>
+  </div>
+
+  <!-- Annonces centrales -->
+  <div id="announce" class="hidden"></div>
+  <div id="announce-sub" class="hidden"></div>
+
+  <!-- Améliorations -->
+  <div id="upgrades-panel">
+    <h3>AMÉLIORATIONS</h3>
+    <ul id="upgrade-list"></ul>
+  </div>
+
+  <!-- Notifications -->
+  <div id="toasts"></div>
+
+  <!-- Minicarte -->
+  <div id="minimap-wrap"><canvas id="minimap" width="168" height="168"></canvas></div>
+
+  <!-- Bandeau bas gauche : santé -->
+  <div id="bottom-left">
+    <div class="bar health">
+      <div id="health-fill"></div>
+      <span id="health-text">100 / 100</span>
+    </div>
+    <div class="bar stamina"><div id="stamina-fill"></div></div>
+  </div>
+
+  <!-- Bandeau bas droite : armes -->
+  <div id="bottom-right">
+    <ul id="weapon-list"></ul>
+    <div id="ammo-block">
+      <div id="reload-ring" class="hidden"></div>
+      <span id="ammo-count">15</span><span class="slash">/</span><span id="ammo-reserve">∞</span>
+    </div>
+    <div id="weapon-name">Pistolet 9mm</div>
+    <div id="low-ammo" class="hidden">RECHARGEZ — R</div>
+  </div>
+</div>
+
+<!-- ============================ MENU ============================ -->
+<div id="screen-menu" class="screen">
+  <div class="panel wide">
+    <h1>DERNIÈRE<span>LUEUR</span></h1>
+    <p class="tagline">Un homme. Une arme. Une horde sans fin.</p>
+
+    <div class="menu-grid">
+      <section>
+        <h2>Commandes</h2>
+        <ul class="keys">
+          <li><kbd>Z</kbd><kbd>Q</kbd><kbd>S</kbd><kbd>D</kbd> / <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd><span>Se déplacer</span></li>
+          <li><kbd>Souris</kbd><span>Viser</span></li>
+          <li><kbd>Clic G.</kbd><span>Tirer</span></li>
+          <li><kbd>Clic D.</kbd><span>Viser précisément</span></li>
+          <li><kbd>R</kbd><span>Recharger</span></li>
+          <li><kbd>Maj</kbd><span>Sprinter</span></li>
+          <li><kbd>Espace</kbd><span>Sauter</span></li>
+          <li><kbd>Ctrl</kbd><span>S'accroupir</span></li>
+          <li><kbd>1</kbd><kbd>2</kbd><kbd>3</kbd> / <kbd>Molette</kbd><span>Changer d'arme</span></li>
+          <li><kbd>Échap</kbd><span>Pause</span></li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Objectif</h2>
+        <p class="brief">
+          Survivez aux vagues d'infectés. Entre deux assauts, la nuit vous laisse
+          quelques secondes de répit — utilisez-les.
+        </p>
+        <h2>Devenir plus fort</h2>
+        <ul class="bullets">
+          <li><b class="c-cyan">Cristaux d'amélioration</b> — les losanges lumineux flottants. <b>Tirez dessus</b> pour gagner dégâts, cadence, chargeur, vitesse, perforation, balles explosives…</li>
+          <li><b class="c-green">Caisses d'armes</b> — tirez dessus pour débloquer le fusil à pompe puis le fusil d'assaut.</li>
+          <li><b class="c-red">Barils explosifs</b> — tirez dessus au bon moment pour pulvériser un groupe entier.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>La horde</h2>
+        <ul class="bestiary">
+          <li><i style="--c:#5e7a4a"></i><b>Marcheur</b><span>Lent, mais jamais seul.</span></li>
+          <li><i style="--c:#8c5a3c"></i><b>Coureur</b><span>Rapide et fragile. Ne le laissez pas approcher.</span></li>
+          <li><i style="--c:#6f8f2f"></i><b>Cracheur</b><span>Attaque à distance avec de l'acide.</span></li>
+          <li><i style="--c:#7a4038" class="big"></i><b>BRUTE</b><span>Énorme, blindé, frappe le sol. Visez les <b class="c-yellow">pustules jaunes</b> : dégâts massifs.</span></li>
+          <li><i style="--c:#4a2b4d" class="big"></i><b>COLOSSE</b><span>Boss toutes les 5 vagues. Charge, invoque des renforts, encaisse énormément.</span></li>
+        </ul>
+      </section>
+    </div>
+
+    <div class="actions">
+      <button id="btn-play" class="primary">JOUER</button>
+      <button id="btn-options">Options</button>
+    </div>
+    <p class="hint">Cliquez sur JOUER puis sur l'écran pour capturer la souris.</p>
+  </div>
+</div>
+
+<!-- ============================ OPTIONS ============================ -->
+<div id="screen-options" class="screen hidden">
+  <div class="panel">
+    <h2 class="panel-title">OPTIONS</h2>
+    <div class="option">
+      <label for="opt-sens">Sensibilité souris</label>
+      <input type="range" id="opt-sens" min="0.25" max="3" step="0.05" value="1" />
+      <output id="opt-sens-val">1.00×</output>
+    </div>
+    <div class="option">
+      <label for="opt-volume">Volume</label>
+      <input type="range" id="opt-volume" min="0" max="1" step="0.05" value="0.6" />
+      <output id="opt-volume-val">60%</output>
+    </div>
+    <div class="option check">
+      <label for="opt-invert">Inverser l'axe vertical</label>
+      <input type="checkbox" id="opt-invert" />
+    </div>
+    <div class="option check">
+      <label for="opt-shadows">Ombres dynamiques</label>
+      <input type="checkbox" id="opt-shadows" checked />
+    </div>
+    <div class="actions">
+      <button id="btn-options-back" class="primary">Retour</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================ PAUSE ============================ -->
+<div id="screen-pause" class="screen hidden">
+  <div class="panel">
+    <h2 class="panel-title">PAUSE</h2>
+    <p class="tagline small">La horde vous attend.</p>
+    <div class="actions column">
+      <button id="btn-resume" class="primary">Reprendre</button>
+      <button id="btn-options-pause">Options</button>
+      <button id="btn-restart">Recommencer</button>
+      <button id="btn-quit">Menu principal</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========================== GAME OVER ========================== -->
+<div id="screen-dead" class="screen hidden">
+  <div class="panel">
+    <h2 class="panel-title dead">VOUS ÊTES MORT</h2>
+    <p class="tagline small">La lueur s'est éteinte.</p>
+    <ul class="results">
+      <li><label>Vague atteinte</label><b id="res-wave">0</b></li>
+      <li><label>Zombies éliminés</label><b id="res-kills">0</b></li>
+      <li><label>Score final</label><b id="res-score">0</b></li>
+      <li><label>Précision</label><b id="res-acc">0%</b></li>
+      <li><label>Tirs à la tête</label><b id="res-head">0</b></li>
+      <li><label>Améliorations</label><b id="res-upg">0</b></li>
+    </ul>
+    <div class="actions">
+      <button id="btn-restart-dead" class="primary">Rejouer</button>
+      <button id="btn-quit-dead">Menu principal</button>
+    </div>
+  </div>
+</div>
+
+<div id="loading">Chargement…</div>
+
+<script type="module" src="src/main.js"></script>
+</body>
+</html>
