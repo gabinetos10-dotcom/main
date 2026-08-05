@@ -1,0 +1,30 @@
+node_modules/
+.pnpm-store/
+
+# builds
+.next/
+out/
+dist/
+build/
+.turbo/
+
+# env
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# tests
+coverage/
+test-results/
+playwright-report/
+
+# outils
+*.log
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# prisma
+packages/db/prisma/*.db

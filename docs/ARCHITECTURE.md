@@ -39,7 +39,7 @@
 
 Trois consommateurs distincts de `packages/renderer` : `apps/sites` (public, zéro code d'éditeur),
 la route canvas de `apps/web` (renderer + affordances + Tiptap), et le shell de `apps/web` (aucun
-renderer). C'est cette séparation qui rend tenables *simultanément* le Lighthouse ≥ 95 public et le
+renderer). C'est cette séparation qui rend tenables _simultanément_ le Lighthouse ≥ 95 public et le
 confort d'édition.
 
 ---
@@ -73,12 +73,14 @@ Ajouts par rapport à la PARTIE 2 du brief : `apps/worker` (ADR-005), `packages/
 ## 3. Décisions d'architecture
 
 ### ADR-001 — Le document JSON est la source de vérité, jamais du HTML
+
 `Page.content` contient un `PageDocument` (arbre de `BlockNode`). Un seul moteur de rendu sert
 l'éditeur et le public. Le HTML n'existe qu'en sortie de rendu.
 L'export HTML statique (Business, phase 10) est une **sortie dérivée** générée depuis une révision :
 il ne contredit pas cet ADR, rien n'est stocké en HTML.
 
 ### ADR-002 — Un block = 3 fichiers, 2 registres ; le renderer ne dépend jamais de l'éditeur
+
 Le contrat `defineBlock()` mélange runtime (schéma, composant) et éditeur (icône, thumbnail,
 presets). Importer Lucide dans le runtime public gonflerait le bundle des sites publiés pour rien.
 
@@ -98,12 +100,14 @@ packages/blocks/src/blocks/hero.split/
 d'édition, et un test l'importe dans un contexte Node nu pour prouver qu'il fonctionne seul.
 
 ### ADR-003 — Les blocks ne consomment que des tokens
+
 Aucune couleur / taille / rayon / ombre en dur. Une règle ESLint maison
 (`no-hardcoded-design-values`) interdit littéraux hexa/rgb et classes Tailwind arbitraires dans
 `packages/blocks`. Les overrides locaux vivent dans `BlockNode.style`, sont signalés « custom » dans
 l'inspecteur, avec bouton « revenir au thème ».
 
 ### ADR-004 — Canvas en iframe same-origin + bus `postMessage` typé
+
 Le canvas est une route de `apps/web` (`/editor/[siteId]/canvas`) chargée dans une iframe
 same-origin. **Toute communication passe par un bus typé** ; aucun accès DOM cross-frame hors du bus
 (PARTIE 5.3). Protocole : `docs/EDITOR_BRIDGE.md` (phase 3).
@@ -115,6 +119,7 @@ partage de mémoire entre frames fermerait définitivement.
 Coût : la latence de sérialisation, face à la cible « 200+ blocks, < 16 ms ». Neutralisée par §6.
 
 ### ADR-005 — BullMQ + Redis, et un `apps/worker` dédié
+
 Choix demandé (BullMQ vs Trigger.dev), tranché par la contrainte « tourne en local avec
 `docker compose up`, sans compte cloud » : Trigger.dev cloud viole la contrainte, son self-host est
 lourd. BullMQ ne demande qu'un Redis, déjà nécessaire pour le rate limiting, le cache de résolution
@@ -129,18 +134,21 @@ backoff, emails, agrégation analytics, purge des révisions (7/30/90 j), purge 
 Les emails de la phase 1 partent en synchrone via `EmailProvider` — pas de file vide en attendant.
 
 ### ADR-006 — Le site public ne lit qu'une révision publiée
+
 Publier crée une `Revision` portant un snapshot autonome (pages publiées + header/footer + thème +
 SEO + redirections) puis bascule `Site.publishedRevisionId`. Le runtime résout
 `hostname → Site → publishedRevisionId → snapshot` : une lecture par page, rollback par repointage
 instantané et non destructif. Brouillon et publié sont strictement disjoints.
 
 ### ADR-007 — Accès aux données exclusivement via `packages/db/src/guards.ts`
+
 Aucun `prisma.*` hors `packages/db`. Tout passe par `requireOrgAccess(ctx, orgId, permission)`,
 `getSiteForOrg(...)`, etc., qui vérifient appartenance **et** permission. Règle ESLint
 (`no-direct-prisma`) qui rend la violation non mergeable. Les tests d'autorisation tentent
 explicitement l'accès cross-tenant et doivent échouer.
 
 ### ADR-008 — Better Auth pour l'identité, modèle d'organisation maison
+
 Better Auth gère identité et sessions : mot de passe **argon2id** (hasher custom), vérification
 email, magic link, OAuth Google, reset, sessions révocables, plugin TOTP pour la 2FA des plans
 payants. Son plugin « organization » n'est **pas** utilisé : la PARTIE 3 définit ses propres
@@ -149,23 +157,27 @@ concurrents seraient une dette immédiate. L'org active est portée par un cooki
 chaque requête contre `Membership`.
 
 ### ADR-009 — Fournisseur de domaines abstrait
+
 `DomainProvider` avec `VercelDomainProvider`, `CaddyDomainProvider` (on-demand TLS + endpoint
 `/ask`) et `FakeDomainProvider` (tests, dev local). Sélection par variable d'environnement.
 
 ### ADR-010 — Rich text : Tiptap, stocké en JSON
+
 Sortie JSON portable, rendue publiquement par un `RichTextRenderer` qui mappe les nœuds vers des
 éléments stylés par tokens. **Tiptap tourne dans l'iframe**, pas dans le shell : les frappes ne
 traversent pas le bus, seuls les commits debouncés le font.
 
 ### ADR-011 — Blocks RSC-first : zéro JS pour les blocks statiques
+
 > Un `component.tsx` de block ne porte **jamais** `"use client"` à sa racine et n'utilise aucun hook.
-> C'est un composant *partagé*. Toute interactivité est isolée dans un îlot `client/*.tsx`.
+> C'est un composant _partagé_. Toute interactivité est isolée dans un îlot `client/*.tsx`.
 
 Côté `apps/sites` le composant s'exécute comme Server Component (zéro JS, seuls les îlots
 s'hydratent) ; côté canvas, le même fichier est tiré dans le bundle client sans modification. Un
 test de budget de bundle en CI échoue si une page template dépasse le budget fixé.
 
 ### ADR-012 — Catalogue de polices fermé
+
 `next/font` exige des polices connues à la **compilation**, or un site choisit sa typographie à
 l'exécution. Charger du Google Fonts dynamiquement coûterait une requête tierce, du CLS et un trou
 dans la CSP — incompatible avec Lighthouse ≥ 95 et CLS ≈ 0.
@@ -174,8 +186,9 @@ Décision : catalogue fermé (~24 familles) déclaré dans `packages/tokens/font
 `next/font/local`, subset latin, `display: swap`, préchargé. Ajouter une police = une PR.
 
 ### ADR-013 — Rich text assaini structurellement, DOMPurify réservé au HTML brut
+
 Le rich text n'est **jamais du HTML** : c'est du JSON Tiptap. Une allowlist Zod de types de nœuds et
-de marques, appliquée à l'entrée *et* au rendu, est strictement plus forte que d'assainir du HTML a
+de marques, appliquée à l'entrée _et_ au rendu, est strictement plus forte que d'assainir du HTML a
 posteriori (rien d'inconnu ne peut exister dans l'arbre) et gratuite à l'exécution.
 
 `isomorphic-dompurify` reste utilisé là où une chaîne HTML brute existe réellement : prévisualisation
@@ -184,7 +197,9 @@ du block Embed dans le canvas, contenu importé. Le block Embed publié vit dans
 injecté hors de l'arbre React, avec avertissement explicite.
 
 ### ADR-014 — Quotas évalués côté serveur, à deux vitesses
+
 Helper unique `assertQuota(orgId, resource)` appelé depuis `guards.ts` :
+
 - **limites dures** (sites, pages/site, membres, collections) → `COUNT` SQL, autorité absolue, sans
   cache ;
 - **compteurs métrés** (stockage, soumissions/mois, pageviews) → `UsageCounter` incrémenté
@@ -195,19 +210,21 @@ quota (l'utilisateur choisit lesquels, à défaut les plus récents), ce qui les
 seule ; l'upgrade lève le verrou. Verrou stocké, non recalculé, pour être auditable.
 
 ### ADR-015 — Tout service externe passe par une interface avec implémentation locale
+
 Exigence de la PARTIE 11. Quatre frontières :
 
-| Interface | Implémentations |
-|---|---|
-| `DomainProvider` | Vercel · Caddy · Fake (dev/tests) |
-| `StorageProvider` | S3/R2 · MinIO (docker compose) — API présignée identique |
-| `EmailProvider` | Resend · Console (dev : écrit dans les logs et sur disque) |
+| Interface         | Implémentations                                                    |
+| ----------------- | ------------------------------------------------------------------ |
+| `DomainProvider`  | Vercel · Caddy · Fake (dev/tests)                                  |
+| `StorageProvider` | S3/R2 · MinIO (docker compose) — API présignée identique           |
+| `EmailProvider`   | Resend · Console (dev : écrit dans les logs et sur disque)         |
 | `PaymentProvider` | Stripe · Fake (dev/tests : simule webhooks et changements de plan) |
 
 Conséquence directe : la suite E2E complète tourne sans un seul compte cloud, et le self-host Docker
 reste un chemin de première classe, pas un mode dégradé.
 
 ### ADR-016 — Le back-office a ses propres tokens, étanches à ceux des sites
+
 Piège structurel : le canvas rend un site dont les tokens s'appellent `--color-primary`,
 `--radius-md`… Si le back-office utilisait les mêmes noms, tout changement de thème d'un client
 repeindrait l'éditeur.
@@ -222,6 +239,7 @@ du canvas ne reçoit **que** les `--site-*`. Une règle ESLint interdit les `--s
 ## 4. Flux principaux
 
 ### 4.1 Édition
+
 ```
 frappe / drag / champ d'inspecteur
   → mutation Immer sur le store du shell → patches
@@ -232,6 +250,7 @@ frappe / drag / champ d'inspecteur
 ```
 
 ### 4.2 Publication
+
 ```
 « Publier » → job BullMQ
   1. valide chaque document contre les schémas de blocks (échec ⇒ refus + log lisible)
@@ -245,6 +264,7 @@ Rollback = repointer publishedRevisionId + revalidateTag. Instantané, non destr
 ```
 
 ### 4.3 Requête publique
+
 ```
 GET https://monsite.fr/tarifs
   → middleware : hostname → siteId (cache Redis, TTL court)
@@ -259,10 +279,10 @@ GET https://monsite.fr/tarifs
 
 Messages typés, versionnés, validés par Zod aux deux extrémités.
 
-| Sens | Messages |
-|---|---|
+| Sens           | Messages                                                                                                              |
+| -------------- | --------------------------------------------------------------------------------------------------------------------- |
 | shell → canvas | `doc:init`, `doc:patch`, `selection:set`, `hover:set`, `breakpoint:set`, `mode:set`, `dnd:pointer`, `measure:request` |
-| canvas → shell | `ready`, `node:click`, `node:hover`, `node:measured`, `dnd:target`, `doc:patch` (commit Tiptap debouncé), `error` |
+| canvas → shell | `ready`, `node:click`, `node:hover`, `node:measured`, `dnd:target`, `doc:patch` (commit Tiptap debouncé), `error`     |
 
 Règles : aucun accès DOM cross-frame hors bus ; tout message porte un `protocolVersion` ; les rects
 sont batchés dans une frame (rAF) ; **les overlays de sélection sont dessinés dans le shell** à
@@ -291,23 +311,23 @@ Risque n°1 du choix ADR-004. Parades, validées par un banc de mesure dès la p
 Le schéma imposé est implémenté tel quel. Ajouts, chacun justifié (détail dans `DATA_MODEL.md`,
 écrit en phase 0 avec le schéma réel) :
 
-| Ajout | Justification |
-|---|---|
-| `Site.publishedRevisionId` | ADR-006 : révision servie ; rollback = un `UPDATE`. |
-| `Site.lockedAt` | ADR-014 : lecture seule après downgrade, sans suppression. |
-| `Site.cookieBanner`, `Site.csp` (Json) | Bannière configurable et CSP par site (PARTIE 8). |
-| `Revision.kind` (`AUTOSAVE\|PUBLISH\|MANUAL`) | Rétention différenciée 7/30/90 j selon le plan. |
-| `Page.contentVersion` | Version de schéma du document (migrations de blocks). |
-| `Page.draftUpdatedAt`, `Page.lastEditedById` | Détection de conflit d'édition concurrente. |
-| `Redirect` (siteId, from, to, statusCode) | Redirections 301 configurables (PARTIE 6). |
-| `PreviewLink` (siteId, token, expiresAt, revokedAt) | Aperçu partagé **révocable** — un JWT seul ne le serait pas. |
-| `PageView` (siteId, date, path, referrerHost, country) | Top pages et sources ; `UsageCounter` est mensuel/org, il ne peut pas alimenter un graphe. |
-| `Asset.status`, `Asset.variants` (Json) | Upload présigné en deux temps ; variantes webp/avif du worker. |
-| `Domain.lastCheckedAt`, `Domain.error`, `Domain.redirectTo` | Polling DNS avec backoff, cause d'échec affichable, www ↔ apex. |
-| `Organization.onboarding` (Json) | Checklist de démarrage persistante (PARTIE 7). |
-| `DeletionRequest` (scope, targetId, scheduledPurgeAt) | Suppression de compte avec purge à 30 j (PARTIE 8). |
-| `Session`, `Account`, `Verification`, `TwoFactor` | Tables Better Auth + plugin TOTP. |
-| `Comment` *(phase 10 uniquement)* | Mode collaboration ; pas créé avant d'être utilisé. |
+| Ajout                                                       | Justification                                                                              |
+| ----------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| `Site.publishedRevisionId`                                  | ADR-006 : révision servie ; rollback = un `UPDATE`.                                        |
+| `Site.lockedAt`                                             | ADR-014 : lecture seule après downgrade, sans suppression.                                 |
+| `Site.cookieBanner`, `Site.csp` (Json)                      | Bannière configurable et CSP par site (PARTIE 8).                                          |
+| `Revision.kind` (`AUTOSAVE\|PUBLISH\|MANUAL`)               | Rétention différenciée 7/30/90 j selon le plan.                                            |
+| `Page.contentVersion`                                       | Version de schéma du document (migrations de blocks).                                      |
+| `Page.draftUpdatedAt`, `Page.lastEditedById`                | Détection de conflit d'édition concurrente.                                                |
+| `Redirect` (siteId, from, to, statusCode)                   | Redirections 301 configurables (PARTIE 6).                                                 |
+| `PreviewLink` (siteId, token, expiresAt, revokedAt)         | Aperçu partagé **révocable** — un JWT seul ne le serait pas.                               |
+| `PageView` (siteId, date, path, referrerHost, country)      | Top pages et sources ; `UsageCounter` est mensuel/org, il ne peut pas alimenter un graphe. |
+| `Asset.status`, `Asset.variants` (Json)                     | Upload présigné en deux temps ; variantes webp/avif du worker.                             |
+| `Domain.lastCheckedAt`, `Domain.error`, `Domain.redirectTo` | Polling DNS avec backoff, cause d'échec affichable, www ↔ apex.                            |
+| `Organization.onboarding` (Json)                            | Checklist de démarrage persistante (PARTIE 7).                                             |
+| `DeletionRequest` (scope, targetId, scheduledPurgeAt)       | Suppression de compte avec purge à 30 j (PARTIE 8).                                        |
+| `Session`, `Account`, `Verification`, `TwoFactor`           | Tables Better Auth + plugin TOTP.                                                          |
+| `Comment` _(phase 10 uniquement)_                           | Mode collaboration ; pas créé avant d'être utilisé.                                        |
 
 Index : `(siteId, path)` unique, `(orgId)`, `Domain.hostname` unique, `Site.slug` unique,
 `(collectionId, slug)` unique, `(siteId, createdAt)` sur `FormSubmission`, `(orgId, period)` unique
@@ -334,15 +354,15 @@ sur `UsageCounter`, `(siteId, date, path)` sur `PageView`. Soft delete `archived
 
 ## 9. Registre des risques
 
-| Risque | Parade |
-|---|---|
-| Latence du bus sur gros documents | §6 : patches, store local, Tiptap dans l'iframe, banc de perf en CI |
-| Divergence rendu éditeur ↔ public | un seul renderer, snapshot tests dans les deux modes sur les mêmes fixtures |
-| Un block casse le budget JS public | ADR-011 + test de budget en CI |
-| Migrations de blocks à moitié appliquées | migration paresseuse à la lecture + job batch + version par page |
-| Fuite inter-tenants | ADR-007 + règle ESLint + tests cross-tenant |
-| Quotas contournés par appel direct d'API | ADR-014 : `assertQuota` dans `guards.ts`, jamais dans l'UI seule |
-| Downgrade destructeur | `Site.lockedAt` : lecture seule, jamais de suppression |
-| Thème d'un client repeignant l'éditeur | ADR-016 : espaces de noms `--ui-*` / `--site-*` disjoints |
-| Verrou hébergeur | ADR-009 + ADR-015 + Dockerfiles + worker autonome |
-| XSS (rich text, embed, code custom) | ADR-013 : allowlist structurelle, iframe sandbox, gating Business |
+| Risque                                   | Parade                                                                      |
+| ---------------------------------------- | --------------------------------------------------------------------------- |
+| Latence du bus sur gros documents        | §6 : patches, store local, Tiptap dans l'iframe, banc de perf en CI         |
+| Divergence rendu éditeur ↔ public        | un seul renderer, snapshot tests dans les deux modes sur les mêmes fixtures |
+| Un block casse le budget JS public       | ADR-011 + test de budget en CI                                              |
+| Migrations de blocks à moitié appliquées | migration paresseuse à la lecture + job batch + version par page            |
+| Fuite inter-tenants                      | ADR-007 + règle ESLint + tests cross-tenant                                 |
+| Quotas contournés par appel direct d'API | ADR-014 : `assertQuota` dans `guards.ts`, jamais dans l'UI seule            |
+| Downgrade destructeur                    | `Site.lockedAt` : lecture seule, jamais de suppression                      |
+| Thème d'un client repeignant l'éditeur   | ADR-016 : espaces de noms `--ui-*` / `--site-*` disjoints                   |
+| Verrou hébergeur                         | ADR-009 + ADR-015 + Dockerfiles + worker autonome                           |
+| XSS (rich text, embed, code custom)      | ADR-013 : allowlist structurelle, iframe sandbox, gating Business           |

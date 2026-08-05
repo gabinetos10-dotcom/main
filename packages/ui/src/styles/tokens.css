@@ -1,0 +1,125 @@
+/**
+ * Design tokens du back-office — direction « Atelier » (docs/DESIGN.md).
+ *
+ * ADR-016 : espace de noms `--ui-*`, strictement disjoint des `--site-*` des sites édités.
+ * Sans cette séparation, le thème d'un client repeindrait l'éditeur.
+ *
+ * C'est le seul fichier du dépôt autorisé à écrire des valeurs de couleur en dur.
+ */
+
+:root {
+  /* ── Fond et surfaces ─────────────────────────────────────────────────────
+     Neutre chaud (teinte ~35°, saturation ~4 %) : trois niveaux, jamais plus.
+     Au-delà, la hiérarchie devient illisible et on empile des boîtes. */
+  --ui-bg: #0d0c0b;
+  --ui-surface-1: #131211;
+  --ui-surface-2: #191715;
+  --ui-surface-3: #201e1b;
+
+  /* Fond du canvas d'édition : clair et neutre, il ne concurrence jamais le site édité. */
+  --ui-canvas-bg: #edeae5;
+
+  /* ── Filets ───────────────────────────────────────────────────────────────
+     1 px, jamais 2. La profondeur vient des filets et des surfaces, pas des ombres. */
+  --ui-border: rgb(245 241 236 / 9%);
+  --ui-border-strong: rgb(245 241 236 / 16%);
+
+  /* ── Texte ────────────────────────────────────────────────────────────────── */
+  --ui-text: #f5f1ec;
+  --ui-text-muted: #a8a19a;
+  --ui-text-subtle: #6e6862;
+  --ui-text-on-accent: #0d0c0b;
+
+  /* ── Accent ───────────────────────────────────────────────────────────────
+     Un seul, vermillon. Réservé à l'action primaire, à la sélection et au focus ;
+     interdit en surface de remplissage large — il vibrerait sur le fond chaud. */
+  --ui-accent: #ff4d14;
+  --ui-accent-hover: #ff6b3d;
+  --ui-accent-active: #e23f0b;
+  --ui-accent-subtle: rgb(255 77 20 / 12%);
+
+  /* ── Couleurs fonctionnelles ──────────────────────────────────────────────── */
+  --ui-success: #3fb950;
+  --ui-warning: #e3a008;
+  --ui-danger: #f04438;
+  --ui-danger-subtle: rgb(240 68 56 / 12%);
+
+  /* ── Typographie ──────────────────────────────────────────────────────────
+     Les familles sont injectées par next/font (packages/ui/src/styles/fonts.ts) ;
+     les replis ne servent qu'au tout premier rendu. */
+  --ui-font-display: var(--ui-font-display-loaded, ui-sans-serif), sans-serif;
+  --ui-font-sans: var(--ui-font-sans-loaded, ui-sans-serif), sans-serif;
+  --ui-font-mono: var(--ui-font-mono-loaded, ui-monospace), monospace;
+
+  /* Échelle : dense dans les panneaux, confortable dans le dashboard. */
+  --ui-text-micro: 0.6875rem; /* 11px — libellés de section */
+  --ui-text-xs: 0.75rem; /* 12px */
+  --ui-text-dense: 0.8125rem; /* 13px — panneaux de l'éditeur */
+  --ui-text-base: 0.875rem; /* 14px — dashboard, réglages */
+  --ui-text-md: 1rem; /* 16px */
+  --ui-text-lg: 1.25rem; /* 20px */
+  --ui-text-xl: 1.5rem; /* 24px */
+  --ui-text-2xl: 1.75rem; /* 28px */
+
+  --ui-leading-tight: 1.2;
+  --ui-leading-dense: 1.4;
+  --ui-leading-normal: 1.5;
+  --ui-tracking-display: -0.02em;
+  --ui-tracking-micro: 0.06em;
+
+  /* ── Espacement — base 4 px ───────────────────────────────────────────────── */
+  --ui-space-1: 0.25rem;
+  --ui-space-2: 0.5rem;
+  --ui-space-3: 0.75rem;
+  --ui-space-4: 1rem;
+  --ui-space-5: 1.25rem;
+  --ui-space-6: 1.5rem;
+  --ui-space-8: 2rem;
+  --ui-space-10: 2.5rem;
+  --ui-space-12: 3rem;
+  --ui-space-16: 4rem;
+
+  /* Gouttière de panneau et respiration de section (DESIGN.md § Densité). */
+  --ui-gutter-panel: var(--ui-space-3);
+  --ui-gutter-section: var(--ui-space-6);
+
+  /* ── Hauteurs de contrôle ─────────────────────────────────────────────────── */
+  --ui-control-dense: 1.75rem; /* 28px — inspecteur, calques */
+  --ui-control-base: 2rem; /* 32px */
+  --ui-control-comfortable: 2.25rem; /* 36px — dashboard, réglages */
+
+  /* ── Rayons — 6 px maximum ────────────────────────────────────────────────
+     « Cartes arrondies génériques empilées » fait partie des interdits. */
+  --ui-radius-sm: 2px;
+  --ui-radius-md: 4px;
+  --ui-radius-lg: 6px;
+  --ui-radius-full: 9999px;
+
+  /* ── Ombres ───────────────────────────────────────────────────────────────
+     Une seule, pour les surfaces flottantes. Tout le reste tient par les filets. */
+  --ui-shadow-float: 0 8px 24px -12px rgb(0 0 0 / 60%);
+
+  /* ── Mouvement — 150 à 250 ms, jamais au-delà ─────────────────────────────── */
+  --ui-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ui-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ui-duration-fast: 150ms;
+  --ui-duration: 200ms;
+  --ui-duration-slow: 250ms;
+
+  /* ── Focus ────────────────────────────────────────────────────────────────
+     Toujours visible. `outline: none` sans remplacement est un bug d'accessibilité. */
+  --ui-focus-ring: 2px;
+  --ui-focus-offset: 2px;
+}
+
+/**
+ * `prefers-reduced-motion` : on annule les durées plutôt que les transitions elles-mêmes,
+ * pour que les changements d'opacité restent perceptibles sans mouvement.
+ */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --ui-duration-fast: 0ms;
+    --ui-duration: 0ms;
+    --ui-duration-slow: 0ms;
+  }
+}

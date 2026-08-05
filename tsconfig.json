@@ -1,0 +1,6 @@
+{
+  "//": "Racine du monorepo : sert d'ancrage aux éditeurs. Chaque paquet étend packages/config/tsconfig.",
+  "extends": "./packages/config/tsconfig/base.json",
+  "include": [],
+  "exclude": ["node_modules"]
+}

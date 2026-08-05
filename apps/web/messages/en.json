@@ -1,0 +1,28 @@
+{
+  "status": {
+    "eyebrow": "Phase 0 — foundations",
+    "intro": "The foundations are in place. This page checks the three services the workshop depends on; it makes way for the dashboard in phase 1.",
+    "down": "unreachable",
+    "hint": "A service is not responding. Run \"pnpm docker:up\", then reload this page.",
+    "services": {
+      "database": "PostgreSQL",
+      "redis": "Redis",
+      "storage": "Storage"
+    }
+  },
+  "designSystem": {
+    "eyebrow": "Development only",
+    "title": "Design system",
+    "intro": "\"Atelier\" direction: warm ink, crisp hairlines, a single accent. Components arrive in phase 1; for now this page shows the tokens that will govern them.",
+    "sections": {
+      "surfaces": "Surfaces",
+      "text": "Text",
+      "accent": "Accent and functional colours",
+      "typography": "Typography",
+      "radii": "Radii",
+      "motion": "Motion"
+    },
+    "typographySample": "The web workshop — 1440 × 900",
+    "motionNote": "150 to 250 ms, custom easing. Beyond that, the interface feels sluggish."
+  }
+}

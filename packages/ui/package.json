@@ -1,0 +1,26 @@
+{
+  "name": "@atelier/ui",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./styles/tokens.css": "./src/styles/tokens.css",
+    "./styles/fonts": "./src/styles/fonts.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "next": "^15.1.4",
+    "react": "^19.0.0"
+  },
+  "devDependencies": {
+    "@atelier/config": "workspace:*",
+    "@types/react": "^19.0.7",
+    "eslint": "^9.18.0",
+    "next": "^15.1.4",
+    "react": "^19.0.0",
+    "typescript": "^5.7.3"
+  }
+}

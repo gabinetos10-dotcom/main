@@ -1,0 +1,12 @@
+# Outillage installé dans le dépôt : formaté par ses auteurs, pas par nous.
+.claude
+
+node_modules
+.next
+.turbo
+dist
+build
+coverage
+pnpm-lock.yaml
+packages/db/prisma/migrations
+packages/ui/src/styles/fonts/**

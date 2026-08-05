@@ -1,0 +1,28 @@
+{
+  "status": {
+    "eyebrow": "Phase 0 — fondations",
+    "intro": "Les fondations sont en place. Cette page vérifie en direct les trois services dont dépend l'atelier ; elle laissera place au tableau de bord à la phase 1.",
+    "down": "injoignable",
+    "hint": "Un service ne répond pas. Lance « pnpm docker:up », puis recharge cette page.",
+    "services": {
+      "database": "PostgreSQL",
+      "redis": "Redis",
+      "storage": "Stockage"
+    }
+  },
+  "designSystem": {
+    "eyebrow": "Développement uniquement",
+    "title": "Système de design",
+    "intro": "Direction « Atelier » : encre chaude, filets nets, un seul accent. Les composants arrivent à la phase 1 ; cette page montre pour l'instant les tokens qui les gouverneront.",
+    "sections": {
+      "surfaces": "Surfaces",
+      "text": "Texte",
+      "accent": "Accent et couleurs fonctionnelles",
+      "typography": "Typographie",
+      "radii": "Rayons",
+      "motion": "Mouvement"
+    },
+    "typographySample": "L'atelier du web — 1440 × 900",
+    "motionNote": "150 à 250 ms, easing custom. Au-delà, l'interface donne l'impression de traîner."
+  }
+}

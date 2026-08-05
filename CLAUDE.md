@@ -2,9 +2,10 @@
 
 Guide de travail pour ce dépôt. À maintenir à jour à chaque phase.
 
-> **État actuel : pré-phase 0.** Le plan (`docs/PLAN.md`) attend validation ; aucun code applicatif
-> n'existe encore. Les commandes ci-dessous décrivent la cible et seront vérifiées, une par une, à la
-> fin de la phase 0. Ne pas les considérer comme fonctionnelles avant.
+> **État actuel : phase 0 livrée**, phase 1 (auth & organisations) en attente de feu vert.
+> Produit : **L'atelier du web** — scope npm `@atelier/*`, marque centralisée dans
+> `packages/config/src/brand.ts`. Back-office **bilingue** : français par défaut à la racine,
+> anglais sous `/en`.
 
 ---
 
@@ -22,49 +23,55 @@ de canvas libre en position absolue.
 
 ## Stack
 
-| Domaine | Choix |
-|---|---|
-| Monorepo | pnpm workspaces + Turborepo |
-| Framework | Next.js 15 (App Router) + React 19, TypeScript strict |
-| Styling | Tailwind CSS v4 + CSS variables (design tokens) |
-| UI back-office | shadcn/ui + Radix + lucide-react |
-| Animations | Motion (framer-motion) |
-| Base | PostgreSQL + Prisma (migrations versionnées) |
-| API | tRPC ; REST uniquement pour webhooks et endpoints publics |
-| Auth | Better Auth (mdp, magic link, Google), sessions httpOnly |
-| Validation | Zod (API, schémas de blocks, variables d'env) |
-| État éditeur | Zustand + Immer (patches pour undo/redo) |
-| Drag & drop | dnd-kit |
-| Médias | S3-compatible (R2 / MinIO en local), URLs présignées |
-| Rich text | Tiptap, stocké en JSON |
-| Paiement | Stripe (Checkout, Portal, webhooks) |
-| Emails | Resend + React Email |
-| Jobs | BullMQ + Redis |
-| Tests | Vitest, Testing Library, Playwright |
-| Qualité | ESLint flat config, Prettier, Husky + lint-staged, commitlint |
-| Observabilité | Sentry + pino |
+| Domaine        | Choix                                                         |
+| -------------- | ------------------------------------------------------------- |
+| Monorepo       | pnpm workspaces + Turborepo                                   |
+| Framework      | Next.js 15 (App Router) + React 19, TypeScript strict         |
+| Styling        | Tailwind CSS v4 + CSS variables (design tokens)               |
+| UI back-office | shadcn/ui + Radix + lucide-react                              |
+| Animations     | Motion (framer-motion)                                        |
+| Base           | PostgreSQL + Prisma (migrations versionnées)                  |
+| API            | tRPC ; REST uniquement pour webhooks et endpoints publics     |
+| Auth           | Better Auth (mdp, magic link, Google), sessions httpOnly      |
+| Validation     | Zod (API, schémas de blocks, variables d'env)                 |
+| État éditeur   | Zustand + Immer (patches pour undo/redo)                      |
+| Drag & drop    | dnd-kit                                                       |
+| Médias         | S3-compatible (R2 / MinIO en local), URLs présignées          |
+| Rich text      | Tiptap, stocké en JSON                                        |
+| Paiement       | Stripe (Checkout, Portal, webhooks)                           |
+| Emails         | Resend + React Email                                          |
+| Jobs           | BullMQ + Redis                                                |
+| Tests          | Vitest, Testing Library, Playwright                           |
+| Qualité        | ESLint flat config, Prettier, Husky + lint-staged, commitlint |
+| Observabilité  | Sentry + pino                                                 |
 
 ## Arborescence
 
+Ce qui existe (phase 0) :
+
 ```
-apps/web      back-office (auth, dashboard, shell éditeur + route canvas, billing, tRPC)
-apps/sites    runtime public multi-tenant
-apps/worker   jobs BullMQ
-packages/db auth blocks renderer tokens ui templates emails config
-docs/         PLAN ARCHITECTURE DATA_MODEL BLOCKS THEMING EDITOR_BRIDGE API SECURITY DEPLOY
-docker/       compose + Dockerfiles
+apps/web          back-office — état des services, /design-system
+packages/config   eslint (+ 3 règles maison), tsconfig, env, marque
+packages/db       schéma Prisma, client, soft delete, seeds
+packages/ui       tokens et polices du back-office
+docker/           compose : Postgres, Redis, MinIO
+docs/             PLAN ARCHITECTURE DESIGN DATA_MODEL
 ```
 
-## Commandes (cible)
+Créé à la phase où c'est utile — jamais avant : `packages/auth` et `packages/emails` (1),
+`packages/blocks renderer tokens` (2), `apps/worker` (4), `apps/sites` et `packages/templates` (5).
+
+## Commandes
 
 ```bash
-docker compose up -d     # Postgres + Redis + MinIO
 pnpm install
+pnpm docker:up           # Postgres (55432) + Redis (56379) + MinIO (59000)
 pnpm db:migrate          # migrations
-pnpm db:seed             # données de démo
-pnpm dev                 # toutes les apps
+pnpm db:seed             # données de démo, idempotent
+pnpm dev                 # http://localhost:3000
 pnpm typecheck && pnpm lint && pnpm test
-pnpm test:e2e            # Playwright
+pnpm format              # Prettier
+pnpm fonts:fetch         # rafraîchit les polices auto-hébergées
 ```
 
 ## Conventions
@@ -83,6 +90,12 @@ pnpm test:e2e            # Playwright
   Aucune phase suivante sans feu vert explicite.
 - **Couverture ≥ 80 %** appliquée en CI sur `packages/blocks`, `packages/renderer`, permissions,
   quotas.
+- **Bilingue.** Aucune chaîne visible en dur : tout passe par `next-intl` (`messages/fr.json`,
+  `messages/en.json`). Le français est la langue de référence ; l'anglais la suit dans le même
+  commit. Les composants de `packages/ui` ne contiennent aucun texte : il arrive par props.
+- **Marque.** Le nom du produit ne s'écrit qu'à un seul endroit : `packages/config/src/brand.ts`.
+- **Imports relatifs sans extension** dans les paquets TypeScript (`./client`, pas `./client.js`) :
+  webpack ne résout pas `.js` vers un `.ts` dans les paquets transpilés par Next.
 
 ## Décisions d'architecture (résumé — détail dans docs/PLAN.md et docs/ARCHITECTURE.md)
 
@@ -122,6 +135,7 @@ pnpm test:e2e            # Playwright
 ## Design du back-office (détail : `docs/DESIGN.md`)
 
 Le produit vend du design ; l'interface qui sert à en fabriquer ne peut pas ressembler à un template.
+
 - **Interdits** : Inter/Roboto/system-ui comme police de marque, dégradés violet→bleu sur fond blanc,
   cartes arrondies génériques empilées, emojis en guise d'icônes (Lucide uniquement), écrans vides
   sans illustration ni action.

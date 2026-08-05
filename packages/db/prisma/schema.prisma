@@ -1,0 +1,617 @@
+// L'atelier du web — schéma de données.
+//
+// Référence : docs/DATA_MODEL.md (justification de chaque table, chaque index, chaque écart au
+// brief). Règle d'accès : aucun accès direct à ce client hors de packages/db (ADR-007).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Énumérations
+// ─────────────────────────────────────────────────────────────────────────────
+
+enum Role {
+  OWNER
+  ADMIN
+  EDITOR
+  VIEWER
+}
+
+enum Plan {
+  FREE
+  PRO
+  BUSINESS
+}
+
+enum PlanStatus {
+  ACTIVE
+  TRIALING
+  PAST_DUE
+  CANCELED
+  INCOMPLETE
+}
+
+enum SiteStatus {
+  DRAFT
+  PUBLISHED
+}
+
+enum PageStatus {
+  DRAFT
+  PUBLISHED
+}
+
+enum GlobalSectionType {
+  HEADER
+  FOOTER
+}
+
+enum RevisionKind {
+  AUTOSAVE
+  PUBLISH
+  MANUAL
+}
+
+enum DeploymentStatus {
+  QUEUED
+  BUILDING
+  LIVE
+  FAILED
+}
+
+enum DomainStatus {
+  PENDING
+  VERIFYING
+  ACTIVE
+  ERROR
+}
+
+enum SslStatus {
+  PENDING
+  ISSUING
+  ACTIVE
+  ERROR
+}
+
+enum AssetStatus {
+  PENDING
+  READY
+  FAILED
+}
+
+enum CollectionItemStatus {
+  DRAFT
+  PUBLISHED
+}
+
+enum DeletionScope {
+  USER
+  ORGANIZATION
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Identité — tables attendues par Better Auth (ADR-008)
+// ─────────────────────────────────────────────────────────────────────────────
+
+model User {
+  id            String   @id @default(cuid())
+  email         String   @unique
+  name          String?
+  /// Better Auth nomme ce champ `image` ; le brief disait `avatarUrl`. On suit Better Auth pour
+  /// éviter une couche de mapping sur tout le flux d'authentification (voir DATA_MODEL.md).
+  image         String?
+  emailVerified Boolean  @default(false)
+  /// Langue du back-office. Le français est la langue par défaut du produit.
+  locale        String   @default("fr")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  accounts         Account[]
+  auditLogs        AuditLog[]
+  deletionRequests DeletionRequest[]
+  invitationsSent  Invitation[]      @relation("InvitationAuthor")
+  memberships      Membership[]
+  pagesEdited      Page[]            @relation("PageLastEditor")
+  previewLinks     PreviewLink[]
+  revisions        Revision[]
+  sessions         Session[]
+  twoFactors       TwoFactor[]
+
+  @@index([email])
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  expiresAt DateTime
+  ipAddress String?
+  userAgent String?
+  userId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Account {
+  id                    String    @id @default(cuid())
+  accountId             String
+  providerId            String
+  userId                String
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  /// Hash argon2id pour le fournisseur « credential ». Jamais un mot de passe en clair.
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([providerId, accountId])
+  @@index([userId])
+}
+
+model Verification {
+  id         String   @id @default(cuid())
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
+}
+
+/// 2FA TOTP — réservée aux plans payants (PARTIE 7). Le schéma est prêt dès maintenant ;
+/// l'interface arrive avec le billing.
+model TwoFactor {
+  id          String @id @default(cuid())
+  secret      String
+  backupCodes String
+  userId      String
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Organisations
+// ─────────────────────────────────────────────────────────────────────────────
+
+model Organization {
+  id               String     @id @default(cuid())
+  name             String
+  slug             String     @unique
+  stripeCustomerId String?    @unique
+  plan             Plan       @default(FREE)
+  planStatus       PlanStatus @default(ACTIVE)
+  trialEndsAt      DateTime?
+  /// Checklist de démarrage persistante (PARTIE 7).
+  onboarding       Json       @default("{}")
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+
+  assets      Asset[]
+  auditLogs   AuditLog[]
+  invitations Invitation[]
+  memberships Membership[]
+  sites       Site[]
+  usage       UsageCounter[]
+
+  @@index([slug])
+}
+
+model Membership {
+  id         String    @id @default(cuid())
+  userId     String
+  orgId      String
+  role       Role      @default(EDITOR)
+  invitedAt  DateTime  @default(now())
+  acceptedAt DateTime?
+
+  org  Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  user User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, orgId])
+  @@index([orgId])
+}
+
+model Invitation {
+  id          String    @id @default(cuid())
+  orgId       String
+  email       String
+  role        Role      @default(EDITOR)
+  token       String    @unique
+  expiresAt   DateTime
+  invitedById String?
+  acceptedAt  DateTime?
+  revokedAt   DateTime?
+  createdAt   DateTime  @default(now())
+
+  invitedBy User?        @relation("InvitationAuthor", fields: [invitedById], references: [id], onDelete: SetNull)
+  org       Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@unique([orgId, email])
+  @@index([token])
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Sites
+// ─────────────────────────────────────────────────────────────────────────────
+
+model Site {
+  id                  String     @id @default(cuid())
+  orgId               String
+  name                String
+  /// Sous-domaine, unique sur toute la plateforme.
+  slug                String     @unique
+  status              SiteStatus @default(DRAFT)
+  faviconUrl          String?
+  defaultLocale       String     @default("fr")
+  locales             String[]   @default(["fr"])
+  seoDefaults         Json       @default("{}")
+  /// Scripts custom injectés dans <head>/<body>. Plan Business uniquement (PARTIE 7).
+  scripts             Json       @default("{}")
+  /// Bannière cookies configurable (PARTIE 8).
+  cookieBanner        Json       @default("{}")
+  /// CSP par site, configurable (PARTIE 8).
+  csp                 Json       @default("{}")
+  /// ADR-006 — la seule révision servie au public. Rollback = un UPDATE ici.
+  publishedRevisionId String?    @unique
+  /// ADR-014 — lecture seule après downgrade. Jamais de suppression.
+  lockedAt            DateTime?
+  createdAt           DateTime   @default(now())
+  updatedAt           DateTime   @updatedAt
+  archivedAt          DateTime?
+
+  org               Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  publishedRevision Revision?    @relation("PublishedRevision", fields: [publishedRevisionId], references: [id], onDelete: SetNull)
+
+  assets         Asset[]
+  collections    Collection[]
+  deployments    Deployment[]
+  domains        Domain[]
+  globalSections GlobalSection[]
+  pages          Page[]
+  pageViews      PageView[]
+  previewLinks   PreviewLink[]
+  redirects      Redirect[]
+  revisions      Revision[]       @relation("SiteRevisions")
+  submissions    FormSubmission[]
+  theme          Theme?
+
+  @@index([orgId])
+  @@index([archivedAt])
+}
+
+model Page {
+  id             String     @id @default(cuid())
+  siteId         String
+  path           String
+  title          String
+  isHome         Boolean    @default(false)
+  parentId       String?
+  order          Int        @default(0)
+  seo            Json       @default("{}")
+  /// ADR-001 — le document JSON, source de vérité. Brouillon : jamais servi au public (ADR-006).
+  content        Json
+  /// Version de schéma du document, pour les migrations de blocks (PARTIE 4.5).
+  contentVersion Int        @default(1)
+  status         PageStatus @default(DRAFT)
+
+  publishedAt    DateTime?
+  /// Verrou optimiste de l'autosave : détecte l'édition concurrente (PARTIE 5.2).
+  draftUpdatedAt DateTime  @default(now())
+  lastEditedById String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  archivedAt     DateTime?
+
+  children     Page[] @relation("PageHierarchy")
+  parent       Page?  @relation("PageHierarchy", fields: [parentId], references: [id], onDelete: SetNull)
+  lastEditedBy User?  @relation("PageLastEditor", fields: [lastEditedById], references: [id], onDelete: SetNull)
+  site         Site   @relation(fields: [siteId], references: [id], onDelete: Cascade)
+
+  revisions   Revision[]
+  submissions FormSubmission[]
+
+  @@unique([siteId, path])
+  @@index([siteId, order])
+  @@index([parentId])
+  @@index([archivedAt])
+}
+
+model Theme {
+  id                String   @id @default(cuid())
+  /// Un thème par site : le brief portait aussi un `Site.themeId`, redondant (DATA_MODEL.md).
+  siteId            String   @unique
+  tokens            Json
+  typography        Json
+  createdFromPreset String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  site Site @relation(fields: [siteId], references: [id], onDelete: Cascade)
+}
+
+model GlobalSection {
+  id        String            @id @default(cuid())
+  siteId    String
+  type      GlobalSectionType
+  content   Json
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+
+  site Site @relation(fields: [siteId], references: [id], onDelete: Cascade)
+
+  @@unique([siteId, type])
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Publication
+// ─────────────────────────────────────────────────────────────────────────────
+
+model Revision {
+  id        String       @id @default(cuid())
+  siteId    String
+  pageId    String?
+  /// Snapshot autonome : pages publiées, sections globales, thème, SEO, redirections (ADR-006).
+  snapshot  Json
+  authorId  String?
+  label     String?
+  /// Rétention différenciée selon le plan : 7 / 30 / 90 jours (PARTIE 7).
+  kind      RevisionKind @default(AUTOSAVE)
+  createdAt DateTime     @default(now())
+
+  author User? @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  page   Page? @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  site   Site  @relation("SiteRevisions", fields: [siteId], references: [id], onDelete: Cascade)
+
+  deployments  Deployment[]
+  publishedFor Site?        @relation("PublishedRevision")
+
+  @@index([siteId, createdAt])
+  @@index([pageId])
+}
+
+model Deployment {
+  id         String           @id @default(cuid())
+  siteId     String
+  revisionId String
+  status     DeploymentStatus @default(QUEUED)
+  log        String?
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+
+  revision Revision @relation(fields: [revisionId], references: [id], onDelete: Cascade)
+  site     Site     @relation(fields: [siteId], references: [id], onDelete: Cascade)
+
+  @@index([siteId, createdAt])
+}
+
+model Domain {
+  id                  String       @id @default(cuid())
+  siteId              String
+  hostname            String       @unique
+  status              DomainStatus @default(PENDING)
+  verificationRecords Json         @default("[]")
+  sslStatus           SslStatus    @default(PENDING)
+  isPrimary           Boolean      @default(false)
+  /// Redirection www ↔ apex (PARTIE 6).
+  redirectTo          String?
+  lastCheckedAt       DateTime?
+  error               String?
+  createdAt           DateTime     @default(now())
+  updatedAt           DateTime     @updatedAt
+
+  site Site @relation(fields: [siteId], references: [id], onDelete: Cascade)
+
+  @@index([siteId])
+}
+
+model Redirect {
+  id         String   @id @default(cuid())
+  siteId     String
+  from       String
+  to         String
+  statusCode Int      @default(301)
+  createdAt  DateTime @default(now())
+
+  site Site @relation(fields: [siteId], references: [id], onDelete: Cascade)
+
+  @@unique([siteId, from])
+}
+
+/// Lien d'aperçu partagé, temporaire et non indexé (PARTIE 5.2). Stocké — et non signé — pour
+/// rester révocable.
+model PreviewLink {
+  id          String    @id @default(cuid())
+  siteId      String
+  token       String    @unique
+  expiresAt   DateTime
+  revokedAt   DateTime?
+  createdById String?
+  createdAt   DateTime  @default(now())
+
+  createdBy User? @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  site      Site  @relation(fields: [siteId], references: [id], onDelete: Cascade)
+
+  @@index([siteId])
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Médias, CMS, formulaires
+// ─────────────────────────────────────────────────────────────────────────────
+
+model Asset {
+  id        String      @id @default(cuid())
+  orgId     String
+  siteId    String?
+  key       String      @unique
+  url       String
+  mimeType  String
+  width     Int?
+  height    Int?
+  size      Int
+  blurhash  String?
+  alt       String?
+  /// L'upload est présigné : la ligne existe avant que le worker n'ait calculé les variantes.
+  status    AssetStatus @default(PENDING)
+  /// Variantes webp/avif et tailles responsives produites par le worker (PARTIE 5.4).
+  variants  Json        @default("[]")
+  createdAt DateTime    @default(now())
+
+  org  Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  site Site?        @relation(fields: [siteId], references: [id], onDelete: SetNull)
+
+  @@index([orgId, createdAt])
+  @@index([siteId])
+}
+
+model Collection {
+  id        String   @id @default(cuid())
+  siteId    String
+  name      String
+  slug      String
+  /// Schéma des champs personnalisés (mini-CMS).
+  fields    Json     @default("[]")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  site  Site             @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  items CollectionItem[]
+
+  @@unique([siteId, slug])
+}
+
+model CollectionItem {
+  id           String               @id @default(cuid())
+  collectionId String
+  slug         String
+  data         Json
+  status       CollectionItemStatus @default(DRAFT)
+  publishedAt  DateTime?
+  createdAt    DateTime             @default(now())
+  updatedAt    DateTime             @updatedAt
+
+  collection Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+
+  @@unique([collectionId, slug])
+  @@index([collectionId, status])
+}
+
+model FormSubmission {
+  id          String   @id @default(cuid())
+  siteId      String
+  pageId      String?
+  formBlockId String
+  data        Json
+  ip          String?
+  userAgent   String?
+  spamScore   Float?
+  createdAt   DateTime @default(now())
+
+  page Page? @relation(fields: [pageId], references: [id], onDelete: SetNull)
+  site Site  @relation(fields: [siteId], references: [id], onDelete: Cascade)
+
+  @@index([siteId, createdAt])
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Templates, mesure, conformité
+// ─────────────────────────────────────────────────────────────────────────────
+
+model Template {
+  id           String   @id @default(cuid())
+  name         String
+  slug         String   @unique
+  category     String
+  description  String
+  thumbnailUrl String
+  /// Document JSON complet du site de départ (ADR-001).
+  document     Json
+  isPremium    Boolean  @default(false)
+  tags         String[] @default([])
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([category])
+}
+
+/// Agrégat quotidien : top pages et sources (PARTIE 8). `UsageCounter` est mensuel et par
+/// organisation — il ne peut pas alimenter un graphe.
+model PageView {
+  id           String   @id @default(cuid())
+  siteId       String
+  date         DateTime @db.Date
+  path         String
+  referrerHost String   @default("")
+  country      String   @default("")
+  count        Int      @default(0)
+
+  site Site @relation(fields: [siteId], references: [id], onDelete: Cascade)
+
+  @@unique([siteId, date, path, referrerHost, country])
+  @@index([siteId, date])
+}
+
+model UsageCounter {
+  id               String   @id @default(cuid())
+  orgId            String
+  /// Période au format `YYYY-MM`.
+  period           String
+  sitesCount       Int      @default(0)
+  pageviews        Int      @default(0)
+  storageBytes     BigInt   @default(0)
+  submissionsCount Int      @default(0)
+  updatedAt        DateTime @updatedAt
+
+  org Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@unique([orgId, period])
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  orgId      String
+  userId     String?
+  action     String
+  targetType String
+  targetId   String?
+  metadata   Json     @default("{}")
+  createdAt  DateTime @default(now())
+
+  org  Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  user User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([orgId, createdAt])
+}
+
+/// Suppression de compte ou d'organisation avec purge différée à 30 jours (PARTIE 8).
+model DeletionRequest {
+  id               String        @id @default(cuid())
+  scope            DeletionScope
+  targetId         String
+  requestedById    String?
+  scheduledPurgeAt DateTime
+  cancelledAt      DateTime?
+  createdAt        DateTime      @default(now())
+
+  requestedBy User? @relation(fields: [requestedById], references: [id], onDelete: SetNull)
+
+  @@index([scheduledPurgeAt])
+  @@index([scope, targetId])
+}

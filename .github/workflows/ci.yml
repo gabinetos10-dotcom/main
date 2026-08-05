@@ -1,0 +1,81 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  DATABASE_URL: postgresql://atelier:atelier@localhost:5432/atelier
+  REDIS_URL: redis://localhost:6379
+  S3_ENDPOINT: http://localhost:9000
+  S3_REGION: eu-west-1
+  S3_BUCKET: atelier-ci
+  S3_ACCESS_KEY_ID: atelier
+  S3_SECRET_ACCESS_KEY: atelier-secret
+  S3_PUBLIC_URL: http://localhost:9000/atelier-ci
+  S3_FORCE_PATH_STYLE: "true"
+  APP_URL: http://localhost:3000
+  SITES_BASE_DOMAIN: lvh.me
+
+jobs:
+  verify:
+    name: typecheck · lint · test · build
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: atelier
+          POSTGRES_PASSWORD: atelier
+          POSTGRES_DB: atelier
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U atelier -d atelier"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+      redis:
+        image: redis:7-alpine
+        ports: ["6379:6379"]
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s --health-timeout 3s --health-retries 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Générer le client Prisma
+        run: pnpm db:generate
+
+      - name: Appliquer les migrations
+        run: pnpm db:deploy
+
+      - name: Vérifier que le schéma et ses migrations ne divergent pas
+        # Une migration oubliée casse le déploiement suivant, pas le commit qui l'a introduite.
+        run: >-
+          pnpm --filter @atelier/db exec prisma migrate diff
+          --from-migrations prisma/migrations
+          --to-schema-datamodel prisma/schema.prisma
+          --shadow-database-url "$DATABASE_URL"
+          --exit-code
+
+      - run: pnpm typecheck
+
+      - run: pnpm lint
+
+      - run: pnpm test
+
+      - run: pnpm build

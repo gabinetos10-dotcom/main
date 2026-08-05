@@ -1,0 +1,82 @@
+@import 'tailwindcss';
+
+/**
+ * Pont entre les design tokens du back-office (`--ui-*`, packages/ui) et les utilitaires Tailwind.
+ *
+ * ADR-016 : seuls les `--ui-*` entrent ici. Les `--site-*` appartiennent aux sites édités et ne
+ * doivent jamais pouvoir repeindre l'atelier.
+ */
+@theme inline {
+  --color-bg: var(--ui-bg);
+  --color-surface-1: var(--ui-surface-1);
+  --color-surface-2: var(--ui-surface-2);
+  --color-surface-3: var(--ui-surface-3);
+  --color-canvas: var(--ui-canvas-bg);
+
+  --color-line: var(--ui-border);
+  --color-line-strong: var(--ui-border-strong);
+
+  --color-ink: var(--ui-text);
+  --color-ink-muted: var(--ui-text-muted);
+  --color-ink-subtle: var(--ui-text-subtle);
+  --color-on-accent: var(--ui-text-on-accent);
+
+  --color-accent: var(--ui-accent);
+  --color-accent-hover: var(--ui-accent-hover);
+  --color-accent-active: var(--ui-accent-active);
+  --color-accent-subtle: var(--ui-accent-subtle);
+
+  --color-success: var(--ui-success);
+  --color-warning: var(--ui-warning);
+  --color-danger: var(--ui-danger);
+
+  --font-display: var(--ui-font-display);
+  --font-sans: var(--ui-font-sans);
+  --font-mono: var(--ui-font-mono);
+
+  --text-micro: var(--ui-text-micro);
+  --text-xs: var(--ui-text-xs);
+  --text-dense: var(--ui-text-dense);
+  --text-base: var(--ui-text-base);
+  --text-md: var(--ui-text-md);
+  --text-lg: var(--ui-text-lg);
+  --text-xl: var(--ui-text-xl);
+  --text-2xl: var(--ui-text-2xl);
+
+  --radius-sm: var(--ui-radius-sm);
+  --radius-md: var(--ui-radius-md);
+  --radius-lg: var(--ui-radius-lg);
+
+  --shadow-float: var(--ui-shadow-float);
+
+  --ease-atelier: var(--ui-ease);
+  --ease-atelier-out: var(--ui-ease-out);
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+  }
+
+  body {
+    background-color: var(--ui-bg);
+    color: var(--ui-text);
+    font-family: var(--ui-font-sans);
+    font-size: var(--ui-text-base);
+    line-height: var(--ui-leading-normal);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Le focus est toujours visible : `outline: none` sans remplacement est un bug. */
+  :focus-visible {
+    outline: var(--ui-focus-ring) solid var(--ui-accent);
+    outline-offset: var(--ui-focus-offset);
+  }
+
+  /* Les chiffres s'alignent — signature de la direction « Atelier ». */
+  .numeric {
+    font-family: var(--ui-font-mono);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.01em;
+  }
+}
