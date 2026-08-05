@@ -113,6 +113,24 @@ pnpm test:e2e            # Playwright
   DOMPurify — le rich text est du JSON, jamais du HTML. DOMPurify réservé aux vraies chaînes HTML.
 - **ADR-014** — Quotas côté serveur via `assertQuota()` : `COUNT` SQL pour les limites dures,
   `UsageCounter` pour le métré. Downgrade ⇒ `Site.lockedAt` (lecture seule), jamais de suppression.
+- **ADR-015** — Tout service externe passe par une interface avec **implémentation locale** :
+  `DomainProvider`, `StorageProvider`, `EmailProvider`, `PaymentProvider`. La suite E2E complète
+  tourne sans un seul compte cloud.
+- **ADR-016** — Tokens du back-office (`--ui-*`) et tokens des sites (`--site-*`) dans des espaces de
+  noms **disjoints**. Sinon le thème d'un client repeindrait l'éditeur.
+
+## Design du back-office (détail : `docs/DESIGN.md`)
+
+Le produit vend du design ; l'interface qui sert à en fabriquer ne peut pas ressembler à un template.
+- **Interdits** : Inter/Roboto/system-ui comme police de marque, dégradés violet→bleu sur fond blanc,
+  cartes arrondies génériques empilées, emojis en guise d'icônes (Lucide uniquement), écrans vides
+  sans illustration ni action.
+- **Chrome sombre, canvas clair** : l'UI ne concurrence jamais visuellement le site en cours d'édition.
+- **8 états obligatoires par composant** : default, hover, focus-visible, active, disabled, loading,
+  error, selected. Vérifiables sur `/design-system` (dev uniquement).
+- **Mouvement** : 150–250 ms, easing custom, feedback optimiste, squelettes — jamais de spinner.
+- **Responsive** : éditeur ≥ 1280 px (en dessous, écran d'invitation assumé) ; dashboard et réglages
+  responsives jusqu'à 375 px.
 
 ## Pièges connus
 
@@ -134,3 +152,8 @@ pnpm test:e2e            # Playwright
   `/etc/hosts`.
 - **Contenu utilisateur.** Embed HTML en iframe sandboxée, code custom réservé au plan Business,
   rich text assaini par allowlist au rendu.
+- **Renderer autonome.** `packages/renderer` ne déclare aucune dépendance d'édition et doit
+  s'importer dans un contexte Node nu — vérifié par test (PARTIE 11).
+- **Permissions et quotas.** L'UI masque, le serveur interdit. Jamais l'inverse.
+- **Pas de squelette anticipé.** `apps/sites` et `apps/worker` ne sont créés qu'à la phase où ils ont
+  quelque chose à faire (5 et 4). Un dossier vide est du code mort.
