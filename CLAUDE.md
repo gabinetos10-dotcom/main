@@ -47,11 +47,11 @@ de canvas libre en position absolue.
 ## Arborescence
 
 ```
-apps/web      back-office (auth, dashboard, éditeur, billing, tRPC)
+apps/web      back-office (auth, dashboard, shell éditeur + route canvas, billing, tRPC)
 apps/sites    runtime public multi-tenant
 apps/worker   jobs BullMQ
-packages/db blocks renderer tokens ui templates emails config
-docs/         PLAN ARCHITECTURE DATA_MODEL BLOCKS THEMING API DEPLOY
+packages/db auth blocks renderer tokens ui templates emails config
+docs/         PLAN ARCHITECTURE DATA_MODEL BLOCKS THEMING EDITOR_BRIDGE API SECURITY DEPLOY
 docker/       compose + Dockerfiles
 ```
 
@@ -78,7 +78,11 @@ pnpm test:e2e            # Playwright
 - **Chaque module métier a des tests. Chaque bug corrigé a son test de non-régression**, référencé
   dans le message de commit.
 - Documentation mise à jour dans `docs/` **au fil de l'eau**, pas en fin de phase.
-- Fin de phase = l'app démarre, tests verts, lint vert, commit conventionnel.
+- **Fin de phase** = l'app démarre, tests verts, lint vert, commit conventionnel, puis : démo
+  textuelle de ce qui est cliquable, limitations connues, proposition de la phase suivante.
+  Aucune phase suivante sans feu vert explicite.
+- **Couverture ≥ 80 %** appliquée en CI sur `packages/blocks`, `packages/renderer`, permissions,
+  quotas.
 
 ## Décisions d'architecture (résumé — détail dans docs/PLAN.md et docs/ARCHITECTURE.md)
 
@@ -87,18 +91,28 @@ pnpm test:e2e            # Playwright
   (éditeur), assemblés par `defineBlock()`. Deux registres, pour ne pas envoyer les icônes et
   thumbnails de l'éditeur dans le bundle des sites publiés.
 - **ADR-003** — Les blocks ne consomment que des tokens. Aucune valeur en dur ; lint dédié.
-- **ADR-004** — Canvas d'édition dans une iframe same-origin, React monté par portal (store partagé,
-  pas de `postMessage`). *À valider.*
+- **ADR-004** — Canvas d'édition dans une iframe same-origin (route `/editor/[siteId]/canvas` de
+  `apps/web`), pilotée par un **bus `postMessage` typé** documenté dans `docs/EDITOR_BRIDGE.md`.
+  Aucun accès DOM cross-frame hors du bus. On transporte des **patches Immer**, jamais le document.
 - **ADR-005** — BullMQ + Redis (pas Trigger.dev) : la contrainte « tout en local sans compte cloud »
   l'impose, et Redis sert aussi au cache et au rate limiting. D'où `apps/worker`.
-- **ADR-006** — Le site public ne lit que `Site.currentRevisionId → snapshot`. Le brouillon
+- **ADR-006** — Le site public ne lit que `Site.publishedRevisionId → snapshot`. Le brouillon
   (`Page.content`) n'est jamais servi. Rollback = repointage, non destructif.
 - **ADR-007** — Aucun accès Prisma direct hors `packages/db`. Tout passe par `guards.ts`, qui vérifie
   organisation **et** rôle. Garanti par une règle ESLint.
 - **ADR-008** — Better Auth pour l'identité uniquement ; modèle d'organisation maison (le plugin
   organization ferait doublon avec le schéma spécifié).
 - **ADR-009** — `DomainProvider` abstrait (Vercel | Caddy) : pas de verrou propriétaire.
-- **ADR-010** — Tiptap pour le rich text, sortie JSON portable.
+- **ADR-010** — Tiptap pour le rich text, sortie JSON portable. Tiptap tourne **dans l'iframe**, pas
+  dans le shell : les frappes ne traversent pas le bus, seuls les commits debouncés le font.
+- **ADR-011** — Blocks RSC-first : un `component.tsx` ne porte **jamais** `"use client"` à sa racine
+  et n'utilise aucun hook ; l'interactivité vit dans des îlots `client/*.tsx`. Budget JS vérifié en CI.
+- **ADR-012** — Catalogue de polices **fermé** (~24 familles, `next/font/local`, auto-hébergées).
+  `next/font` exige des polices connues à la compilation ; c'est le prix du Lighthouse ≥ 95.
+- **ADR-013** — Rich text assaini **structurellement** (allowlist Zod de nœuds/marques), pas par
+  DOMPurify — le rich text est du JSON, jamais du HTML. DOMPurify réservé aux vraies chaînes HTML.
+- **ADR-014** — Quotas côté serveur via `assertQuota()` : `COUNT` SQL pour les limites dures,
+  `UsageCounter` pour le métré. Downgrade ⇒ `Site.lockedAt` (lecture seule), jamais de suppression.
 
 ## Pièges connus
 
@@ -110,6 +124,10 @@ pnpm test:e2e            # Playwright
   par `guards.ts`.
 - **Bundle des sites publiés.** Ne jamais importer de code d'éditeur (Tiptap, dnd-kit, lucide,
   shadcn) depuis `apps/sites` ou depuis un `component.tsx` de block.
+- **Polices.** Aucune police chargée dynamiquement : passer par le catalogue de
+  `packages/tokens/fonts.ts` (ADR-012). Une police en plus = une PR.
+- **Perf de l'éditeur.** Ne jamais envoyer le document entier sur le bus — uniquement des patches.
+  Le banc de mesure (250 blocks, < 16 ms) tourne en CI et bloque les régressions.
 - **`repeater`.** Les items portent un `id` nanoid stable ; ne jamais référencer un item par index,
   le réordonnancement casserait la référence.
 - **Sous-domaines en dev.** Utiliser `*.lvh.me` (résout en 127.0.0.1) plutôt que de bricoler
