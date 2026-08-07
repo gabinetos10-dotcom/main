@@ -1,5 +1,6 @@
 import { UPGRADES } from './config.js';
 import { clamp } from './utils.js';
+import { Sfx } from './audio.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -31,12 +32,73 @@ export class HUD {
       minimap: $('minimap'),
       reloadRing: $('reload-ring'),
       lowAmmo: $('low-ammo'),
+      combo: $('combo'),
+      comboCount: $('combo-count'),
+      comboMul: $('combo-mul'),
+      comboBar: $('combo-bar'),
+      grenades: $('grenade-count'),
+      modifier: $('wave-modifier'),
+      scope: $('scope'),
+      blood: $('blood-layer'),
+      recMenuScore: $('rec-score'),
+      recMenuWave: $('rec-wave'),
+      recMenuKills: $('rec-kills'),
+      recDeadScore: $('rec-dead-score'),
+      recDeadWave: $('rec-dead-wave'),
     };
     this.map = this.el.minimap ? this.el.minimap.getContext('2d') : null;
     this.hitTime = 0;
     this.announceTime = 0;
     this.vignetteAmount = 0;
     this.dirIndicators = [];
+    this.heartbeatTimer = 0;
+    this.lastCombo = 0;
+  }
+
+  updateRecords(records) {
+    const fmt = (n) => n.toLocaleString('fr-FR');
+    if (this.el.recMenuScore) this.el.recMenuScore.textContent = fmt(records.bestScore);
+    if (this.el.recMenuWave) this.el.recMenuWave.textContent = records.bestWave;
+    if (this.el.recMenuKills) this.el.recMenuKills.textContent = fmt(records.totalKills);
+    if (this.el.recDeadScore) this.el.recDeadScore.textContent = fmt(records.bestScore);
+    if (this.el.recDeadWave) this.el.recDeadWave.textContent = records.bestWave;
+  }
+
+  /** Bandeau de palier de combo (ENCHAÎNÉ, CARNAGE…). */
+  comboBanner(label, mul) {
+    const el = document.createElement('div');
+    el.className = 'combo-banner';
+    el.innerHTML = `<span>${label}</span><b>×${mul}</b>`;
+    this.el.toasts.parentElement.appendChild(el);
+    setTimeout(() => el.remove(), 1400);
+  }
+
+  /** Étiquette persistante de la vague spéciale en cours. */
+  setModifier(mod) {
+    if (!this.el.modifier) return;
+    if (!mod) { this.el.modifier.classList.add('hidden'); return; }
+    this.el.modifier.classList.remove('hidden');
+    this.el.modifier.textContent = mod.name;
+    this.el.modifier.style.color = mod.color;
+    this.el.modifier.style.borderColor = mod.color;
+  }
+
+  /** Éclaboussures de sang sur l'objectif quand on encaisse. */
+  bloodSplat(amount) {
+    if (!this.el.blood) return;
+    const n = clamp(Math.round(amount / 12), 1, 4);
+    for (let i = 0; i < n; i++) {
+      const el = document.createElement('div');
+      el.className = 'blood-splat';
+      const size = 90 + Math.random() * 220;
+      el.style.width = el.style.height = size + 'px';
+      el.style.left = Math.random() * 100 + '%';
+      el.style.top = Math.random() * 100 + '%';
+      el.style.setProperty('--rot', (Math.random() * 360) + 'deg');
+      this.el.blood.appendChild(el);
+      setTimeout(() => el.remove(), 5200);
+    }
+    while (this.el.blood.children.length > 14) this.el.blood.firstChild.remove();
   }
 
   toast(text, color = '#ffffff', icon = '') {
@@ -51,7 +113,8 @@ export class HUD {
     while (this.el.toasts.children.length > 6) this.el.toasts.firstChild.remove();
   }
 
-  announce(main, sub = '', duration = 2.4) {
+  announce(main, sub = '', duration = 2.4, color = null) {
+    this.el.announce.style.color = color || '#fff';
     this.el.announce.textContent = main;
     this.el.announceSub.textContent = sub;
     this.el.announce.classList.remove('hidden');
@@ -136,6 +199,33 @@ export class HUD {
     this.el.score.textContent = p.score.toLocaleString('fr-FR');
     this.el.kills.textContent = p.kills;
 
+    // Grenades
+    this.el.grenades.textContent = game.grenades.count;
+    this.el.grenades.parentElement.classList.toggle('empty', game.grenades.count === 0);
+
+    // Combo
+    if (game.combo > 1) {
+      this.el.combo.classList.remove('hidden');
+      this.el.comboCount.textContent = game.combo;
+      const mul = game.comboMultiplier;
+      this.el.comboMul.textContent = mul > 1 ? '×' + mul : '';
+      const t = clamp(game.comboTimer / 3.6, 0, 1);
+      this.el.comboBar.style.transform = `scaleX(${t})`;
+      this.el.combo.classList.toggle('hot', mul >= 2);
+      if (game.combo !== this.lastCombo) {
+        this.el.comboCount.classList.remove('bump');
+        void this.el.comboCount.offsetWidth;   // relance l'animation
+        this.el.comboCount.classList.add('bump');
+        this.lastCombo = game.combo;
+      }
+    } else {
+      this.el.combo.classList.add('hidden');
+      this.lastCombo = 0;
+    }
+
+    // Lunette du fusil de précision
+    this.el.scope.classList.toggle('hidden', !w.scoped);
+
     // Réticule : s'ouvre avec la dispersion
     const spread = w.def.spread * (w.aiming ? 0.45 : 1) * (p.sprinting ? 1.6 : 1);
     const gap = 4 + spread * 620 + w.recoil * 18;
@@ -152,6 +242,17 @@ export class HUD {
     const critical = Math.max(0, (0.35 - hpRatio) / 0.35) * 0.62;
     this.vignetteAmount = Math.max(this.vignetteAmount - dt * 1.6, critical);
     this.el.vignette.style.opacity = clamp(this.vignetteAmount, 0, 1).toFixed(3);
+
+    // Battement de cœur quand la vie est critique
+    if (hp < 0.35 && p.alive) {
+      this.heartbeatTimer -= dt;
+      if (this.heartbeatTimer <= 0) {
+        this.heartbeatTimer = 0.55 + hp * 1.6;
+        Sfx.heartbeat();
+      }
+    } else {
+      this.heartbeatTimer = 0;
+    }
 
     // Annonce
     if (this.announceTime > 0) {
@@ -177,6 +278,7 @@ export class HUD {
 
   flashDamage(amount) {
     this.vignetteAmount = clamp(this.vignetteAmount + amount / 45, 0, 1);
+    this.bloodSplat(amount);
   }
 
   drawMinimap(game) {
@@ -237,13 +339,26 @@ export class HUD {
       ctx.fillRect(mx - 2, my - 2, 4, 4);
     }
 
+    // grenades amorcées
+    for (const g of game.grenades.live) {
+      const [mx, my] = toMap(g.group.position.x, g.group.position.z);
+      ctx.fillStyle = '#9bd45a';
+      ctx.beginPath();
+      ctx.arc(mx, my, 2.4 + Math.sin(g.fuse * 22) * 1.2, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
     // zombies
     for (const z of game.zombies.zombies) {
       if (!z.alive) continue;
       const [mx, my] = toMap(z.pos.x, z.pos.z);
-      ctx.fillStyle = z.def.boss ? '#ff2d95' : z.def.big ? '#ff7043' : '#ff4444';
+      ctx.fillStyle = z.def.boss ? '#ff2d95'
+        : z.def.big ? '#ff7043'
+        : z.def.bloated ? '#c9e04a'
+        : z.def.crawler ? '#d4b463'
+        : '#ff4444';
       ctx.beginPath();
-      ctx.arc(mx, my, z.def.big ? 4.2 : 2.6, 0, Math.PI * 2);
+      ctx.arc(mx, my, z.def.big ? 4.2 : z.def.crawler ? 2 : 2.6, 0, Math.PI * 2);
       ctx.fill();
     }
 

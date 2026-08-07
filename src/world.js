@@ -302,7 +302,26 @@ export class World {
     return list[randInt(0, list.length - 1)].clone();
   }
 
+  /**
+   * Densifie le brouillard pour la vague « brouillard toxique ».
+   * `near` à null rétablit la visibilité normale.
+   */
+  setFog(near) {
+    const target = near === null ? WORLD.fogNear : near;
+    const far = near === null ? WORLD.fogFar : near * 2.6;
+    this.fogTarget = { near: target, far };
+    this.scene.fog.color.setHex(near === null ? 0x1a222b : 0x27352b);
+    this.scene.background.setHex(near === null ? 0x1a222b : 0x27352b);
+  }
+
   update(dt, time) {
+    // Transition douce du brouillard
+    if (this.fogTarget) {
+      const f = this.scene.fog;
+      f.near += (this.fogTarget.near - f.near) * Math.min(1, dt * 1.6);
+      f.far += (this.fogTarget.far - f.far) * Math.min(1, dt * 1.6);
+    }
+
     // Vacillement des lampadaires
     for (const l of this.lamps) {
       const f = 0.85 + Math.sin(time * 9 + l.phase) * 0.06 + (Math.random() < 0.006 ? -0.6 : 0);

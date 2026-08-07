@@ -126,4 +126,29 @@ export const Sfx = {
     tone(165, 1.4, { gain: 0.2, type: 'sine', to: 40, delay: 0.3 });
   },
   spit() { noise(0.22, { gain: 0.22, freq: 1800, sweepTo: 300, type: 'bandpass', q: 3 }); },
+  melee() {
+    noise(0.16, { gain: 0.3, freq: 1200, sweepTo: 260 });
+    tone(140, 0.12, { gain: 0.2, type: 'square', to: 60 });
+  },
+  meleeHit() {
+    noise(0.2, { gain: 0.42, freq: 600, sweepTo: 90 });
+    tone(90, 0.22, { gain: 0.28, type: 'sine', to: 38 });
+  },
+  throwGrenade() { noise(0.14, { gain: 0.18, freq: 1400, sweepTo: 500 }); },
+  grenadeBounce() { tone(320, 0.05, { gain: 0.12, type: 'square', to: 180 }); },
+  grenadeBeep() { tone(1760, 0.05, { gain: 0.1, type: 'square' }); },
+  scope() { noise(0.09, { gain: 0.14, freq: 2200, q: 5, type: 'bandpass' }); },
+  comboUp(step) {
+    const base = 440 * Math.pow(1.26, Math.min(4, step));
+    tone(base, 0.1, { gain: 0.14, type: 'triangle' });
+    tone(base * 1.5, 0.2, { gain: 0.12, type: 'triangle', delay: 0.07 });
+  },
+  heartbeat() {
+    tone(58, 0.13, { gain: 0.3, type: 'sine', to: 34 });
+    tone(52, 0.16, { gain: 0.22, type: 'sine', to: 30, delay: 0.19 });
+  },
+  record() {
+    [523, 659, 784, 1047].forEach((f, i) =>
+      tone(f, 0.3, { gain: 0.15, type: 'triangle', delay: i * 0.11 }));
+  },
 };

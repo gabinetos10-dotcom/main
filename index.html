@@ -17,8 +17,10 @@
 <!-- ============================== HUD ============================== -->
 <div id="hud" class="hidden">
   <div id="vignette"></div>
+  <div id="blood-layer"></div>
   <div id="popup-layer"></div>
   <div id="damage-dir"></div>
+  <div id="scope" class="hidden"><span class="sc-v"></span><span class="sc-h"></span><i></i></div>
 
   <!-- Réticule -->
   <div id="crosshair">
@@ -34,6 +36,15 @@
     <div class="stat"><label>INFECTÉS</label><b id="enemies-value">0</b></div>
     <div class="stat"><label>SCORE</label><b id="score-value">0</b></div>
     <div class="stat"><label>ÉLIMINÉS</label><b id="kills-value">0</b></div>
+  </div>
+
+  <!-- Vague spéciale -->
+  <div id="wave-modifier" class="hidden"></div>
+
+  <!-- Chaîne d'éliminations -->
+  <div id="combo" class="hidden">
+    <div class="combo-row"><b id="combo-count">0</b><span>ENCHAÎNÉS</span><i id="combo-mul"></i></div>
+    <div class="combo-track"><div id="combo-bar"></div></div>
   </div>
 
   <!-- Barre de boss -->
@@ -81,6 +92,7 @@
       <span id="ammo-count">15</span><span class="slash">/</span><span id="ammo-reserve">∞</span>
     </div>
     <div id="weapon-name">Pistolet 9mm</div>
+    <div id="grenade-block"><span class="g-icon">💣</span><b id="grenade-count">2</b><span class="g-key">G</span></div>
     <div id="low-ammo" class="hidden">RECHARGEZ — R</div>
   </div>
 </div>
@@ -91,7 +103,28 @@
     <h1>DERNIÈRE<span>LUEUR</span></h1>
     <p class="tagline">Un homme. Une arme. Une horde sans fin.</p>
 
+    <div class="difficulty">
+      <h2>Difficulté</h2>
+      <div class="diff-row">
+        <button class="diff-option" data-diff="survivant"><b>Survivant</b><span>Pour découvrir le jeu</span></button>
+        <button class="diff-option active" data-diff="veteran"><b>Vétéran</b><span>L'équilibre prévu</span></button>
+        <button class="diff-option" data-diff="cauchemar"><b>Cauchemar</b><span>Score ×1,6 — bon courage</span></button>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button id="btn-play" class="primary">JOUER</button>
+      <button id="btn-options">Options</button>
+    </div>
+
+    <ul class="records">
+      <li><label>Meilleur score</label><b id="rec-score">0</b></li>
+      <li><label>Vague la plus lointaine</label><b id="rec-wave">0</b></li>
+      <li><label>Zombies éliminés en tout</label><b id="rec-kills">0</b></li>
+    </ul>
+
     <div class="menu-grid">
+      <h3 class="grid-title">Tout ce qu'il faut savoir</h3>
       <section>
         <h2>Commandes</h2>
         <ul class="keys">
@@ -103,7 +136,9 @@
           <li><kbd>Maj</kbd><span>Sprinter</span></li>
           <li><kbd>Espace</kbd><span>Sauter</span></li>
           <li><kbd>Ctrl</kbd><span>S'accroupir</span></li>
-          <li><kbd>1</kbd><kbd>2</kbd><kbd>3</kbd> / <kbd>Molette</kbd><span>Changer d'arme</span></li>
+          <li><kbd>F</kbd><span>Coup de crosse</span></li>
+          <li><kbd>G</kbd><span>Lancer une grenade</span></li>
+          <li><kbd>1</kbd>…<kbd>4</kbd> / <kbd>Molette</kbd><span>Changer d'arme</span></li>
           <li><kbd>Échap</kbd><span>Pause</span></li>
         </ul>
       </section>
@@ -117,9 +152,15 @@
         <h2>Devenir plus fort</h2>
         <ul class="bullets">
           <li><b class="c-cyan">Cristaux d'amélioration</b> — les losanges lumineux flottants. <b>Tirez dessus</b> pour gagner dégâts, cadence, chargeur, vitesse, perforation, balles explosives…</li>
-          <li><b class="c-green">Caisses d'armes</b> — tirez dessus pour débloquer le fusil à pompe puis le fusil d'assaut.</li>
+          <li><b class="c-green">Caisses d'armes</b> — fusil à pompe, fusil d'assaut, puis fusil de précision à lunette.</li>
           <li><b class="c-red">Barils explosifs</b> — tirez dessus au bon moment pour pulvériser un groupe entier.</li>
         </ul>
+        <h2>Enchaîner</h2>
+        <p class="brief">
+          Chaque élimination rapprochée alimente une chaîne : à 4, 9, 16 et 26 victimes
+          sans temps mort, le score est multiplié jusqu'à ×4. La chaîne retombe si vous
+          laissez passer quelques secondes.
+        </p>
       </section>
 
       <section>
@@ -128,16 +169,14 @@
           <li><i style="--c:#5e7a4a"></i><b>Marcheur</b><span>Lent, mais jamais seul.</span></li>
           <li><i style="--c:#8c5a3c"></i><b>Coureur</b><span>Rapide et fragile. Ne le laissez pas approcher.</span></li>
           <li><i style="--c:#6f8f2f"></i><b>Cracheur</b><span>Attaque à distance avec de l'acide.</span></li>
+          <li><i style="--c:#7a6a3c"></i><b>Rampant</b><span>Au ras du sol, très rapide : baissez votre visée.</span></li>
+          <li><i style="--c:#8f9e3a"></i><b>Boursouflé</b><span>Explose en mourant. Ne l'abattez pas de près.</span></li>
           <li><i style="--c:#7a4038" class="big"></i><b>BRUTE</b><span>Énorme, blindé, frappe le sol. Visez les <b class="c-yellow">pustules jaunes</b> : dégâts massifs.</span></li>
           <li><i style="--c:#4a2b4d" class="big"></i><b>COLOSSE</b><span>Boss toutes les 5 vagues. Charge, invoque des renforts, encaisse énormément.</span></li>
         </ul>
       </section>
     </div>
 
-    <div class="actions">
-      <button id="btn-play" class="primary">JOUER</button>
-      <button id="btn-options">Options</button>
-    </div>
     <p class="hint">Cliquez sur JOUER puis sur l'écran pour capturer la souris.</p>
   </div>
 </div>
@@ -155,6 +194,16 @@
       <label for="opt-volume">Volume</label>
       <input type="range" id="opt-volume" min="0" max="1" step="0.05" value="0.6" />
       <output id="opt-volume-val">60%</output>
+    </div>
+    <div class="option">
+      <label for="opt-fov">Champ de vision</label>
+      <input type="range" id="opt-fov" min="60" max="100" step="1" value="72" />
+      <output id="opt-fov-val">72°</output>
+    </div>
+    <div class="option">
+      <label for="opt-quality">Résolution de rendu</label>
+      <input type="range" id="opt-quality" min="0.5" max="1" step="0.05" value="1" />
+      <output id="opt-quality-val">100%</output>
     </div>
     <div class="option check">
       <label for="opt-invert">Inverser l'axe vertical</label>
@@ -189,14 +238,20 @@
   <div class="panel">
     <h2 class="panel-title dead">VOUS ÊTES MORT</h2>
     <p class="tagline small">La lueur s'est éteinte.</p>
+    <div id="res-record" class="record-badge hidden"></div>
     <ul class="results">
       <li><label>Vague atteinte</label><b id="res-wave">0</b></li>
+      <li><label>Difficulté</label><b id="res-diff">Vétéran</b></li>
       <li><label>Zombies éliminés</label><b id="res-kills">0</b></li>
       <li><label>Score final</label><b id="res-score">0</b></li>
       <li><label>Précision</label><b id="res-acc">0%</b></li>
       <li><label>Tirs à la tête</label><b id="res-head">0</b></li>
+      <li><label>Meilleure chaîne</label><b id="res-combo">×0</b></li>
       <li><label>Améliorations</label><b id="res-upg">0</b></li>
     </ul>
+    <p class="record-line">
+      Record personnel : <b id="rec-dead-score">0</b> points · vague <b id="rec-dead-wave">0</b>
+    </p>
     <div class="actions">
       <button id="btn-restart-dead" class="primary">Rejouer</button>
       <button id="btn-quit-dead">Menu principal</button>

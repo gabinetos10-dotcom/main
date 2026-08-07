@@ -1,5 +1,5 @@
 import * as THREE from '../vendor/three.module.js';
-import { GAME, ZOMBIES } from './config.js';
+import { GAME, ZOMBIES, DIFFICULTIES, WAVE_MODIFIERS, COMBO, MELEE, GRENADE } from './config.js';
 import { Input } from './input.js';
 import { World } from './world.js';
 import { Effects } from './effects.js';
@@ -7,6 +7,8 @@ import { Player } from './player.js';
 import { WeaponSystem } from './weapons.js';
 import { ZombieManager } from './enemies.js';
 import { PickupManager } from './pickups.js';
+import { GrenadeManager } from './grenades.js';
+import { Store } from './store.js';
 import { HUD } from './hud.js';
 import { initAudio, resumeAudio, Sfx, setVolume } from './audio.js';
 import { rayAABB, rand, randInt, clamp, dist2D } from './utils.js';
@@ -40,6 +42,8 @@ export class Game {
     this.weapons = new WeaponSystem(this.camera, this.player, this.effects, this.scene);
     this.zombies = new ZombieManager(this.scene, this.world, this.effects);
     this.pickups = new PickupManager(this.scene, this.world, this.effects, this.player, this.weapons);
+    this.grenades = new GrenadeManager(this.scene, this.world, this.effects);
+    this.pickups.grenades = this.grenades;
     this.hud = new HUD();
 
     this.baseFov = 72;
@@ -48,10 +52,19 @@ export class Game {
     this.spawnTimer = 0;
     this.breakTimer = 0;
     this.waveActive = false;
-    this.stats = { shots: 0, hits: 0, headshots: 0, crystals: 0, bestWave: 0 };
+    this.modifier = null;
+    this.hitStop = 0;
+    this.combo = 0;
+    this.comboTimer = 0;
+    this.comboTier = -1;
+    this.stats = this._freshStats();
+
+    this.difficulty = DIFFICULTIES[Store.settings.difficulty] || DIFFICULTIES.veteran;
+    this.records = Store.records;
 
     this._wire();
     this._bindUI();
+    this._applySettings();
 
     window.addEventListener('resize', () => this.resize());
     this.resize();
@@ -90,16 +103,17 @@ export class Game {
       this.hud.updateWeaponList(this.weapons);
     };
     this.pickups.onExplosion = (pos, radius, damage) => {
-      const killed = this.zombies.splash(pos, radius, damage, this.effects);
-      for (const z of killed) this.onZombieKilled(z, false);
-      if (killed.length >= 3) this.hud.toast(`${killed.length} infectés pulvérisés`, '#ff8a5c', '💥');
-      if (dist2D(pos, this.player.pos) < radius) {
-        const d = dist2D(pos, this.player.pos);
-        const falloff = 1 - d / radius;
-        this.player.takeDamage(damage * 0.25 * falloff, pos);
-        const dir = new THREE.Vector3(this.player.pos.x - pos.x, 0, this.player.pos.z - pos.z).normalize();
-        this.player.push(dir, 10 * falloff);
-      }
+      this.areaDamage(pos, radius, damage, 0.25, '💥');
+    };
+
+    this.weapons.onMelee = () => this.resolveMelee();
+
+    this.grenades.onExplode = (pos, radius, damage) => {
+      this.areaDamage(pos, radius, damage, GRENADE.selfDamageMul, '💣');
+    };
+
+    this.zombies.onBloat = (zombie, pos) => {
+      this.areaDamage(pos, zombie.def.blastRadius, zombie.def.blastDamage * 3.2, 0.55, '☣');
     };
 
     this.input.onLockChange = (locked) => {
@@ -113,6 +127,144 @@ export class Game {
       $('mouse-hint').classList.remove('hidden');
       this.hud.toast('Souris non capturée — mode visée libre', '#7fdcff', '🖱');
     };
+  }
+
+  _freshStats() {
+    return {
+      shots: 0, hits: 0, headshots: 0, crystals: 0, bestWave: 0,
+      melee: 0, grenades: 0, bestCombo: 0, explosions: 0,
+    };
+  }
+
+  /**
+   * Explosion générique : dégâts dégressifs sur les zombies et sur le joueur.
+   * Sert aux barils, aux grenades et aux boursouflés.
+   */
+  areaDamage(pos, radius, damage, selfMul, icon) {
+    this.stats.explosions++;
+    const killed = this.zombies.splash(pos, radius, damage, this.effects);
+    for (const z of killed) this.onZombieKilled(z, false);
+    if (killed.length >= 3) {
+      this.hud.toast(`${killed.length} infectés pulvérisés`, '#ff8a5c', icon);
+      this.effects.addShake(0.4);
+    }
+    const d = dist2D(pos, this.player.pos);
+    if (d < radius && selfMul > 0) {
+      const falloff = 1 - d / radius;
+      this.player.takeDamage(damage * selfMul * falloff, pos);
+      const dir = new THREE.Vector3(this.player.pos.x - pos.x, 0.4, this.player.pos.z - pos.z);
+      if (dir.lengthSq() < 1e-6) dir.set(0, 1, 0);
+      this.player.push(dir.normalize(), 11 * falloff);
+    }
+    return killed.length;
+  }
+
+  /** Coup de crosse : cône court devant le joueur, repousse et étourdit. */
+  resolveMelee() {
+    this.stats.melee++;
+    const dir = this.player.lookDirection(new THREE.Vector3());
+    dir.y = 0;
+    if (dir.lengthSq() < 1e-6) return;
+    dir.normalize();
+
+    let touched = 0;
+    for (const z of this.zombies.zombies) {
+      if (!z.alive) continue;
+      const dx = z.pos.x - this.player.pos.x;
+      const dz = z.pos.z - this.player.pos.z;
+      const d = Math.hypot(dx, dz);
+      if (d > MELEE.range + z.radius) continue;
+      if ((dx * dir.x + dz * dir.z) / (d || 1) < MELEE.arc) continue;
+
+      const push = new THREE.Vector3(dx / (d || 1), 0, dz / (d || 1));
+      const wasAlive = z.alive;
+      z.damage(MELEE.damage * this.player.stats.damageMul, 'torso', 1, push, this.effects, false);
+      if (z.alive) z.stun(MELEE.stun, push, MELEE.knockback / z.def.mass);
+      if (wasAlive && !z.alive) this.onZombieKilled(z, false);
+      touched++;
+    }
+
+    if (touched) {
+      Sfx.meleeHit();
+      this.effects.addShake(0.3);
+      this.hud.hitmark('melee');
+      this.hitStop = Math.max(this.hitStop, 0.05);
+    }
+  }
+
+  throwGrenade() {
+    const origin = this.player.eyePos.clone();
+    const dir = this.player.lookDirection(new THREE.Vector3());
+    const inherit = new THREE.Vector3(this.player.vel.x, 0, this.player.vel.z);
+    if (this.grenades.throw(origin, dir, inherit)) {
+      this.stats.grenades++;
+    } else {
+      Sfx.dryFire();
+      this.hud.toast('Plus de grenades', '#8ea6b3', '💣');
+    }
+  }
+
+  // ---------------------------------------------------------------- combo
+
+  addCombo(z) {
+    this.combo++;
+    this.comboTimer = COMBO.window;
+    this.stats.bestCombo = Math.max(this.stats.bestCombo, this.combo);
+
+    let tier = -1;
+    for (let i = 0; i < COMBO.tiers.length; i++) {
+      if (this.combo >= COMBO.tiers[i].kills) tier = i;
+    }
+    if (tier > this.comboTier) {
+      this.comboTier = tier;
+      const t = COMBO.tiers[tier];
+      Sfx.comboUp(tier);
+      this.hud.comboBanner(t.label, t.mul);
+    }
+  }
+
+  get comboMultiplier() {
+    return this.comboTier >= 0 ? COMBO.tiers[this.comboTier].mul : 1;
+  }
+
+  updateCombo(dt) {
+    if (this.comboTimer > 0) {
+      this.comboTimer -= dt;
+      if (this.comboTimer <= 0) {
+        this.combo = 0;
+        this.comboTier = -1;
+      }
+    }
+  }
+
+  _applySettings() {
+    const st = Store.settings;
+    this.input.sensitivity = 0.0022 * st.sensitivity;
+    this.input.invertY = st.invertY;
+    setVolume(st.volume * 0.8);
+    this.renderer.shadowMap.enabled = st.shadows;
+    this.baseFov = st.fov;
+    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2) * st.quality);
+    this.resize();
+
+    $('opt-sens').value = st.sensitivity;
+    $('opt-sens-val').textContent = st.sensitivity.toFixed(2) + '×';
+    $('opt-volume').value = st.volume;
+    $('opt-volume-val').textContent = Math.round(st.volume * 100) + '%';
+    $('opt-invert').checked = st.invertY;
+    $('opt-shadows').checked = st.shadows;
+    $('opt-fov').value = st.fov;
+    $('opt-fov-val').textContent = Math.round(st.fov) + '°';
+    $('opt-quality').value = st.quality;
+    $('opt-quality-val').textContent = Math.round(st.quality * 100) + '%';
+    this.hud.updateRecords(this.records);
+    this.updateDifficultyUI();
+  }
+
+  updateDifficultyUI() {
+    for (const btn of document.querySelectorAll('.diff-option')) {
+      btn.classList.toggle('active', btn.dataset.diff === this.difficulty.id);
+    }
   }
 
   _bindUI() {
@@ -133,21 +285,54 @@ export class Game {
       if (this.state === 'playing') this.input.requestLock();
     });
 
-    const sens = $('opt-sens');
-    sens.addEventListener('input', () => {
-      this.input.sensitivity = 0.0022 * parseFloat(sens.value);
-      $('opt-sens-val').textContent = parseFloat(sens.value).toFixed(2) + '×';
+    // Choix de la difficulté sur l'écran d'accueil
+    for (const btn of document.querySelectorAll('.diff-option')) {
+      btn.addEventListener('click', () => {
+        this.difficulty = DIFFICULTIES[btn.dataset.diff];
+        Store.settings.difficulty = this.difficulty.id;
+        Store.saveSettings();
+        this.updateDifficultyUI();
+      });
+    }
+
+    const st = Store.settings;
+    const persist = () => Store.saveSettings();
+
+    $('opt-sens').addEventListener('input', (e) => {
+      st.sensitivity = parseFloat(e.target.value);
+      this.input.sensitivity = 0.0022 * st.sensitivity;
+      $('opt-sens-val').textContent = st.sensitivity.toFixed(2) + '×';
+      persist();
     });
-    const vol = $('opt-volume');
-    vol.addEventListener('input', () => {
-      const v = parseFloat(vol.value);
-      $('opt-volume-val').textContent = Math.round(v * 100) + '%';
-      setVolume(v * 0.8);
+    $('opt-volume').addEventListener('input', (e) => {
+      st.volume = parseFloat(e.target.value);
+      $('opt-volume-val').textContent = Math.round(st.volume * 100) + '%';
+      setVolume(st.volume * 0.8);
+      persist();
     });
-    $('opt-invert').addEventListener('change', (e) => { this.input.invertY = e.target.checked; });
+    $('opt-fov').addEventListener('input', (e) => {
+      st.fov = parseFloat(e.target.value);
+      this.baseFov = st.fov;
+      $('opt-fov-val').textContent = Math.round(st.fov) + '°';
+      persist();
+    });
+    $('opt-quality').addEventListener('input', (e) => {
+      st.quality = parseFloat(e.target.value);
+      $('opt-quality-val').textContent = Math.round(st.quality * 100) + '%';
+      this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2) * st.quality);
+      this.resize();
+      persist();
+    });
+    $('opt-invert').addEventListener('change', (e) => {
+      st.invertY = e.target.checked;
+      this.input.invertY = st.invertY;
+      persist();
+    });
     $('opt-shadows').addEventListener('change', (e) => {
-      this.renderer.shadowMap.enabled = e.target.checked;
+      st.shadows = e.target.checked;
+      this.renderer.shadowMap.enabled = st.shadows;
       this.scene.traverse((o) => { if (o.isMesh && o.material) o.material.needsUpdate = true; });
+      persist();
     });
   }
 
@@ -171,13 +356,20 @@ export class Game {
     this.pendingSpawns = 0;
     this.waveActive = false;
     this.breakTimer = 3;
-    this.stats = { shots: 0, hits: 0, headshots: 0, crystals: 0, bestWave: 0 };
+    this.modifier = null;
+    this.combo = 0;
+    this.comboTimer = 0;
+    this.comboTier = -1;
+    this.hitStop = 0;
+    this.grenades.reset();
+    this.stats = this._freshStats();
     this.state = 'playing';
+    this.world.setFog(null);
 
     this.setupArena();
     this.hud.updateUpgrades(this.player);
     this.hud.updateWeaponList(this.weapons);
-    this.hud.announce('PRÉPAREZ-VOUS', 'La horde arrive…', 2.6);
+    this.hud.announce('PRÉPAREZ-VOUS', `${this.difficulty.name} · la horde arrive…`, 2.6);
     this.show(null);
     $('hud').classList.remove('hidden');
     this.input.requestLock();
@@ -213,13 +405,34 @@ export class Game {
     this.state = 'dead';
     Sfx.gameOver();
     this.input.exitLock();
+
     const acc = this.stats.shots ? Math.round((this.stats.hits / this.stats.shots) * 100) : 0;
+    const beaten = Store.submitRun({
+      score: this.player.score, wave: this.wave, kills: this.player.kills,
+    });
+    this.records = Store.records;
+
     $('res-wave').textContent = this.wave;
     $('res-kills').textContent = this.player.kills;
     $('res-score').textContent = this.player.score.toLocaleString('fr-FR');
     $('res-acc').textContent = acc + '%';
     $('res-head').textContent = this.stats.headshots;
     $('res-upg').textContent = this.stats.crystals;
+    $('res-combo').textContent = '×' + this.stats.bestCombo;
+    $('res-diff').textContent = this.difficulty.name;
+
+    const badge = $('res-record');
+    if (beaten.score || beaten.wave) {
+      badge.classList.remove('hidden');
+      badge.textContent = beaten.score && beaten.wave
+        ? 'NOUVEAU RECORD — score et vague'
+        : beaten.score ? 'NOUVEAU RECORD — meilleur score' : 'NOUVEAU RECORD — vague la plus lointaine';
+      Sfx.record();
+    } else {
+      badge.classList.add('hidden');
+    }
+    this.hud.updateRecords(this.records);
+
     this.show('screen-dead');
     $('hud').classList.add('hidden');
   }
@@ -237,19 +450,36 @@ export class Game {
 
   // ---------------------------------------------------------------- vagues
 
-  waveComposition(n) {
+  /** Modificateur de la vague n, ou null pour une vague normale. */
+  waveModifier(n) {
+    if (n < 3 || n % GAME.bossEveryWaves === 0) return null;   // jamais sur une vague de boss
+    if (n % 4 !== 0 && n % 7 !== 0) return null;
+    return WAVE_MODIFIERS[(n * 7 + Math.floor(n / 3)) % WAVE_MODIFIERS.length];
+  }
+
+  waveComposition(n, mod) {
     const list = [];
-    const total = Math.round(GAME.baseZombies + GAME.zombiesPerWave * (n - 1));
+    const diff = this.difficulty;
+    const countMul = (mod ? mod.count : 1) * diff.count;
+    const total = Math.max(3, Math.round((GAME.baseZombies + GAME.zombiesPerWave * (n - 1)) * countMul));
+
     let runners = n >= 2 ? Math.floor(total * clamp(0.12 + n * 0.035, 0, 0.42)) : 0;
+    if (mod && mod.runners) runners = Math.floor(total * 0.8);
     let spitters = n >= 4 ? Math.min(6, Math.floor(1 + (n - 4) * 0.4)) : 0;
+    let crawlers = n >= GAME.crawlerFromWave ? Math.min(9, Math.floor(1 + (n - GAME.crawlerFromWave) * 0.6)) : 0;
+    if (mod && mod.crawlers) crawlers = Math.floor(total * 0.55);
+    let bloaters = n >= GAME.bloaterFromWave ? Math.min(6, Math.floor(1 + (n - GAME.bloaterFromWave) * 0.35)) : 0;
     let brutes = n >= GAME.bruteFromWave ? 1 + Math.floor((n - GAME.bruteFromWave) / 2) : 0;
-    brutes = Math.min(brutes, 6);
+    if (mod && mod.brutes) brutes = mod.brutes + Math.floor(n / 4);
+    brutes = Math.min(brutes, 8);
     const boss = n % GAME.bossEveryWaves === 0 ? Math.max(1, Math.floor(n / 10)) : 0;
 
-    const walkers = Math.max(2, total - runners - spitters);
+    const walkers = Math.max(2, total - runners - spitters - crawlers - bloaters);
     for (let i = 0; i < walkers; i++) list.push('marcheur');
     for (let i = 0; i < runners; i++) list.push('coureur');
     for (let i = 0; i < spitters; i++) list.push('cracheur');
+    for (let i = 0; i < crawlers; i++) list.push('rampant');
+    for (let i = 0; i < bloaters; i++) list.push('boursoufle');
     for (let i = 0; i < brutes; i++) list.push('brute');
     for (let i = 0; i < boss; i++) list.push('colosse');
 
@@ -273,13 +503,17 @@ export class Game {
   startWave() {
     this.wave++;
     this.stats.bestWave = Math.max(this.stats.bestWave, this.wave);
-    this.spawnQueue = this.waveComposition(this.wave);
+    this.modifier = this.waveModifier(this.wave);
+    this.spawnQueue = this.waveComposition(this.wave, this.modifier);
     this.pendingSpawns = this.spawnQueue.length;
     this.waveActive = true;
     this.spawnTimer = 0.6;
 
-    this.healthMul = 1 + (this.wave - 1) * 0.16;
-    this.speedMul = 1 + Math.min(0.45, (this.wave - 1) * 0.028);
+    const diff = this.difficulty;
+    const mod = this.modifier;
+    this.healthMul = (1 + (this.wave - 1) * 0.16) * diff.health * (mod ? mod.health : 1);
+    this.speedMul = (1 + Math.min(0.45, (this.wave - 1) * 0.028)) * diff.speed * (mod ? mod.speed : 1);
+    this.world.setFog(mod && mod.fog ? mod.fog : null);
 
     // Cristaux d'amélioration à faire éclater pendant la vague
     const want = GAME.crystalsPerWave + (this.wave % 3 === 0 ? 1 : 0);
@@ -294,9 +528,17 @@ export class Game {
     // Caisses d'armes
     if (this.wave === 2) this.pickups.spawnWeaponCrate(this.world.freePosition(this.player.pos, 10, 1.5), 'fusil');
     if (this.wave === 4) this.pickups.spawnWeaponCrate(this.world.freePosition(this.player.pos, 10, 1.5), 'assaut');
+    if (this.wave === GAME.sniperWave) {
+      this.pickups.spawnWeaponCrate(this.world.freePosition(this.player.pos, 10, 1.5), 'precision');
+    }
     if (this.wave > 4 && this.wave % 3 === 0) {
-      const id = Math.random() < 0.5 ? 'fusil' : 'assaut';
-      this.pickups.spawnWeaponCrate(this.world.freePosition(this.player.pos, 10, 1.5), id);
+      const pool = this.wave > GAME.sniperWave ? ['fusil', 'assaut', 'precision'] : ['fusil', 'assaut'];
+      this.pickups.spawnWeaponCrate(this.world.freePosition(this.player.pos, 10, 1.5),
+        pool[randInt(0, pool.length - 1)]);
+    }
+    // Caisse de grenades une vague sur deux
+    if (this.wave % 2 === 0) {
+      this.pickups.spawnDrop(this.world.freePosition(this.player.pos, 9, 1.2), 'grenade');
     }
     // Trousse de soin
     if (Math.random() < GAME.healthCrateChance + (this.player.health < this.player.maxHealth * 0.5 ? 0.4 : 0)) {
@@ -305,11 +547,17 @@ export class Game {
 
     const isBoss = this.wave % GAME.bossEveryWaves === 0;
     Sfx.waveStart();
-    this.hud.announce(
-      isBoss ? `VAGUE ${this.wave} — COLOSSE` : `VAGUE ${this.wave}`,
-      isBoss ? 'Visez les pustules jaunes !' : `${this.spawnQueue.length} infectés en approche`,
-      isBoss ? 3.2 : 2.4
-    );
+    if (mod) {
+      this.hud.announce(`VAGUE ${this.wave} — ${mod.name}`, mod.desc, 3.2, mod.color);
+      this.hud.setModifier(mod);
+    } else {
+      this.hud.announce(
+        isBoss ? `VAGUE ${this.wave} — COLOSSE` : `VAGUE ${this.wave}`,
+        isBoss ? 'Visez les pustules jaunes !' : `${this.spawnQueue.length} infectés en approche`,
+        isBoss ? 3.2 : 2.4
+      );
+      this.hud.setModifier(null);
+    }
   }
 
   updateWaves(dt) {
@@ -336,13 +584,17 @@ export class Game {
       }
     } else if (this.zombies.aliveCount() === 0) {
       this.waveActive = false;
-      this.breakTimer = GAME.waveBreak;
-      const bonus = 500 * this.wave;
+      this.breakTimer = this.difficulty.waveBreak;
+      this.modifier = null;
+      this.hud.setModifier(null);
+      this.world.setFog(null);
+      const bonus = Math.round(500 * this.wave * this.difficulty.scoreMul);
       this.player.score += bonus;
       this.player.heal(15);
       this.weapons.refillAll(0.4);
-      this.hud.announce(`VAGUE ${this.wave} TERMINÉE`, `+${bonus} points · munitions réapprovisionnées`, 3);
-      this.hud.toast('Répit : ' + GAME.waveBreak + ' s', '#7fdcff', '⏱');
+      this.grenades.add(1);
+      this.hud.announce(`VAGUE ${this.wave} TERMINÉE`, `+${bonus} points · réapprovisionnement`, 3);
+      this.hud.toast(`Répit : ${this.difficulty.waveBreak} s`, '#7fdcff', '⏱');
       // récompense : un cristal garanti
       this.pickups.spawnCrystal(this.world.freePosition(this.player.pos, 8, 2));
     }
@@ -448,11 +700,16 @@ export class Game {
 
   onZombieKilled(z, headshot) {
     this.player.kills++;
-    const bonus = headshot ? 1.5 : 1;
-    this.player.score += Math.round(z.def.score * bonus);
-    if (headshot) this.hud.toast('TÊTE EXPLOSÉE +' + Math.round(z.def.score * 1.5), '#ffd166', '💀');
+    this.addCombo(z);
+
+    const bonus = (headshot ? 1.5 : 1) * this.comboMultiplier * this.difficulty.scoreMul;
+    const gained = Math.round(z.def.score * bonus);
+    this.player.score += gained;
+    if (headshot) this.hud.toast('TÊTE EXPLOSÉE +' + gained, '#ffd166', '💀');
 
     if (z.def.big) {
+      // Court ralenti : la mort d'un gros doit se sentir.
+      this.hitStop = Math.max(this.hitStop, z.def.boss ? 0.5 : 0.16);
       this.hud.toast(z.def.name + ' ABATTU', z.def.boss ? '#ff4dd2' : '#ff8a5c', '☠');
       // Récompenses garanties
       const p = z.pos.clone();
@@ -465,8 +722,10 @@ export class Game {
         this.pickups.spawnCrystal(p.clone().add(new THREE.Vector3(rand(-3, 3), 0, rand(-3, 3))));
         this.pickups.spawnCrystal(p.clone().add(new THREE.Vector3(rand(-3, 3), 0, rand(-3, 3))));
       }
-    } else if (Math.random() < 0.06) {
-      this.pickups.spawnDrop(z.pos.clone(), Math.random() < 0.5 ? 'health' : 'ammo');
+      if (z.def.boss) this.grenades.add(3);
+    } else if (Math.random() < 0.08) {
+      const roll = Math.random();
+      this.pickups.spawnDrop(z.pos.clone(), roll < 0.4 ? 'health' : roll < 0.7 ? 'grenade' : 'ammo');
     }
   }
 
@@ -482,27 +741,37 @@ export class Game {
 
   loop() {
     requestAnimationFrame(this.loop);
-    const dt = Math.min(0.05, this.clock.getDelta());
-    this.time += dt;
+    const real = Math.min(0.05, this.clock.getDelta());
+    this.time += real;
+
+    // Ralenti d'impact : le temps du jeu se fige brièvement sur les gros coups.
+    let dt = real;
+    if (this.hitStop > 0) {
+      this.hitStop = Math.max(0, this.hitStop - real);
+      dt = real * 0.18;
+    }
 
     if (this.state === 'playing') {
+      if (this.input.pressed('KeyG')) this.throwGrenade();
+
       this.player.update(dt, this.input);
       this.weapons.update(dt, this.input);
       this.zombies.update(dt, this.player);
+      this.grenades.update(dt);
       this.pickups.update(dt, this.time);
       this.updateWaves(dt);
+      this.updateCombo(dt);
       this.world.update(dt, this.time);
       this.effects.update(dt);
       this.player.syncCamera();
 
-      // champ de vision : sprint = plus large, visée = plus serré
-      const targetFov = this.baseFov
-        + (this.player.sprinting ? 6 : 0)
-        - this.weapons.aimAmount * 16;
-      this.camera.fov += (targetFov - this.camera.fov) * Math.min(1, dt * 9);
+      // champ de vision : sprint = plus large, visée = plus serré,
+      // lunette du fusil de précision = très serré
+      const targetFov = this.weapons.desiredFov(this.baseFov, this.player.sprinting);
+      this.camera.fov += (targetFov - this.camera.fov) * Math.min(1, real * 11);
       this.camera.updateProjectionMatrix();
 
-      this.hud.update(dt, this);
+      this.hud.update(real, this);
 
       if (this.input.pressed('Escape')) this.pause();
     } else {
@@ -519,7 +788,7 @@ export class Game {
     this.renderer.render(this.scene, this.camera);
 
     // Seconde passe : le modèle d'arme, par-dessus, avec sa propre profondeur
-    if (this.state === 'playing') {
+    if (this.state === 'playing' && !this.weapons.scoped) {
       this.renderer.autoClear = false;
       this.renderer.clearDepth();
       this.renderer.render(this.weapons.vmScene, this.weapons.vmCamera);

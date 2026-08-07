@@ -31,6 +31,7 @@ export class PickupManager {
     this.effects = effects;
     this.player = player;
     this.weapons = weapons;
+    this.grenades = null;    // renseigné par le jeu
     this.shootables = [];   // cristaux, barils, caisses
     this.drops = [];        // soins / munitions au sol
     this.onUpgrade = null;
@@ -133,14 +134,25 @@ export class PickupManager {
 
   spawnDrop(pos, type) {
     const isMed = type === 'health';
+    const isGrenade = type === 'grenade';
     const g = new THREE.Group();
     const mesh = new THREE.Mesh(
       isMed ? this.medGeo : this.ammoGeo,
-      new THREE.MeshLambertMaterial({ color: isMed ? 0xe8e8e8 : 0x6f6a3a })
+      new THREE.MeshLambertMaterial({ color: isMed ? 0xe8e8e8 : isGrenade ? 0x46552f : 0x6f6a3a })
     );
     mesh.castShadow = true;
     g.add(mesh);
-    if (isMed) {
+    if (isGrenade) {
+      // trois grenades posées sur la caisse
+      for (let i = 0; i < 3; i++) {
+        const gr = new THREE.Mesh(
+          new THREE.SphereGeometry(0.09, 8, 6),
+          new THREE.MeshLambertMaterial({ color: 0x3d4a2c })
+        );
+        gr.position.set(-0.12 + i * 0.12, 0.19, 0);
+        g.add(gr);
+      }
+    } else if (isMed) {
       const crossMat = new THREE.MeshBasicMaterial({ color: 0xe03b3b });
       const a = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.09, 0.02), crossMat);
       const b = new THREE.Mesh(new THREE.BoxGeometry(0.09, 0.22, 0.02), crossMat);
@@ -151,7 +163,7 @@ export class PickupManager {
       top.position.y = 0.17;
       g.add(top);
     }
-    const light = new THREE.PointLight(isMed ? 0xff6666 : 0xffdd66, 3.5, 5, 2);
+    const light = new THREE.PointLight(isMed ? 0xff6666 : isGrenade ? 0x9bd45a : 0xffdd66, 3.5, 5, 2);
     light.position.y = 0.5;
     g.add(light);
     g.position.copy(pos);
@@ -282,6 +294,11 @@ export class PickupManager {
             taken = true;
             if (this.onMessage) this.onMessage('+35 PV', '#7ee787');
           }
+        } else if (d.kind === 'grenade') {
+          if (this.grenades && this.grenades.add(2)) {
+            taken = true;
+            if (this.onMessage) this.onMessage('Grenades récupérées', '#9bd45a');
+          }
         } else {
           this.weapons.refillAll(0.35);
           taken = true;
@@ -290,7 +307,7 @@ export class PickupManager {
         if (taken) {
           Sfx.pickup();
           this.effects.sparks(d.group.position, new THREE.Vector3(0, 1, 0), 12,
-            d.kind === 'health' ? 0x66ff88 : 0xffdd55);
+            d.kind === 'health' ? 0x66ff88 : d.kind === 'grenade' ? 0x9bd45a : 0xffdd55);
           d.life = -1;
         }
       }

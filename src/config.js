@@ -28,7 +28,7 @@ export const PLAYER = {
   mouseSensitivity: 0.0022,
 };
 
-// Trois armes, débloquées au fil des vagues et par les caisses.
+// Quatre armes, débloquées au fil des vagues et par les caisses.
 export const WEAPONS = {
   pistolet: {
     id: 'pistolet',
@@ -63,6 +63,23 @@ export const WEAPONS = {
     pierce: 1,
     shellColor: 0xc0392b,
   },
+  precision: {
+    id: 'precision',
+    name: 'Fusil de précision',
+    damage: 165,
+    rpm: 48,
+    magSize: 5,
+    reserve: 30,
+    reload: 2.7,
+    spread: 0.0016,
+    pellets: 1,
+    range: 220,
+    recoil: 6.5,
+    auto: false,
+    pierce: 2,          // traverse deux corps
+    zoom: 22,           // champ de vision en visée : lunette
+    shellColor: 0xcfae63,
+  },
   assaut: {
     id: 'assaut',
     name: 'Fusil d\'assaut',
@@ -79,6 +96,26 @@ export const WEAPONS = {
     pierce: 0,
     shellColor: 0xb8a05c,
   },
+};
+
+// Coup de crosse : l'outil de survie quand un zombie est collé à vous.
+export const MELEE = {
+  damage: 55,
+  range: 3.0,
+  arc: 0.62,            // cosinus de l'angle du cône devant le joueur
+  cooldown: 0.7,
+  knockback: 11,
+  stun: 1.1,
+};
+
+export const GRENADE = {
+  max: 3,
+  start: 2,
+  damage: 260,
+  radius: 8.5,
+  fuse: 1.5,
+  throwSpeed: 19,
+  selfDamageMul: 0.3,
 };
 
 export const ZOMBIES = {
@@ -125,6 +162,38 @@ export const ZOMBIES = {
     color: 0x6f8f2f,
     headMul: 2.4,
     mass: 1,
+  },
+  rampant: {
+    id: 'rampant',
+    name: 'Rampant',
+    health: 55,
+    speed: 4.9,
+    damage: 10,
+    attackRate: 0.7,
+    reach: 1.7,
+    scale: 0.95,
+    score: 220,
+    color: 0x7a6a3c,
+    headMul: 3.2,
+    mass: 0.7,
+    crawler: true,       // silhouette basse : difficile à toucher
+  },
+  boursoufle: {
+    id: 'boursoufle',
+    name: 'Boursouflé',
+    health: 130,
+    speed: 2.15,
+    damage: 8,
+    attackRate: 1.5,
+    reach: 2.2,
+    scale: 1.3,
+    score: 300,
+    color: 0x8f9e3a,
+    headMul: 2.2,
+    mass: 1.6,
+    bloated: true,       // explose en mourant
+    blastDamage: 58,
+    blastRadius: 6.5,
   },
   brute: {
     id: 'brute',
@@ -181,6 +250,66 @@ export const UPGRADES = [
   { id: 'explosive',name: 'Balles explosives',   color: 0xff7043, weight: 4,  max: 3,  icon: '💣' },
 ];
 
+// Trois réglages de difficulté, choisis avant la partie.
+export const DIFFICULTIES = {
+  survivant: {
+    id: 'survivant',
+    name: 'Survivant',
+    tagline: 'Pour découvrir le jeu',
+    health: 0.78, damage: 0.7, speed: 0.94, count: 0.85,
+    scoreMul: 0.8, waveBreak: 11,
+  },
+  veteran: {
+    id: 'veteran',
+    name: 'Vétéran',
+    tagline: 'L\'équilibre prévu',
+    health: 1, damage: 1, speed: 1, count: 1,
+    scoreMul: 1, waveBreak: 8,
+  },
+  cauchemar: {
+    id: 'cauchemar',
+    name: 'Cauchemar',
+    tagline: 'Ils sont plus rapides. Vous, non.',
+    health: 1.4, damage: 1.35, speed: 1.12, count: 1.3,
+    scoreMul: 1.6, waveBreak: 6,
+  },
+};
+
+// Vagues spéciales : elles cassent le rythme et forcent à changer de jeu.
+export const WAVE_MODIFIERS = [
+  {
+    id: 'horde', name: 'DÉFERLANTE', color: '#ff7043',
+    desc: 'Deux fois plus nombreux, deux fois plus rapides',
+    count: 2, health: 0.6, speed: 1.3, runners: 1,
+  },
+  {
+    id: 'blindee', name: 'COLONNE BLINDÉE', color: '#b07de0',
+    desc: 'Des brutes, beaucoup de brutes',
+    count: 0.55, health: 1.15, speed: 1, brutes: 3,
+  },
+  {
+    id: 'brouillard', name: 'BROUILLARD TOXIQUE', color: '#6fbf8f',
+    desc: 'Visibilité réduite — fiez-vous à la minicarte',
+    count: 1, health: 1, speed: 1, fog: 13,
+  },
+  {
+    id: 'meute', name: 'MEUTE DE RAMPANTS', color: '#d4c463',
+    desc: 'Ils arrivent au ras du sol',
+    count: 1.35, health: 0.85, speed: 1.1, crawlers: 1,
+  },
+];
+
+// Multiplicateur de score selon la chaîne d'éliminations.
+export const COMBO = {
+  window: 3.6,          // secondes pour enchaîner
+  tiers: [
+    { kills: 4, mul: 1.5, label: 'ENCHAÎNÉ' },
+    { kills: 9, mul: 2, label: 'CARNAGE' },
+    { kills: 16, mul: 3, label: 'BOUCHERIE' },
+    { kills: 26, mul: 4, label: 'APOCALYPSE' },
+  ],
+};
+
 export const GAME = {
   waveBreak: 8,             // secondes entre deux vagues
   baseZombies: 6,
@@ -191,4 +320,7 @@ export const GAME = {
   crystalsPerWave: 3,
   barrelCount: 10,
   healthCrateChance: 0.35,
+  crawlerFromWave: 4,
+  bloaterFromWave: 5,
+  sniperWave: 7,
 };

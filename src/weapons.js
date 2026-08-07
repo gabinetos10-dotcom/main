@@ -1,5 +1,5 @@
 import * as THREE from '../vendor/three.module.js';
-import { WEAPONS } from './config.js';
+import { WEAPONS, MELEE } from './config.js';
 import { rand, damp, clamp } from './utils.js';
 import { Sfx } from './audio.js';
 
@@ -19,7 +19,17 @@ function buildViewModel(id) {
   };
 
   let muzzleZ = -0.5;
-  if (id === 'pistolet') {
+  if (id === 'precision') {
+    add(new THREE.BoxGeometry(0.085, 0.1, 1.02), dark, 0, 0, -0.34);
+    add(new THREE.BoxGeometry(0.044, 0.044, 0.44), metal, 0, 0, -0.94);        // canon long
+    add(new THREE.BoxGeometry(0.1, 0.17, 0.34), wood, 0, -0.05, 0.26, -0.1);   // crosse
+    add(new THREE.BoxGeometry(0.055, 0.18, 0.1), dark, 0, -0.14, 0.02, 0.32);  // poignée
+    add(new THREE.CylinderGeometry(0.045, 0.045, 0.34, 10), metal, 0, 0.115, -0.3, Math.PI / 2); // lunette
+    add(new THREE.CylinderGeometry(0.058, 0.058, 0.05, 10), dark, 0, 0.115, -0.47, Math.PI / 2);
+    add(new THREE.BoxGeometry(0.02, 0.05, 0.02), metal, 0, 0.07, -0.18);
+    add(new THREE.BoxGeometry(0.02, 0.05, 0.02), metal, 0, 0.07, -0.42);
+    muzzleZ = -1.18;
+  } else if (id === 'pistolet') {
     add(new THREE.BoxGeometry(0.075, 0.1, 0.42), dark, 0, 0, -0.16);
     add(new THREE.BoxGeometry(0.06, 0.2, 0.1), dark, 0, -0.14, 0.02, 0.28);
     add(new THREE.BoxGeometry(0.04, 0.04, 0.12), metal, 0, 0.005, -0.4);
@@ -98,7 +108,7 @@ export class WeaponSystem {
     scene.add(this.worldFlash);
 
     this.slots = {};
-    this.order = ['pistolet', 'fusil', 'assaut'];
+    this.order = ['pistolet', 'fusil', 'assaut', 'precision'];
     for (const id of this.order) {
       const def = WEAPONS[id];
       const vm = buildViewModel(id);
@@ -133,8 +143,11 @@ export class WeaponSystem {
     this.aiming = false;
     this.aimAmount = 0;
     this.shotCount = 0;
+    this.meleeCd = 0;
+    this.meleeAnim = 0;
 
     this.onFire = null;      // (origin, dir, damage, opts) => void
+    this.onMelee = null;     // () => void, résolu par le jeu
     this.onEmpty = null;
     this.basePos = new THREE.Vector3(0.24, -0.2, -0.62);
     this.aimPos = new THREE.Vector3(0.0, -0.105, -0.5);
@@ -223,7 +236,19 @@ export class WeaponSystem {
   }
 
   canFire() {
-    return this.cooldown <= 0 && !this.reloading && this.switching <= 0 && this.slot.ammo > 0;
+    return this.cooldown <= 0 && !this.reloading && this.switching <= 0
+      && this.meleeAnim <= 0 && this.slot.ammo > 0;
+  }
+
+  /** Champ de vision voulu : la lunette du fusil de précision resserre fort. */
+  desiredFov(baseFov, sprinting) {
+    const zoom = this.def.zoom || (baseFov - 16);
+    return (baseFov + (sprinting ? 6 : 0)) * (1 - this.aimAmount) + zoom * this.aimAmount;
+  }
+
+  /** Le viseur à lunette est-il collé à l'œil ? */
+  get scoped() {
+    return !!this.def.zoom && this.aimAmount > 0.6;
   }
 
   startReload() {
@@ -360,8 +385,19 @@ export class WeaponSystem {
     if (input.pressed('Digit1')) this.switchTo('pistolet');
     if (input.pressed('Digit2')) this.switchTo('fusil');
     if (input.pressed('Digit3')) this.switchTo('assaut');
+    if (input.pressed('Digit4')) this.switchTo('precision');
     if (input.wheel !== 0) this.cycle(input.wheel);
     if (input.pressed('KeyR')) this.startReload();
+
+    this.meleeCd = Math.max(0, this.meleeCd - dt);
+    this.meleeAnim = Math.max(0, this.meleeAnim - dt);
+    if ((input.pressed('KeyF') || input.pressed('KeyV')) && this.meleeCd <= 0 && input.active) {
+      this.meleeCd = MELEE.cooldown;
+      this.meleeAnim = 0.32;
+      this.effects.addShake(0.12);
+      Sfx.melee();
+      if (this.onMelee) this.onMelee();
+    }
 
     // Tir
     const wantsFire = s.def.auto ? input.mouseDown(0) : input.mouseClicked(0);
@@ -409,14 +445,17 @@ export class WeaponSystem {
 
     const switchDrop = this.switching > 0 ? Math.sin((this.switching / 0.32) * Math.PI) * 0.28 : 0;
     const reloadDrop = this.reloading ? 0.12 : 0;
+    // Coup de crosse : l'arme part en arrière puis balaie vers l'avant.
+    const mt = this.meleeAnim > 0 ? this.meleeAnim / 0.32 : 0;
+    const meleeSwing = Math.sin(mt * Math.PI) * (mt > 0.5 ? 1 : -0.55);
 
     g.position.x = damp(g.position.x, target.x + this.sway.x + bobX, 14, dt);
     g.position.y = damp(g.position.y, target.y + this.sway.y + bobY - switchDrop - reloadDrop - sprintTilt * 0.06, 14, dt);
-    g.position.z = damp(g.position.z, target.z + this.kick, 18, dt);
+    g.position.z = damp(g.position.z, target.z + this.kick + meleeSwing * 0.22, 18, dt);
 
-    g.rotation.x = damp(g.rotation.x, -this.sway.y * 2.5 + this.recoil * 0.35 + reloadDrop * 2.2 + switchDrop * 1.5, 14, dt);
-    g.rotation.y = damp(g.rotation.y, this.sway.x * 2.5 + sprintTilt * 0.35, 14, dt);
-    g.rotation.z = damp(g.rotation.z, -this.sway.x * 1.5 + sprintTilt * 0.5 + (this.reloading ? 0.35 : 0), 14, dt);
+    g.rotation.x = damp(g.rotation.x, -this.sway.y * 2.5 + this.recoil * 0.35 + reloadDrop * 2.2 + switchDrop * 1.5 - meleeSwing * 0.5, 14, dt);
+    g.rotation.y = damp(g.rotation.y, this.sway.x * 2.5 + sprintTilt * 0.35 + meleeSwing * 0.6, 14, dt);
+    g.rotation.z = damp(g.rotation.z, -this.sway.x * 1.5 + sprintTilt * 0.5 + (this.reloading ? 0.35 : 0) + meleeSwing * 0.7, 14, dt);
 
     // Éclair de bouche
     this.flashTime = Math.max(0, this.flashTime - dt);
@@ -425,6 +464,9 @@ export class WeaponSystem {
     vm.flash.scale.set(0.6 + f * 0.9, 0.6 + f * 0.9, 1.2 + f * 1.6);
     vm.flash.rotation.z = Math.random() * 6.28;
     vm.light.intensity = f * 6;
+
+    // À la lunette, le modèle disparaît au profit de l'optique plein écran
+    g.visible = !this.scoped;
 
     // Le halo qui éclaire réellement la scène autour du joueur
     this.worldFlash.intensity = f * 22;

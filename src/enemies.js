@@ -12,6 +12,9 @@ const GEO = {
   leg: new THREE.BoxGeometry(0.19, 0.72, 0.19),
   spike: new THREE.ConeGeometry(0.12, 0.34, 5),
   weak: new THREE.SphereGeometry(0.16, 8, 6),
+  belly: new THREE.SphereGeometry(0.44, 10, 8),
+  blister: new THREE.SphereGeometry(0.09, 6, 5),
+  gib: new THREE.BoxGeometry(0.16, 0.16, 0.16),
 };
 GEO.arm.translate(0, -0.31, 0);
 GEO.leg.translate(0, -0.36, 0);
@@ -43,8 +46,19 @@ class Zombie {
       color: new THREE.Color().setHSL(rand(0, 1), 0.18, rand(0.14, 0.3)),
     });
 
-    const g = this.group;
-    g.scale.setScalar(s);
+    const g = new THREE.Group();
+    this.body = g;
+    this.group.add(g);
+    this.group.scale.setScalar(s);
+
+    // Le rampant avance plié en deux, presque au ras du sol.
+    // Basculé de 57° vers l'avant et abaissé : le buste racle le sol, la tête
+    // reste visible devant. Les sphères de toucher plus bas reprennent
+    // exactement cette géométrie.
+    if (d.crawler) {
+      g.rotation.x = -1.0;
+      g.position.y = -0.33;
+    }
 
     this.torso = new THREE.Mesh(GEO.torso, this.clothMat);
     this.torso.position.y = 1.18;
@@ -53,6 +67,19 @@ class Zombie {
     this.hip = new THREE.Mesh(GEO.hip, this.clothMat);
     this.hip.position.y = 0.78;
     g.add(this.hip);
+
+    // Le boursouflé traîne un abdomen distendu, prêt à éclater.
+    if (d.bloated) {
+      this.torso.scale.set(1.35, 1.15, 1.5);
+      this.belly = new THREE.Mesh(GEO.belly, this.mat);
+      this.belly.position.set(0, 1.0, -0.16);
+      g.add(this.belly);
+      for (let i = 0; i < 5; i++) {
+        const b = new THREE.Mesh(GEO.blister, new THREE.MeshBasicMaterial({ color: 0xc9e04a }));
+        b.position.set(rand(-0.32, 0.32), 0.85 + rand(0, 0.5), -0.38 + rand(-0.06, 0.06));
+        g.add(b);
+      }
+    }
 
     this.head = new THREE.Mesh(GEO.head, this.mat);
     this.head.position.y = 1.72;
@@ -109,7 +136,8 @@ class Zombie {
 
     g.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = false; } });
 
-    // Barre de vie flottante pour les gros
+    // Barre de vie flottante pour les gros (posée sur le groupe racine pour
+    // rester horizontale même quand le corps est incliné)
     if (d.big) {
       this.barBg = new THREE.Mesh(BAR_GEO, new THREE.MeshBasicMaterial({ color: 0x220000, depthTest: false, transparent: true, opacity: 0.75 }));
       this.barFg = new THREE.Mesh(BAR_GEO, new THREE.MeshBasicMaterial({ color: 0xff3b30, depthTest: false }));
@@ -120,7 +148,7 @@ class Zombie {
       this.barBg.scale.set(bw, 1, 1);
       this.barFg.scale.set(bw, 1, 1);
       this.barWidth = bw;
-      g.add(this.barBg, this.barFg);
+      this.group.add(this.barBg, this.barFg);
     }
   }
 
@@ -148,6 +176,9 @@ class Zombie {
     this.slamWind = 0;
     this.summonedAt = [];
     this.headGone = false;
+    this.gibbed = false;
+    this.exploded = false;
+    this.charged = 0;
     this.avoid = new THREE.Vector3();
     this.wander = rand(-1, 1);
 
@@ -155,6 +186,7 @@ class Zombie {
     this.group.position.copy(this.pos);
     this.group.rotation.set(0, 0, 0);
     this.group.scale.setScalar(d.scale);
+    this.body.visible = true;
     this.head.visible = true;
     this.head.position.y = 1.72;
     for (const w of this.weakSpots) { w.broken = false; w.mesh.visible = true; }
@@ -181,10 +213,18 @@ class Zombie {
         r: r * s, part, mul, wi,
       });
     };
-    if (!this.headGone) put(0, this.head.position.y, 0, 0.24, 'head', this.def.headMul);
-    put(0, 1.2, 0, 0.42, 'torso', 1);
-    put(0, 0.75, 0, 0.36, 'body', 0.9);
-    put(0, 0.35, 0, 0.3, 'legs', 0.7);
+    if (this.def.crawler) {
+      // Corps allongé vers l'avant : les sphères suivent la silhouette basculée.
+      if (!this.headGone) put(0, 0.6, -1.45, 0.23, 'head', this.def.headMul);
+      put(0, 0.35, -0.95, 0.33, 'torso', 1);
+      put(0, 0.28, -0.4, 0.3, 'body', 0.9);
+    } else {
+      if (!this.headGone) put(0, this.head.position.y, 0, 0.24, 'head', this.def.headMul);
+      put(0, 1.2, 0, 0.42, 'torso', 1);
+      put(0, 0.75, 0, 0.36, 'body', 0.9);
+      put(0, 0.35, 0, 0.3, 'legs', 0.7);
+      if (this.def.bloated) put(0, 1.0, -0.16, 0.46, 'belly', 1.6);
+    }
     for (let i = 0; i < this.weakSpots.length; i++) {
       const w = this.weakSpots[i];
       if (w.broken) continue;
@@ -230,28 +270,54 @@ class Zombie {
     if (part === 'head') Sfx.headshot(); else Sfx.hit();
 
     if (this.health <= 0) {
-      this.kill(part === 'head', dir, effects);
+      this.kill(part === 'head', dir, effects, -this.health);
       return dmg;
     }
     return dmg;
   }
 
-  kill(decapitate, dir, effects) {
+  kill(decapitate, dir, effects, overkill = 0) {
     this.alive = false;
     this.state = 'dying';
     this.deathTimer = 0;
     this.vel.x += dir.x * 2;
     this.vel.z += dir.z * 2;
-    if (decapitate && !this.def.big) {
+
+    const center = new THREE.Vector3(this.pos.x, this.pos.y + 1.1 * this.def.scale, this.pos.z);
+
+    // Un tir très au-delà des points de vie restants pulvérise le corps.
+    const gibbed = !this.def.big && overkill > this.def.health * 0.9;
+    if (gibbed) {
+      this.gibbed = true;
+      this.body.visible = false;
+      this.mgr.spawnGibs(center, dir, this.def.scale, this.mat.color);
+      effects.blood(center, dir, 46, 0x9b1b1b);
+      effects.addShake(0.28);
+    } else if (decapitate && !this.def.big) {
       this.headGone = true;
       this.head.visible = false;
       const hp = new THREE.Vector3(this.pos.x, this.pos.y + 1.72 * this.def.scale, this.pos.z);
       effects.blood(hp, dir, 34, 0x9b1b1b);
     }
+
     const feet = new THREE.Vector3(this.pos.x, 0.02, this.pos.z);
     effects.decal(feet, new THREE.Vector3(0, 1, 0), 0x2b0606, 1.4 * this.def.scale, 30);
     if (this.barBg) { this.barBg.visible = false; this.barFg.visible = false; }
     Sfx.zombieDie();
+
+    // Le boursouflé éclate : dégâts de zone sur tout ce qui l'entoure.
+    if (this.def.bloated && !this.exploded) {
+      this.exploded = true;
+      this.mgr.bloatExplosion(this);
+    }
+  }
+
+  /** Étourdissement infligé par le coup de crosse. */
+  stun(duration, dir, force) {
+    this.stagger = Math.max(this.stagger, duration);
+    this.vel.x += dir.x * force;
+    this.vel.z += dir.z * force;
+    this.flash = 1;
   }
 
   update(dt, player, world, mgr) {
@@ -367,6 +433,12 @@ class Zombie {
       if (distance < 7) speed *= -0.6;             // le cracheur garde ses distances
       else if (distance < 14) speed *= 0.2;
     } else if (distance < d.reach + PLAYER.radius) {
+      if (d.bloated) {
+        // Attaque suicide : il se déchire sur place.
+        this.health = 0;
+        this.kill(false, toPlayer, mgr.effects);
+        return;
+      }
       if (this.attackCd <= 0 && this.slamWind <= 0) {
         this.attackCd = d.attackRate;
         this._hitPlayer(player, d.damage, toPlayer, d.big ? 7 : 2);
@@ -411,6 +483,15 @@ class Zombie {
 
     this._animate(dt, Math.hypot(this.vel.x, this.vel.z));
     this._updateBar(player);
+
+    // Signal visuel : plus le boursouflé est près, plus il palpite.
+    if (d.bloated && this.belly) {
+      const urgency = clamp(1 - (distance - d.reach) / 10, 0, 1);
+      const pulse = 1 + Math.sin(this.walkPhase * (3 + urgency * 14)) * (0.06 + urgency * 0.14);
+      this.belly.scale.setScalar(pulse);
+      const glow = urgency * (0.5 + Math.sin(this.walkPhase * 18) * 0.5);
+      this.mat.emissive.setRGB(glow * 0.55, glow * 0.6, glow * 0.1);
+    }
   }
 
   _hitPlayer(player, damage, dir, knock) {
@@ -450,6 +531,26 @@ class Zombie {
   _animate(dt, speed) {
     this.walkPhase += dt * (2.2 + speed * 1.6);
     const sw = Math.sin(this.walkPhase * 2) * clamp(speed / 3, 0.15, 1);
+
+    if (this.def.crawler) {
+      // Reptation : les bras tirent le corps, les jambes traînent derrière.
+      this.armL.rotation.x = damp(this.armL.rotation.x, -2.5 + sw * 0.8, 9, dt);
+      this.armR.rotation.x = damp(this.armR.rotation.x, -2.5 - sw * 0.8, 9, dt);
+      this.armL.rotation.z = 0.5 + sw * 0.2;
+      this.armR.rotation.z = -0.5 - sw * 0.2;
+      this.legL.rotation.x = 1.0 + sw * 0.45;
+      this.legR.rotation.x = 1.0 - sw * 0.45;
+      this.legL.rotation.z = 0.3;
+      this.legR.rotation.z = -0.3;
+      this.torso.rotation.y = Math.sin(this.walkPhase) * 0.2;
+      this.torso.rotation.x = 0;
+      this.head.rotation.x = 0.95;               // la tête se relève vers la proie
+      this.head.rotation.z = Math.sin(this.walkPhase * 0.8) * 0.2;
+      this.jaw.rotation.x = 0.25 + Math.abs(Math.sin(this.walkPhase * 1.6)) * 0.4;
+      this.group.position.y = this.pos.y + Math.abs(Math.sin(this.walkPhase * 2)) * 0.03;
+      return;
+    }
+
     this.legL.rotation.x = sw * 0.9;
     this.legR.rotation.x = -sw * 0.9;
     this.armL.rotation.x = damp(this.armL.rotation.x, -1.5 + sw * 0.35, 6, dt);
@@ -502,7 +603,84 @@ export class ZombieManager {
     this.spitPool = [];
     this._spheres = [];
     this.onKill = null;
+    this.onBloat = null;     // (zombie) => void, câblé par le jeu
     this.boss = null;
+    this.gibs = [];
+    this.gibPool = [];
+  }
+
+  /** Morceaux projetés quand un corps est pulvérisé. */
+  spawnGibs(center, dir, scale, color) {
+    const count = 7;
+    for (let i = 0; i < count; i++) {
+      let gib = this.gibPool.pop();
+      if (!gib) {
+        gib = {
+          mesh: new THREE.Mesh(GEO.gib, new THREE.MeshLambertMaterial({ color: 0x8a2b2b })),
+          vel: new THREE.Vector3(), spin: new THREE.Vector3(), life: 0,
+        };
+        gib.mesh.castShadow = true;
+        this.scene.add(gib.mesh);
+      }
+      gib.mesh.material.color.copy(color).multiplyScalar(rand(0.5, 0.9));
+      gib.mesh.visible = true;
+      gib.mesh.position.copy(center);
+      gib.mesh.scale.setScalar(scale * rand(0.6, 1.5));
+      gib.vel.set(
+        dir.x * rand(2, 7) + rand(-4.5, 4.5),
+        rand(3, 8),
+        dir.z * rand(2, 7) + rand(-4.5, 4.5)
+      );
+      gib.spin.set(rand(-9, 9), rand(-9, 9), rand(-9, 9));
+      gib.life = rand(3.5, 6);
+      this.gibs.push(gib);
+    }
+  }
+
+  _updateGibs(dt) {
+    for (let i = this.gibs.length - 1; i >= 0; i--) {
+      const g = this.gibs[i];
+      g.life -= dt;
+      if (g.life <= 0) {
+        g.mesh.visible = false;
+        this.gibs.splice(i, 1);
+        this.gibPool.push(g);
+        continue;
+      }
+      g.vel.y -= 24 * dt;
+      g.mesh.position.addScaledVector(g.vel, dt);
+      if (g.mesh.position.y < 0.08) {
+        g.mesh.position.y = 0.08;
+        g.vel.y *= -0.32;
+        g.vel.x *= 0.6; g.vel.z *= 0.6;
+        g.spin.multiplyScalar(0.5);
+        if (Math.abs(g.vel.y) < 0.6) { g.vel.set(0, 0, 0); g.spin.set(0, 0, 0); }
+      }
+      g.mesh.rotation.x += g.spin.x * dt;
+      g.mesh.rotation.y += g.spin.y * dt;
+      g.mesh.rotation.z += g.spin.z * dt;
+      if (g.life < 1) g.mesh.scale.multiplyScalar(1 - dt * 0.9);
+    }
+  }
+
+  /** Détonation d'un boursouflé : dégâts autour de lui, joueur compris. */
+  bloatExplosion(zombie) {
+    const p = new THREE.Vector3(zombie.pos.x, 1 * zombie.def.scale, zombie.pos.z);
+    const e = this.effects;
+    e.addShake(0.7);
+    Sfx.explosion();
+    for (let i = 0; i < 70; i++) {
+      const a = Math.random() * Math.PI * 2;
+      const sp = rand(4, 15);
+      e.emit(p.x, p.y, p.z, {
+        vx: Math.cos(a) * sp, vy: rand(-1, 8), vz: Math.sin(a) * sp,
+        color: new THREE.Color(0xb9d43a).multiplyScalar(rand(0.6, 1.2)),
+        size: rand(0.08, 0.3), life: rand(0.5, 1.3), gravity: 12, drag: 2,
+      });
+    }
+    e.smoke(p, 18, 0x6d7a2a, 2.2);
+    e.decal(new THREE.Vector3(p.x, 0.02, p.z), new THREE.Vector3(0, 1, 0), 0x3a4512, zombie.def.blastRadius * 0.9, 20);
+    if (this.onBloat) this.onBloat(zombie, p);
   }
 
   _obtain(type) {
@@ -603,6 +781,7 @@ export class ZombieManager {
   }
 
   update(dt, player) {
+    this._updateGibs(dt);
     for (let i = this.zombies.length - 1; i >= 0; i--) {
       const z = this.zombies[i];
       z.update(dt, player, this.world, this);
@@ -672,6 +851,8 @@ export class ZombieManager {
     this.zombies.length = 0;
     for (const s of this.spits) { s.mesh.visible = false; this.spitPool.push(s); }
     this.spits.length = 0;
+    for (const g of this.gibs) { g.mesh.visible = false; this.gibPool.push(g); }
+    this.gibs.length = 0;
     this.boss = null;
   }
 }
