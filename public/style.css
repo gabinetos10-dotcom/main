@@ -860,11 +860,13 @@ body[data-screen="round"] .grain { mix-blend-mode: screen; opacity: .12; }
 /* Sur téléphone, on replie sur deux lignes plutôt que de comprimer six colonnes. */
 @media (max-width: 620px) {
   .answer {
-    grid-template-columns: 10px 1fr auto;
+    /* Le pseudo a besoin d'une colonne à lui : dans celle de la pastille
+       (10 px) il serait tronqué à sa première lettre. */
+    grid-template-columns: 10px auto 1fr auto;
     grid-template-areas:
-      "dot word pts"
-      "who note vote";
-    gap: .1rem .6rem;
+      "dot word word pts"
+      ".   who  note vote";
+    gap: .1rem .5rem;
     padding: .5rem 0;
   }
   .answer__dot  { grid-area: dot; }
