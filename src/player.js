@@ -1,5 +1,5 @@
 import * as THREE from '../vendor/three.module.js';
-import { PLAYER, WORLD, UPGRADES } from './config.js';
+import { PLAYER, WORLD, UPGRADES, PERKS, ECONOMY } from './config.js';
 import { clamp, damp, resolveCircleBoxes } from './utils.js';
 
 export class Player {
@@ -22,8 +22,14 @@ export class Player {
     this.bobAmount = 0;
     this.timeSinceDamage = 99;
     this.alive = true;
+    this.downed = false;        // à terre : dernière chance avant la fin
+    this.downTimer = 0;
     this.kills = 0;
     this.score = 0;
+    this.points = ECONOMY.startPoints;   // monnaie du mode manches
+    this.pointsEarned = ECONOMY.startPoints;
+    this.perks = {};
+    this.reviveUsed = false;
 
     // Statistiques modifiées par les améliorations
     this.stats = {
@@ -48,15 +54,21 @@ export class Player {
   }
 
   reset() {
-    this.pos.set(0, 0, 8);
+    this.pos.set(0, 0, 22);
     this.vel.set(0, 0, 0);
-    this.yaw = 0; this.pitch = 0;
+    this.yaw = Math.PI; this.pitch = 0;
     this.maxHealth = PLAYER.maxHealth;
     this.health = this.maxHealth;
     this.stamina = PLAYER.staminaMax;
     this.alive = true;
+    this.downed = false;
+    this.downTimer = 0;
     this.kills = 0;
     this.score = 0;
+    this.points = ECONOMY.startPoints;
+    this.pointsEarned = ECONOMY.startPoints;
+    this.perks = {};
+    this.reviveUsed = false;
     this.timeSinceDamage = 99;
     this.stats = {
       damageMul: 1, fireRateMul: 1, magMul: 1, speedMul: 1, reloadMul: 1,
@@ -85,20 +97,53 @@ export class Player {
     }
   }
 
+  grantPerk(id) {
+    if (this.perks[id]) return false;
+    this.perks[id] = true;
+    const s = this.stats;
+    switch (id) {
+      case 'peau':
+        this.maxHealth = PLAYER.maxHealth * 2.2;
+        this.health = this.maxHealth;
+        break;
+      case 'mains': s.reloadMul *= 0.5; break;
+      case 'doigt': s.fireRateMul *= 1.45; break;
+      case 'bottes': s.speedMul *= 1.16; this.staminaBonus = true; break;
+      case 'souffle': break;   // effet à la mise à terre
+    }
+    return true;
+  }
+
+  hasPerk(id) { return !!this.perks[id]; }
+
   heal(amount) {
     this.health = Math.min(this.maxHealth, this.health + amount);
   }
 
   takeDamage(amount, fromPos = null) {
-    if (!this.alive) return;
+    if (!this.alive || this.downed) return;
     this.health -= amount;
     this.timeSinceDamage = 0;
     if (this.health <= 0) {
       this.health = 0;
-      this.alive = false;
+      // « Second souffle » offre une reprise automatique, une fois par partie.
+      if (this.perks.souffle && !this.reviveUsed) {
+        this.reviveUsed = true;
+        this.downed = true;
+        this.downTimer = 3.0;
+      } else {
+        this.alive = false;
+      }
     }
     // notifié après la mise à jour de l'état : le jeu peut y détecter la mort
     if (this.onDamage) this.onDamage(amount, fromPos);
+  }
+
+  /** Fin du compte à rebours de mise à terre : on repart avec la moitié des PV. */
+  standUp() {
+    this.downed = false;
+    this.health = this.maxHealth * 0.5;
+    this.timeSinceDamage = 0;
   }
 
   /** Recul / projection (attaque de brute, explosion). */
@@ -109,7 +154,8 @@ export class Player {
   }
 
   get eyeHeight() {
-    return PLAYER.eye - this.crouch * (PLAYER.eye - 0.95);
+    const base = PLAYER.eye - this.crouch * (PLAYER.eye - 0.95);
+    return this.downed ? Math.min(base, 0.55) : base;
   }
 
   get eyePos() {
@@ -132,6 +178,17 @@ export class Player {
 
   update(dt, input) {
     if (!this.alive) return;
+
+    if (this.downed) {
+      // Immobilisé au sol : on peut encore regarder et tirer, pas se déplacer.
+      this.updateLook(input, dt);
+      this.downTimer -= dt;
+      this.vel.set(0, 0, 0);
+      this.crouch = damp(this.crouch, 1, 8, dt);
+      this.syncCamera();
+      return;
+    }
+
     this.updateLook(input, dt);
 
     const wantCrouch = input.down('ControlLeft') || input.down('KeyC');
@@ -141,8 +198,9 @@ export class Player {
     const moving = mv.x !== 0 || mv.z !== 0;
     const wantSprint = input.down('ShiftLeft') && mv.z > 0.2 && this.stamina > 1 && !wantCrouch;
 
-    if (wantSprint) this.stamina = Math.max(0, this.stamina - PLAYER.staminaDrain * dt);
-    else this.stamina = Math.min(PLAYER.staminaMax, this.stamina + PLAYER.staminaGain * dt);
+    const staminaMul = this.staminaBonus ? 0.55 : 1;
+    if (wantSprint) this.stamina = Math.max(0, this.stamina - PLAYER.staminaDrain * staminaMul * dt);
+    else this.stamina = Math.min(PLAYER.staminaMax, this.stamina + PLAYER.staminaGain * (this.staminaBonus ? 1.5 : 1) * dt);
 
     const speed = PLAYER.walkSpeed * this.stats.speedMul
       * (wantSprint ? PLAYER.sprintMul : 1)
@@ -205,10 +263,12 @@ export class Player {
     this.bob += hspeed * dt * (wantSprint ? 1.5 : 1.1);
     this.bobAmount = damp(this.bobAmount, this.onGround ? Math.min(1, hspeed / 6) : 0, 8, dt);
 
-    // Régénération
+    // Régénération : automatique après quelques secondes sans dégât.
     this.timeSinceDamage += dt;
-    if (this.stats.regen > 0 && this.timeSinceDamage > PLAYER.regenDelay && this.health < this.maxHealth) {
-      this.health = Math.min(this.maxHealth, this.health + PLAYER.regenRate * this.stats.regen * dt);
+    const delay = PLAYER.regenDelay * (this.stats.regen > 0 ? 0.6 : 1);
+    if (this.timeSinceDamage > delay && this.health < this.maxHealth) {
+      const rate = this.maxHealth * 0.42 * (1 + this.stats.regen * 0.3);
+      this.health = Math.min(this.maxHealth, this.health + rate * dt);
     }
 
     this.syncCamera();

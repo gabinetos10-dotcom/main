@@ -151,4 +151,68 @@ export const Sfx = {
     [523, 659, 784, 1047].forEach((f, i) =>
       tone(f, 0.3, { gain: 0.15, type: 'triangle', delay: i * 0.11 }));
   },
+
+  // --- mode manches ---
+  purchase() {
+    tone(880, 0.08, { gain: 0.13, type: 'square' });
+    tone(1320, 0.16, { gain: 0.11, type: 'square', delay: 0.06 });
+  },
+  denied() { tone(160, 0.16, { gain: 0.14, type: 'square', to: 90 }); },
+  doorOpen() {
+    noise(0.7, { gain: 0.3, freq: 500, sweepTo: 120 });
+    tone(70, 0.5, { gain: 0.2, type: 'sawtooth', to: 40 });
+  },
+  perk() {
+    [392, 523, 659, 880].forEach((f, i) =>
+      tone(f, 0.26, { gain: 0.13, type: 'triangle', delay: i * 0.08 }));
+  },
+  power() {
+    tone(45, 1.6, { gain: 0.3, type: 'sawtooth', to: 120 });
+    noise(1.2, { gain: 0.2, freq: 300, sweepTo: 3000 });
+    [261, 329, 392].forEach((f, i) =>
+      tone(f, 0.5, { gain: 0.12, type: 'triangle', delay: 0.9 + i * 0.12 }));
+  },
+  boxOpen() {
+    noise(0.5, { gain: 0.22, freq: 900, sweepTo: 2600 });
+    tone(220, 0.5, { gain: 0.14, type: 'triangle', to: 660 });
+  },
+  boxTick() { tone(1200 + Math.random() * 500, 0.03, { gain: 0.05, type: 'square' }); },
+  upgradeStation() {
+    tone(110, 2.2, { gain: 0.2, type: 'sawtooth', to: 900 });
+    noise(2.0, { gain: 0.16, freq: 400, sweepTo: 4000 });
+  },
+  plankTear() {
+    noise(0.22, { gain: 0.3, freq: 1500, sweepTo: 260, type: 'bandpass', q: 2 });
+    tone(180, 0.14, { gain: 0.12, type: 'square', to: 70 });
+  },
+  plankPlace() {
+    noise(0.1, { gain: 0.22, freq: 700, sweepTo: 220 });
+    tone(240, 0.08, { gain: 0.1, type: 'square', to: 140 });
+  },
+  powerup() {
+    [660, 880, 1320].forEach((f, i) =>
+      tone(f, 0.24, { gain: 0.15, type: 'triangle', delay: i * 0.07 }));
+  },
+  roundStart(round) {
+    // grondement qui monte, plus grave à mesure que les manches avancent
+    const base = Math.max(38, 78 - round * 1.6);
+    tone(base, 1.8, { gain: 0.3, type: 'sawtooth', to: base * 0.55 });
+    noise(1.6, { gain: 0.18, freq: 260, sweepTo: 70 });
+  },
+  roundEnd() {
+    tone(196, 0.4, { gain: 0.16, type: 'triangle' });
+    tone(147, 0.7, { gain: 0.15, type: 'triangle', delay: 0.2 });
+  },
+  downed() {
+    tone(140, 1.4, { gain: 0.3, type: 'sawtooth', to: 45 });
+    noise(1.2, { gain: 0.2, freq: 500, sweepTo: 80 });
+  },
+  revive() {
+    [330, 440, 587, 784].forEach((f, i) =>
+      tone(f, 0.4, { gain: 0.16, type: 'triangle', delay: i * 0.1 }));
+  },
+  nuke() {
+    tone(30, 2.4, { gain: 0.42, type: 'sine', to: 18 });
+    noise(2.0, { gain: 0.4, freq: 2200, sweepTo: 40 });
+  },
 };

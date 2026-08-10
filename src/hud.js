@@ -1,4 +1,4 @@
-import { UPGRADES } from './config.js';
+import { PERKS } from './config.js';
 import { clamp } from './utils.js';
 import { Sfx } from './audio.js';
 
@@ -7,99 +7,72 @@ const $ = (id) => document.getElementById(id);
 export class HUD {
   constructor() {
     this.el = {
-      health: $('health-fill'),
-      healthText: $('health-text'),
-      stamina: $('stamina-fill'),
+      // couches plein écran
+      vignette: $('vignette'),
+      blood: $('blood-layer'),
+      damageDir: $('damage-dir'),
+      scope: $('scope'),
+      flash: $('screen-flash'),
+      downed: $('downed-overlay'),
+      downedTimer: $('downed-timer'),
+
+      // viseur
+      crosshair: $('crosshair'),
+      hitmarker: $('hitmarker'),
+
+      // économie
+      points: $('points-value'),
+      pointsBox: $('points-box'),
+      pointsPopups: $('points-popups'),
+      round: $('round-value'),
+      roundPips: $('round-pips'),
+      perks: $('perk-row'),
+
+      // armes
       ammo: $('ammo-count'),
       ammoReserve: $('ammo-reserve'),
       weaponName: $('weapon-name'),
       weaponList: $('weapon-list'),
-      wave: $('wave-value'),
-      enemies: $('enemies-value'),
-      score: $('score-value'),
-      kills: $('kills-value'),
-      crosshair: $('crosshair'),
-      hitmarker: $('hitmarker'),
-      toasts: $('toasts'),
-      upgrades: $('upgrade-list'),
-      bossBar: $('boss-bar'),
-      bossFill: $('boss-fill'),
-      bossName: $('boss-name'),
-      announce: $('announce'),
-      announceSub: $('announce-sub'),
-      vignette: $('vignette'),
-      damageDir: $('damage-dir'),
-      minimap: $('minimap'),
       reloadRing: $('reload-ring'),
       lowAmmo: $('low-ammo'),
+      grenades: $('grenade-count'),
+
+      // divers
+      prompt: $('prompt'),
+      promptTitle: $('prompt-title'),
+      promptSub: $('prompt-sub'),
+      promptCost: $('prompt-cost'),
+      promptFill: $('prompt-fill'),
+      powerupBar: $('powerup-bar'),
+      toasts: $('toasts'),
+      announce: $('announce'),
+      announceSub: $('announce-sub'),
+      roundBannerEl: $('round-banner'),
       combo: $('combo'),
       comboCount: $('combo-count'),
       comboMul: $('combo-mul'),
       comboBar: $('combo-bar'),
-      grenades: $('grenade-count'),
-      modifier: $('wave-modifier'),
-      scope: $('scope'),
-      blood: $('blood-layer'),
+      bossBar: $('boss-bar'),
+      bossFill: $('boss-fill'),
+      bossName: $('boss-name'),
+      enemies: $('enemies-value'),
+
+      // records (menus)
       recMenuScore: $('rec-score'),
       recMenuWave: $('rec-wave'),
       recMenuKills: $('rec-kills'),
       recDeadScore: $('rec-dead-score'),
       recDeadWave: $('rec-dead-wave'),
     };
-    this.map = this.el.minimap ? this.el.minimap.getContext('2d') : null;
     this.hitTime = 0;
     this.announceTime = 0;
     this.vignetteAmount = 0;
-    this.dirIndicators = [];
     this.heartbeatTimer = 0;
     this.lastCombo = 0;
+    this.shownPoints = 0;
   }
 
-  updateRecords(records) {
-    const fmt = (n) => n.toLocaleString('fr-FR');
-    if (this.el.recMenuScore) this.el.recMenuScore.textContent = fmt(records.bestScore);
-    if (this.el.recMenuWave) this.el.recMenuWave.textContent = records.bestWave;
-    if (this.el.recMenuKills) this.el.recMenuKills.textContent = fmt(records.totalKills);
-    if (this.el.recDeadScore) this.el.recDeadScore.textContent = fmt(records.bestScore);
-    if (this.el.recDeadWave) this.el.recDeadWave.textContent = records.bestWave;
-  }
-
-  /** Bandeau de palier de combo (ENCHAÎNÉ, CARNAGE…). */
-  comboBanner(label, mul) {
-    const el = document.createElement('div');
-    el.className = 'combo-banner';
-    el.innerHTML = `<span>${label}</span><b>×${mul}</b>`;
-    this.el.toasts.parentElement.appendChild(el);
-    setTimeout(() => el.remove(), 1400);
-  }
-
-  /** Étiquette persistante de la vague spéciale en cours. */
-  setModifier(mod) {
-    if (!this.el.modifier) return;
-    if (!mod) { this.el.modifier.classList.add('hidden'); return; }
-    this.el.modifier.classList.remove('hidden');
-    this.el.modifier.textContent = mod.name;
-    this.el.modifier.style.color = mod.color;
-    this.el.modifier.style.borderColor = mod.color;
-  }
-
-  /** Éclaboussures de sang sur l'objectif quand on encaisse. */
-  bloodSplat(amount) {
-    if (!this.el.blood) return;
-    const n = clamp(Math.round(amount / 12), 1, 4);
-    for (let i = 0; i < n; i++) {
-      const el = document.createElement('div');
-      el.className = 'blood-splat';
-      const size = 90 + Math.random() * 220;
-      el.style.width = el.style.height = size + 'px';
-      el.style.left = Math.random() * 100 + '%';
-      el.style.top = Math.random() * 100 + '%';
-      el.style.setProperty('--rot', (Math.random() * 360) + 'deg');
-      this.el.blood.appendChild(el);
-      setTimeout(() => el.remove(), 5200);
-    }
-    while (this.el.blood.children.length > 14) this.el.blood.firstChild.remove();
-  }
+  // ---------------------------------------------------------------- messages
 
   toast(text, color = '#ffffff', icon = '') {
     const el = document.createElement('div');
@@ -110,7 +83,7 @@ export class HUD {
     this.el.toasts.appendChild(el);
     setTimeout(() => el.classList.add('out'), 2200);
     setTimeout(() => el.remove(), 2800);
-    while (this.el.toasts.children.length > 6) this.el.toasts.firstChild.remove();
+    while (this.el.toasts.children.length > 5) this.el.toasts.firstChild.remove();
   }
 
   announce(main, sub = '', duration = 2.4, color = null) {
@@ -122,6 +95,42 @@ export class HUD {
     this.el.announceSub.classList.remove('hidden');
     this.announceTime = duration;
     setTimeout(() => this.el.announce.classList.remove('pop'), 400);
+  }
+
+  /** Grand carton de début de manche. */
+  roundBanner(n) {
+    const el = this.el.roundBannerEl;
+    el.innerHTML = `<span>MANCHE</span><b>${n}</b>`;
+    el.classList.remove('hidden');
+    el.classList.remove('play');
+    void el.offsetWidth;
+    el.classList.add('play');
+    setTimeout(() => el.classList.add('hidden'), 2600);
+  }
+
+  powerupBanner(def) {
+    const el = document.createElement('div');
+    el.className = 'powerup-banner';
+    el.innerHTML = `<span>${def.icon}</span><b>${def.name}</b>`;
+    el.style.color = '#' + def.color.toString(16).padStart(6, '0');
+    this.el.toasts.parentElement.appendChild(el);
+    setTimeout(() => el.remove(), 2000);
+  }
+
+  comboBanner(label, mul) {
+    const el = document.createElement('div');
+    el.className = 'combo-banner';
+    el.innerHTML = `<span>${label}</span><b>×${mul}</b>`;
+    this.el.toasts.parentElement.appendChild(el);
+    setTimeout(() => el.remove(), 1400);
+  }
+
+  flashScreen(color) {
+    const f = this.el.flash;
+    f.style.background = color;
+    f.classList.remove('play');
+    void f.offsetWidth;
+    f.classList.add('play');
   }
 
   hitmark(kind = 'normal') {
@@ -137,52 +146,123 @@ export class HUD {
     setTimeout(() => el.remove(), 900);
   }
 
-  updateUpgrades(player) {
-    const parts = [];
-    for (const u of UPGRADES) {
-      const n = player.upgrades[u.id] || 0;
-      if (n > 0) {
-        parts.push(`<li style="--c:#${u.color.toString(16).padStart(6, '0')}"><span>${u.icon}</span>${u.name.replace(/ \+.*| .*%/, '')}<b>×${n}</b></li>`);
-      }
+  flashDamage(amount) {
+    this.vignetteAmount = clamp(this.vignetteAmount + amount / 35, 0, 1);
+    this.bloodSplat(amount);
+  }
+
+  bloodSplat(amount) {
+    if (!this.el.blood) return;
+    const n = clamp(Math.round(amount / 10), 1, 5);
+    for (let i = 0; i < n; i++) {
+      const el = document.createElement('div');
+      el.className = 'blood-splat';
+      const size = 110 + Math.random() * 260;
+      el.style.width = el.style.height = size + 'px';
+      el.style.left = Math.random() * 100 + '%';
+      el.style.top = Math.random() * 100 + '%';
+      el.style.setProperty('--rot', (Math.random() * 360) + 'deg');
+      this.el.blood.appendChild(el);
+      setTimeout(() => el.remove(), 5200);
     }
-    this.el.upgrades.innerHTML = parts.join('') || '<li class="empty">Tirez sur les cristaux pour vous renforcer</li>';
+    while (this.el.blood.children.length > 16) this.el.blood.firstChild.remove();
+  }
+
+  /** Petit « +50 » qui monte à côté du compteur de points. */
+  pointPopup(amount) {
+    if (!this.el.pointsPopups || amount === 0) return;
+    const el = document.createElement('div');
+    el.className = 'point-popup' + (amount < 0 ? ' spend' : '');
+    el.textContent = (amount > 0 ? '+' : '') + amount;
+    this.el.pointsPopups.appendChild(el);
+    setTimeout(() => el.remove(), 1000);
+    while (this.el.pointsPopups.children.length > 6) this.el.pointsPopups.firstChild.remove();
+  }
+
+  // ---------------------------------------------------------------- panneaux
+
+  setPrompt(info, hold = 0, holdTime = 0) {
+    const p = this.el.prompt;
+    if (!info) { p.classList.add('hidden'); return; }
+    p.classList.remove('hidden');
+    p.classList.toggle('blocked', !!info.blocked);
+    this.el.promptTitle.textContent = info.title;
+    this.el.promptSub.textContent = info.sub || '';
+    if (info.cost) {
+      this.el.promptCost.textContent = info.cost + ' pts';
+      this.el.promptCost.classList.remove('hidden');
+    } else {
+      this.el.promptCost.classList.add('hidden');
+    }
+    const ratio = holdTime > 0 ? clamp(hold / holdTime, 0, 1) : 0;
+    this.el.promptFill.style.transform = `scaleX(${ratio})`;
+  }
+
+  updatePerks(player) {
+    const parts = [];
+    for (const id of Object.keys(player.perks)) {
+      const p = PERKS[id];
+      if (!p) continue;
+      parts.push(
+        `<li style="--c:#${p.color.toString(16).padStart(6, '0')}" title="${p.desc}">` +
+        `<span>${p.icon}</span></li>`
+      );
+    }
+    this.el.perks.innerHTML = parts.join('');
   }
 
   updateWeaponList(weapons) {
     const parts = [];
-    for (const id of weapons.order) {
+    weapons.owned.forEach((id, i) => {
       const s = weapons.slots[id];
-      if (!s.unlocked) continue;
-      const idx = weapons.order.indexOf(id) + 1;
-      parts.push(`<li class="${id === weapons.current ? 'active' : ''}"><b>${idx}</b>${s.def.name}</li>`);
-    }
+      parts.push(
+        `<li class="${id === weapons.current ? 'active' : ''}">` +
+        `<b>${i + 1}</b>${weapons.displayName(id)}</li>`
+      );
+    });
     this.el.weaponList.innerHTML = parts.join('');
   }
+
+  updateRecords(records) {
+    const fmt = (n) => n.toLocaleString('fr-FR');
+    if (this.el.recMenuScore) this.el.recMenuScore.textContent = fmt(records.bestScore);
+    if (this.el.recMenuWave) this.el.recMenuWave.textContent = records.bestWave;
+    if (this.el.recMenuKills) this.el.recMenuKills.textContent = fmt(records.totalKills);
+    if (this.el.recDeadScore) this.el.recDeadScore.textContent = fmt(records.bestScore);
+    if (this.el.recDeadWave) this.el.recDeadWave.textContent = records.bestWave;
+  }
+
+  // ---------------------------------------------------------------- boucle
 
   update(dt, game) {
     const p = game.player;
     const w = game.weapons;
 
-    // Vie
-    const hp = clamp(p.health / p.maxHealth, 0, 1);
-    this.el.health.style.width = (hp * 100).toFixed(1) + '%';
-    this.el.health.style.background = hp > 0.5
-      ? 'linear-gradient(90deg,#3ddc84,#2fbf6f)'
-      : hp > 0.25 ? 'linear-gradient(90deg,#ffbb33,#ff9500)' : 'linear-gradient(90deg,#ff5252,#c62828)';
-    this.el.healthText.textContent = `${Math.ceil(p.health)} / ${p.maxHealth}`;
+    // Points : le compteur rattrape la valeur réelle, ça se voit mieux.
+    this.shownPoints += (p.points - this.shownPoints) * Math.min(1, dt * 9);
+    if (Math.abs(p.points - this.shownPoints) < 1) this.shownPoints = p.points;
+    this.el.points.textContent = Math.round(this.shownPoints).toLocaleString('fr-FR');
+    this.el.pointsBox.classList.toggle('rich', p.points >= 5000);
 
-    // Endurance
-    this.el.stamina.style.width = (p.stamina / 100 * 100).toFixed(1) + '%';
+    // Manche
+    this.el.round.textContent = game.round;
+    const pips = Math.min(game.round, 12);
+    if (this.el.roundPips.childElementCount !== pips) {
+      this.el.roundPips.innerHTML = '<i></i>'.repeat(pips);
+    }
+    this.el.enemies.textContent = game.zombies.aliveCount() + game.pendingSpawns;
 
     // Munitions
     const slot = w.slot;
     this.el.ammo.textContent = slot.ammo;
     this.el.ammoReserve.textContent = slot.reserve === Infinity ? '∞' : slot.reserve;
-    this.el.weaponName.textContent = slot.def.name;
+    this.el.weaponName.textContent = w.displayName();
+    this.el.weaponName.classList.toggle('upgraded', slot.upgraded);
     this.el.ammo.classList.toggle('empty', slot.ammo === 0);
     this.el.lowAmmo.classList.toggle('hidden', !(slot.ammo <= Math.max(1, w.magSize() * 0.25) && !w.reloading));
+    this.el.grenades.textContent = game.grenades.count;
+    this.el.grenades.parentElement.classList.toggle('empty', game.grenades.count === 0);
 
-    // Anneau de rechargement
     if (w.reloading) {
       const total = (slot.def.id === 'fusil' ? slot.def.reloadShell : slot.def.reload) * p.stats.reloadMul;
       const t = 1 - clamp(w.reloadTimer / total, 0, 1);
@@ -193,15 +273,16 @@ export class HUD {
       this.el.reloadRing.classList.add('hidden');
     }
 
-    // Vagues
-    this.el.wave.textContent = game.wave;
-    this.el.enemies.textContent = game.zombies.aliveCount() + game.pendingSpawns;
-    this.el.score.textContent = p.score.toLocaleString('fr-FR');
-    this.el.kills.textContent = p.kills;
-
-    // Grenades
-    this.el.grenades.textContent = game.grenades.count;
-    this.el.grenades.parentElement.classList.toggle('empty', game.grenades.count === 0);
+    // Bonus actifs
+    const active = game.powerups.activeList();
+    if (active.length) {
+      this.el.powerupBar.classList.remove('hidden');
+      this.el.powerupBar.innerHTML = active.map((a) =>
+        `<div class="pw" style="--c:#${a.def.color.toString(16).padStart(6, '0')}">` +
+        `<span>${a.def.icon}</span><b>${Math.ceil(a.time)}</b></div>`).join('');
+    } else {
+      this.el.powerupBar.classList.add('hidden');
+    }
 
     // Combo
     if (game.combo > 1) {
@@ -209,12 +290,11 @@ export class HUD {
       this.el.comboCount.textContent = game.combo;
       const mul = game.comboMultiplier;
       this.el.comboMul.textContent = mul > 1 ? '×' + mul : '';
-      const t = clamp(game.comboTimer / 3.6, 0, 1);
-      this.el.comboBar.style.transform = `scaleX(${t})`;
+      this.el.comboBar.style.transform = `scaleX(${clamp(game.comboTimer / 3.6, 0, 1)})`;
       this.el.combo.classList.toggle('hot', mul >= 2);
       if (game.combo !== this.lastCombo) {
         this.el.comboCount.classList.remove('bump');
-        void this.el.comboCount.offsetWidth;   // relance l'animation
+        void this.el.comboCount.offsetWidth;
         this.el.comboCount.classList.add('bump');
         this.lastCombo = game.combo;
       }
@@ -223,35 +303,37 @@ export class HUD {
       this.lastCombo = 0;
     }
 
-    // Lunette du fusil de précision
+    // Lunette et réticule
     this.el.scope.classList.toggle('hidden', !w.scoped);
-
-    // Réticule : s'ouvre avec la dispersion
     const spread = w.def.spread * (w.aiming ? 0.45 : 1) * (p.sprinting ? 1.6 : 1);
-    const gap = 4 + spread * 620 + w.recoil * 18;
-    this.el.crosshair.style.setProperty('--gap', gap.toFixed(1) + 'px');
-    this.el.crosshair.classList.toggle('hidden', w.aimAmount > 0.7);
+    this.el.crosshair.style.setProperty('--gap', (4 + spread * 620 + w.recoil * 18).toFixed(1) + 'px');
+    this.el.crosshair.classList.toggle('hidden', w.aimAmount > 0.7 || p.downed);
 
-    // Marqueur de touche
     this.hitTime = Math.max(0, this.hitTime - dt);
     this.el.hitmarker.style.opacity = this.hitTime > 0 ? String(clamp(this.hitTime / 0.14, 0, 1)) : '0';
 
-    // Vignette de dégâts : discrète en combat, elle ne s'installe qu'en dessous
-    // de 35 % de vie pour signaler le danger sans masquer la scène.
-    const hpRatio = clamp(p.health / p.maxHealth, 0, 1);
-    const critical = Math.max(0, (0.35 - hpRatio) / 0.35) * 0.62;
-    this.vignetteAmount = Math.max(this.vignetteAmount - dt * 1.6, critical);
+    // Santé : pas de barre, seulement l'écran qui se couvre de sang
+    const hp = clamp(p.health / p.maxHealth, 0, 1);
+    const hurt = Math.pow(1 - hp, 1.4);
+    this.vignetteAmount = Math.max(this.vignetteAmount - dt * 1.1, hurt * 0.92);
     this.el.vignette.style.opacity = clamp(this.vignetteAmount, 0, 1).toFixed(3);
 
-    // Battement de cœur quand la vie est critique
-    if (hp < 0.35 && p.alive) {
+    if (hp < 0.5 && p.alive) {
       this.heartbeatTimer -= dt;
       if (this.heartbeatTimer <= 0) {
-        this.heartbeatTimer = 0.55 + hp * 1.6;
+        this.heartbeatTimer = 0.45 + hp * 1.5;
         Sfx.heartbeat();
       }
     } else {
       this.heartbeatTimer = 0;
+    }
+
+    // À terre
+    if (p.downed) {
+      this.el.downed.classList.remove('hidden');
+      this.el.downedTimer.textContent = Math.max(0, p.downTimer).toFixed(1);
+    } else {
+      this.el.downed.classList.add('hidden');
     }
 
     // Annonce
@@ -272,117 +354,5 @@ export class HUD {
     } else {
       this.el.bossBar.classList.add('hidden');
     }
-
-    this.drawMinimap(game);
-  }
-
-  flashDamage(amount) {
-    this.vignetteAmount = clamp(this.vignetteAmount + amount / 45, 0, 1);
-    this.bloodSplat(amount);
-  }
-
-  drawMinimap(game) {
-    const ctx = this.map;
-    if (!ctx) return;
-    const c = this.el.minimap;
-    const size = c.width;
-    const range = 46;                     // rayon couvert en mètres
-    const p = game.player;
-    ctx.clearRect(0, 0, size, size);
-
-    ctx.save();
-    ctx.beginPath();
-    ctx.arc(size / 2, size / 2, size / 2 - 1, 0, Math.PI * 2);
-    ctx.clip();
-    ctx.fillStyle = 'rgba(8,12,10,0.72)';
-    ctx.fillRect(0, 0, size, size);
-
-    const scale = (size / 2) / range;
-    const cos = Math.cos(-p.yaw), sin = Math.sin(-p.yaw);
-    const toMap = (x, z) => {
-      const dx = x - p.pos.x, dz = z - p.pos.z;
-      // rotation pour garder le joueur orienté vers le haut
-      const rx = dx * cos - dz * sin;
-      const rz = dx * sin + dz * cos;
-      return [size / 2 + rx * scale, size / 2 + rz * scale];
-    };
-
-    // décor
-    ctx.fillStyle = 'rgba(120,130,120,0.35)';
-    for (const b of game.world.obstacles) {
-      const cx = (b.min.x + b.max.x) / 2, cz = (b.min.z + b.max.z) / 2;
-      if (Math.hypot(cx - p.pos.x, cz - p.pos.z) > range * 1.6) continue;
-      const hw = (b.max.x - b.min.x) / 2, hh = (b.max.z - b.min.z) / 2;
-      const [mx, my] = toMap(cx, cz);
-      ctx.save();
-      ctx.translate(mx, my);
-      ctx.rotate(-p.yaw);
-      ctx.fillRect(-hw * scale, -hh * scale, hw * 2 * scale, hh * 2 * scale);
-      ctx.restore();
-    }
-
-    // cristaux
-    for (const o of game.pickups.shootables) {
-      if (o.dead) continue;
-      const [mx, my] = toMap(o.group.position.x, o.group.position.z);
-      ctx.fillStyle = o.kind === 'crystal' ? '#' + o.upgrade.color.toString(16).padStart(6, '0')
-        : o.kind === 'weapon' ? '#8ef58e' : '#c0553f';
-      ctx.beginPath();
-      ctx.arc(mx, my, o.kind === 'barrel' ? 2 : 3.2, 0, Math.PI * 2);
-      ctx.fill();
-    }
-
-    // objets au sol
-    for (const d of game.pickups.drops) {
-      const [mx, my] = toMap(d.group.position.x, d.group.position.z);
-      ctx.fillStyle = d.kind === 'health' ? '#66ff99' : '#ffdd55';
-      ctx.fillRect(mx - 2, my - 2, 4, 4);
-    }
-
-    // grenades amorcées
-    for (const g of game.grenades.live) {
-      const [mx, my] = toMap(g.group.position.x, g.group.position.z);
-      ctx.fillStyle = '#9bd45a';
-      ctx.beginPath();
-      ctx.arc(mx, my, 2.4 + Math.sin(g.fuse * 22) * 1.2, 0, Math.PI * 2);
-      ctx.fill();
-    }
-
-    // zombies
-    for (const z of game.zombies.zombies) {
-      if (!z.alive) continue;
-      const [mx, my] = toMap(z.pos.x, z.pos.z);
-      ctx.fillStyle = z.def.boss ? '#ff2d95'
-        : z.def.big ? '#ff7043'
-        : z.def.bloated ? '#c9e04a'
-        : z.def.crawler ? '#d4b463'
-        : '#ff4444';
-      ctx.beginPath();
-      ctx.arc(mx, my, z.def.big ? 4.2 : z.def.crawler ? 2 : 2.6, 0, Math.PI * 2);
-      ctx.fill();
-    }
-
-    // joueur + cône de vision
-    ctx.fillStyle = 'rgba(120,220,255,0.18)';
-    ctx.beginPath();
-    ctx.moveTo(size / 2, size / 2);
-    ctx.arc(size / 2, size / 2, size / 2, -Math.PI / 2 - 0.6, -Math.PI / 2 + 0.6);
-    ctx.closePath();
-    ctx.fill();
-
-    ctx.fillStyle = '#7fdcff';
-    ctx.beginPath();
-    ctx.moveTo(size / 2, size / 2 - 5);
-    ctx.lineTo(size / 2 - 4, size / 2 + 4);
-    ctx.lineTo(size / 2 + 4, size / 2 + 4);
-    ctx.closePath();
-    ctx.fill();
-
-    ctx.restore();
-    ctx.strokeStyle = 'rgba(255,255,255,0.25)';
-    ctx.lineWidth = 1.5;
-    ctx.beginPath();
-    ctx.arc(size / 2, size / 2, size / 2 - 1, 0, Math.PI * 2);
-    ctx.stroke();
   }
 }

@@ -1,26 +1,22 @@
 # 🧟 DERNIÈRE LUEUR
 
-Un jeu de tir 3D à la première personne : un homme, une arme, une horde de zombies
-sans fin. Tirez sur les cristaux d'amélioration pour devenir plus fort, et abattez
-les gros zombies blindés avant qu'ils ne vous écrasent.
+Un jeu de tir 3D à la première personne, en **manches sans fin** dans un complexe
+cloisonné. Les infectés arrivent par les fenêtres barricadées, vous gagnez des
+points en tirant, et vous dépensez ces points pour ouvrir la carte, acheter des
+armes et vous renforcer.
 
 Tout tourne dans le navigateur, sans build, sans installation, sans réseau :
-Three.js est inclus dans le dépôt et l'audio est généré à la volée (WebAudio).
+Three.js est inclus dans le dépôt et l'audio est synthétisé à la volée (WebAudio).
 
 ## Lancer le jeu
 
-Le jeu utilise les modules ES : il doit être servi par un serveur HTTP
-(l'ouvrir avec `file://` ne fonctionnera pas).
+Le plus simple : ouvrir **`standalone.html`** (le jeu entier dans un seul fichier,
+ouvrable directement en `file://`, sans serveur).
+
+Pour la version en modules ES, il faut un serveur HTTP :
 
 ```bash
-python3 -m http.server 8000
-# puis ouvrir http://localhost:8000
-```
-
-ou, si vous préférez Node :
-
-```bash
-npx serve .
+python3 -m http.server 8000    # puis http://localhost:8000
 ```
 
 Cliquez sur **JOUER**, puis sur l'écran pour capturer la souris (Échap pour la libérer).
@@ -30,132 +26,168 @@ Cliquez sur **JOUER**, puis sur l'écran pour capturer la souris (Échap pour la
 | Touche | Action |
 | --- | --- |
 | `Z Q S D` / `W A S D` | Se déplacer |
-| Souris | Viser |
-| Clic gauche | Tirer |
-| Clic droit | Visée précise (dispersion réduite) |
+| Clic gauche / droit | Tirer / viser |
+| `E` | Acheter, ouvrir, activer |
+| `E` maintenu | Rebarricader une fenêtre |
 | `R` | Recharger |
-| `Maj` | Sprinter (consomme de l'endurance) |
-| `Espace` | Sauter |
-| `Ctrl` / `C` | S'accroupir |
-| `F` / `V` | Coup de crosse (repousse et étourdit) |
-| `G` | Lancer une grenade |
-| `1` … `4` / molette | Changer d'arme |
+| `F` / `V` | Coup de crosse |
+| `G` | Grenade |
+| `Maj` | Sprinter |
+| `Espace` / `Ctrl` | Sauter / s'accroupir |
+| `1` `2` `3` / molette | Changer d'arme |
 | `Échap` | Pause |
 
-## Devenir plus fort — les éléments à détruire
+## La boucle de jeu
 
-Le cœur de la progression : **on tire sur le décor pour se renforcer**.
+Les manches s'enchaînent automatiquement : plus nombreuses, plus rapides, plus
+résistantes. Il n'y a **pas de barre de vie** — l'écran se couvre de sang, le
+cœur bat, et la santé se régénère quelques secondes après le dernier coup encaissé.
 
-- **Cristaux d'amélioration** — losanges lumineux flottants, plusieurs par vague.
-  Les détruire accorde immédiatement une amélioration permanente :
-  dégâts, cadence, chargeur, vitesse, PV max, rechargement, perforation,
-  régénération, coup critique, balles explosives. Chaque amélioration est
-  cumulable jusqu'à un plafond, et la couleur du cristal indique laquelle.
-- **Caisses d'armes** — les détruire débloque le fusil à pompe (vague 2), le
-  fusil d'assaut (vague 4) puis le fusil de précision (vague 7) ; ensuite elles
-  fournissent des munitions.
-- **Barils explosifs** — dégâts de zone, réaction en chaîne entre barils proches.
-  Attention, l'explosion blesse aussi le joueur.
-- **Trousses de soin, munitions et grenades** au sol, ramassées en marchant dessus.
+**Les infectés entrent par les fenêtres.** Ils arrivent de l'extérieur, arrachent
+les planches une par une, puis se hissent à l'intérieur. Maintenir `E` devant une
+fenêtre repose une planche et rapporte 10 points. C'est le rythme de base :
+tenir les fenêtres, ou choisir lesquelles abandonner.
 
-## Enchaîner les éliminations
+### L'économie de points
 
-Chaque victime relance une chaîne de 3,6 s. À 4, 9, 16 et 26 éliminations sans
-temps mort, le score est multiplié par 1,5 puis 2, 3 et 4 — avec un bandeau
-(ENCHAÎNÉ, CARNAGE, BOUCHERIE, APOCALYPSE). Jouer agressivement rapporte
-beaucoup plus que jouer prudemment, ce qui est tout l'enjeu.
-
-## Difficulté
-
-Trois réglages, choisis sur l'écran d'accueil et conservés d'une partie à l'autre :
-
-| Mode | Effet |
+| Action | Points |
 | --- | --- |
-| **Survivant** | Zombies plus faibles et moins nombreux, répit de 11 s, score ×0,8 |
-| **Vétéran** | L'équilibre prévu |
-| **Cauchemar** | +40 % de vie, +35 % de dégâts, +30 % d'effectifs, répit de 6 s, score ×1,6 |
+| Balle qui touche | 10 |
+| Élimination | 60 |
+| Élimination à la tête | 130 |
+| Coup de crosse fatal | 130 |
+| Brute ou colosse | ×4 |
+| Planche reposée | 10 |
 
-## Vagues spéciales
+Les points servent à tout : **ouvrir les portes** (750 à 1750) pour accéder aux
+autres salles, **acheter les armes murales** (silhouettes à la craie ; les
+munitions coûtent ensuite moitié prix), tenter la **caisse mystère** (950 points
+pour une arme au hasard — elle change de place après quelques tirages), acheter
+les **atouts** et **améliorer votre arme**.
 
-À intervalles réguliers, une vague change les règles et l'annonce à l'écran :
+### Le courant
 
-- **DÉFERLANTE** — deux fois plus nombreux et bien plus rapides, mais fragiles.
-- **COLONNE BLINDÉE** — une escouade de brutes, peu de chair à canon.
-- **BROUILLARD TOXIQUE** — visibilité réduite à quelques mètres ; la minicarte devient vitale.
-- **MEUTE DE RAMPANTS** — ils arrivent au ras du sol, en nombre.
+L'interrupteur est au fond de la salle des machines, au bout du parcours. Tant
+qu'il n'est pas enclenché, les distributeurs d'atouts et le poste d'amélioration
+restent éteints et les salles ne sont éclairées que par un fanal de secours rouge.
+C'est le premier vrai objectif de la partie.
 
-## Les ennemis
+### Atouts
 
-| Ennemi | Comportement |
-| --- | --- |
-| **Marcheur** | Le fond de la horde : lent, nombreux. |
-| **Coureur** | Rapide et fragile, arrive par les flancs. |
-| **Cracheur** | Attaque à distance avec des projectiles acides, garde ses distances. |
-| **Rampant** | Se traîne au ras du sol à 4,9 m/s. Un tir à hauteur de torse le manque : il faut baisser la visée. |
-| **Boursouflé** | Abdomen distendu qui palpite de plus en plus vite à l'approche. Il explose en mourant — et se fait sauter au contact. Son ventre est un point faible (×1,6). |
-| **BRUTE** | Gros zombie : 750 PV, 45 % des dégâts absorbés par son armure, frappe le sol avec une onde de choc. Ses **trois pustules jaunes** ignorent l'armure et infligent ×4,5 de dégâts. |
-| **COLOSSE** | Boss, toutes les 5 vagues : 3 400 PV, charge à pleine vitesse, invoque des renforts à 75 %, 50 % et 25 % de sa vie. Même faiblesse : les pustules. |
+Achetés une fois, conservés jusqu'à la mort.
 
-Les gros zombies laissent tomber un cristal, des munitions et souvent une trousse
-de soin. Vague après vague, les zombies gagnent en vie et en vitesse.
+| Atout | Prix | Effet |
+| --- | --- | --- |
+| **Second souffle** | 1500 | Vous vous relevez seul, une fois par partie |
+| **Bottes lestes** | 2000 | Course et endurance améliorées |
+| **Peau dure** | 2500 | Plus du double de résistance |
+| **Mains agiles** | 3000 | Rechargement deux fois plus rapide |
+| **Doigt léger** | 3000 | Cadence de tir nettement supérieure |
+
+### Poste d'amélioration
+
+5000 points pour transformer l'arme en main : dégâts ×2,35, chargeur ×1,8,
+réserve ×1,6. L'arme améliorée porte une étoile dans l'inventaire.
+
+### Bonus lâchés par les zombies
+
+🔋 munitions max · 💀 mort instantanée (30 s) · ✖ points doublés (30 s) ·
+☢ anéantissement (tue tout et rapporte 400) · 🔨 charpentier (rebarricade tout).
+Ils tombent au hasard et disparaissent au bout de 30 secondes.
+
+## La carte
+
+Cinq salles reliées par quatre portes payantes :
+
+```
+        ┌───────────┬───────────┬───────────┐
+        │  CANTINE  │   HALL    │  ATELIER  │      ← départ au centre
+        └───────────┴─────┬─────┴───────────┘
+        ┌─────────────────┴─────────────────┐
+        │             COULOIR               │
+        └────────────┬──────────────────────┘
+                     │  SALLE DES MACHINES  │      ← courant + amélioration
+                     └──────────────────────┘
+```
+
+Cantine et atelier sont des impasses à récompenses ; le couloir mène à la salle
+des machines. Les zombies se déplacent avec un **champ de navigation** recalculé
+en continu : ils contournent le décor, empruntent les portes ouvertes et
+reconfigurent leurs trajets dès qu'une porte s'ouvre.
 
 ## Armes
 
 | Arme | Profil |
 | --- | --- |
-| **Pistolet 9 mm** | Semi-auto, munitions illimitées en réserve, précis. |
-| **Fusil à pompe** | 9 plombs, dévastateur de près, perforant, rechargement cartouche par cartouche. |
-| **Fusil d'assaut** | Automatique, 30 coups, polyvalent. |
-| **Fusil de précision** | 165 de dégâts, lunette (champ de vision 22°), traverse trois corps alignés. |
+| **Pistolet 9 mm** | De départ, réserve illimitée |
+| **Fusil à pompe** | 9 plombs, perforant, rechargement cartouche par cartouche |
+| **Mitraillette** | Très rapide, peu de dégâts |
+| **Fusil d'assaut** | Polyvalent |
+| **Fusil de précision** | 165 de dégâts, lunette, traverse trois corps |
+| **Mitrailleuse lourde** | 100 coups, perforante |
 
-Tir à la tête : ×2,6 de dégâts (et décapitation sur les petits zombies). Un tir
-qui dépasse largement les points de vie restants pulvérise le corps en morceaux.
+Inventaire limité à **trois emplacements**, pistolet compris : une nouvelle arme
+remplace celle que vous tenez.
 
-**Coup de crosse** (`F`) : 55 de dégâts dans un cône de 3 m devant vous, avec
-recul et étourdissement d'une seconde. C'est la sortie de secours quand la horde
-vous colle.
+**Coup de crosse** (`F`) : 55 de dégâts en cône, avec recul et étourdissement.
+**Grenades** (`G`) : 3 au maximum, rebonds sur le décor, 260 de dégâts sur 8,5 m.
 
-**Grenades** (`G`) : 3 au maximum, 260 de dégâts sur 8,5 m, avec rebonds sur le
-décor et fusée sonore. Elles blessent aussi le lanceur.
+## Les ennemis
+
+| Ennemi | Comportement |
+| --- | --- |
+| **Marcheur** | Le fond de la horde |
+| **Coureur** | Rapide et fragile |
+| **Rampant** | Au ras du sol : un tir à hauteur de torse le manque |
+| **Boursouflé** | Explose en mourant, et se fait sauter au contact |
+| **Cracheur** | Projectiles acides à distance |
+| **BRUTE** | Blindé à 45 %, onde de choc au sol ; ses trois pustules jaunes ignorent l'armure |
+| **COLOSSE** | Boss toutes les 10 manches : charge et invoque des renforts |
 
 ## Organisation du code
 
 ```
-index.html          page + HUD + écrans (menu, options, pause, fin de partie)
+index.html          page + HUD + écrans
 styles/style.css    interface
 vendor/             Three.js r160 (MIT), inclus pour fonctionner hors ligne
 src/
   main.js           démarrage
-  game.js           orchestration : boucle, vagues, résolution des tirs, score
+  game.js           orchestration : manches, points, interactions, tirs
   config.js         toutes les constantes d'équilibrage
-  world.js          arène procédurale (bâtiments, conteneurs, lampadaires)
-  player.js         déplacement, collisions, vie, statistiques
-  weapons.js        armes, vue première personne, recul, rechargement
-  enemies.js        zombies : IA, sphères de tir, points faibles, boss
-  pickups.js        cristaux, caisses, barils, objets au sol
-  effects.js        particules, traçantes, impacts, chiffres de dégâts
+  map.js            le complexe : salles, murs percés, portes, néons
+  navgrid.js        champ de navigation (parcours en largeur sur grille)
+  interactables.js  portes, achats muraux, distributeurs, caisse, barricades
+  powerups.js       bonus lâchés par les zombies
+  enemies.js        zombies : IA, entrée par les fenêtres, points faibles
+  weapons.js        armes, inventaire, vue première personne, amélioration
   grenades.js       grenades : balistique, rebonds, détonation
-  store.js          réglages et records conservés (localStorage)
-  hud.js            interface de jeu, combo, minicarte
+  player.js         déplacement, santé régénérative, atouts, mise à terre
+  effects.js        particules, traçantes, impacts, chiffres de dégâts
+  pickups.js        barils explosifs
+  hud.js            interface de jeu
   audio.js          synthèse sonore procédurale
+  store.js          réglages et records conservés
   input.js          clavier, souris, verrouillage du pointeur
-  utils.js          maths, collisions cercle/boîte, lancers de rayons
+  utils.js          maths, collisions, lancers de rayons
+tools/              construction du fichier unique
 ```
 
 Pour rééquilibrer le jeu, `src/config.js` suffit dans la grande majorité des cas.
 
 ## Notes techniques
 
-- Les tirs sont instantanés (*hitscan*) : chaque zombie expose des sphères de
-  toucher (tête, torse, corps, jambes, pustules) testées par lancer de rayon,
-  avec gestion de la perforation.
+- **Navigation** : grille d'occupation 1 m + parcours en largeur depuis le joueur,
+  recalculé toutes les 0,22 s. Les portes fermées sont des cases infranchissables,
+  donc ouvrir une porte reconfigure instantanément tous les trajets.
+- **Murs percés** : chaque mur est construit par morceaux autour de ses ouvertures.
+  Une fenêtre laisse un appui bas (1,65 m, infranchissable même en sautant) et un
+  linteau ; une porte est un bloc plein retiré de la scène *et* de la liste de
+  collision à l'achat.
+- **Éclairage par pixel** (`MeshPhongMaterial`) : avec `MeshLambertMaterial`,
+  l'éclairage est calculé par sommet et un grand sol reste noir sous des lampes
+  ponctuelles. L'atténuation linéaire des lampes est réactivée
+  (`renderer.useLegacyLights`) pour garder des halos lisibles sans intensités
+  démesurées.
 - Le modèle d'arme est rendu dans une passe séparée avec sa propre caméra et son
-  propre éclairage, pour qu'il ne traverse jamais le décor.
-- Les collisions utilisent des boîtes alignées aux axes et une résolution
-  cercle/boîte qui produit un glissement naturel le long des murs.
+  propre éclairage : il ne traverse jamais le décor.
 - Aucune ressource externe : textures dessinées sur canvas, sons synthétisés.
-- Un bref ralenti (*hit stop*) sur la mort des gros ennemis et les coups de
-  crosse réussis donne du poids aux impacts.
-- Records et réglages (sensibilité, volume, champ de vision, résolution de
-  rendu, ombres) sont conservés entre les parties ; le stockage indisponible
-  est géré sans casser le jeu.

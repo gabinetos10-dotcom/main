@@ -80,6 +80,38 @@ export const WEAPONS = {
     zoom: 22,           // champ de vision en visée : lunette
     shellColor: 0xcfae63,
   },
+  mitraillette: {
+    id: 'mitraillette',
+    name: 'Mitraillette',
+    damage: 17,
+    rpm: 880,
+    magSize: 32,
+    reserve: 240,
+    reload: 1.9,
+    spread: 0.031,
+    pellets: 1,
+    range: 70,
+    recoil: 1.0,
+    auto: true,
+    pierce: 0,
+    shellColor: 0xb8a05c,
+  },
+  lourde: {
+    id: 'lourde',
+    name: 'Mitrailleuse lourde',
+    damage: 26,
+    rpm: 720,
+    magSize: 100,
+    reserve: 300,
+    reload: 4.4,
+    spread: 0.036,
+    pellets: 1,
+    range: 95,
+    recoil: 1.7,
+    auto: true,
+    pierce: 1,
+    shellColor: 0xc9a94f,
+  },
   assaut: {
     id: 'assaut',
     name: 'Fusil d\'assaut',
@@ -129,7 +161,7 @@ export const ZOMBIES = {
     reach: 1.9,
     scale: 1,
     score: 100,
-    color: 0x5e7a4a,
+    color: 0x9aa08c,
     headMul: 2.6,        // multiplicateur de dégâts tête
     mass: 1,
   },
@@ -143,7 +175,7 @@ export const ZOMBIES = {
     reach: 1.8,
     scale: 0.92,
     score: 150,
-    color: 0x8c5a3c,
+    color: 0x8f8a78,
     headMul: 2.8,
     mass: 0.8,
   },
@@ -159,7 +191,7 @@ export const ZOMBIES = {
     projectileSpeed: 17,
     scale: 1.02,
     score: 200,
-    color: 0x6f8f2f,
+    color: 0x7f9660,
     headMul: 2.4,
     mass: 1,
   },
@@ -173,7 +205,7 @@ export const ZOMBIES = {
     reach: 1.7,
     scale: 0.95,
     score: 220,
-    color: 0x7a6a3c,
+    color: 0x8a8470,
     headMul: 3.2,
     mass: 0.7,
     crawler: true,       // silhouette basse : difficile à toucher
@@ -188,7 +220,7 @@ export const ZOMBIES = {
     reach: 2.2,
     scale: 1.3,
     score: 300,
-    color: 0x8f9e3a,
+    color: 0x93a05a,
     headMul: 2.2,
     mass: 1.6,
     bloated: true,       // explose en mourant
@@ -205,7 +237,7 @@ export const ZOMBIES = {
     reach: 3.2,
     scale: 2.25,
     score: 900,
-    color: 0x7a4038,
+    color: 0x8a7566,
     headMul: 1.6,        // tête blindée : moins vulnérable
     mass: 6,
     armor: 0.45,         // 45 % des dégâts absorbés hors points faibles
@@ -223,7 +255,7 @@ export const ZOMBIES = {
     reach: 4.4,
     scale: 3.6,
     score: 4000,
-    color: 0x4a2b4d,
+    color: 0x6b5a70,
     headMul: 1.5,
     mass: 14,
     armor: 0.55,
@@ -323,4 +355,116 @@ export const GAME = {
   crawlerFromWave: 4,
   bloaterFromWave: 5,
   sniperWave: 7,
+};
+
+// =====================================================================
+//  MODE MANCHES — économie de points, atouts, achats
+//  Inspiré des modes de survie « round-based » : on gagne des points en
+//  tirant, on les dépense pour ouvrir la carte et se renforcer.
+// =====================================================================
+
+export const ECONOMY = {
+  startPoints: 500,
+  hitPoints: 10,          // par balle qui touche
+  killPoints: 60,
+  headshotBonus: 70,      // total 130 sur une tête
+  meleeKill: 130,
+  bigKillMul: 4,          // brutes et colosses
+  repairPlank: 10,        // par planche reposée sur une fenêtre
+  reviveCost: 1500,       // relève automatique (atout « Seconde souffle »)
+};
+
+export const ROUNDS = {
+  baseCount: 6,
+  perRound: 2.2,
+  healthBase: 100,
+  healthStep: 0.14,       // +14 % par manche, exponentiel après la 10e
+  healthExpFrom: 10,
+  healthExpRate: 1.09,
+  speedFrom: 4,           // les zombies commencent à trotter
+  sprintFrom: 9,          // puis à courir
+  maxAlive: 26,
+  spawnInterval: 1.6,     // délai entre deux apparitions, réduit par manche
+  spawnMin: 0.32,
+  betweenRounds: 6.5,     // court sas entre deux manches
+};
+
+// Distributeurs d'atouts. Achetés une fois, conservés jusqu'à la mort.
+export const PERKS = {
+  peau: {
+    id: 'peau', name: 'PEAU DURE', short: 'Peau',
+    cost: 2500, color: 0xd94141, icon: '🛡',
+    desc: 'Vous encaissez deux fois plus de coups',
+  },
+  souffle: {
+    id: 'souffle', name: 'SECOND SOUFFLE', short: 'Souffle',
+    cost: 1500, color: 0x4bb3e8, icon: '✚',
+    desc: 'Vous vous relevez seul une fois par partie',
+  },
+  mains: {
+    id: 'mains', name: 'MAINS AGILES', short: 'Mains',
+    cost: 3000, color: 0xe8d04b, icon: '🖐',
+    desc: 'Rechargement deux fois plus rapide',
+  },
+  doigt: {
+    id: 'doigt', name: 'DOIGT LÉGER', short: 'Doigt',
+    cost: 3000, color: 0x8f4be8, icon: '⚡',
+    desc: 'Cadence de tir nettement supérieure',
+  },
+  bottes: {
+    id: 'bottes', name: 'BOTTES LESTES', short: 'Bottes',
+    cost: 2000, color: 0x4be88f, icon: '👟',
+    desc: 'Déplacement et endurance améliorés',
+  },
+};
+
+// Bonus lâchés par les zombies, ramassés en marchant dessus.
+export const POWERUPS = {
+  munitions: { id: 'munitions', name: 'MUNITIONS MAX', color: 0x4bb3e8, icon: '🔋', weight: 26, duration: 0 },
+  instant:   { id: 'instant', name: 'MORT INSTANTANÉE', color: 0xe84b4b, icon: '💀', weight: 20, duration: 30 },
+  double:    { id: 'double', name: 'POINTS DOUBLÉS', color: 0xe8c14b, icon: '✖', weight: 22, duration: 30 },
+  bombe:     { id: 'bombe', name: 'ANÉANTISSEMENT', color: 0x8fe84b, icon: '☢', weight: 16, duration: 0 },
+  charpente: { id: 'charpente', name: 'CHARPENTIER', color: 0xc98a4b, icon: '🔨', weight: 16, duration: 0 },
+};
+
+export const POWERUP_RULES = {
+  dropChance: 0.028,       // par élimination
+  minInterval: 22,         // secondes entre deux bonus
+  life: 30,                // avant disparition
+  bombePoints: 400,
+  bombeDamage: 100000,
+};
+
+// Poste d'amélioration : double les dégâts et la taille du chargeur.
+// Achats muraux : silhouette à la craie sur le mur, prix affiché.
+export const WALL_BUYS = [
+  { weapon: 'fusil', cost: 1200, zone: 'hall', pos: [-12.4, 30], rot: Math.PI / 2 },
+  { weapon: 'mitraillette', cost: 1000, zone: 'cantine', pos: [-37.4, 22], rot: Math.PI / 2 },
+  { weapon: 'assaut', cost: 1500, zone: 'atelier', pos: [37.4, 22], rot: -Math.PI / 2 },
+  { weapon: 'precision', cost: 2400, zone: 'couloir', pos: [-8, -1.4], rot: 0 },
+  { weapon: 'lourde', cost: 2800, zone: 'generateur', pos: [0, -37.4], rot: 0 },
+];
+
+// Inventaire limité : le pistolet plus deux armes ramassées.
+export const INVENTORY_SLOTS = 3;
+
+// Emplacements possibles de la caisse mystère (elle se déplace).
+export const BOX_SPOTS = [
+  { zone: 'hall', pos: [7, 32] },
+  { zone: 'atelier', pos: [30, 22] },
+  { zone: 'cantine', pos: [-30, 22] },
+  { zone: 'generateur', pos: [0, -20] },
+];
+
+export const MYSTERY_BOX = {
+  cost: 950,
+  spinTime: 3.2,
+  usesBeforeMove: [5, 9],
+};
+
+export const UPGRADE_STATION = {
+  cost: 5000,
+  damageMul: 2.35,
+  magMul: 1.8,
+  reserveMul: 1.6,
 };

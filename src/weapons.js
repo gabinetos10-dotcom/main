@@ -1,5 +1,5 @@
 import * as THREE from '../vendor/three.module.js';
-import { WEAPONS, MELEE } from './config.js';
+import { WEAPONS, MELEE, INVENTORY_SLOTS, UPGRADE_STATION } from './config.js';
 import { rand, damp, clamp } from './utils.js';
 import { Sfx } from './audio.js';
 
@@ -42,6 +42,21 @@ function buildViewModel(id) {
     add(new THREE.BoxGeometry(0.055, 0.17, 0.09), wood, 0, -0.14, 0.0, 0.3);
     add(new THREE.BoxGeometry(0.02, 0.035, 0.02), metal, 0, 0.075, -0.62);
     muzzleZ = -0.74;
+  } else if (id === 'mitraillette') {
+    add(new THREE.BoxGeometry(0.085, 0.11, 0.54), dark, 0, 0, -0.16);
+    add(new THREE.BoxGeometry(0.055, 0.26, 0.1), dark, 0, -0.17, 0.02, 0.1);   // chargeur long
+    add(new THREE.BoxGeometry(0.05, 0.16, 0.09), dark, 0, -0.12, -0.02, 0.34); // poignée
+    add(new THREE.BoxGeometry(0.04, 0.04, 0.22), metal, 0, 0, -0.5);
+    add(new THREE.BoxGeometry(0.02, 0.04, 0.02), metal, 0, 0.08, -0.3);
+    muzzleZ = -0.62;
+  } else if (id === 'lourde') {
+    add(new THREE.BoxGeometry(0.12, 0.14, 0.92), dark, 0, 0, -0.3);
+    add(new THREE.BoxGeometry(0.2, 0.24, 0.3), dark, 0, -0.14, 0.02);          // boîte à munitions
+    add(new THREE.BoxGeometry(0.06, 0.06, 0.42), metal, 0, 0.01, -0.78);       // canon lourd
+    add(new THREE.BoxGeometry(0.14, 0.03, 0.24), metal, 0, 0.09, -0.4);        // poignée de transport
+    add(new THREE.BoxGeometry(0.06, 0.18, 0.1), dark, 0, -0.14, 0.3, 0.2);
+    add(new THREE.BoxGeometry(0.02, 0.045, 0.02), metal, 0, 0.12, -0.5);
+    muzzleZ = -1.0;
   } else {
     add(new THREE.BoxGeometry(0.095, 0.12, 0.78), dark, 0, 0, -0.24);
     add(new THREE.BoxGeometry(0.06, 0.22, 0.13), dark, 0, -0.16, 0.04, 0.22);  // chargeur
@@ -104,12 +119,13 @@ export class WeaponSystem {
     this.vmScene.add(new THREE.AmbientLight(0x50607a, 1.1));
 
     // Halo projeté dans le monde à chaque tir
-    this.worldFlash = new THREE.PointLight(0xffc46b, 0, 14, 2);
+    this.worldFlash = new THREE.PointLight(0xffc46b, 0, 20, 1.4);
     scene.add(this.worldFlash);
 
     this.slots = {};
-    this.order = ['pistolet', 'fusil', 'assaut', 'precision'];
-    for (const id of this.order) {
+    this.all = Object.keys(WEAPONS);
+    this.owned = ['pistolet'];          // emplacements occupés, pistolet inclus
+    for (const id of this.all) {
       const def = WEAPONS[id];
       const vm = buildViewModel(id);
       // Reculée et légèrement réduite : à 0,3 m d'une caméra grand angle, une
@@ -121,9 +137,9 @@ export class WeaponSystem {
       this.slots[id] = {
         def,
         vm,
-        unlocked: id === 'pistolet',
         ammo: def.magSize,
         reserve: def.reserve,
+        upgraded: false,
       };
     }
 
@@ -175,30 +191,79 @@ export class WeaponSystem {
   get def() { return this.slot.def; }
 
   magSize(id = this.current) {
-    return Math.max(1, Math.floor(WEAPONS[id].magSize * this.player.stats.magMul));
+    const up = this.slots[id] && this.slots[id].upgraded ? UPGRADE_STATION.magMul : 1;
+    return Math.max(1, Math.floor(WEAPONS[id].magSize * this.player.stats.magMul * up));
   }
 
   reset() {
-    for (const id of this.order) {
+    for (const id of this.all) {
       const s = this.slots[id];
-      s.unlocked = id === 'pistolet';
       s.ammo = s.def.magSize;
       s.reserve = s.def.reserve;
+      s.upgraded = false;
       s.vm.group.visible = id === 'pistolet';
     }
+    this.owned = ['pistolet'];
     this.current = 'pistolet';
     this.reloading = false;
     this.cooldown = 0;
     this.recoil = 0;
   }
 
-  unlock(id) {
+  owns(id) { return this.owned.includes(id); }
+  get full() { return this.owned.length >= INVENTORY_SLOTS; }
+
+  /**
+   * Ajoute une arme à l'inventaire.
+   * Déjà possédée : on refait le plein. Inventaire plein : elle remplace
+   * l'arme en main (jamais le pistolet, qui reste le filet de sécurité).
+   */
+  acquire(id) {
     const s = this.slots[id];
-    if (!s || s.unlocked) return false;
-    s.unlocked = true;
+    if (!s) return null;
+
+    if (this.owns(id)) {
+      s.ammo = this.magSize(id);
+      s.reserve = s.def.reserve === Infinity ? Infinity : s.def.reserve;
+      this.switchTo(id);
+      return 'refill';
+    }
+
     s.ammo = this.magSize(id);
     s.reserve = s.def.reserve;
+    s.upgraded = false;
+
+    if (!this.full) {
+      this.owned.push(id);
+      this.switchTo(id);
+      return 'new';
+    }
+
+    let idx = this.owned.indexOf(this.current);
+    if (this.current === 'pistolet') {
+      idx = this.owned.findIndex((w) => w !== 'pistolet');
+      if (idx < 0) idx = this.owned.length - 1;
+    }
+    const replaced = this.owned[idx];
+    this.owned[idx] = id;
+    this.slots[replaced].vm.group.visible = false;
+    this.switchTo(id);
+    return replaced;
+  }
+
+  /** Poste d'amélioration : dégâts, chargeur et réserve renforcés. */
+  upgrade(id = this.current) {
+    const s = this.slots[id];
+    if (!s || s.upgraded) return false;
+    s.upgraded = true;
+    s.ammo = this.magSize(id);
+    if (s.reserve !== Infinity) s.reserve = Math.ceil(s.def.reserve * UPGRADE_STATION.reserveMul);
     return true;
+  }
+
+  displayName(id = this.current) {
+    const s = this.slots[id];
+    return s.upgraded ? s.def.name + ' ★' : s.def.name;
   }
 
   addAmmo(id, amount) {
@@ -208,17 +273,30 @@ export class WeaponSystem {
   }
 
   refillAll(fraction = 0.5) {
-    for (const id of this.order) {
+    for (const id of this.owned) {
       const s = this.slots[id];
-      if (!s.unlocked || s.reserve === Infinity) continue;
-      s.reserve = Math.min(s.def.reserve * 2, s.reserve + Math.ceil(s.def.reserve * fraction));
+      if (s.reserve === Infinity) continue;
+      const max = Math.ceil(s.def.reserve * (s.upgraded ? UPGRADE_STATION.reserveMul : 1));
+      s.reserve = Math.min(max, s.reserve + Math.ceil(max * fraction));
     }
+  }
+
+  /** Bonus « munitions max » : chargeurs et réserves au maximum. */
+  refillMax() {
+    for (const id of this.owned) {
+      const s = this.slots[id];
+      s.ammo = this.magSize(id);
+      if (s.reserve !== Infinity) {
+        s.reserve = Math.ceil(s.def.reserve * (s.upgraded ? UPGRADE_STATION.reserveMul : 1));
+      }
+    }
+    this.reloading = false;
   }
 
   switchTo(id) {
     if (id === this.current) return;
     const s = this.slots[id];
-    if (!s || !s.unlocked) return;
+    if (!s || !this.owns(id)) return;
     this.slot.vm.group.visible = false;
     this.current = id;
     s.vm.group.visible = true;
@@ -228,11 +306,14 @@ export class WeaponSystem {
   }
 
   cycle(dir) {
-    const unlocked = this.order.filter((id) => this.slots[id].unlocked);
-    if (unlocked.length < 2) return;
-    let i = unlocked.indexOf(this.current);
-    i = (i + (dir > 0 ? 1 : -1) + unlocked.length) % unlocked.length;
-    this.switchTo(unlocked[i]);
+    if (this.owned.length < 2) return;
+    let i = this.owned.indexOf(this.current);
+    i = (i + (dir > 0 ? 1 : -1) + this.owned.length) % this.owned.length;
+    this.switchTo(this.owned[i]);
+  }
+
+  switchToSlot(n) {
+    if (n >= 0 && n < this.owned.length) this.switchTo(this.owned[n]);
   }
 
   canFire() {
@@ -303,7 +384,7 @@ export class WeaponSystem {
     this.cooldown = 60 / rpm;
 
     const spreadBase = def.spread * (this.aiming ? 0.45 : 1) * (this.player.sprinting ? 1.6 : 1);
-    const dmg = def.damage * st.damageMul;
+    const dmg = def.damage * st.damageMul * (s.upgraded ? UPGRADE_STATION.damageMul : 1);
     const pierce = def.pierce + st.pierce;
 
     const origin = this.player.eyePos.clone();
@@ -382,10 +463,9 @@ export class WeaponSystem {
     }
 
     // Changement d'arme
-    if (input.pressed('Digit1')) this.switchTo('pistolet');
-    if (input.pressed('Digit2')) this.switchTo('fusil');
-    if (input.pressed('Digit3')) this.switchTo('assaut');
-    if (input.pressed('Digit4')) this.switchTo('precision');
+    if (input.pressed('Digit1')) this.switchToSlot(0);
+    if (input.pressed('Digit2')) this.switchToSlot(1);
+    if (input.pressed('Digit3')) this.switchToSlot(2);
     if (input.wheel !== 0) this.cycle(input.wheel);
     if (input.pressed('KeyR')) this.startReload();
 
@@ -469,7 +549,7 @@ export class WeaponSystem {
     g.visible = !this.scoped;
 
     // Le halo qui éclaire réellement la scène autour du joueur
-    this.worldFlash.intensity = f * 22;
+    this.worldFlash.intensity = f * 5;
     if (f > 0) this.muzzleWorld(this.worldFlash.position);
   }
 

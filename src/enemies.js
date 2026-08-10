@@ -41,9 +41,9 @@ class Zombie {
     const s = d.scale;
     const base = new THREE.Color(d.color);
     const skin = base.clone().offsetHSL(rand(-0.03, 0.03), rand(-0.08, 0.08), rand(-0.07, 0.07));
-    this.mat = new THREE.MeshLambertMaterial({ color: skin });
-    this.clothMat = new THREE.MeshLambertMaterial({
-      color: new THREE.Color().setHSL(rand(0, 1), 0.18, rand(0.14, 0.3)),
+    this.mat = new THREE.MeshPhongMaterial({ color: skin });
+    this.clothMat = new THREE.MeshPhongMaterial({
+      color: new THREE.Color().setHSL(rand(0, 1), 0.11, rand(0.07, 0.17)),
     });
 
     const g = new THREE.Group();
@@ -90,11 +90,22 @@ class Zombie {
     this.jaw = jaw;
 
     // yeux luisants
-    const eyeMat = new THREE.MeshBasicMaterial({ color: d.boss ? 0xff3355 : 0xffcc44 });
+    const eyeMat = new THREE.MeshBasicMaterial({ color: d.boss ? 0xff3b6b : 0xff9a28 });
+    this.eyes = [];
     for (const sx of [-1, 1]) {
-      const e = new THREE.Mesh(new THREE.SphereGeometry(0.045, 6, 5), eyeMat);
+      const e = new THREE.Mesh(new THREE.SphereGeometry(0.05, 6, 5), eyeMat);
       e.position.set(sx * 0.08, 0.03, -0.185);
       this.head.add(e);
+      this.eyes.push(e);
+      // halo : c'est ce qu'on repère en premier dans le noir
+      const halo = new THREE.Sprite(new THREE.SpriteMaterial({
+        color: d.boss ? 0xff3b6b : 0xff9a28,
+        transparent: true, opacity: 0.55, depthWrite: false,
+        blending: THREE.AdditiveBlending,
+      }));
+      halo.scale.set(0.34, 0.34, 1);
+      halo.position.copy(e.position);
+      this.head.add(halo);
     }
 
     this.armL = new THREE.Mesh(GEO.arm, this.mat);
@@ -152,8 +163,11 @@ class Zombie {
     }
   }
 
-  spawn(pos, healthMul = 1, speedMul = 1) {
+  spawn(pos, healthMul = 1, speedMul = 1, barricade = null) {
     const d = this.def;
+    this.barricade = barricade;
+    this.tearTimer = 0;
+    this.climbT = 0;
     this.pos.copy(pos);
     this.pos.y = 0;
     this.vel.set(0, 0, 0);
@@ -162,7 +176,7 @@ class Zombie {
     this.speed = d.speed * speedMul * rand(0.92, 1.08);
     this.alive = true;
     this.dead = false;
-    this.state = 'rise';
+    this.state = barricade ? 'approach' : 'rise';
     this.stateTime = 0;
     this.attackCd = rand(0, 0.4);
     this.stagger = 0;
@@ -351,6 +365,74 @@ class Zombie {
       return;
     }
 
+    // --- Arrivée par une fenêtre barricadée ---
+    if (this.state === 'approach') {
+      const b = this.barricade;
+      if (!b) { this.state = 'chase'; }
+      else {
+        const target = b.outsidePos();
+        const dx = target.x - this.pos.x, dz = target.z - this.pos.z;
+        const dd = Math.hypot(dx, dz);
+        this.yaw = Math.atan2(-dx, -dz);
+        if (dd < 1.1) {
+          this.state = b.passable ? 'climb' : 'tearing';
+          this.climbT = 0;
+        } else {
+          const sp = this.speed * 0.9;
+          this.pos.x += (dx / dd) * sp * dt;
+          this.pos.z += (dz / dd) * sp * dt;
+        }
+        this.group.position.copy(this.pos);
+        this.group.rotation.y = this.yaw;
+        this._animate(dt, this.speed);
+        return;
+      }
+    }
+
+    if (this.state === 'tearing') {
+      const b = this.barricade;
+      if (!b || b.passable) { this.state = 'climb'; this.climbT = 0; }
+      else {
+        this.tearTimer -= dt;
+        if (this.tearTimer <= 0) {
+          this.tearTimer = 1.05;
+          b.tearPlank(mgr.effects);
+        }
+        // gestes d'arrachage
+        this.armL.rotation.x = -2.5 + Math.sin(performance.now() * 0.012) * 0.7;
+        this.armR.rotation.x = -2.5 - Math.sin(performance.now() * 0.012) * 0.7;
+        this.group.position.copy(this.pos);
+        this.group.rotation.y = this.yaw;
+        return;
+      }
+    }
+
+    if (this.state === 'climb') {
+      const b = this.barricade;
+      this.climbT += dt;
+      const t = clamp(this.climbT / 1.15, 0, 1);
+      if (b) {
+        const from = b.outsidePos();
+        const to = b.insidePos();
+        this.pos.x = from.x + (to.x - from.x) * t;
+        this.pos.z = from.z + (to.z - from.z) * t;
+        this.yaw = Math.atan2(-(to.x - from.x), -(to.z - from.z));
+      }
+      // le corps se hisse puis retombe
+      this.group.position.set(this.pos.x, this.pos.y + Math.sin(t * Math.PI) * 0.55, this.pos.z);
+      this.group.rotation.y = this.yaw;
+      this.group.rotation.z = Math.sin(t * Math.PI) * 0.3;
+      this.armL.rotation.x = -2.6;
+      this.armR.rotation.x = -2.6;
+      if (t >= 1) {
+        this.state = 'chase';
+        this.group.rotation.z = 0;
+        this.barricade = null;
+        Sfx.zombieGrowl();
+      }
+      return;
+    }
+
     const toPlayer = new THREE.Vector3(player.pos.x - this.pos.x, 0, player.pos.z - this.pos.z);
     const distance = toPlayer.length();
     if (distance > 0.001) toPlayer.multiplyScalar(1 / distance);
@@ -447,15 +529,31 @@ class Zombie {
       speed *= 0.15;
     }
 
-    // --- Déplacement : poursuite + séparation ---
-    const sep = mgr.separation(this);
-    let mx = toPlayer.x * speed + sep.x;
-    let mz = toPlayer.z * speed + sep.z;
+    // --- Déplacement : champ de navigation + séparation ---
+    // Près du joueur on repasse en poursuite directe, plus fluide que la grille.
+    let steerX = toPlayer.x, steerZ = toPlayer.z;
+    if (distance > 3.5 && mgr.nav) {
+      const flow = mgr.nav.direction(this.pos.x, this.pos.z, mgr._flow);
+      if (flow) {
+        // mélange progressif pour éviter les virages à angle droit
+        const w = clamp((distance - 3.5) / 4, 0, 1);
+        steerX = toPlayer.x * (1 - w) + flow.x * w;
+        steerZ = toPlayer.z * (1 - w) + flow.z * w;
+        const len = Math.hypot(steerX, steerZ) || 1;
+        steerX /= len; steerZ /= len;
+      }
+    }
 
-    // léger zigzag pour éviter les files indiennes
-    this.wander = damp(this.wander, Math.sin(performance.now() * 0.0004 + this.walkPhase) * 0.8, 1.5, dt);
-    mx += -toPlayer.z * this.wander * 0.25 * (d.big ? 0 : 1);
-    mz += toPlayer.x * this.wander * 0.25 * (d.big ? 0 : 1);
+    const sep = mgr.separation(this);
+    let mx = steerX * speed + sep.x;
+    let mz = steerZ * speed + sep.z;
+
+    // léger zigzag pour éviter les files indiennes, seulement en espace ouvert
+    if (distance > 6 && !d.big) {
+      this.wander = damp(this.wander, Math.sin(performance.now() * 0.0004 + this.walkPhase) * 0.8, 1.5, dt);
+      mx += -steerZ * this.wander * 0.18;
+      mz += steerX * this.wander * 0.18;
+    }
 
     this.vel.x = damp(this.vel.x, mx, 9, dt);
     this.vel.z = damp(this.vel.z, mz, 9, dt);
@@ -468,8 +566,8 @@ class Zombie {
 
     // Si bloqué, on tente de contourner
     if (Math.abs(this.pos.x - prevX) < 0.001 && Math.abs(this.pos.z - prevZ) < 0.001 && speed > 0.2) {
-      this.pos.x += -toPlayer.z * dt * speed * 0.8;
-      this.pos.z += toPlayer.x * dt * speed * 0.8;
+      this.pos.x += -steerZ * dt * speed * 0.8;
+      this.pos.z += steerX * dt * speed * 0.8;
       resolveCircleBoxes(this.pos, this.radius, world.obstacles, 1.8 * d.scale);
     }
 
@@ -607,6 +705,8 @@ export class ZombieManager {
     this.boss = null;
     this.gibs = [];
     this.gibPool = [];
+    this.nav = world.nav || null;
+    this._flow = new THREE.Vector3();
   }
 
   /** Morceaux projetés quand un corps est pulvérisé. */
@@ -616,7 +716,7 @@ export class ZombieManager {
       let gib = this.gibPool.pop();
       if (!gib) {
         gib = {
-          mesh: new THREE.Mesh(GEO.gib, new THREE.MeshLambertMaterial({ color: 0x8a2b2b })),
+          mesh: new THREE.Mesh(GEO.gib, new THREE.MeshPhongMaterial({ color: 0x8a2b2b })),
           vel: new THREE.Vector3(), spin: new THREE.Vector3(), life: 0,
         };
         gib.mesh.castShadow = true;
@@ -693,10 +793,10 @@ export class ZombieManager {
     return z;
   }
 
-  spawn(type, pos, healthMul = 1, speedMul = 1) {
+  spawn(type, pos, healthMul = 1, speedMul = 1, barricade = null) {
     const z = this._obtain(type);
     z.mgr = this;
-    z.spawn(pos, healthMul, speedMul);
+    z.spawn(pos, healthMul, speedMul, barricade);
     z.yaw = Math.atan2(-pos.x, -pos.z);
     this.zombies.push(z);
     if (z.def.boss) this.boss = z;

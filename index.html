@@ -20,6 +20,7 @@
   <div id="blood-layer"></div>
   <div id="popup-layer"></div>
   <div id="damage-dir"></div>
+  <div id="screen-flash"></div>
   <div id="scope" class="hidden"><span class="sc-v"></span><span class="sc-h"></span><i></i></div>
 
   <!-- Réticule -->
@@ -30,22 +31,8 @@
   </div>
   <div id="hitmarker"><span></span><span></span><span></span><span></span></div>
 
-  <!-- Bandeau haut -->
-  <div id="top-bar">
-    <div class="stat"><label>VAGUE</label><b id="wave-value">0</b></div>
-    <div class="stat"><label>INFECTÉS</label><b id="enemies-value">0</b></div>
-    <div class="stat"><label>SCORE</label><b id="score-value">0</b></div>
-    <div class="stat"><label>ÉLIMINÉS</label><b id="kills-value">0</b></div>
-  </div>
-
-  <!-- Vague spéciale -->
-  <div id="wave-modifier" class="hidden"></div>
-
-  <!-- Chaîne d'éliminations -->
-  <div id="combo" class="hidden">
-    <div class="combo-row"><b id="combo-count">0</b><span>ENCHAÎNÉS</span><i id="combo-mul"></i></div>
-    <div class="combo-track"><div id="combo-bar"></div></div>
-  </div>
+  <!-- Bonus actifs -->
+  <div id="powerup-bar" class="hidden"></div>
 
   <!-- Barre de boss -->
   <div id="boss-bar" class="hidden">
@@ -53,35 +40,46 @@
     <div class="boss-track"><div id="boss-fill"></div></div>
   </div>
 
-  <!-- Annonces centrales -->
+  <!-- Carton de manche -->
+  <div id="round-banner" class="hidden"></div>
+
+  <!-- Annonces -->
   <div id="announce" class="hidden"></div>
   <div id="announce-sub" class="hidden"></div>
 
-  <!-- Améliorations -->
-  <div id="upgrades-panel">
-    <h3>AMÉLIORATIONS</h3>
-    <ul id="upgrade-list"></ul>
+  <!-- Chaîne d'éliminations -->
+  <div id="combo" class="hidden">
+    <div class="combo-row"><b id="combo-count">0</b><span>ENCHAÎNÉS</span><i id="combo-mul"></i></div>
+    <div class="combo-track"><div id="combo-bar"></div></div>
   </div>
 
   <!-- Notifications -->
   <div id="toasts"></div>
 
-  <!-- Minicarte -->
-  <div id="minimap-wrap"><canvas id="minimap" width="168" height="168"></canvas></div>
-
-  <!-- Affiché uniquement si la capture du pointeur est refusée -->
-  <div id="mouse-hint" class="hidden">
-    Souris non capturée : bougez la souris pour viser, approchez le curseur des
-    <b>bords de l'écran</b> pour pivoter. Clic gauche pour tirer.
+  <!-- Invite d'interaction -->
+  <div id="prompt" class="hidden">
+    <div class="prompt-key">E</div>
+    <div class="prompt-text">
+      <div id="prompt-title">Porte</div>
+      <div id="prompt-sub">Ouvrir</div>
+    </div>
+    <div id="prompt-cost">750 pts</div>
+    <div class="prompt-track"><div id="prompt-fill"></div></div>
   </div>
 
-  <!-- Bandeau bas gauche : santé -->
+  <!-- Bandeau bas gauche : points, manche, atouts -->
   <div id="bottom-left">
-    <div class="bar health">
-      <div id="health-fill"></div>
-      <span id="health-text">100 / 100</span>
+    <div id="points-box">
+      <div id="points-popups"></div>
+      <b id="points-value">500</b>
+      <span>POINTS</span>
     </div>
-    <div class="bar stamina"><div id="stamina-fill"></div></div>
+    <div id="round-box">
+      <div class="round-line"><span>MANCHE</span><b id="round-value">0</b></div>
+      <div id="round-pips"></div>
+      <div class="round-line small"><span>RESTANTS</span><b id="enemies-value">0</b></div>
+    </div>
+    <ul id="perk-row"></ul>
   </div>
 
   <!-- Bandeau bas droite : armes -->
@@ -95,20 +93,34 @@
     <div id="grenade-block"><span class="g-icon">💣</span><b id="grenade-count">2</b><span class="g-key">G</span></div>
     <div id="low-ammo" class="hidden">RECHARGEZ — R</div>
   </div>
+
+  <!-- À terre -->
+  <div id="downed-overlay" class="hidden">
+    <div class="downed-title">À TERRE</div>
+    <div class="downed-sub">Vous vous relevez dans <b id="downed-timer">3.0</b> s</div>
+  </div>
+
+  <!-- Si la capture du pointeur est refusée -->
+  <div id="mouse-hint" class="hidden">
+    Souris non capturée : bougez la souris pour viser, approchez le curseur des
+    <b>bords de l'écran</b> pour pivoter. Clic gauche pour tirer.
+  </div>
 </div>
+
+<div id="film-grain"></div>
 
 <!-- ============================ MENU ============================ -->
 <div id="screen-menu" class="screen">
   <div class="panel wide">
     <h1>DERNIÈRE<span>LUEUR</span></h1>
-    <p class="tagline">Un homme. Une arme. Une horde sans fin.</p>
+    <p class="tagline">Le complexe est tombé. Vous n'êtes pas encore mort.</p>
 
     <div class="difficulty">
       <h2>Difficulté</h2>
       <div class="diff-row">
-        <button class="diff-option" data-diff="survivant"><b>Survivant</b><span>Pour découvrir le jeu</span></button>
+        <button class="diff-option" data-diff="survivant"><b>Survivant</b><span>Pour apprendre la carte</span></button>
         <button class="diff-option active" data-diff="veteran"><b>Vétéran</b><span>L'équilibre prévu</span></button>
-        <button class="diff-option" data-diff="cauchemar"><b>Cauchemar</b><span>Score ×1,6 — bon courage</span></button>
+        <button class="diff-option" data-diff="cauchemar"><b>Cauchemar</b><span>Plus nombreux, plus rapides</span></button>
       </div>
     </div>
 
@@ -118,66 +130,73 @@
     </div>
 
     <ul class="records">
-      <li><label>Meilleur score</label><b id="rec-score">0</b></li>
-      <li><label>Vague la plus lointaine</label><b id="rec-wave">0</b></li>
+      <li><label>Meilleur total de points</label><b id="rec-score">0</b></li>
+      <li><label>Manche la plus lointaine</label><b id="rec-wave">0</b></li>
       <li><label>Zombies éliminés en tout</label><b id="rec-kills">0</b></li>
     </ul>
+    <p class="hint">Cliquez sur JOUER puis sur l'écran pour capturer la souris.</p>
 
     <div class="menu-grid">
-      <h3 class="grid-title">Tout ce qu'il faut savoir</h3>
+      <h3 class="grid-title">Comment ça se joue</h3>
+
       <section>
         <h2>Commandes</h2>
         <ul class="keys">
           <li><kbd>Z</kbd><kbd>Q</kbd><kbd>S</kbd><kbd>D</kbd> / <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd><span>Se déplacer</span></li>
-          <li><kbd>Souris</kbd><span>Viser</span></li>
           <li><kbd>Clic G.</kbd><span>Tirer</span></li>
-          <li><kbd>Clic D.</kbd><span>Viser précisément</span></li>
+          <li><kbd>Clic D.</kbd><span>Viser</span></li>
+          <li><kbd>E</kbd><span>Acheter / interagir</span></li>
+          <li><kbd>E</kbd> <i>maintenu</i><span>Rebarricader une fenêtre</span></li>
           <li><kbd>R</kbd><span>Recharger</span></li>
-          <li><kbd>Maj</kbd><span>Sprinter</span></li>
-          <li><kbd>Espace</kbd><span>Sauter</span></li>
-          <li><kbd>Ctrl</kbd><span>S'accroupir</span></li>
           <li><kbd>F</kbd><span>Coup de crosse</span></li>
-          <li><kbd>G</kbd><span>Lancer une grenade</span></li>
-          <li><kbd>1</kbd>…<kbd>4</kbd> / <kbd>Molette</kbd><span>Changer d'arme</span></li>
+          <li><kbd>G</kbd><span>Grenade</span></li>
+          <li><kbd>Maj</kbd><span>Sprinter</span></li>
+          <li><kbd>Espace</kbd> / <kbd>Ctrl</kbd><span>Sauter / s'accroupir</span></li>
+          <li><kbd>1</kbd><kbd>2</kbd><kbd>3</kbd> / <kbd>Molette</kbd><span>Changer d'arme</span></li>
           <li><kbd>Échap</kbd><span>Pause</span></li>
         </ul>
       </section>
 
       <section>
-        <h2>Objectif</h2>
+        <h2>La boucle</h2>
         <p class="brief">
-          Survivez aux vagues d'infectés. Entre deux assauts, la nuit vous laisse
-          quelques secondes de répit — utilisez-les.
+          Les manches s'enchaînent sans fin, chacune plus fournie et plus rapide que
+          la précédente. Les infectés arrivent par les <b>fenêtres barricadées</b> :
+          ils arrachent les planches une à une, puis se hissent à l'intérieur.
+          Maintenez <kbd>E</kbd> sur une fenêtre pour la reclouer — chaque planche
+          rapporte des points.
         </p>
-        <h2>Devenir plus fort</h2>
+        <h2>Les points font tout</h2>
         <ul class="bullets">
-          <li><b class="c-cyan">Cristaux d'amélioration</b> — les losanges lumineux flottants. <b>Tirez dessus</b> pour gagner dégâts, cadence, chargeur, vitesse, perforation, balles explosives…</li>
-          <li><b class="c-green">Caisses d'armes</b> — fusil à pompe, fusil d'assaut, puis fusil de précision à lunette.</li>
-          <li><b class="c-red">Barils explosifs</b> — tirez dessus au bon moment pour pulvériser un groupe entier.</li>
+          <li><b class="c-amber">10 points</b> par balle qui touche, <b class="c-amber">60</b> par élimination, <b class="c-amber">130</b> à la tête ou au corps à corps.</li>
+          <li><b class="c-green">Portes</b> — ouvrez de nouvelles zones pour accéder aux distributeurs, aux armes et à plus d'espace pour tourner.</li>
+          <li><b class="c-cyan">Achats muraux</b> — les silhouettes à la craie : prenez l'arme, puis rachetez ses munitions à moitié prix.</li>
+          <li><b class="c-yellow">Caisse mystère</b> — 950 points pour une arme au hasard. Elle change de place après quelques tirages.</li>
         </ul>
-        <h2>Enchaîner</h2>
-        <p class="brief">
-          Chaque élimination rapprochée alimente une chaîne : à 4, 9, 16 et 26 victimes
-          sans temps mort, le score est multiplié jusqu'à ×4. La chaîne retombe si vous
-          laissez passer quelques secondes.
-        </p>
       </section>
 
       <section>
-        <h2>La horde</h2>
-        <ul class="bestiary">
-          <li><i style="--c:#5e7a4a"></i><b>Marcheur</b><span>Lent, mais jamais seul.</span></li>
-          <li><i style="--c:#8c5a3c"></i><b>Coureur</b><span>Rapide et fragile. Ne le laissez pas approcher.</span></li>
-          <li><i style="--c:#6f8f2f"></i><b>Cracheur</b><span>Attaque à distance avec de l'acide.</span></li>
-          <li><i style="--c:#7a6a3c"></i><b>Rampant</b><span>Au ras du sol, très rapide : baissez votre visée.</span></li>
-          <li><i style="--c:#8f9e3a"></i><b>Boursouflé</b><span>Explose en mourant. Ne l'abattez pas de près.</span></li>
-          <li><i style="--c:#7a4038" class="big"></i><b>BRUTE</b><span>Énorme, blindé, frappe le sol. Visez les <b class="c-yellow">pustules jaunes</b> : dégâts massifs.</span></li>
-          <li><i style="--c:#4a2b4d" class="big"></i><b>COLOSSE</b><span>Boss toutes les 5 vagues. Charge, invoque des renforts, encaisse énormément.</span></li>
+        <h2>Le courant</h2>
+        <p class="brief">
+          L'interrupteur est au fond de la salle des machines. Tant qu'il n'est pas
+          enclenché, les <b>distributeurs d'atouts</b> et le <b>poste d'amélioration</b>
+          restent éteints. C'est le premier vrai objectif de la partie.
+        </p>
+        <h2>Atouts</h2>
+        <ul class="perklist">
+          <li><i style="--c:#4bb3e8">✚</i><b>Second souffle</b><span>Vous vous relevez seul, une fois</span></li>
+          <li><i style="--c:#d94141">🛡</i><b>Peau dure</b><span>Deux fois plus de résistance</span></li>
+          <li><i style="--c:#e8d04b">🖐</i><b>Mains agiles</b><span>Rechargement deux fois plus vif</span></li>
+          <li><i style="--c:#8f4be8">⚡</i><b>Doigt léger</b><span>Cadence de tir supérieure</span></li>
+          <li><i style="--c:#4be88f">👟</i><b>Bottes lestes</b><span>Course et endurance</span></li>
         </ul>
+        <h2>Bonus lâchés</h2>
+        <p class="brief small">
+          🔋 munitions max · 💀 mort instantanée · ✖ points doublés ·
+          ☢ anéantissement · 🔨 charpentier. Ils tombent au hasard : ramassez-les vite.
+        </p>
       </section>
     </div>
-
-    <p class="hint">Cliquez sur JOUER puis sur l'écran pour capturer la souris.</p>
   </div>
 </div>
 
@@ -213,6 +232,10 @@
       <label for="opt-shadows">Ombres dynamiques</label>
       <input type="checkbox" id="opt-shadows" checked />
     </div>
+    <div class="option check">
+      <label for="opt-grain">Grain de pellicule</label>
+      <input type="checkbox" id="opt-grain" checked />
+    </div>
     <div class="actions">
       <button id="btn-options-back" class="primary">Retour</button>
     </div>
@@ -223,7 +246,7 @@
 <div id="screen-pause" class="screen hidden">
   <div class="panel">
     <h2 class="panel-title">PAUSE</h2>
-    <p class="tagline small">La horde vous attend.</p>
+    <p class="tagline small">Ils attendent derrière la porte.</p>
     <div class="actions column">
       <button id="btn-resume" class="primary">Reprendre</button>
       <button id="btn-options-pause">Options</button>
@@ -233,24 +256,24 @@
   </div>
 </div>
 
-<!-- ========================== GAME OVER ========================== -->
+<!-- ========================== FIN DE PARTIE ========================== -->
 <div id="screen-dead" class="screen hidden">
   <div class="panel">
     <h2 class="panel-title dead">VOUS ÊTES MORT</h2>
     <p class="tagline small">La lueur s'est éteinte.</p>
     <div id="res-record" class="record-badge hidden"></div>
     <ul class="results">
-      <li><label>Vague atteinte</label><b id="res-wave">0</b></li>
+      <li><label>Manche atteinte</label><b id="res-wave">0</b></li>
       <li><label>Difficulté</label><b id="res-diff">Vétéran</b></li>
       <li><label>Zombies éliminés</label><b id="res-kills">0</b></li>
-      <li><label>Score final</label><b id="res-score">0</b></li>
+      <li><label>Points gagnés</label><b id="res-score">0</b></li>
       <li><label>Précision</label><b id="res-acc">0%</b></li>
       <li><label>Tirs à la tête</label><b id="res-head">0</b></li>
       <li><label>Meilleure chaîne</label><b id="res-combo">×0</b></li>
-      <li><label>Améliorations</label><b id="res-upg">0</b></li>
+      <li><label>Atouts achetés</label><b id="res-upg">0</b></li>
     </ul>
     <p class="record-line">
-      Record personnel : <b id="rec-dead-score">0</b> points · vague <b id="rec-dead-wave">0</b>
+      Record personnel : <b id="rec-dead-score">0</b> points · manche <b id="rec-dead-wave">0</b>
     </p>
     <div class="actions">
       <button id="btn-restart-dead" class="primary">Rejouer</button>

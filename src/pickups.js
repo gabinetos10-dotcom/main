@@ -68,7 +68,7 @@ export class PickupManager {
     const ring = new THREE.Mesh(this.ringGeo, new THREE.MeshBasicMaterial({ color: up.color, transparent: true, opacity: 0.7 }));
     ring.rotation.x = Math.PI / 2;
     group.add(ring);
-    const light = new THREE.PointLight(up.color, 9, 12, 2);
+    const light = new THREE.PointLight(up.color, 1.6, 16, 1.6);
     group.add(light);
     const label = labelSprite(up.icon, 0xffffff);
     label.position.y = 1.05;
@@ -87,14 +87,14 @@ export class PickupManager {
   }
 
   spawnBarrel(pos) {
-    const mat = new THREE.MeshLambertMaterial({ color: 0x9c3021 });
+    const mat = new THREE.MeshPhongMaterial({ color: 0x9c3021 });
     const g = new THREE.Group();
     const body = new THREE.Mesh(this.barrelGeo, mat);
     body.castShadow = true;
     g.add(body);
     const band = new THREE.Mesh(
       new THREE.CylinderGeometry(0.44, 0.44, 0.16, 12),
-      new THREE.MeshLambertMaterial({ color: 0xe0c04a })
+      new THREE.MeshPhongMaterial({ color: 0xe0c04a })
     );
     band.position.y = 0.15;
     g.add(band);
@@ -109,19 +109,19 @@ export class PickupManager {
 
   spawnWeaponCrate(pos, weaponId) {
     const g = new THREE.Group();
-    const box = new THREE.Mesh(this.crateGeo, new THREE.MeshLambertMaterial({ color: 0x6b5a33 }));
+    const box = new THREE.Mesh(this.crateGeo, new THREE.MeshPhongMaterial({ color: 0x6b5a33 }));
     box.castShadow = true;
     g.add(box);
     const edge = new THREE.Mesh(
       new THREE.BoxGeometry(0.95, 0.12, 0.95),
-      new THREE.MeshLambertMaterial({ color: 0x3f6b33 })
+      new THREE.MeshPhongMaterial({ color: 0x3f6b33 })
     );
     edge.position.y = 0.46;
     g.add(edge);
     const label = labelSprite('🔫', 0xffffff);
     label.position.y = 0.95;
     g.add(label);
-    const light = new THREE.PointLight(0x77ff88, 5, 8, 2);
+    const light = new THREE.PointLight(0x77ff88, 1.2, 10, 1.6);
     light.position.y = 0.8;
     g.add(light);
     g.position.copy(pos);
@@ -138,7 +138,7 @@ export class PickupManager {
     const g = new THREE.Group();
     const mesh = new THREE.Mesh(
       isMed ? this.medGeo : this.ammoGeo,
-      new THREE.MeshLambertMaterial({ color: isMed ? 0xe8e8e8 : isGrenade ? 0x46552f : 0x6f6a3a })
+      new THREE.MeshPhongMaterial({ color: isMed ? 0xe8e8e8 : isGrenade ? 0x46552f : 0x6f6a3a })
     );
     mesh.castShadow = true;
     g.add(mesh);
@@ -147,7 +147,7 @@ export class PickupManager {
       for (let i = 0; i < 3; i++) {
         const gr = new THREE.Mesh(
           new THREE.SphereGeometry(0.09, 8, 6),
-          new THREE.MeshLambertMaterial({ color: 0x3d4a2c })
+          new THREE.MeshPhongMaterial({ color: 0x3d4a2c })
         );
         gr.position.set(-0.12 + i * 0.12, 0.19, 0);
         g.add(gr);
@@ -159,11 +159,11 @@ export class PickupManager {
       a.position.z = 0.19; b.position.z = 0.19;
       g.add(a, b);
     } else {
-      const top = new THREE.Mesh(new THREE.BoxGeometry(0.48, 0.06, 0.32), new THREE.MeshLambertMaterial({ color: 0x3c3a24 }));
+      const top = new THREE.Mesh(new THREE.BoxGeometry(0.48, 0.06, 0.32), new THREE.MeshPhongMaterial({ color: 0x3c3a24 }));
       top.position.y = 0.17;
       g.add(top);
     }
-    const light = new THREE.PointLight(isMed ? 0xff6666 : isGrenade ? 0x9bd45a : 0xffdd66, 3.5, 5, 2);
+    const light = new THREE.PointLight(isMed ? 0xff6666 : isGrenade ? 0x9bd45a : 0xffdd66, 1, 7, 1.6);
     light.position.y = 0.5;
     g.add(light);
     g.position.copy(pos);
@@ -267,7 +267,7 @@ export class PickupManager {
         o.core.rotation.x += dt * 0.9;
         o.shell.rotation.y -= dt * 0.6;
         o.ring.rotation.z += dt * 1.6;
-        o.light.intensity = 8 + Math.sin(time * 5 + o.phase) * 2.5;
+        o.light.intensity = 1.5 + Math.sin(time * 5 + o.phase) * 0.5;
         o.core.scale.setScalar(clamp(o.core.scale.x - dt * 1.6, 1, 1.4));
       } else if (o.kind === 'weapon') {
         o.group.rotation.y += dt * 0.8;

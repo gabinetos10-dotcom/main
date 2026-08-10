@@ -19,7 +19,7 @@ export class GrenadeManager {
     this.onExplode = null;   // (position, radius, damage) => void
 
     this.geo = new THREE.SphereGeometry(0.13, 10, 8);
-    this.mat = new THREE.MeshLambertMaterial({ color: 0x4a5b39 });
+    this.mat = new THREE.MeshPhongMaterial({ color: 0x4a5b39 });
     this.lightMat = new THREE.MeshBasicMaterial({ color: 0xff3b30 });
     this.lightGeo = new THREE.SphereGeometry(0.045, 6, 5);
   }
