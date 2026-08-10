@@ -1,0 +1,18 @@
+{
+  "name": "baccalaureat-en-ligne",
+  "version": "1.0.0",
+  "description": "Le jeu du Baccalauréat (petit bac) en multijoueur temps reel : une partie, un code, tout le monde rejoint.",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node --watch server/index.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "ws": "^8.18.0"
+  },
+  "license": "MIT",
+  "private": true
+}

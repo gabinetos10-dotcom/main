@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Baccalauréat — le petit bac en ligne</title>
+<meta name="description" content="Le jeu du baccalauréat en multijoueur : crée une partie, partage le code, et remplis les cases avant les autres.">
+<meta name="theme-color" content="#16233A">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%2316233A'/%3E%3Ctext x='50' y='74' font-size='68' font-family='Georgia,serif' font-weight='700' fill='%23F4EFE4' text-anchor='middle'%3EB%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- Chargé sans bloquer le rendu : une partie en réseau local sans accès internet
+     doit s'afficher immédiatement avec les polices système. -->
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=DM+Mono:wght@400;500&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;0,9..144,900;1,9..144,700&family=Karla:ital,wght@0,400;0,500;0,700;1,400&display=swap"
+      rel="stylesheet" media="print" onload="this.media='all'; this.onload=null;">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=DM+Mono:wght@400;500&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;0,9..144,900;1,9..144,700&family=Karla:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet"></noscript>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body data-screen="boot">
+
+<div class="grain" aria-hidden="true"></div>
+
+<!-- ------------------------------------------------------------- ACCUEIL -->
+<main class="screen" data-name="home">
+  <div class="sheet sheet--home">
+    <header class="masthead">
+      <p class="masthead__eyebrow">Jeu de société · 2 à 16 joueurs</p>
+      <h1 class="masthead__title">Baccalauréat</h1>
+      <p class="masthead__scribble">le petit bac, en ligne, entre potes</p>
+    </header>
+
+    <div class="home-actions">
+      <form class="card card--create" id="form-create" autocomplete="off">
+        <h2 class="card__title">Créer une partie</h2>
+        <p class="card__hint">Tu obtiens un code à 4 lettres à partager.</p>
+        <label class="field">
+          <span class="field__label">Ton pseudo</span>
+          <input class="field__input" id="create-name" name="name" maxlength="18" placeholder="Gabin" required>
+        </label>
+        <button class="btn btn--primary" type="submit">Ouvrir le salon</button>
+      </form>
+
+      <div class="home-divider" aria-hidden="true"><span>ou</span></div>
+
+      <form class="card card--join" id="form-join" autocomplete="off">
+        <h2 class="card__title">Rejoindre</h2>
+        <p class="card__hint">Entre le code donné par l'organisateur.</p>
+        <label class="field">
+          <span class="field__label">Code de la partie</span>
+          <input class="field__input field__input--code" id="join-code" name="code" maxlength="4"
+                 placeholder="ABCD" autocapitalize="characters" spellcheck="false" required>
+        </label>
+        <label class="field">
+          <span class="field__label">Ton pseudo</span>
+          <input class="field__input" id="join-name" name="name" maxlength="18" placeholder="Camille" required>
+        </label>
+        <button class="btn btn--ghost" type="submit">Rejoindre la partie</button>
+      </form>
+    </div>
+
+    <section class="rules">
+      <h2 class="rules__title">La règle en 30 secondes</h2>
+      <ol class="rules__list">
+        <li>Une lettre est tirée au sort.</li>
+        <li>Chacun remplit toutes les catégories avec des mots commençant par cette lettre.</li>
+        <li>Le premier qui a tout rempli crie <b>STOP&nbsp;!</b> — les autres ont quelques secondes.</li>
+        <li>On dépouille&nbsp;: <b>10&nbsp;pts</b> par bonne réponse, <b>5</b> si quelqu'un a écrit pareil,
+            <b>15</b> si tu es le seul à avoir trouvé.</li>
+      </ol>
+    </section>
+  </div>
+</main>
+
+<!-- --------------------------------------------------------------- SALON -->
+<main class="screen" data-name="lobby">
+  <div class="sheet">
+    <div class="lobby-grid">
+      <section class="panel panel--code">
+        <h2 class="panel__title">Le code de la partie</h2>
+        <p class="roomcode" id="room-code">····</p>
+        <div class="roomcode__actions">
+          <button class="btn btn--small" id="copy-code" type="button">Copier le code</button>
+          <button class="btn btn--small btn--ghost" id="copy-link" type="button">Copier le lien</button>
+        </div>
+        <p class="panel__note">Les autres joueurs entrent ce code sur la page d'accueil.</p>
+      </section>
+
+      <section class="panel panel--players">
+        <h2 class="panel__title">Joueurs <span class="count" id="player-count">0</span></h2>
+        <ul class="players" id="lobby-players"></ul>
+      </section>
+
+      <section class="panel panel--settings">
+        <h2 class="panel__title">Réglages</h2>
+        <p class="panel__note" id="settings-lock" hidden>Seul l'hôte peut modifier les réglages.</p>
+
+        <div class="setting">
+          <span class="setting__label">Catégories <span class="count" id="category-count">0</span></span>
+          <ul class="chips" id="chips-active"></ul>
+          <div class="addbar">
+            <input class="field__input field__input--slim" id="category-new" maxlength="28"
+                   placeholder="Ajouter une catégorie…" autocomplete="off">
+            <button class="btn btn--small" id="category-add" type="button">Ajouter</button>
+          </div>
+          <details class="library">
+            <summary>Piocher dans la liste</summary>
+            <ul class="chips chips--library" id="chips-library"></ul>
+          </details>
+        </div>
+
+        <div class="setting setting--row">
+          <label class="knob">
+            <span class="setting__label">Manches</span>
+            <input class="field__input field__input--num" id="set-rounds" type="number" min="1" max="15">
+          </label>
+          <label class="knob">
+            <span class="setting__label">Durée (s)</span>
+            <input class="field__input field__input--num" id="set-duration" type="number" min="30" max="600" step="10">
+          </label>
+          <label class="knob">
+            <span class="setting__label">Délai après STOP (s)</span>
+            <input class="field__input field__input--num" id="set-grace" type="number" min="0" max="30">
+          </label>
+        </div>
+
+        <label class="toggle">
+          <input type="checkbox" id="set-allowstop">
+          <span>Autoriser le bouton STOP</span>
+        </label>
+
+        <div class="setting">
+          <span class="setting__label">Lettres écartées du tirage</span>
+          <ul class="chips chips--letters" id="chips-letters"></ul>
+        </div>
+      </section>
+    </div>
+
+    <div class="sheet__footer">
+      <button class="btn btn--primary btn--big" id="start-game" type="button">Lancer la partie</button>
+      <p class="footer-note" id="lobby-note">En attente de l'hôte…</p>
+      <button class="btn btn--link" id="leave-lobby" type="button">Quitter le salon</button>
+    </div>
+  </div>
+</main>
+
+<!-- ---------------------------------------------------------- LA MANCHE -->
+<main class="screen screen--board" data-name="round">
+  <div class="board">
+    <div class="board__reveal" id="reveal" hidden>
+      <p class="reveal__round" id="reveal-round">Manche 1</p>
+      <p class="reveal__letter" id="reveal-letter">A</p>
+      <p class="reveal__go">Préparez vos stylos…</p>
+    </div>
+
+    <div class="board__play" id="play" hidden>
+      <header class="board__head">
+        <div class="board__letter" id="play-letter" aria-label="Lettre de la manche">A</div>
+        <div class="board__meta">
+          <p class="board__round" id="play-round">Manche 1 / 5</p>
+          <div class="timer">
+            <div class="timer__bar"><i id="timer-fill"></i></div>
+            <p class="timer__value" id="timer-value" role="timer" aria-live="off">2:30</p>
+          </div>
+        </div>
+        <button class="btn btn--stop" id="stop-btn" type="button">STOP&nbsp;!</button>
+      </header>
+
+      <p class="board__alert" id="stop-alert" hidden></p>
+
+      <form class="grid" id="answers-form" autocomplete="off"></form>
+
+      <footer class="board__foot">
+        <ul class="progress" id="play-progress"></ul>
+      </footer>
+    </div>
+
+    <div class="board__wait" id="spectating" hidden>
+      <p class="wait__title">Manche en cours</p>
+      <p class="wait__note">Tu entres dans la partie à la prochaine manche. Patiente un instant…</p>
+    </div>
+  </div>
+</main>
+
+<!-- ---------------------------------------------------------- DÉPOUILLEMENT -->
+<main class="screen" data-name="review">
+  <div class="sheet">
+    <header class="sheet__head">
+      <p class="sheet__eyebrow">Dépouillement</p>
+      <h2 class="sheet__title">Manche <span id="review-round">1</span> — lettre <span class="ink-letter" id="review-letter">A</span></h2>
+      <p class="sheet__note">Un mot qui ne va pas&nbsp;? Conteste-le. À la majorité, il saute.</p>
+    </header>
+
+    <div class="review" id="review-board"></div>
+
+    <div class="sheet__footer">
+      <button class="btn btn--primary btn--big" id="close-review" type="button">Valider le dépouillement</button>
+      <p class="footer-note" id="review-note">L'hôte valide quand tout le monde a fini.</p>
+    </div>
+  </div>
+</main>
+
+<!-- --------------------------------------------------------------- SCORES -->
+<main class="screen" data-name="scores">
+  <div class="sheet">
+    <header class="sheet__head">
+      <p class="sheet__eyebrow">Scores</p>
+      <h2 class="sheet__title">Après la manche <span id="scores-round">1</span></h2>
+    </header>
+    <ol class="ranking" id="ranking"></ol>
+    <div class="sheet__footer">
+      <button class="btn btn--primary btn--big" id="next-round" type="button">Manche suivante</button>
+      <p class="footer-note" id="scores-note">L'hôte lance la suite.</p>
+    </div>
+  </div>
+</main>
+
+<!-- --------------------------------------------------------------- PODIUM -->
+<main class="screen" data-name="final">
+  <div class="sheet sheet--final">
+    <header class="sheet__head">
+      <p class="sheet__eyebrow">Fin de la partie</p>
+      <h2 class="sheet__title sheet__title--huge">Le verdict</h2>
+    </header>
+    <div class="podium" id="podium"></div>
+    <ol class="ranking ranking--final" id="final-ranking"></ol>
+    <div class="sheet__footer">
+      <button class="btn btn--primary btn--big" id="replay" type="button">Rejouer</button>
+      <p class="footer-note" id="final-note">L'hôte peut relancer une partie avec les mêmes joueurs.</p>
+    </div>
+  </div>
+</main>
+
+<!-- --------------------------------------------------------------- SYSTÈME -->
+<div class="screen screen--boot" data-name="boot">
+  <p class="boot__mark">B</p>
+  <p class="boot__text" id="boot-text">Connexion…</p>
+</div>
+
+<div class="toasts" id="toasts" aria-live="polite"></div>
+<div class="offline" id="offline" hidden>Connexion perdue — reconnexion en cours…</div>
+
+<script src="/app.js"></script>
+</body>
+</html>
