@@ -1,0 +1,11 @@
+packages:
+  - "apps/*"
+  - "packages/*"
+
+# pnpm 10 n'exécute plus les scripts postinstall sans autorisation explicite.
+# Ces paquets compilent des binaires natifs et en ont réellement besoin.
+onlyBuiltDependencies:
+  - "@tailwindcss/oxide"
+  - esbuild
+  - sharp
+  - unrs-resolver

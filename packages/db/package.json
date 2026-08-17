@@ -1,0 +1,36 @@
+{
+  "name": "@calque/db",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./client": "./src/client.ts",
+    "./schema": "./src/schema/index.ts",
+    "./auth-adapter": "./src/auth-adapter.ts",
+    "./testing": "./src/testing.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "tsx src/migrate.ts",
+    "db:studio": "drizzle-kit studio"
+  },
+  "dependencies": {
+    "@auth/core": "0.41.3",
+    "@auth/drizzle-adapter": "1.11.3",
+    "@calque/blueprint": "workspace:*",
+    "@neondatabase/serverless": "1.1.0",
+    "drizzle-orm": "0.45.2",
+    "pg": "8.23.0",
+    "ws": "8.21.3"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "0.5.5",
+    "@types/pg": "8.21.0",
+    "@types/ws": "8.18.1",
+    "drizzle-kit": "0.31.10",
+    "tsx": "4.23.12",
+    "typescript": "5.9.3"
+  }
+}

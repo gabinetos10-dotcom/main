@@ -1,0 +1,70 @@
+{
+  "marque": {
+    "nom": "Calque",
+    "accroche": "Vos clients modifient leur site. Vous gardez le code."
+  },
+  "marketing": {
+    "titre": "Vos clients modifient leur site.\nVous gardez le code.",
+    "sousTitre": "Déposez le site que vous avez livré. Calque détecte ce qui est modifiable, verrouille le reste, et donne à votre client un éditeur qu'il comprend.",
+    "cta": "Créer un compte",
+    "ctaSecondaire": "Voir comment ça marche",
+    "etapes": {
+      "titre": "Trois étapes, dix minutes",
+      "une": {
+        "titre": "Vous déposez le ZIP",
+        "texte": "Le site tel que vous l'avez livré. Aucun format à respecter, aucune convention à adopter, aucun refactoring."
+      },
+      "deux": {
+        "titre": "Calque analyse",
+        "texte": "Textes, images, liens, couleurs, blocs répétables, référencement : ce qui est modifiable est détecté, le reste est verrouillé."
+      },
+      "trois": {
+        "titre": "Votre client édite",
+        "texte": "Il clique sur un texte dans l'aperçu, il tape, il publie. Le site est régénéré à l'identique avec ses contenus."
+      }
+    },
+    "principe": {
+      "titre": "Le code source n'est jamais modifié",
+      "texte": "Les fichiers que vous déposez sont stockés en lecture seule. Ce que votre client change est un calque de contenu posé par-dessus. Vous pouvez re-livrer un nouveau design sans lui faire perdre une ligne."
+    },
+    "pourQui": {
+      "titre": "Pour les agences qui livrent vite",
+      "texte": "Vous codez le site. Votre client gère ses horaires, ses photos et ses tarifs sans vous appeler. Personne ne casse rien."
+    }
+  },
+  "connexion": {
+    "titre": "Connexion",
+    "sousTitre": "Entrez votre adresse email. Vous recevrez un lien de connexion, sans mot de passe à retenir.",
+    "email": "Adresse email",
+    "emailPlaceholder": "vous@exemple.fr",
+    "envoyer": "Recevoir un lien de connexion",
+    "envoiEnCours": "Envoi…",
+    "ou": "ou",
+    "google": "Continuer avec Google",
+    "modeDev": "Aucune clé d'envoi d'email n'est configurée : le lien de connexion apparaîtra dans les logs du serveur."
+  },
+  "verifier": {
+    "titre": "Consultez votre boîte mail",
+    "texte": "Nous venons d'envoyer un lien de connexion. Il est valable 24 heures et ne fonctionne qu'une seule fois.",
+    "aide": "Rien reçu ? Vérifiez vos indésirables, puis réessayez.",
+    "retour": "Revenir à la connexion"
+  },
+  "erreur": {
+    "titre": "La connexion n'a pas abouti",
+    "lienExpire": "Ce lien a expiré ou a déjà été utilisé. Demandez-en un nouveau.",
+    "acces": "Cet accès a été refusé. Contactez l'agence qui gère votre site.",
+    "generique": "Une erreur est survenue. Réessayez dans un instant.",
+    "reessayer": "Réessayer"
+  },
+  "tableauDeBord": {
+    "titre": "Vos sites",
+    "vide": "Aucun site pour l'instant.",
+    "videAide": "Déposez le ZIP d'un site livré pour commencer. L'ingestion arrive à la prochaine étape du produit.",
+    "deconnexion": "Se déconnecter",
+    "connecteEnTantQue": "Connecté en tant que {email}"
+  },
+  "commun": {
+    "retour": "Retour",
+    "chargement": "Chargement…"
+  }
+}

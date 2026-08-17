@@ -1,0 +1,41 @@
+{
+  "name": "calque",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Calque \u2014 vos clients modifient leur site, vous gardez le code.",
+  "packageManager": "pnpm@10.33.0",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "typecheck": "turbo run typecheck",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "e2e": "playwright test -c e2e/playwright.config.ts",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "db:generate": "pnpm --filter @calque/db run db:generate",
+    "db:migrate": "pnpm --filter @calque/db run db:migrate",
+    "db:studio": "pnpm --filter @calque/db run db:studio",
+    "fixtures:assets": "node fixtures/tools/generate-assets.mjs",
+    "db:start": "./scripts/postgres-local.sh start",
+    "db:stop": "./scripts/postgres-local.sh stop"
+  },
+  "devDependencies": {
+    "@eslint/js": "9.39.5",
+    "@next/eslint-plugin-next": "15.5.23",
+    "@playwright/test": "1.62.1",
+    "@types/node": "22.20.1",
+    "eslint": "9.39.5",
+    "eslint-plugin-react-hooks": "7.1.1",
+    "prettier": "3.9.6",
+    "turbo": "2.10.10",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.67.0",
+    "vitest": "3.2.7"
+  }
+}

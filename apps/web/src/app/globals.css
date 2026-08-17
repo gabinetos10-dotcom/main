@@ -1,0 +1,11 @@
+@import "tailwindcss";
+@import "@calque/ui/theme.css";
+@import "./fonts.css";
+
+/*
+ * Tailwind v4 découvre les classes en scannant le projet. Dans un monorepo il
+ * faut lui indiquer explicitement les packages partagés, sinon les classes
+ * utilisées dans @calque/ui sont purgées du CSS final.
+ */
+@source "../../src";
+@source "../../../../packages/ui/src";

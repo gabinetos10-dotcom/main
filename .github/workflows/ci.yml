@@ -1,0 +1,99 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Aucune valeur réelle : la CI ne parle à aucun service tiers.
+  AUTH_SECRET: secret-de-ci-jamais-utilise-ailleurs
+  NEXT_TELEMETRY_DISABLED: "1"
+
+jobs:
+  verification:
+    name: Types, lint et tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Vérification des types
+        run: pnpm typecheck
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Format
+        run: pnpm format:check
+
+      # Les tests tournent sur PGlite : un vrai Postgres embarqué, sans service.
+      - name: Tests unitaires et d'intégration
+        run: pnpm test
+
+      - name: Build
+        run: pnpm build
+
+  e2e:
+    name: Parcours de bout en bout
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: calque
+          POSTGRES_DB: calque
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+        ports:
+          - 5432:5432
+    env:
+      DATABASE_DRIVER: pg
+      DATABASE_URL: postgres://postgres:calque@127.0.0.1:5432/calque
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Migrations
+        run: pnpm db:migrate
+
+      - name: Navigateurs Playwright
+        run: pnpm exec playwright install --with-deps chromium
+
+      # Le parcours complet : demande de lien, clic, session, déconnexion.
+      # Sans clé Resend, le lien est déposé dans un fichier au lieu d'être envoyé.
+      - name: Playwright
+        run: pnpm e2e
+
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: rapport-playwright
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 7
+          if-no-files-found: ignore

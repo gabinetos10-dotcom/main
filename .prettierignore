@@ -1,0 +1,15 @@
+node_modules/
+.next/
+dist/
+.turbo/
+coverage/
+playwright-report/
+test-results/
+.data/
+pnpm-lock.yaml
+packages/db/drizzle/
+# Les fixtures imitent du code livré par une agence : les reformater leur ferait
+# perdre exactement ce qu'elles servent à tester (§2).
+fixtures/
+apps/web/public/
+.claude/

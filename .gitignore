@@ -1,0 +1,37 @@
+node_modules/
+.pnpm-store/
+
+# builds
+dist/
+.next/
+out/
+*.tsbuildinfo
+
+# turbo
+.turbo/
+
+# env
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# tests
+coverage/
+test-results/
+playwright-report/
+blob-report/
+.playwright/
+
+# bases locales
+*.pglite/
+.data/
+
+# outils
+.DS_Store
+.vscode/
+!.vscode/extensions.json
+.idea/
+
+# sentry
+.sentryclirc

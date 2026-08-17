@@ -1,0 +1,96 @@
+/*
+ * Design system Calque — Tailwind v4, configuration CSS-first.
+ *
+ * Ton : sobre, artisanal, rassurant, français (§2).
+ * La palette est volontairement courte : deux neutres et deux accents.
+ */
+
+@theme {
+  /* Encre — texte, surfaces sombres */
+  --color-encre-950: #0b0e12;
+  --color-encre-900: #151a21;
+  --color-encre-800: #232a33;
+  --color-encre-700: #39424e;
+  --color-encre-500: #6b7684;
+  --color-encre-300: #a8b1bc;
+
+  /* Papier — fonds */
+  --color-papier-50: #fdfcfa;
+  --color-papier-100: #faf8f4;
+  --color-papier-200: #f2eee6;
+  --color-papier-300: #e5dfd3;
+
+  /* Accent froid — actions primaires */
+  --color-bleu-700: #1f3fa8;
+  --color-bleu-600: #2f5ce0;
+  --color-bleu-500: #4d75e8;
+  --color-bleu-100: #e4eafb;
+
+  /* Accent chaud — mises en avant */
+  --color-ambre-700: #a94d21;
+  --color-ambre-600: #e0703a;
+  --color-ambre-500: #ea8d5f;
+  --color-ambre-100: #fbeade;
+
+  /* États */
+  --color-succes-600: #2f7d4f;
+  --color-alerte-600: #b4682a;
+  --color-erreur-600: #b3352f;
+
+  /* Typographie — fontes auto-hébergées, déclarées dans apps/web/src/app/fonts.css */
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: "Instrument Serif", ui-serif, Georgia, serif;
+
+  --radius-calque: 0.5rem;
+
+  /* Ombres discrètes : le produit doit avoir l'air posé, pas flottant */
+  --shadow-calque-sm: 0 1px 2px rgb(21 26 33 / 0.06);
+  --shadow-calque: 0 2px 8px rgb(21 26 33 / 0.07);
+  --shadow-calque-lg: 0 8px 28px rgb(21 26 33 / 0.09);
+}
+
+@layer base {
+  :root {
+    --calque-fond: var(--color-papier-100);
+    --calque-texte: var(--color-encre-900);
+    --calque-bordure: var(--color-papier-300);
+    --calque-accent: var(--color-bleu-600);
+  }
+
+  body {
+    background-color: var(--calque-fond);
+    color: var(--calque-texte);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Focus toujours visible : exigence d'accessibilité non négociable (§12). */
+  :focus-visible {
+    outline: 2px solid var(--color-bleu-600);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  ::selection {
+    background-color: var(--color-bleu-100);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@utility titre-display {
+  font-family: var(--font-display);
+  font-weight: 400;
+  letter-spacing: -0.015em;
+  line-height: 1.08;
+}

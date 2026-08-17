@@ -1,0 +1,70 @@
+{
+  "marque": {
+    "nom": "Calque",
+    "accroche": "Your clients edit their site. You keep the code."
+  },
+  "marketing": {
+    "titre": "Your clients edit their site.\nYou keep the code.",
+    "sousTitre": "Drop in the site you already shipped. Calque finds what can be edited, locks everything else, and hands your client an editor they understand.",
+    "cta": "Create an account",
+    "ctaSecondaire": "See how it works",
+    "etapes": {
+      "titre": "Three steps, ten minutes",
+      "une": {
+        "titre": "You drop the ZIP",
+        "texte": "The site exactly as you shipped it. No format to follow, no convention to adopt, no refactoring."
+      },
+      "deux": {
+        "titre": "Calque analyses it",
+        "texte": "Text, images, links, colours, repeatable blocks, SEO: what can be edited is detected, everything else is locked."
+      },
+      "trois": {
+        "titre": "Your client edits",
+        "texte": "They click a heading in the preview, they type, they publish. The site is rebuilt identically with their content."
+      }
+    },
+    "principe": {
+      "titre": "The source code is never modified",
+      "texte": "The files you upload are stored read-only. What your client changes is a content layer on top. You can ship a new design without losing a single line of their work."
+    },
+    "pourQui": {
+      "titre": "For agencies that ship fast",
+      "texte": "You build the site. Your client updates their hours, photos and prices without calling you. Nobody breaks anything."
+    }
+  },
+  "connexion": {
+    "titre": "Sign in",
+    "sousTitre": "Enter your email address. We'll send you a sign-in link — no password to remember.",
+    "email": "Email address",
+    "emailPlaceholder": "you@example.com",
+    "envoyer": "Send me a sign-in link",
+    "envoiEnCours": "Sending…",
+    "ou": "or",
+    "google": "Continue with Google",
+    "modeDev": "No email delivery key is configured: the sign-in link will appear in the server logs."
+  },
+  "verifier": {
+    "titre": "Check your inbox",
+    "texte": "We've sent you a sign-in link. It's valid for 24 hours and works only once.",
+    "aide": "Nothing came through? Check your spam folder, then try again.",
+    "retour": "Back to sign in"
+  },
+  "erreur": {
+    "titre": "Sign-in didn't work",
+    "lienExpire": "This link has expired or has already been used. Request a new one.",
+    "acces": "Access was denied. Contact the agency that manages your site.",
+    "generique": "Something went wrong. Please try again in a moment.",
+    "reessayer": "Try again"
+  },
+  "tableauDeBord": {
+    "titre": "Your sites",
+    "vide": "No sites yet.",
+    "videAide": "Upload the ZIP of a delivered site to get started. Ingestion arrives in the next stage of the product.",
+    "deconnexion": "Sign out",
+    "connecteEnTantQue": "Signed in as {email}"
+  },
+  "commun": {
+    "retour": "Back",
+    "chargement": "Loading…"
+  }
+}
