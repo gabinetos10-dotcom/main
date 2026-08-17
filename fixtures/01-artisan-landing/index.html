@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Menuiserie Rousseau — Agencement sur mesure à Annecy</title>
+<meta name="description" content="Atelier de menuiserie à Annecy depuis 1998. Cuisines, escaliers, bibliothèques et agencements sur mesure en bois massif.">
+<meta property="og:title" content="Menuiserie Rousseau — Agencement sur mesure">
+<meta property="og:description" content="Cuisines, escaliers et bibliothèques sur mesure, en bois massif, façonnés dans notre atelier d'Annecy.">
+<meta property="og:image" content="assets/og.jpg">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://menuiserie-rousseau.fr/">
+<link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          bois: { 900: '#3b2a1d', 700: '#7a5433', 500: '#c08b52', 200: '#e0c39a' },
+          creme: '#faf6ef'
+        },
+        fontFamily: { titre: ['Georgia', 'serif'] }
+      }
+    }
+  }
+</script>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-creme text-bois-900 antialiased">
+
+<header class="border-b border-bois-200 bg-creme/95 sticky top-0 z-40 backdrop-blur">
+  <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+    <a href="#accueil" class="flex items-center gap-3">
+      <img src="assets/logo.svg" alt="Logo Menuiserie Rousseau" width="40" height="40">
+      <span class="font-titre text-lg tracking-tight">Menuiserie Rousseau</span>
+    </a>
+    <nav aria-label="Navigation principale">
+      <ul class="hidden md:flex items-center gap-7 text-sm">
+        <li><a href="#services" class="hover:text-bois-700">Nos services</a></li>
+        <li><a href="#realisations" class="hover:text-bois-700">Réalisations</a></li>
+        <li><a href="#avis" class="hover:text-bois-700">Avis</a></li>
+        <li><a href="#questions" class="hover:text-bois-700">Questions</a></li>
+        <li><a href="#contact" class="hover:text-bois-700">Contact</a></li>
+      </ul>
+    </nav>
+    <a href="tel:+33450123456" class="btn-primaire text-sm">04 50 12 34 56</a>
+  </div>
+</header>
+
+<main id="accueil">
+
+  <section class="relative">
+    <img src="assets/hero.jpg" alt="Atelier de menuiserie" class="w-full h-[420px] md:h-[540px] object-cover" width="1600" height="900">
+    <div class="absolute inset-0 bg-bois-900/55"></div>
+    <div class="absolute inset-0 flex items-center">
+      <div class="max-w-6xl mx-auto px-6 w-full">
+        <p class="text-bois-200 tracking-[0.2em] text-xs uppercase mb-4">Annecy · depuis 1998</p>
+        <h1 class="font-titre text-4xl md:text-6xl text-creme leading-tight max-w-2xl">Le bois massif, façonné pour durer</h1>
+        <p class="text-creme/90 mt-6 max-w-xl text-lg">Cuisines, escaliers, bibliothèques : nous dessinons et fabriquons chaque pièce dans notre atelier, sans sous-traitance.</p>
+        <div class="mt-9 flex flex-wrap gap-4">
+          <a href="#contact" class="btn-primaire">Demander un devis</a>
+          <a href="#realisations" class="btn-secondaire">Voir nos réalisations</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="border-b border-bois-200">
+    <div class="max-w-6xl mx-auto px-6 py-12 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+      <div>
+        <p class="font-titre text-4xl text-bois-700 counter" data-count="27">0</p>
+        <p class="text-sm mt-1 text-bois-700">années d'atelier</p>
+      </div>
+      <div>
+        <p class="font-titre text-4xl text-bois-700 counter" data-count="640">0</p>
+        <p class="text-sm mt-1 text-bois-700">chantiers livrés</p>
+      </div>
+      <div>
+        <p class="font-titre text-4xl text-bois-700 counter" data-count="6">0</p>
+        <p class="text-sm mt-1 text-bois-700">compagnons</p>
+      </div>
+      <div>
+        <p class="font-titre text-4xl text-bois-700 counter" data-count="100">0</p>
+        <p class="text-sm mt-1 text-bois-700">% bois français</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="services" class="max-w-6xl mx-auto px-6 py-20">
+    <h2 class="font-titre text-3xl md:text-4xl">Ce que nous fabriquons</h2>
+    <p class="mt-4 text-bois-700 max-w-2xl">Chaque projet commence par une visite sur place et un dessin. Rien n'est catalogue.</p>
+
+    <div class="grid md:grid-cols-3 gap-8 mt-12">
+
+      <article class="carte">
+        <img src="assets/cuisine.jpg" alt="Cuisine en chêne massif" class="w-full h-52 object-cover rounded-t-lg" width="800" height="600">
+        <div class="p-6">
+          <h3 class="font-titre text-xl">Cuisines sur mesure</h3>
+          <p class="mt-3 text-sm text-bois-700 leading-relaxed">Façades en chêne, frêne ou noyer, plans de travail massifs, quincaillerie allemande. Pensées pour la façon dont vous cuisinez vraiment.</p>
+          <a href="#contact" class="lien-carte">Demander un devis</a>
+        </div>
+      </article>
+
+      <article class="carte carte--populaire">
+        <span class="badge">Le plus demandé</span>
+        <img src="assets/escalier.jpg" alt="Escalier tournant en frêne" class="w-full h-52 object-cover rounded-t-lg" width="800" height="600">
+        <div class="p-6">
+          <h3 class="font-titre text-xl">Escaliers</h3>
+          <p class="mt-3 text-sm text-bois-700 leading-relaxed">Droits, tournants ou hélicoïdaux. Relevé laser, fabrication en atelier, pose en une journée.</p>
+          <a href="#contact" class="lien-carte">Demander un devis</a>
+        </div>
+      </article>
+
+      <article class="carte">
+        <div class="p-6">
+          <h3 class="font-titre text-xl">Bibliothèques et rangements</h3>
+          <p class="mt-3 text-sm text-bois-700 leading-relaxed">Du sol au plafond, dans les combles, sous l'escalier. Nous travaillons les volumes que personne d'autre ne veut prendre.</p>
+          <a href="#contact" class="lien-carte">Demander un devis</a>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <section id="realisations" class="bg-bois-900 text-creme">
+    <div class="max-w-6xl mx-auto px-6 py-20">
+      <h2 class="font-titre text-3xl md:text-4xl">L'atelier</h2>
+      <p class="mt-4 text-bois-200 max-w-2xl">Six compagnons, 400 m² d'atelier, et des machines que nous entretenons nous-mêmes.</p>
+      <img src="assets/equipe.jpg" alt="L'équipe de la menuiserie devant l'atelier" class="mt-10 w-full rounded-lg" width="1200" height="800">
+    </div>
+  </section>
+
+  <section id="avis" class="max-w-6xl mx-auto px-6 py-20">
+    <h2 class="font-titre text-3xl md:text-4xl">Ce qu'en disent nos clients</h2>
+
+    <div class="grid md:grid-cols-3 gap-8 mt-12">
+      <article class="temoignage">
+        <blockquote class="text-bois-900 leading-relaxed">« Ils ont refait toute la cuisine en trois semaines, sans un jour de retard. Le devis était le prix final. »</blockquote>
+        <cite class="mt-5 block text-sm not-italic text-bois-700">Hélène M. — Annecy-le-Vieux</cite>
+      </article>
+      <article class="temoignage">
+        <blockquote class="text-bois-900 leading-relaxed">« L'escalier est devenu la première chose qu'on remarque en entrant. On ne s'y attendait pas. »</blockquote>
+        <cite class="mt-5 block text-sm not-italic text-bois-700">Julien et Sophie R. — Sévrier</cite>
+      </article>
+      <article class="temoignage">
+        <blockquote class="text-bois-900 leading-relaxed">« Un vrai artisan : il nous a déconseillé une option qui coûtait plus cher et servait à rien. »</blockquote>
+        <cite class="mt-5 block text-sm not-italic text-bois-700">Marc D. — Menthon-Saint-Bernard</cite>
+      </article>
+    </div>
+  </section>
+
+  <section id="questions" class="bg-white border-y border-bois-200">
+    <div class="max-w-3xl mx-auto px-6 py-20">
+      <h2 class="font-titre text-3xl md:text-4xl">Questions fréquentes</h2>
+
+      <div class="mt-10 divide-y divide-bois-200">
+        <details class="py-5">
+          <summary class="font-medium cursor-pointer">Combien de temps faut-il compter&nbsp;?</summary>
+          <p class="mt-3 text-bois-700 leading-relaxed">Entre six et dix semaines entre la signature et la pose, selon l'essence choisie et notre plan de charge. Nous donnons une date ferme au moment du devis.</p>
+        </details>
+        <details class="py-5">
+          <summary class="font-medium cursor-pointer">Travaillez-vous en dehors de la Haute-Savoie&nbsp;?</summary>
+          <p class="mt-3 text-bois-700 leading-relaxed">Nous intervenons dans un rayon de 60 km autour d'Annecy. Au-delà, seulement pour des chantiers d'agencement complet.</p>
+        </details>
+        <details class="py-5">
+          <summary class="font-medium cursor-pointer">D'où vient le bois&nbsp;?</summary>
+          <p class="mt-3 text-bois-700 leading-relaxed">De scieries du Jura et des Vosges, toutes certifiées PEFC. Nous pouvons vous montrer la provenance exacte de chaque lot.</p>
+        </details>
+        <details class="py-5">
+          <summary class="font-medium cursor-pointer">Le devis est-il payant&nbsp;?</summary>
+          <p class="mt-3 text-bois-700 leading-relaxed">Non. La visite, le relevé et le dessin de principe sont gratuits et sans engagement.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" class="max-w-6xl mx-auto px-6 py-20">
+    <div class="grid md:grid-cols-2 gap-14">
+      <div>
+        <h2 class="font-titre text-3xl md:text-4xl">Parlons de votre projet</h2>
+        <p class="mt-4 text-bois-700 leading-relaxed">Décrivez-nous ce que vous avez en tête. Nous rappelons sous deux jours ouvrés.</p>
+
+        <dl class="mt-10 space-y-4 text-sm">
+          <div>
+            <dt class="text-bois-700">Atelier</dt>
+            <dd class="mt-1">14 route des Creuses, 74960 Annecy</dd>
+          </div>
+          <div>
+            <dt class="text-bois-700">Téléphone</dt>
+            <dd class="mt-1"><a href="tel:+33450123456" class="underline underline-offset-4">04 50 12 34 56</a></dd>
+          </div>
+          <div>
+            <dt class="text-bois-700">Courriel</dt>
+            <dd class="mt-1"><a href="mailto:atelier@menuiserie-rousseau.fr" class="underline underline-offset-4">atelier@menuiserie-rousseau.fr</a></dd>
+          </div>
+          <div>
+            <dt class="text-bois-700">Horaires</dt>
+            <dd class="mt-1">Du lundi au vendredi, 8h – 18h</dd>
+          </div>
+        </dl>
+      </div>
+
+      <form action="https://formspree.io/f/xnqkldvz" method="POST" class="space-y-5">
+        <div>
+          <label for="nom" class="block text-sm mb-1.5">Votre nom</label>
+          <input id="nom" name="nom" type="text" required class="champ">
+        </div>
+        <div>
+          <label for="courriel" class="block text-sm mb-1.5">Votre email</label>
+          <input id="courriel" name="courriel" type="email" required class="champ">
+        </div>
+        <div>
+          <label for="projet" class="block text-sm mb-1.5">Votre projet</label>
+          <textarea id="projet" name="projet" rows="5" class="champ"></textarea>
+        </div>
+        <button type="submit" class="btn-primaire w-full">Envoyer ma demande</button>
+      </form>
+    </div>
+  </section>
+
+</main>
+
+<footer class="bg-bois-900 text-bois-200">
+  <div class="max-w-6xl mx-auto px-6 py-14 grid md:grid-cols-3 gap-10 text-sm">
+    <div>
+      <p class="font-titre text-creme text-lg">Menuiserie Rousseau</p>
+      <p class="mt-3 leading-relaxed">14 route des Creuses<br>74960 Annecy</p>
+      <p class="mt-3"><a href="tel:+33450123456">04 50 12 34 56</a></p>
+      <p><a href="mailto:atelier@menuiserie-rousseau.fr">atelier@menuiserie-rousseau.fr</a></p>
+    </div>
+    <div>
+      <p class="text-creme">Nous suivre</p>
+      <ul class="mt-3 space-y-2">
+        <li><a href="https://www.instagram.com/menuiserie.rousseau">Instagram</a></li>
+        <li><a href="https://www.facebook.com/menuiserierousseau">Facebook</a></li>
+      </ul>
+    </div>
+    <div>
+      <p class="text-creme">Informations</p>
+      <ul class="mt-3 space-y-2">
+        <li><a href="#questions">Questions fréquentes</a></li>
+        <li><a href="mentions-legales.html">Mentions légales</a></li>
+        <li><a href="mentions-legales.html#donnees">Données personnelles</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="border-t border-bois-700/40">
+    <p class="max-w-6xl mx-auto px-6 py-6 text-xs">© 2026 Menuiserie Rousseau — SIRET 419 872 334 00021</p>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>

@@ -10,6 +10,6 @@ pnpm-lock.yaml
 packages/db/drizzle/
 # Les fixtures imitent du code livré par une agence : les reformater leur ferait
 # perdre exactement ce qu'elles servent à tester (§2).
-fixtures/
+fixtures/0*/
 apps/web/public/
 .claude/

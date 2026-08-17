@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" role="img" aria-label="Menuiserie Rousseau">
+  <rect width="48" height="48" rx="8" fill="#3b2a1d"/>
+  <path d="M12 34 L24 14 L36 34 Z" fill="none" stroke="#c08b52" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M18 34 H30" stroke="#e0c39a" stroke-width="3" stroke-linecap="round"/>
+</svg>

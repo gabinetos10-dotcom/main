@@ -1,0 +1,207 @@
+{
+  "fixture": "02-restaurant-multipage",
+  "description": "Bistrot lyonnais, quatre pages, CSS écrit à la main avec des variables sur :root. Représente le site d'agence « propre » : structure cohérente, en-tête et pied de page dupliqués sur chaque page.",
+  "exercises": [
+    "Quatre pages partageant un en-tête et un pied de page identiques : le menu et les listes de liens ne doivent jamais devenir des collections éditables (§9.3, faux positifs).",
+    "Variables CSS sur :root et [data-theme] : extraction directe des jetons de thème, sans passer par le comptage de couleurs (§9.4).",
+    "Carte du restaurant en <table> : les td et th sont des champs texte, la structure du tableau ne l'est pas.",
+    "Horaires en <dl> : dt et dd forment une collection à deux champs.",
+    "Galerie mêlant <picture><source> et <img> simples : deux formes pour un même type de champ image.",
+    "iframe Google Maps : le client édite une adresse, jamais une URL d'iframe (§9.2, type map-embed).",
+    "Deux formulaires distincts vers des endpoints Formspree différents.",
+    "Téléphone et courriel répétés sur les quatre pages : un champ global, pas huit champs (§9.2, type contact).",
+    "@import de Google Fonts dans le CSS : détection des polices Playfair Display et Inter.",
+    "Bandeau d'information écrit par JavaScript : avertissement DYNAMIC_TEXT."
+  ],
+  "entry": "index.html",
+  "themeTokens": [
+    "--couleur-primaire",
+    "--couleur-primaire-clair",
+    "--couleur-accent",
+    "--couleur-fond",
+    "--couleur-fond-alt",
+    "--couleur-texte",
+    "--couleur-texte-doux",
+    "--couleur-bordure",
+    "--police-titre",
+    "--police-texte",
+    "--rayon",
+    "--rayon-large",
+    "--ombre-douce",
+    "--ombre-carte"
+  ],
+  "themeFonts": ["Playfair Display", "Inter"],
+  "expectedWarnings": ["DYNAMIC_TEXT"],
+  "pages": [
+    {
+      "path": "index.html",
+      "label": "Accueil",
+      "seo": { "title": true, "description": true, "ogImage": true },
+      "fields": [
+        { "selector": "header .marque", "type": "text", "label": "Nom du restaurant", "critical": true },
+        { "selector": "main > section:nth-of-type(1) img", "type": "image", "label": "Visuel principal", "critical": true },
+        { "selector": "main > section:nth-of-type(1) p:nth-of-type(1)", "type": "text", "label": "Accroche courte" },
+        { "selector": "main > section:nth-of-type(1) h1", "type": "text", "label": "Titre principal", "critical": true },
+        { "selector": "main > section:nth-of-type(1) p:nth-of-type(2)", "type": "text", "label": "Sous-titre", "critical": true },
+        { "selector": "main > section:nth-of-type(1) a.bouton", "type": "cta", "label": "Bouton de réservation", "critical": true },
+        { "selector": "main > section:nth-of-type(1) a.bouton-fantome", "type": "cta", "label": "Bouton secondaire" },
+
+        { "selector": "main > section:nth-of-type(2) h2", "type": "text", "label": "Titre de section", "critical": true },
+        { "selector": "main > section:nth-of-type(2) > div > p", "type": "text", "label": "Introduction de section" },
+
+        { "selector": "main > section:nth-of-type(3) h2", "type": "text", "label": "Titre de section" },
+        { "selector": "main > section:nth-of-type(3) div > div:nth-of-type(1) p:nth-of-type(1)", "type": "text", "label": "Présentation, premier paragraphe", "critical": true },
+        { "selector": "main > section:nth-of-type(3) div > div:nth-of-type(1) p:nth-of-type(2)", "type": "text", "label": "Présentation, second paragraphe" },
+        { "selector": "main > section:nth-of-type(3) img", "type": "image", "label": "Portrait de la cheffe", "critical": true },
+
+        { "selector": "main > section:nth-of-type(4) div > div:nth-of-type(1) h2", "type": "text", "label": "Titre horaires" },
+        { "selector": "main > section:nth-of-type(4) div > div:nth-of-type(2) h2", "type": "text", "label": "Titre adresse" },
+        { "selector": "main > section:nth-of-type(4) div > div:nth-of-type(2) p:nth-of-type(1)", "type": "richtext", "label": "Adresse", "critical": true },
+        { "selector": "main a[href^='tel:']", "type": "contact", "label": "Téléphone", "critical": true },
+        { "selector": "main a[href^='mailto:']", "type": "contact", "label": "Adresse email", "critical": true },
+
+        { "selector": "footer div:nth-of-type(1) p", "type": "richtext", "label": "Adresse en pied de page" },
+        { "selector": "footer a[href*='instagram']", "type": "social", "label": "Instagram", "critical": true },
+        { "selector": "footer a[href*='facebook']", "type": "social", "label": "Facebook", "critical": true },
+        { "selector": "footer .mentions p", "type": "text", "label": "Mention de copyright" }
+      ],
+      "collections": [
+        {
+          "containerSelector": "main > section:nth-of-type(2) .grille-plats",
+          "label": "Plats du moment",
+          "minItems": 4,
+          "itemFields": ["image", "text", "text", "text"],
+          "heterogeneous": false
+        },
+        {
+          "containerSelector": "main > section:nth-of-type(4) .horaires",
+          "label": "Horaires",
+          "minItems": 4,
+          "itemFields": ["text", "text"],
+          "heterogeneous": false,
+          "note": "Chaque <div> du <dl> porte un dt et un dd : deux champs par item."
+        }
+      ],
+      "mustBeLocked": [
+        {
+          "selector": ".menu-principal ul",
+          "reason": "navigation",
+          "note": "Quatre <li> identiques, répétés à l'identique sur les quatre pages. Le cas de faux positif le plus dangereux du produit."
+        },
+        { "selector": ".pied ul", "reason": "navigation", "note": "Listes de liens du pied de page." },
+        { "selector": "script", "reason": "script" },
+        { "selector": "link", "reason": "head" }
+      ]
+    },
+    {
+      "path": "menu.html",
+      "label": "La carte",
+      "seo": { "title": true, "description": true, "ogImage": true },
+      "fields": [
+        { "selector": "main h1", "type": "text", "label": "Titre de la page", "critical": true },
+        { "selector": "main > section > div > p:nth-of-type(1)", "type": "text", "label": "Introduction" },
+        { "selector": "table:nth-of-type(1) caption", "type": "text", "label": "Titre : entrées", "critical": true },
+        { "selector": "table:nth-of-type(2) caption", "type": "text", "label": "Titre : plats", "critical": true },
+        { "selector": "table:nth-of-type(3) caption", "type": "text", "label": "Titre : desserts", "critical": true },
+        { "selector": "table:nth-of-type(1) thead th:nth-of-type(1)", "type": "text", "label": "En-tête de colonne" },
+        { "selector": "table:nth-of-type(1) tbody tr:nth-of-type(1) td:nth-of-type(1)", "type": "text", "label": "Nom du plat", "critical": true },
+        { "selector": "table:nth-of-type(1) tbody tr:nth-of-type(1) td:nth-of-type(2)", "type": "text", "label": "Description du plat", "critical": true },
+        { "selector": "table:nth-of-type(1) tbody tr:nth-of-type(1) td:nth-of-type(3)", "type": "text", "label": "Prix", "critical": true },
+        { "selector": "main a.bouton", "type": "cta", "label": "Bouton de réservation" }
+      ],
+      "collections": [
+        {
+          "containerSelector": "table:nth-of-type(1) tbody",
+          "label": "Entrées",
+          "minItems": 3,
+          "itemFields": ["text", "text", "text"],
+          "heterogeneous": false,
+          "note": "Les lignes du tableau sont une collection ; l'en-tête et la structure du tableau ne le sont pas."
+        },
+        {
+          "containerSelector": "table:nth-of-type(2) tbody",
+          "label": "Plats",
+          "minItems": 4,
+          "itemFields": ["text", "text", "text"],
+          "heterogeneous": false
+        },
+        {
+          "containerSelector": "table:nth-of-type(3) tbody",
+          "label": "Desserts",
+          "minItems": 2,
+          "itemFields": ["text", "text", "text"],
+          "heterogeneous": false
+        }
+      ],
+      "mustBeLocked": [
+        { "selector": ".menu-principal ul", "reason": "navigation" },
+        { "selector": ".pied ul", "reason": "navigation" }
+      ]
+    },
+    {
+      "path": "galerie.html",
+      "label": "Galerie",
+      "seo": { "title": true, "description": true, "ogImage": true },
+      "fields": [
+        { "selector": "main h1", "type": "text", "label": "Titre de la page", "critical": true },
+        { "selector": "main > section > div > p", "type": "text", "label": "Introduction" }
+      ],
+      "collections": [
+        {
+          "containerSelector": ".galerie",
+          "label": "Photos de la galerie",
+          "minItems": 4,
+          "itemFields": ["image", "text"],
+          "heterogeneous": true,
+          "note": "Trois figures utilisent <picture><source>, la quatrième un <img> simple. L'empreinte diffère alors que le rôle est identique."
+        }
+      ],
+      "mustBeLocked": [
+        { "selector": ".menu-principal ul", "reason": "navigation" },
+        { "selector": ".pied ul", "reason": "navigation" }
+      ]
+    },
+    {
+      "path": "contact.html",
+      "label": "Réserver",
+      "seo": { "title": true, "description": true, "ogImage": true },
+      "fields": [
+        { "selector": "main h1", "type": "text", "label": "Titre de la page", "critical": true },
+        { "selector": "main > section > div > p", "type": "text", "label": "Introduction" },
+        { "selector": "main form", "type": "form-endpoint", "label": "Destination du formulaire de réservation", "critical": true },
+        { "selector": "label[for='nom']", "type": "text", "label": "Libellé : nom" },
+        { "selector": "label[for='telephone']", "type": "text", "label": "Libellé : téléphone" },
+        { "selector": "label[for='date']", "type": "text", "label": "Libellé : date" },
+        { "selector": "label[for='couverts']", "type": "text", "label": "Libellé : nombre de personnes" },
+        { "selector": "main button[type='submit']", "type": "text", "label": "Texte du bouton d'envoi" },
+        { "selector": ".deux-colonnes > div:nth-of-type(2) h2:nth-of-type(1)", "type": "text", "label": "Titre : nous joindre" },
+        { "selector": ".deux-colonnes > div:nth-of-type(2) p:nth-of-type(1)", "type": "richtext", "label": "Adresse", "critical": true },
+        {
+          "selector": "iframe.plan",
+          "type": "map-embed",
+          "label": "Adresse affichée sur le plan",
+          "critical": true,
+          "note": "Le client saisit une adresse. L'URL d'iframe est reconstruite, jamais éditée directement."
+        }
+      ],
+      "collections": [
+        {
+          "containerSelector": ".horaires",
+          "label": "Horaires",
+          "minItems": 4,
+          "itemFields": ["text", "text"],
+          "heterogeneous": false
+        }
+      ],
+      "mustBeLocked": [
+        { "selector": ".menu-principal ul", "reason": "navigation" },
+        { "selector": ".pied ul", "reason": "navigation" },
+        {
+          "selector": "main form p",
+          "reason": "wrapper-vide",
+          "note": "Les <p> qui enveloppent les champs de formulaire ne portent pas de texte propre : ce sont des conteneurs de mise en page."
+        }
+      ]
+    }
+  ]
+}

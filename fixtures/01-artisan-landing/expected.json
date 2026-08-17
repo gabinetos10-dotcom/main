@@ -1,0 +1,206 @@
+{
+  "fixture": "01-artisan-landing",
+  "description": "Landing one-page d'un menuisier à Annecy. Tailwind CDN, CSS d'appoint, JavaScript vanilla. Représente le cas le plus courant : un site livré vite, sans convention, sans annotation.",
+  "exercises": [
+    "Collection hétérogène : trois cartes services dont une porte un badge et une n'a pas d'image. L'égalité stricte d'empreinte du §9.3 les séparerait en trois groupes d'un seul membre, donc en aucune collection.",
+    "Collection homogène de témoignages, pour contraster avec la précédente.",
+    "FAQ en <details>/<summary> : le summary est un titre éditable, pas un bouton.",
+    "Compteurs animés écrits par JavaScript (data-count) : verrouillage obligatoire, leur contenu HTML étant « 0 ».",
+    "Téléphone et courriel présents dans l'en-tête, la section contact et le pied de page : un seul champ global synchronisé (§9.2, type contact).",
+    "Menu de navigation et liste de liens du pied de page : groupes répétitifs qui ne sont pas des collections éditables (§9.3, faux positifs).",
+    "form[action] vers un service tiers : seuls l'endpoint et les libellés sont éditables.",
+    "Aucune variable CSS : le thème doit se déduire du comptage des couleurs, en opt-in admin."
+  ],
+  "entry": "index.html",
+  "themeTokens": [],
+  "themeFonts": ["Georgia"],
+  "expectedWarnings": ["TAILWIND_CDN", "NO_CSS_VARIABLES", "DYNAMIC_TEXT"],
+  "pages": [
+    {
+      "path": "index.html",
+      "label": "Accueil",
+      "seo": { "title": true, "description": true, "ogImage": true },
+      "fields": [
+        {
+          "selector": "header a[href='#accueil'] span",
+          "type": "text",
+          "label": "Nom de l'entreprise",
+          "critical": true
+        },
+        { "selector": "header img", "type": "image", "label": "Logo" },
+        {
+          "selector": "header a[href^='tel:']",
+          "type": "contact",
+          "label": "Téléphone",
+          "critical": true,
+          "note": "Même valeur que dans la section contact et le pied de page : un seul champ global."
+        },
+
+        {
+          "selector": "main > section:nth-of-type(1) p:nth-of-type(1)",
+          "type": "text",
+          "label": "Accroche courte"
+        },
+        {
+          "selector": "main > section:nth-of-type(1) h1",
+          "type": "text",
+          "label": "Titre principal",
+          "critical": true
+        },
+        {
+          "selector": "main > section:nth-of-type(1) p:nth-of-type(2)",
+          "type": "text",
+          "label": "Sous-titre",
+          "critical": true
+        },
+        {
+          "selector": "main > section:nth-of-type(1) img",
+          "type": "image",
+          "label": "Visuel principal",
+          "critical": true
+        },
+        {
+          "selector": "main > section:nth-of-type(1) a[href='#contact']",
+          "type": "cta",
+          "label": "Bouton principal",
+          "critical": true
+        },
+        {
+          "selector": "main > section:nth-of-type(1) a[href='#realisations']",
+          "type": "cta",
+          "label": "Bouton secondaire"
+        },
+
+        {
+          "selector": "main > section:nth-of-type(2) div > div:nth-of-type(1) p:nth-of-type(2)",
+          "type": "text",
+          "label": "Libellé du premier chiffre",
+          "note": "Le libellé est éditable ; le chiffre au-dessus ne l'est pas."
+        },
+        {
+          "selector": "main > section:nth-of-type(2) div > div:nth-of-type(2) p:nth-of-type(2)",
+          "type": "text",
+          "label": "Libellé du deuxième chiffre"
+        },
+
+        {
+          "selector": "#services h2",
+          "type": "text",
+          "label": "Titre de section",
+          "critical": true
+        },
+        { "selector": "#services > p", "type": "text", "label": "Introduction de section" },
+
+        { "selector": "#realisations h2", "type": "text", "label": "Titre de section" },
+        { "selector": "#realisations p", "type": "text", "label": "Texte de présentation" },
+        {
+          "selector": "#realisations img",
+          "type": "image",
+          "label": "Photo de l'équipe",
+          "critical": true
+        },
+
+        { "selector": "#avis h2", "type": "text", "label": "Titre de section" },
+
+        { "selector": "#questions h2", "type": "text", "label": "Titre de section" },
+
+        { "selector": "#contact h2", "type": "text", "label": "Titre de section" },
+        { "selector": "#contact > div > div:nth-of-type(1) > p", "type": "text", "label": "Texte d'introduction" },
+        {
+          "selector": "#contact dl > div:nth-of-type(1) dd",
+          "type": "text",
+          "label": "Adresse de l'atelier",
+          "critical": true
+        },
+        {
+          "selector": "#contact a[href^='tel:']",
+          "type": "contact",
+          "label": "Téléphone",
+          "critical": true
+        },
+        {
+          "selector": "#contact a[href^='mailto:']",
+          "type": "contact",
+          "label": "Adresse email",
+          "critical": true
+        },
+        {
+          "selector": "#contact dl > div:nth-of-type(4) dd",
+          "type": "text",
+          "label": "Horaires d'ouverture",
+          "critical": true
+        },
+        {
+          "selector": "#contact form",
+          "type": "form-endpoint",
+          "label": "Destination du formulaire",
+          "note": "Seuls l'endpoint et les libellés sont éditables, jamais la structure du formulaire."
+        },
+        { "selector": "#contact label[for='nom']", "type": "text", "label": "Libellé du champ nom" },
+        { "selector": "#contact label[for='courriel']", "type": "text", "label": "Libellé du champ email" },
+        { "selector": "#contact label[for='projet']", "type": "text", "label": "Libellé du champ projet" },
+        { "selector": "#contact button[type='submit']", "type": "text", "label": "Texte du bouton d'envoi" },
+
+        { "selector": "footer div > div:nth-of-type(1) > p:nth-of-type(1)", "type": "text", "label": "Nom en pied de page" },
+        { "selector": "footer div > div:nth-of-type(1) > p:nth-of-type(2)", "type": "richtext", "label": "Adresse en pied de page" },
+        {
+          "selector": "footer a[href*='instagram']",
+          "type": "social",
+          "label": "Instagram",
+          "critical": true
+        },
+        {
+          "selector": "footer a[href*='facebook']",
+          "type": "social",
+          "label": "Facebook",
+          "critical": true
+        },
+        { "selector": "footer > div:nth-of-type(2) p", "type": "text", "label": "Mention de copyright" }
+      ],
+      "collections": [
+        {
+          "containerSelector": "#services > div",
+          "label": "Cartes services",
+          "minItems": 3,
+          "itemFields": ["text", "text", "link"],
+          "heterogeneous": true,
+          "note": "Trois articles .carte. Le deuxième porte une classe supplémentaire et un badge ; le troisième n'a pas d'image. C'est le cas qui casse l'égalité stricte d'empreinte."
+        },
+        {
+          "containerSelector": "#avis > div",
+          "label": "Témoignages",
+          "minItems": 3,
+          "itemFields": ["text", "text"],
+          "heterogeneous": false
+        },
+        {
+          "containerSelector": "#questions > div > div",
+          "label": "Questions fréquentes",
+          "minItems": 4,
+          "itemFields": ["text", "text"],
+          "heterogeneous": false,
+          "note": "Quatre <details>. Le <summary> est un titre éditable, pas un contrôle."
+        }
+      ],
+      "mustBeLocked": [
+        {
+          "selector": "header nav ul",
+          "reason": "navigation",
+          "note": "Cinq <li> consécutifs de même forme : une collection au sens de l'heuristique, mais déverrouiller le menu casserait le site."
+        },
+        {
+          "selector": ".counter",
+          "reason": "compteur-anime",
+          "note": "Le HTML contient « 0 » ; la valeur réelle est écrite par script.js. Éditable, ce champ afficherait 0 au client et serait écrasé au chargement."
+        },
+        {
+          "selector": "footer div > div:nth-of-type(3) ul",
+          "reason": "navigation",
+          "note": "Liens de pied de page : mentions légales et ancres internes."
+        },
+        { "selector": "script", "reason": "script" },
+        { "selector": "head > title", "reason": "head", "note": "Éditable via le panneau SEO, jamais comme champ de page." }
+      ]
+    }
+  ]
+}

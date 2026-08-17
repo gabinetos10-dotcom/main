@@ -1,0 +1,151 @@
+{
+  "fixture": "03-portfolio-onepage-gsap",
+  "description": "Portfolio one-page d'une photographe, animé à GSAP ScrollTrigger et SplitText. Représente le site le plus hostile à un éditeur visuel : rien n'est visible avant le défilement, et le titre principal est démonté caractère par caractère.",
+  "exercises": [
+    "SplitText sur le titre principal et sur un titre de section : après exécution, le <h1> ne contient plus aucun nœud texte, son contenu étant réparti dans des dizaines de <span>. Le runtime doit capturer les nœuds AVANT que ces scripts s'exécutent, et neutraliser le découpeur.",
+    "Tout ce qui porte .reveal est à opacity 0 dans le CSS, révélé uniquement par ScrollTrigger : sans mode d'édition statique, l'aperçu est une page vide.",
+    "Parallaxe avec background-attachment: fixed, à neutraliser aussi.",
+    "Sections [id] avec navigation par ancres interceptée en JavaScript : à traiter comme des pages virtuelles (§8).",
+    "Images de fond en style inline (couverture et section sombre) : champs image sans balise <img> (§9.2).",
+    "Web Component <my-lightbox> avec shadow root : son contenu est inatteignable par un domPath et doit être verrouillé.",
+    "Compteur de progression et année du pied de page écrits au runtime : avertissement DYNAMIC_TEXT.",
+    "Ratios d'images mixtes (4/3 et 3/4) dans une même grille : collection hétérogène par la forme, homogène par le rôle.",
+    "Aucune variable CSS de thème hors color-scheme : le thème doit se déduire du comptage des couleurs."
+  ],
+  "entry": "index.html",
+  "themeTokens": [],
+  "themeFonts": ["Helvetica Neue"],
+  "expectedWarnings": [
+    "ANIM_LIB_DETECTED",
+    "TEXT_SPLITTER_DETECTED",
+    "SHADOW_DOM_DETECTED",
+    "DYNAMIC_TEXT",
+    "NO_CSS_VARIABLES"
+  ],
+  "pages": [
+    {
+      "path": "index.html",
+      "label": "Accueil",
+      "seo": { "title": true, "description": true, "ogImage": true },
+      "fields": [
+        { "selector": ".nav__marque span", "type": "text", "label": "Nom", "critical": true },
+
+        {
+          "selector": "#accueil",
+          "type": "image",
+          "label": "Image de couverture",
+          "critical": true,
+          "note": "background-image en style inline : champ image sans balise <img>."
+        },
+        { "selector": "#accueil .sur-titre", "type": "text", "label": "Accroche courte" },
+        {
+          "selector": "#accueil h1",
+          "type": "text",
+          "label": "Titre principal",
+          "critical": true,
+          "note": "Cible de SplitText. C'est LE champ que le produit doit savoir éditer sur ce type de site."
+        },
+        { "selector": "#accueil .chapo", "type": "text", "label": "Chapeau", "critical": true },
+        { "selector": "#accueil .bouton", "type": "cta", "label": "Bouton principal" },
+
+        { "selector": "#travaux h2", "type": "text", "label": "Titre de section", "critical": true },
+        { "selector": "#travaux .bloc__entete p", "type": "text", "label": "Introduction de section" },
+
+        {
+          "selector": "#serie",
+          "type": "image",
+          "label": "Image de fond de la section",
+          "note": "Second background-image inline, avec parallaxe."
+        },
+        { "selector": "#serie h2", "type": "text", "label": "Titre de section", "critical": true },
+        { "selector": "#serie .chapo", "type": "text", "label": "Chapeau de la série", "critical": true },
+        { "selector": "#serie .bloc__contenu p:nth-of-type(2)", "type": "text", "label": "Description de la série" },
+        { "selector": "#serie .bouton", "type": "cta", "label": "Bouton de la section" },
+
+        { "selector": "#apropos h2", "type": "text", "label": "Titre de section" },
+        {
+          "selector": "#apropos .deux-colonnes > div:nth-of-type(1) p:nth-of-type(1)",
+          "type": "text",
+          "label": "Biographie, premier paragraphe",
+          "critical": true
+        },
+        {
+          "selector": "#apropos .deux-colonnes > div:nth-of-type(1) p:nth-of-type(2)",
+          "type": "richtext",
+          "label": "Biographie, publications",
+          "critical": true,
+          "note": "Contient des <em> : richtext, pas text."
+        },
+        {
+          "selector": "#apropos .deux-colonnes > div:nth-of-type(1) p:nth-of-type(3)",
+          "type": "text",
+          "label": "Biographie, disponibilité"
+        },
+        { "selector": "#apropos img", "type": "image", "label": "Portrait", "critical": true },
+
+        { "selector": "#contact h2", "type": "text", "label": "Titre de section", "critical": true },
+        { "selector": "#contact .chapo", "type": "text", "label": "Chapeau de contact" },
+        { "selector": "#contact a[href^='mailto:']", "type": "contact", "label": "Adresse email", "critical": true },
+        { "selector": "#contact a[href^='tel:']", "type": "contact", "label": "Téléphone", "critical": true },
+        {
+          "selector": "#contact .coordonnees > div:nth-of-type(3) dd",
+          "type": "text",
+          "label": "Adresse de l'atelier",
+          "critical": true
+        },
+        { "selector": "#contact a[href*='instagram']", "type": "social", "label": "Instagram", "critical": true },
+        { "selector": "#contact a[href*='linkedin']", "type": "social", "label": "LinkedIn", "critical": true },
+
+        { "selector": ".pied a[href='mentions.html']", "type": "link", "label": "Lien mentions légales" }
+      ],
+      "collections": [
+        {
+          "containerSelector": ".grille-travaux",
+          "label": "Travaux",
+          "minItems": 6,
+          "itemFields": ["image", "text", "text"],
+          "heterogeneous": true,
+          "note": "Six figures dont deux portent une classe supplémentaire (.travail--haut) pour un ratio portrait. Même rôle, empreinte différente."
+        },
+        {
+          "containerSelector": "#contact .coordonnees",
+          "label": "Coordonnées",
+          "minItems": 3,
+          "itemFields": ["text", "text"],
+          "heterogeneous": false
+        }
+      ],
+      "mustBeLocked": [
+        {
+          "selector": ".nav__liens",
+          "reason": "navigation",
+          "note": "Quatre liens d'ancrage : navigation interne du one-page, pas une collection éditable."
+        },
+        {
+          "selector": "my-lightbox",
+          "reason": "shadow-dom",
+          "note": "Le contenu réel est dans un shadow root, inatteignable par un domPath. Un champ pointant dedans serait irrésoluble au build."
+        },
+        {
+          "selector": "[data-progression]",
+          "reason": "compteur-anime",
+          "note": "Le HTML contient « 0 % » ; la valeur est écrite en continu par ScrollTrigger."
+        },
+        {
+          "selector": "[data-annee]",
+          "reason": "compteur-anime",
+          "note": "Année écrite au runtime par animations.js."
+        },
+        { "selector": ".ecran__voile", "reason": "decoratif", "note": "Div de dégradé, sans contenu." },
+        { "selector": ".bloc__voile", "reason": "decoratif" },
+        { "selector": "script", "reason": "script" },
+        {
+          "selector": ".nav__marque img",
+          "reason": "decoratif",
+          "note": "aria-hidden=\"true\" et alt vide : logo décoratif doublé par le texte adjacent."
+        },
+        { "selector": ".reseaux", "reason": "navigation", "note": "Liste de liens sociaux : traitée comme groupe global, pas comme collection de page." }
+      ]
+    }
+  ]
+}

@@ -21,7 +21,7 @@
     "db:generate": "pnpm --filter @calque/db run db:generate",
     "db:migrate": "pnpm --filter @calque/db run db:migrate",
     "db:studio": "pnpm --filter @calque/db run db:studio",
-    "fixtures:assets": "node fixtures/tools/generate-assets.mjs",
+    "fixtures:assets": "pnpm --filter @calque/fixtures run assets",
     "db:start": "./scripts/postgres-local.sh start",
     "db:stop": "./scripts/postgres-local.sh stop"
   },

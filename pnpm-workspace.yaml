@@ -1,6 +1,9 @@
 packages:
   - "apps/*"
   - "packages/*"
+  # Les fixtures sont un package pour avoir leurs propres dépendances de test ;
+  # les sites eux-mêmes restent du HTML statique, hors de toute chaîne de build.
+  - "fixtures"
 
 # pnpm 10 n'exécute plus les scripts postinstall sans autorisation explicite.
 # Ces paquets compilent des binaires natifs et en ont réellement besoin.

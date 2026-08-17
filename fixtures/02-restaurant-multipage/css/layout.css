@@ -1,0 +1,222 @@
+.conteneur {
+  max-width: var(--largeur-max);
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* En-tête partagé par les quatre pages */
+.entete {
+  border-bottom: 1px solid var(--couleur-bordure);
+  background: var(--couleur-fond);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+.entete .conteneur {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 1.1rem;
+  padding-bottom: 1.1rem;
+}
+.marque {
+  font-family: var(--police-titre);
+  font-size: 1.2rem;
+  letter-spacing: 0.01em;
+}
+.menu-principal ul {
+  display: flex;
+  gap: 1.8rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 0.95rem;
+}
+.menu-principal a.actif {
+  border-bottom: 1px solid var(--couleur-primaire);
+}
+
+.section {
+  padding: var(--espace-section) 0;
+}
+.section--alt {
+  background: var(--couleur-fond-alt);
+}
+
+.banniere {
+  position: relative;
+  min-height: 460px;
+  display: flex;
+  align-items: flex-end;
+  color: var(--couleur-fond);
+}
+.banniere img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.banniere .conteneur {
+  position: relative;
+  padding-bottom: 3.5rem;
+}
+.banniere::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(42, 31, 28, 0.85), rgba(42, 31, 28, 0.15));
+}
+.banniere .conteneur {
+  z-index: 1;
+}
+
+.grille-plats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 2rem;
+  margin-top: 3rem;
+}
+.plat {
+  background: var(--couleur-fond);
+  border: 1px solid var(--couleur-bordure);
+  border-radius: var(--rayon-large);
+  overflow: hidden;
+  box-shadow: var(--ombre-douce);
+}
+.plat img {
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  width: 100%;
+}
+.plat-corps {
+  padding: 1.25rem;
+}
+.plat-prix {
+  color: var(--couleur-primaire);
+  font-weight: 500;
+  margin-top: 0.5rem;
+}
+
+.carte-menu {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 2rem;
+}
+.carte-menu caption {
+  text-align: left;
+  font-family: var(--police-titre);
+  font-size: 1.4rem;
+  padding-bottom: 1rem;
+}
+.carte-menu th {
+  text-align: left;
+  font-weight: 500;
+  border-bottom: 2px solid var(--couleur-bordure);
+  padding: 0.7rem 0.5rem;
+}
+.carte-menu td {
+  border-bottom: 1px solid var(--couleur-bordure);
+  padding: 0.9rem 0.5rem;
+  vertical-align: top;
+}
+.carte-menu td:last-child {
+  text-align: right;
+  white-space: nowrap;
+  color: var(--couleur-primaire);
+}
+
+.galerie {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.25rem;
+  margin-top: 3rem;
+}
+.galerie figure {
+  margin: 0;
+}
+.galerie img {
+  border-radius: var(--rayon-large);
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  width: 100%;
+}
+.galerie figcaption {
+  margin-top: 0.6rem;
+  font-size: 0.9rem;
+  color: var(--couleur-texte-doux);
+}
+
+.horaires {
+  margin: 2rem 0 0;
+}
+.horaires div {
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+  border-bottom: 1px solid var(--couleur-bordure);
+  padding: 0.65rem 0;
+}
+.horaires dt {
+  font-weight: 500;
+}
+.horaires dd {
+  margin: 0;
+  color: var(--couleur-texte-doux);
+}
+
+.deux-colonnes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 3.5rem;
+}
+
+.champ {
+  width: 100%;
+  border: 1px solid var(--couleur-bordure);
+  border-radius: var(--rayon);
+  padding: 0.7rem 0.85rem;
+  font: inherit;
+  background: var(--couleur-fond);
+  color: inherit;
+}
+
+.plan {
+  width: 100%;
+  height: 320px;
+  border: 0;
+  border-radius: var(--rayon-large);
+  margin-top: 2rem;
+}
+
+.pied {
+  background: var(--couleur-primaire);
+  color: var(--couleur-accent);
+  padding: 3.5rem 0 2rem;
+  margin-top: var(--espace-section);
+}
+.pied .conteneur {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 2.5rem;
+  font-size: 0.92rem;
+}
+.pied h3 {
+  color: var(--couleur-fond);
+  font-size: 1rem;
+  margin-bottom: 0.8rem;
+}
+.pied ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.pied li {
+  padding: 0.2rem 0;
+}
+.mentions {
+  border-top: 1px solid rgba(232, 185, 138, 0.25);
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
+  font-size: 0.8rem;
+}

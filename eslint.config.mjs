@@ -15,9 +15,10 @@ export default tseslint.config(
       ".claude/**",
       "**/playwright-report/**",
       "**/test-results/**",
-      // Les fixtures sont du HTML/CSS/JS de site client volontairement « brut » :
-      // elles imitent du vibe coding et ne doivent pas être normalisées par notre lint.
-      "fixtures/**",
+      // Les sites de fixture sont du HTML/CSS/JS livré par une agence, imité au
+      // plus près du vibe coding : les normaliser leur ferait perdre ce qu'ils
+      // servent à tester. L'outillage des fixtures, lui, est linté normalement.
+      "fixtures/0*/**",
       "packages/db/drizzle/**",
       // Fichiers générés par Next à chaque build.
       "apps/web/next-env.d.ts",
@@ -101,6 +102,16 @@ export default tseslint.config(
       // Règle propre au routeur `pages/`, que ce projet n'utilise pas.
       "@next/next/no-html-link-for-pages": "off",
     },
+  },
+
+  // Outillage exécuté par Node hors bundler : globales Node, sorties console
+  // assumées (ce sont des scripts d'atelier, pas du code applicatif).
+  {
+    files: ["**/tools/**/*.mjs", "scripts/**/*.mjs"],
+    languageOptions: {
+      globals: { Buffer: "readonly", process: "readonly", console: "readonly" },
+    },
+    rules: { "no-console": "off" },
   },
 
   {

@@ -1,0 +1,32 @@
+/* Le Comptoir des Halles — jetons de design */
+
+:root {
+  --couleur-primaire: #6d3b2c;
+  --couleur-primaire-clair: #c25b3a;
+  --couleur-accent: #e8b98a;
+  --couleur-fond: #fdfaf6;
+  --couleur-fond-alt: #f4ece2;
+  --couleur-texte: #2a1f1c;
+  --couleur-texte-doux: #6b5b52;
+  --couleur-bordure: #e2d5c6;
+
+  --police-titre: "Playfair Display", Georgia, serif;
+  --police-texte: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+  --rayon: 3px;
+  --rayon-large: 10px;
+
+  --ombre-douce: 0 1px 3px rgba(42, 31, 28, 0.08);
+  --ombre-carte: 0 8px 30px rgba(42, 31, 28, 0.1);
+
+  --espace-section: 5.5rem;
+  --largeur-max: 1120px;
+}
+
+[data-theme="soir"] {
+  --couleur-fond: #221a17;
+  --couleur-fond-alt: #2e2320;
+  --couleur-texte: #f4ece2;
+  --couleur-texte-doux: #c0ab9c;
+  --couleur-bordure: #3d302b;
+}

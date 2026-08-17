@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Réserver — Le Comptoir des Halles</title>
+  <meta name="description" content="Réserver une table au Comptoir des Halles, 102 cours Lafayette à Lyon. Par téléphone ou par formulaire.">
+  <meta property="og:title" content="Réserver — Le Comptoir des Halles">
+  <meta property="og:description" content="Réserver une table, 102 cours Lafayette à Lyon.">
+  <meta property="og:image" content="assets/og.jpg">
+  <link rel="canonical" href="https://comptoir-des-halles.fr/contact.html">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+</head>
+<body>
+
+<header class="entete">
+  <div class="conteneur">
+    <a href="index.html" class="marque">Le Comptoir des Halles</a>
+    <nav class="menu-principal" aria-label="Navigation principale">
+      <ul>
+        <li><a href="index.html">Accueil</a></li>
+        <li><a href="menu.html">La carte</a></li>
+        <li><a href="galerie.html">Galerie</a></li>
+        <li><a href="contact.html" class="actif">Réserver</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="section">
+    <div class="conteneur">
+      <h1>Réserver une table</h1>
+      <p class="discret" style="max-width: 38rem; margin-top: 1rem;">Pour le jour même, appelez-nous : le formulaire est relevé deux fois par jour seulement.</p>
+
+      <div class="deux-colonnes" style="margin-top: 3rem;">
+        <div>
+          <form action="https://formspree.io/f/mwkgqjab" method="POST">
+            <p>
+              <label for="nom">Votre nom</label>
+              <input class="champ" id="nom" name="nom" type="text" required>
+            </p>
+            <p>
+              <label for="telephone">Votre téléphone</label>
+              <input class="champ" id="telephone" name="telephone" type="tel" required>
+            </p>
+            <p>
+              <label for="date">Date souhaitée</label>
+              <input class="champ" id="date" name="date" type="date" required>
+            </p>
+            <p>
+              <label for="couverts">Nombre de personnes</label>
+              <input class="champ" id="couverts" name="couverts" type="number" min="1" max="8" value="2">
+            </p>
+            <p>
+              <label for="message">Une précision&nbsp;?</label>
+              <textarea class="champ" id="message" name="message" rows="4"></textarea>
+            </p>
+            <p>
+              <button type="submit" class="bouton">Envoyer ma demande</button>
+            </p>
+          </form>
+        </div>
+
+        <div>
+          <h2>Nous joindre</h2>
+          <p style="margin-top: 1.2rem;">102 cours Lafayette<br>69003 Lyon<br>Halles Paul Bocuse, allée centrale</p>
+          <p>
+            <a href="tel:+33478620411">04 78 62 04 11</a><br>
+            <a href="mailto:bonjour@comptoir-des-halles.fr">bonjour@comptoir-des-halles.fr</a>
+          </p>
+
+          <h2 style="margin-top: 2.5rem;">Horaires</h2>
+          <dl class="horaires">
+            <div>
+              <dt>Mardi – Jeudi</dt>
+              <dd>12h – 14h · 19h30 – 22h</dd>
+            </div>
+            <div>
+              <dt>Vendredi – Samedi</dt>
+              <dd>12h – 14h30 · 19h30 – 23h</dd>
+            </div>
+            <div>
+              <dt>Dimanche</dt>
+              <dd>12h – 15h</dd>
+            </div>
+            <div>
+              <dt>Lundi</dt>
+              <dd>Fermé</dd>
+            </div>
+          </dl>
+
+          <iframe
+            class="plan"
+            title="Plan d'accès au Comptoir des Halles"
+            src="https://www.google.com/maps/embed?pb=102+cours+Lafayette+69003+Lyon"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="pied">
+  <div class="conteneur">
+    <div>
+      <h3>Le Comptoir des Halles</h3>
+      <p>102 cours Lafayette<br>69003 Lyon</p>
+    </div>
+    <div>
+      <h3>Contact</h3>
+      <ul>
+        <li><a href="tel:+33478620411">04 78 62 04 11</a></li>
+        <li><a href="mailto:bonjour@comptoir-des-halles.fr">bonjour@comptoir-des-halles.fr</a></li>
+      </ul>
+    </div>
+    <div>
+      <h3>Nous suivre</h3>
+      <ul>
+        <li><a href="https://www.instagram.com/comptoirdeshalles">Instagram</a></li>
+        <li><a href="https://www.facebook.com/comptoirdeshalles">Facebook</a></li>
+      </ul>
+    </div>
+    <div>
+      <h3>Informations</h3>
+      <ul>
+        <li><a href="menu.html">La carte</a></li>
+        <li><a href="contact.html">Réserver</a></li>
+        <li><a href="mentions.html">Mentions légales</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="conteneur mentions">
+    <p>© 2026 Le Comptoir des Halles — Tous droits réservés</p>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+</body>
+</html>

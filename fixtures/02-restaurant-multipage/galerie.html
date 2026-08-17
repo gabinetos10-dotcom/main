@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Galerie — Le Comptoir des Halles</title>
+  <meta name="description" content="La salle, la cuisine et quelques assiettes du Comptoir des Halles, aux Halles Paul Bocuse à Lyon.">
+  <meta property="og:title" content="Galerie — Le Comptoir des Halles">
+  <meta property="og:description" content="La salle, la cuisine et quelques assiettes.">
+  <meta property="og:image" content="assets/galerie-1.jpg">
+  <link rel="canonical" href="https://comptoir-des-halles.fr/galerie.html">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+</head>
+<body>
+
+<header class="entete">
+  <div class="conteneur">
+    <a href="index.html" class="marque">Le Comptoir des Halles</a>
+    <nav class="menu-principal" aria-label="Navigation principale">
+      <ul>
+        <li><a href="index.html">Accueil</a></li>
+        <li><a href="menu.html">La carte</a></li>
+        <li><a href="galerie.html" class="actif">Galerie</a></li>
+        <li><a href="contact.html">Réserver</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="section">
+    <div class="conteneur">
+      <h1>En images</h1>
+      <p class="discret" style="max-width: 36rem; margin-top: 1rem;">Photographies prises en service, sans mise en scène.</p>
+
+      <div class="galerie">
+
+        <figure>
+          <picture>
+            <source srcset="assets/galerie-1.jpg" media="(min-width: 900px)">
+            <img src="assets/galerie-1.jpg" alt="La salle en fin de service" width="1200" height="900" loading="lazy">
+          </picture>
+          <figcaption>La salle, un vendredi soir</figcaption>
+        </figure>
+
+        <figure>
+          <picture>
+            <source srcset="assets/galerie-2.jpg" media="(min-width: 900px)">
+            <img src="assets/galerie-2.jpg" alt="Le passe entre cuisine et salle" width="1200" height="900" loading="lazy">
+          </picture>
+          <figcaption>Le passe, au coup de feu</figcaption>
+        </figure>
+
+        <figure>
+          <picture>
+            <source srcset="assets/galerie-3.jpg" media="(min-width: 900px)">
+            <img src="assets/galerie-3.jpg" alt="Comptoir et ardoise du jour" width="1200" height="900" loading="lazy">
+          </picture>
+          <figcaption>L'ardoise, réécrite chaque matin</figcaption>
+        </figure>
+
+        <figure>
+          <img src="assets/salle.jpg" alt="Tables dressées avant le service" width="1200" height="800" loading="lazy">
+          <figcaption>Avant l'ouverture</figcaption>
+        </figure>
+
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="pied">
+  <div class="conteneur">
+    <div>
+      <h3>Le Comptoir des Halles</h3>
+      <p>102 cours Lafayette<br>69003 Lyon</p>
+    </div>
+    <div>
+      <h3>Contact</h3>
+      <ul>
+        <li><a href="tel:+33478620411">04 78 62 04 11</a></li>
+        <li><a href="mailto:bonjour@comptoir-des-halles.fr">bonjour@comptoir-des-halles.fr</a></li>
+      </ul>
+    </div>
+    <div>
+      <h3>Nous suivre</h3>
+      <ul>
+        <li><a href="https://www.instagram.com/comptoirdeshalles">Instagram</a></li>
+        <li><a href="https://www.facebook.com/comptoirdeshalles">Facebook</a></li>
+      </ul>
+    </div>
+    <div>
+      <h3>Informations</h3>
+      <ul>
+        <li><a href="menu.html">La carte</a></li>
+        <li><a href="contact.html">Réserver</a></li>
+        <li><a href="mentions.html">Mentions légales</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="conteneur mentions">
+    <p>© 2026 Le Comptoir des Halles — Tous droits réservés</p>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+</body>
+</html>

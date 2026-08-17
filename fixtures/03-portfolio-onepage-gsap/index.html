@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Camille Ferrand — Photographe documentaire</title>
+<meta name="description" content="Photographe documentaire basée à Marseille. Reportages au long cours, portraits et commandes éditoriales.">
+<meta property="og:title" content="Camille Ferrand — Photographe documentaire">
+<meta property="og:description" content="Reportages au long cours, portraits et commandes éditoriales.">
+<meta property="og:image" content="assets/cover.jpg">
+<link rel="canonical" href="https://camilleferrand.photo/">
+<link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="styles.css">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/SplitText.min.js"></script>
+</head>
+<body>
+
+<nav class="nav" aria-label="Navigation principale">
+  <a href="#accueil" class="nav__marque">
+    <img src="assets/logo.svg" alt="" width="28" height="28" aria-hidden="true">
+    <span>Camille Ferrand</span>
+  </a>
+  <ul class="nav__liens">
+    <li><a href="#travaux" data-lien-section>Travaux</a></li>
+    <li><a href="#serie" data-lien-section>Série en cours</a></li>
+    <li><a href="#apropos" data-lien-section>À propos</a></li>
+    <li><a href="#contact" data-lien-section>Contact</a></li>
+  </ul>
+</nav>
+
+<main>
+
+  <section id="accueil" class="ecran ecran--couverture" style="background-image: url('assets/cover.jpg');">
+    <div class="ecran__voile"></div>
+    <div class="ecran__contenu">
+      <p class="sur-titre reveal">Photographie documentaire · Marseille</p>
+      <h1 class="titre-geant" data-split>Regarder longtemps, photographier peu</h1>
+      <p class="chapo reveal">Je travaille au long cours, souvent plusieurs années sur un même sujet, jusqu'à ce que les gens oublient l'appareil.</p>
+      <a href="#travaux" class="bouton reveal">Voir les travaux</a>
+    </div>
+    <p class="compteur-defilement" data-progression>0 %</p>
+  </section>
+
+  <section id="travaux" class="bloc">
+    <header class="bloc__entete reveal">
+      <h2>Travaux</h2>
+      <p>Une sélection de reportages menés entre 2019 et aujourd'hui.</p>
+    </header>
+
+    <div class="grille-travaux">
+
+      <figure class="travail reveal">
+        <img src="assets/shot-1.jpg" alt="Pêcheurs à l'aube sur le Vieux-Port" width="1200" height="900" loading="lazy">
+        <figcaption>
+          <h3>Ceux qui rentrent à l'aube</h3>
+          <p>Vieux-Port, Marseille — 2019-2022</p>
+        </figcaption>
+      </figure>
+
+      <figure class="travail travail--haut reveal">
+        <img src="assets/shot-2.jpg" alt="Portrait d'une ouvrière du chantier naval" width="900" height="1200" loading="lazy">
+        <figcaption>
+          <h3>La Ciotat, dernier chantier</h3>
+          <p>La Ciotat — 2021</p>
+        </figcaption>
+      </figure>
+
+      <figure class="travail reveal">
+        <img src="assets/shot-3.jpg" alt="Rue de l'Estaque un dimanche" width="1200" height="900" loading="lazy">
+        <figcaption>
+          <h3>Dimanches à l'Estaque</h3>
+          <p>Marseille 16ᵉ — 2020-2023</p>
+        </figcaption>
+      </figure>
+
+      <figure class="travail travail--haut reveal">
+        <img src="assets/shot-4.jpg" alt="Bergère dans les Alpes de Haute-Provence" width="900" height="1200" loading="lazy">
+        <figcaption>
+          <h3>Transhumance</h3>
+          <p>Alpes-de-Haute-Provence — 2023</p>
+        </figcaption>
+      </figure>
+
+      <figure class="travail reveal">
+        <img src="assets/shot-5.jpg" alt="Salle d'attente d'un dispensaire" width="1200" height="900" loading="lazy">
+        <figcaption>
+          <h3>Salle d'attente</h3>
+          <p>Commande éditoriale — 2024</p>
+        </figcaption>
+      </figure>
+
+      <figure class="travail reveal">
+        <img src="assets/shot-6.jpg" alt="Chantier de démolition au crépuscule" width="1200" height="900" loading="lazy">
+        <figcaption>
+          <h3>Avant la démolition</h3>
+          <p>Saint-Mauront — 2025</p>
+        </figcaption>
+      </figure>
+
+    </div>
+  </section>
+
+  <section id="serie" class="bloc bloc--sombre" style="background-image: url('assets/shot-3.jpg');">
+    <div class="bloc__voile"></div>
+    <div class="bloc__contenu">
+      <h2 class="reveal" data-split>Série en cours</h2>
+      <p class="chapo reveal">« Ce qui reste debout » — un travail au long cours sur les quartiers nord de Marseille, commencé en 2024, prévu pour durer cinq ans.</p>
+      <p class="reveal">Trois séjours par an, un mois à chaque fois. Aucune photographie n'est publiée avant la fin.</p>
+      <a href="#contact" class="bouton bouton--clair reveal">Suivre le projet</a>
+    </div>
+  </section>
+
+  <section id="apropos" class="bloc">
+    <div class="deux-colonnes">
+      <div class="reveal">
+        <h2>À propos</h2>
+        <p>Née en 1989, formée à l'ENS Louis-Lumière, installée à Marseille depuis 2016. Je travaille en argentique moyen format et en numérique, selon la durée du sujet.</p>
+        <p>Mes photographies ont paru dans <em>Le Monde</em>, <em>Libération</em>, <em>De l'air</em> et <em>Polka</em>. Deux expositions personnelles, à Arles en 2022 et à la Friche la Belle de Mai en 2024.</p>
+        <p>Je réponds aux commandes éditoriales, institutionnelles et corporate, à condition d'avoir le temps de faire les choses correctement.</p>
+      </div>
+      <div class="reveal">
+        <img src="assets/portrait.jpg" alt="Portrait de Camille Ferrand" width="800" height="1000" loading="lazy">
+      </div>
+    </div>
+
+    <!--
+      Composant maison : la galerie plein écran vit dans un shadow root.
+      Son contenu n'est pas atteignable depuis le document principal.
+    -->
+    <my-lightbox class="visionneuse" data-source="assets/shot-1.jpg">
+      <span slot="legende">Ceux qui rentrent à l'aube — planche contact</span>
+    </my-lightbox>
+  </section>
+
+  <section id="contact" class="bloc bloc--serre">
+    <h2 class="reveal">Travaillons ensemble</h2>
+    <p class="chapo reveal">Pour une commande, une exposition ou un tirage, écrivez-moi. Je réponds sous une semaine.</p>
+
+    <dl class="coordonnees reveal">
+      <div>
+        <dt>Courriel</dt>
+        <dd><a href="mailto:bonjour@camilleferrand.photo">bonjour@camilleferrand.photo</a></dd>
+      </div>
+      <div>
+        <dt>Téléphone</dt>
+        <dd><a href="tel:+33632998741">06 32 99 87 41</a></dd>
+      </div>
+      <div>
+        <dt>Atelier</dt>
+        <dd>18 rue Sainte-Victoire, 13006 Marseille</dd>
+      </div>
+    </dl>
+
+    <ul class="reseaux reveal">
+      <li><a href="https://www.instagram.com/camille.ferrand.photo">Instagram</a></li>
+      <li><a href="https://www.linkedin.com/in/camilleferrand">LinkedIn</a></li>
+    </ul>
+  </section>
+
+</main>
+
+<footer class="pied">
+  <p>© <span data-annee>2026</span> Camille Ferrand — Toutes les photographies sont protégées.</p>
+  <p><a href="mentions.html">Mentions légales</a></p>
+</footer>
+
+<script src="js/lightbox.js"></script>
+<script src="js/animations.js"></script>
+</body>
+</html>

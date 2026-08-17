@@ -1,0 +1,90 @@
+/* Menuiserie Rousseau — complément à Tailwind CDN */
+
+.btn-primaire {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #7a5433;
+  color: #faf6ef;
+  padding: 0.7rem 1.4rem;
+  border-radius: 4px;
+  font-weight: 500;
+  transition: background 0.15s ease;
+}
+.btn-primaire:hover {
+  background: #3b2a1d;
+}
+
+.btn-secondaire {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #e0c39a;
+  color: #faf6ef;
+  padding: 0.7rem 1.4rem;
+  border-radius: 4px;
+  transition: background 0.15s ease;
+}
+.btn-secondaire:hover {
+  background: rgba(250, 246, 239, 0.1);
+}
+
+.carte {
+  position: relative;
+  background: #fff;
+  border: 1px solid #e0c39a;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.carte--populaire {
+  border-color: #c08b52;
+  box-shadow: 0 6px 24px rgba(59, 42, 29, 0.08);
+}
+
+.badge {
+  position: absolute;
+  top: 0.8rem;
+  right: 0.8rem;
+  z-index: 2;
+  background: #c08b52;
+  color: #3b2a1d;
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+}
+
+.lien-carte {
+  display: inline-block;
+  margin-top: 1.2rem;
+  font-size: 0.875rem;
+  color: #7a5433;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.temoignage {
+  background: #fff;
+  border: 1px solid #e0c39a;
+  border-radius: 8px;
+  padding: 1.75rem;
+}
+
+.champ {
+  width: 100%;
+  border: 1px solid #e0c39a;
+  border-radius: 4px;
+  background: #fff;
+  padding: 0.6rem 0.8rem;
+  font: inherit;
+}
+.champ:focus {
+  outline: 2px solid #c08b52;
+  outline-offset: 1px;
+}
+
+details summary::marker {
+  color: #c08b52;
+}
