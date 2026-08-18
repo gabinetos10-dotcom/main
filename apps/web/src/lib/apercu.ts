@@ -5,7 +5,8 @@ import type {
   SourceSnapshot,
 } from "@calque/blueprint";
 import type { SourceManifest } from "@calque/db";
-import { build } from "@calque/builder";
+import { build, itemValueKey } from "@calque/builder";
+import { duplicatedFieldId } from "@calque/blueprint/ids";
 import { keys, type ObjectStore } from "@calque/storage";
 
 /**
@@ -74,8 +75,22 @@ export interface ConfigurationRuntime {
     fingerprint?: string;
     contentHash?: string;
   }>;
+  /** Items de liste, pour les poignées de réordonnancement de l'aperçu (§13). */
+  collections: Array<{
+    collectionId: string;
+    editable: boolean;
+    items: Array<{ itemId: string; domPath: string }>;
+  }>;
   parentOrigin: string;
   labels: Record<string, string>;
+  /**
+   * Libellés des poignées de liste.
+   *
+   * Le runtime est un fichier statique partagé par tous les sites : il ne peut
+   * pas embarquer de texte traduit. Les quatre libellés voyagent donc avec la
+   * configuration, dans la langue du panneau.
+   */
+  actions: Record<"up" | "down" | "duplicate" | "remove", string>;
 }
 
 /**
@@ -88,15 +103,33 @@ export interface ConfigurationRuntime {
 export function configurationRuntime(
   blueprint: Blueprint,
   parentOrigin: string,
+  actions: ConfigurationRuntime["actions"],
+  content: ContentData,
 ): ConfigurationRuntime {
   const fields: ConfigurationRuntime["fields"] = [];
+  const collections: ConfigurationRuntime["collections"] = [];
   const labels: Record<string, string> = {};
 
   for (const page of blueprint.pages) {
     if (page.virtual) continue;
     for (const bloc of page.blocks) {
+      const nonces = content.blocks[bloc.id]?.duplicates ?? [];
+
       for (const champ of bloc.fields) {
         if (champ.locked) continue;
+
+        // Un bloc dupliqué n'existe pas dans le blueprint : ses champs portent
+        // des identifiants `dup_`, et le builder les marque dans la copie.
+        for (const nonce of nonces) {
+          const identifiant = duplicatedFieldId(champ.id, nonce);
+          fields.push({
+            fieldId: identifiant,
+            domPath: `[data-calque-field="${identifiant}"]`,
+            type: champ.type,
+          });
+          labels[identifiant] = champ.label;
+        }
+
         fields.push({
           fieldId: champ.id,
           domPath: champ.domPath,
@@ -112,6 +145,38 @@ export function configurationRuntime(
       }
 
       for (const collection of bloc.collections) {
+        const etat = content.collections[collection.id];
+        const ajoutes = Object.keys(etat?.added ?? {});
+
+        collections.push({
+          collectionId: collection.id,
+          editable: !collection.locked,
+          items: [
+            ...collection.items
+              .filter((item) => item.domPath !== undefined)
+              .map((item) => ({ itemId: item.itemId, domPath: item.domPath as string })),
+            // Un item ajouté n'a pas de chemin DOM : il n'existait pas à
+            // l'analyse. Le builder lui pose son identifiant, et c'est par là
+            // que le runtime le retrouve.
+            ...ajoutes.map((itemId) => ({
+              itemId,
+              domPath: `[data-calque-item="${itemId}"]`,
+            })),
+          ],
+        });
+
+        for (const itemId of ajoutes) {
+          for (const gabarit of collection.itemTemplate.fields) {
+            const identifiant = itemValueKey(itemId, gabarit.key);
+            fields.push({
+              fieldId: identifiant,
+              domPath: `[data-calque-field="${identifiant}"]`,
+              type: gabarit.type,
+            });
+            labels[identifiant] = `${collection.label} — ${gabarit.label}`;
+          }
+        }
+
         const types = new Map(
           collection.itemTemplate.fields.map((champ) => [champ.key, champ]),
         );
@@ -135,7 +200,7 @@ export function configurationRuntime(
     }
   }
 
-  return { fields, parentOrigin, labels };
+  return { fields, collections, parentOrigin, labels, actions };
 }
 
 export interface ApercuInput {
@@ -147,6 +212,7 @@ export interface ApercuInput {
   content: ContentData;
   runtimeUrl: string;
   parentOrigin: string;
+  actions: ConfigurationRuntime["actions"];
 }
 
 export async function construireApercu(
@@ -170,7 +236,12 @@ export async function construireApercu(
     pagesOnly: true,
     injectEditorRuntime: true,
     editorRuntimeUrl: input.runtimeUrl,
-    editorConfig: configurationRuntime(input.blueprint, input.parentOrigin),
+    editorConfig: configurationRuntime(
+      input.blueprint,
+      input.parentOrigin,
+      input.actions,
+      input.content,
+    ),
   });
 
   return new Map(resultat.files.map((fichier) => [fichier.path, fichier.content]));

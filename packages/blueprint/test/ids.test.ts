@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { describe, expect, it } from "vitest";
 import {
   DEFAULT_COLLECTION_SHAPE_FLOOR,
@@ -10,9 +11,45 @@ import {
   fingerprintSimilarity,
   isDuplicatedId,
   normalizeText,
+  sha1,
   shapeTokens,
   splitFingerprint,
 } from "../src/ids";
+
+/**
+ * SHA-1 est réimplémenté ici pour tourner aussi dans le navigateur. Une
+ * divergence, même sur un cas tordu, ferait diverger les identifiants entre le
+ * panneau et le serveur : le client modifierait un champ qui n'existe pas.
+ */
+describe("sha1", () => {
+  const reference = (entree: string): string =>
+    createHash("sha1").update(entree, "utf8").digest("hex");
+
+  it("donne les vecteurs de référence", () => {
+    expect(sha1("")).toBe("da39a3ee5e6b4b0d3255bfef95601890afd80709");
+    expect(sha1("abc")).toBe("a9993e364706816aba3e25717850c26c9cd0d89d");
+  });
+
+  it("coïncide avec node:crypto, y compris aux longueurs qui changent de bloc", () => {
+    const cas = [
+      "",
+      "a",
+      "Menuiserie Rousseau",
+      "é",
+      "cœur — naïve façade 👋",
+      "x".repeat(54),
+      "x".repeat(55),
+      "x".repeat(56),
+      "x".repeat(57),
+      "x".repeat(63),
+      "x".repeat(64),
+      "x".repeat(65),
+      "x".repeat(1000),
+      "index.html::body > main > section:nth-of-type(3) > article > h3",
+    ];
+    for (const entree of cas) expect(sha1(entree)).toBe(reference(entree));
+  });
+});
 
 describe("computeFieldId", () => {
   it("est déterministe", () => {

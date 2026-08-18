@@ -41,6 +41,50 @@ export interface OverridesResult {
   empty: boolean;
 }
 
+/** Dernier segment d'un chemin DOM : préfixe, balise, rang. */
+function dernierSegment(
+  domPath: string,
+): { prefixe: string; balise: string; rang: number } | null {
+  const analyse = /^(.*)([a-z][a-z0-9-]*):nth-of-type\((\d+)\)$/iu.exec(domPath);
+  if (analyse === null) return null;
+  return {
+    prefixe: analyse[1] as string,
+    balise: (analyse[2] as string).toLowerCase(),
+    rang: Number(analyse[3]),
+  };
+}
+
+/**
+ * Corrige un sélecteur positionnel quand un bloc frère a été dupliqué.
+ *
+ * `domPath` compte les frères par `nth-of-type`, et une copie s'insère juste
+ * après son bloc source (§13) : dans le document construit, tout frère de même
+ * balise situé après lui a glissé d'un rang. Sans cette correction, masquer une
+ * section placée après une section dupliquée masquerait la copie — le mauvais
+ * bloc disparaîtrait du site publié.
+ */
+export function decalerPourCopies(
+  domPath: string,
+  copies: ReadonlyArray<{ domPath: string; nombre: number }>,
+): string {
+  const cible = dernierSegment(domPath);
+  if (cible === null) return domPath;
+
+  let decalage = 0;
+  for (const copie of copies) {
+    const source = dernierSegment(copie.domPath);
+    if (source === null) continue;
+    if (source.prefixe !== cible.prefixe || source.balise !== cible.balise) continue;
+    // Les copies d'un bloc s'insèrent après lui : elles ne le décalent pas.
+    if (source.rang >= cible.rang) continue;
+    decalage += copie.nombre;
+  }
+
+  return decalage === 0
+    ? domPath
+    : `${cible.prefixe}${cible.balise}:nth-of-type(${cible.rang + decalage})`;
+}
+
 export function renderOverrides(
   blueprint: Blueprint,
   content: ContentData,
@@ -63,12 +107,21 @@ export function renderOverrides(
   }
 
   // Un bloc masqué n'est jamais supprimé du HTML source (§13) : il est caché.
-  // Le `domPath` d'un bloc est déjà un sélecteur CSS valide.
+  // Le `domPath` d'un bloc est déjà un sélecteur CSS valide — à un détail près,
+  // traité par `decalerPourCopies`.
   const masques: string[] = [];
   for (const page of blueprint.pages) {
     if (page.virtual) continue;
+    const copies = page.blocks
+      .map((bloc) => ({
+        domPath: bloc.domPath,
+        nombre: content.blocks[bloc.id]?.duplicates.length ?? 0,
+      }))
+      .filter((entree) => entree.nombre > 0);
+
     for (const bloc of page.blocks) {
-      if (content.blocks[bloc.id]?.hidden === true) masques.push(bloc.domPath);
+      if (content.blocks[bloc.id]?.hidden !== true) continue;
+      masques.push(decalerPourCopies(bloc.domPath, copies));
     }
   }
 

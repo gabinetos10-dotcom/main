@@ -1,9 +1,15 @@
 import { describe, expect, it } from "vitest";
 import type { Blueprint, Collection, ContentData } from "@calque/blueprint";
-import { addedItemId } from "@calque/blueprint/ids";
+import { addedItemId, duplicatedFieldId } from "@calque/blueprint/ids";
 import { loadFixtureSnapshot } from "@calque/fixtures";
 import { analyze } from "@calque/parser";
-import { build, initialContent, itemValueKey, OVERRIDES_PATH } from "../src/index";
+import {
+  build,
+  initialContent,
+  itemValueKey,
+  OVERRIDES_PATH,
+  renderOverrides,
+} from "../src/index";
 
 /**
  * Collections et blocs (§13, §15 étapes 4 et 5).
@@ -138,6 +144,137 @@ describe("items de collection", () => {
     expect(sortie).not.toContain("data-f=");
   });
 
+  /**
+   * Régression : l'instanciation repérait les emplacements à l'index dans la
+   * chaîne, et prenait la balise ouvrante du conteneur pour celle du champ.
+   * Écrire le titre effaçait alors tout le corps de la carte, et l'image
+   * recevait un second `src` au lieu de voir le sien réécrit.
+   */
+  it("instancie une carte entière, sans confondre les balises imbriquées", async () => {
+    const { snapshot, blueprint, contenu } = await preparer();
+    const collection = services(blueprint);
+    const nouvel = addedItemId(collection.id, "2");
+
+    const valeurs: Record<string, unknown> = {};
+    for (const gabarit of collection.itemTemplate.fields) {
+      if (gabarit.type === "image") {
+        valeurs[gabarit.key] = { src: "assets/atelier.jpg", alt: "Atelier" };
+      } else if (gabarit.type === "link" || gabarit.type === "cta") {
+        valeurs[gabarit.key] = { label: "Nous écrire", href: "#contact" };
+      } else {
+        valeurs[gabarit.key] = "Terrasses";
+      }
+    }
+
+    const sortie = html(
+      (
+        await build(
+          snapshot,
+          blueprint,
+          avecCollection(contenu, collection.id, {
+            order: [...collection.items.map((item) => item.itemId), nouvel],
+            added: { [nouvel]: valeurs },
+          }),
+        )
+      ).files,
+      "index.html",
+    );
+
+    const cartes = [
+      ...sortie.matchAll(/<article class="carte[^"]*">[\s\S]*?<\/article>/gu),
+    ];
+    const ajoutee = cartes.at(-1)?.[0] as string;
+
+    // La carte est complète : titre, texte et lien, chacun une seule fois.
+    expect(ajoutee).toContain("<h3");
+    expect(ajoutee).toContain("</h3>");
+    expect(ajoutee.match(/<p /gu)).toHaveLength(1);
+    expect(ajoutee.match(/<a /gu)).toHaveLength(1);
+    expect(ajoutee).toContain("Nous écrire");
+
+    // Et aucun attribut n'y figure deux fois.
+    expect(ajoutee.match(/ src="/gu)).toHaveLength(1);
+    expect(ajoutee.match(/ alt="/gu)).toHaveLength(1);
+    expect(ajoutee.match(/ href="/gu)).toHaveLength(1);
+    expect(ajoutee).toContain('src="assets/atelier.jpg"');
+    expect(ajoutee).toContain('href="#contact"');
+  });
+
+  /**
+   * L'aperçu doit pouvoir désigner un item **après** un réordonnancement.
+   *
+   * Un chemin DOM désigne une position, pas un item : après un échange, il
+   * pointe sur le voisin. Le marquage est donc posé sur tous les items en mode
+   * aperçu — y compris ceux des collections que le client n'a pas touchées,
+   * dont le HTML sort tel quel de la source.
+   */
+  it("marque tous les items en mode aperçu, même sans modification", async () => {
+    const { snapshot, blueprint, contenu } = await preparer();
+    const collection = services(blueprint);
+
+    const sortie = html(
+      (
+        await build(snapshot, blueprint, contenu, {
+          injectEditorRuntime: true,
+          editorRuntimeUrl: "/runtime.js",
+          editorConfig: { fields: [], parentOrigin: "https://exemple.fr", labels: {} },
+        })
+      ).files,
+      "index.html",
+    );
+
+    for (const item of collection.items) {
+      expect(sortie).toContain(`data-calque-item="${item.itemId}"`);
+    }
+  });
+
+  it("garde le marquage aligné sur l'ordre demandé", async () => {
+    const { snapshot, blueprint, contenu } = await preparer();
+    const collection = services(blueprint);
+    const ordre = [...collection.items].reverse().map((item) => item.itemId);
+
+    const sortie = html(
+      (
+        await build(
+          snapshot,
+          blueprint,
+          avecCollection(contenu, collection.id, { order: ordre }),
+          {
+            injectEditorRuntime: true,
+            editorRuntimeUrl: "/runtime.js",
+            editorConfig: { fields: [], parentOrigin: "https://exemple.fr", labels: {} },
+          },
+        )
+      ).files,
+      "index.html",
+    );
+
+    // La page porte d'autres listes : on ne regarde que celle qu'on a réordonnée.
+    const marques = [...sortie.matchAll(/data-calque-item="([^"]+)"/gu)]
+      .map((trouve) => trouve[1] as string)
+      .filter((itemId) => ordre.includes(itemId));
+    expect(marques).toEqual(ordre);
+  });
+
+  /** Le site publié ne porte aucune trace de l'outil (§15 étape 9). */
+  it("ne marque rien hors du mode aperçu", async () => {
+    const { snapshot, blueprint, contenu } = await preparer();
+    const collection = services(blueprint);
+    const ordre = [...collection.items].reverse().map((item) => item.itemId);
+
+    const sortie = html(
+      (
+        await build(
+          snapshot,
+          blueprint,
+          avecCollection(contenu, collection.id, { order: ordre }),
+        )
+      ).files,
+      "index.html",
+    );
+    expect(sortie).not.toContain("data-calque-item");
+  });
+
   it("modifie la valeur d'un item sans réécrire la collection", async () => {
     const { snapshot, blueprint, contenu } = await preparer();
     const collection = services(blueprint);
@@ -202,6 +339,96 @@ describe("blocs", () => {
 
     const occurrences = sortie.split("Ce qu'en disent nos clients").length - 1;
     expect(occurrences).toBe(2);
+  });
+
+  /**
+   * La copie partage chemin DOM et empreinte avec son bloc source : sans
+   * marquage propre, cliquer dans la copie modifierait l'original.
+   */
+  it("donne à la copie ses propres identifiants de champ en aperçu", async () => {
+    const { snapshot, blueprint, contenu } = await preparer();
+    const bloc = blueprint.pages[0]?.blocks.find(
+      (candidat) => candidat.label === "Ce qu'en disent nos clients",
+    );
+    const champ = bloc?.fields.find((candidat) => !candidat.locked);
+    expect(champ).toBeDefined();
+
+    const avecCopie = {
+      ...contenu,
+      blocks: { [bloc?.id as string]: { hidden: false, duplicates: ["a"] } },
+    };
+
+    const apercu = html(
+      (
+        await build(snapshot, blueprint, avecCopie, {
+          injectEditorRuntime: true,
+          editorRuntimeUrl: "/runtime.js",
+          editorConfig: { fields: [], parentOrigin: "https://exemple.fr", labels: {} },
+        })
+      ).files,
+      "index.html",
+    );
+
+    const copie = duplicatedFieldId(champ?.id as string, "a");
+    expect(apercu).toContain(`data-calque-field="${champ?.id as string}"`);
+    expect(apercu).toContain(`data-calque-field="${copie}"`);
+
+    // Et la valeur écrite sur la copie ne touche pas l'original.
+    const modifie = html(
+      (
+        await build(snapshot, blueprint, {
+          ...avecCopie,
+          fields: { ...avecCopie.fields, [copie]: "Un autre avis" },
+        })
+      ).files,
+      "index.html",
+    );
+    expect(modifie).toContain("Un autre avis");
+    expect(modifie).not.toContain("data-calque-field");
+  });
+});
+
+describe("masquage et duplication ensemble", () => {
+  it("masque le bloc visé, pas la copie du bloc précédent", async () => {
+    const { blueprint, contenu } = await preparer();
+    const page = blueprint.pages[0];
+    const services = page?.blocks.find(
+      (candidat) => candidat.label === "Ce que nous fabriquons",
+    );
+    const avis = page?.blocks.find(
+      (candidat) => candidat.label === "Ce qu'en disent nos clients",
+    );
+    expect(services).toBeDefined();
+    expect(avis).toBeDefined();
+
+    const { css } = renderOverrides(blueprint, {
+      ...contenu,
+      blocks: {
+        [services?.id as string]: { hidden: false, duplicates: ["a"] },
+        [avis?.id as string]: { hidden: true, duplicates: [] },
+      },
+    });
+
+    // Le rang du bloc masqué a glissé d'un cran dans le document construit :
+    // le sélecteur doit suivre, sinon c'est la copie qui disparaît.
+    const rangSource = /nth-of-type\((\d+)\)$/u.exec(avis?.domPath as string);
+    const rangSorti = /nth-of-type\((\d+)\)[^)]*\{/u.exec(css);
+    expect(rangSource).not.toBeNull();
+    expect(rangSorti).not.toBeNull();
+    expect(Number(rangSorti?.[1])).toBe(Number(rangSource?.[1]) + 1);
+  });
+
+  it("laisse le sélecteur intact quand rien n'est dupliqué", async () => {
+    const { blueprint, contenu } = await preparer();
+    const avis = blueprint.pages[0]?.blocks.find(
+      (candidat) => candidat.label === "Ce qu'en disent nos clients",
+    );
+
+    const { css } = renderOverrides(blueprint, {
+      ...contenu,
+      blocks: { [avis?.id as string]: { hidden: true, duplicates: [] } },
+    });
+    expect(css).toContain(`${avis?.domPath as string} { display: none !important; }`);
   });
 });
 

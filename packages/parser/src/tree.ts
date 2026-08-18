@@ -177,6 +177,26 @@ export function attributeValueRange(
 }
 
 /**
+ * Étendue complète d'un attribut, l'espace qui le précède compris.
+ *
+ * Sert à *retirer* un attribut. Sans l'espace, `<a href="#" data-f="x">` devient
+ * `<a href="#" >` : le balisage reste valide, mais il n'est plus celui que
+ * l'agence a écrit, et le §15 tient à ce qu'il le reste.
+ */
+export function attributeRange(
+  element: Element,
+  name: string,
+  source: string,
+): SourceRange | undefined {
+  const localisation = element.sourceCodeLocation?.attrs?.[name];
+  if (!localisation) return undefined;
+
+  let debut = localisation.startOffset;
+  while (debut > 0 && /\s/u.test(source.charAt(debut - 1))) debut -= 1;
+  return { startOffset: debut, endOffset: localisation.endOffset };
+}
+
+/**
  * Point d'insertion d'un nouvel attribut : juste après le nom de la balise.
  *
  * Une plage de longueur nulle. Le builder en a besoin pour écrire un attribut

@@ -7,6 +7,7 @@ import {
 import { appliquerValeur, assainirEnPlace, estEditableEnLigne } from "./apply";
 import { Highlighter } from "./highlight";
 import { neutraliserInteractions, type Neutraliseur } from "./neutralize";
+import { Poignees } from "./poignees";
 import { resolveField, type FieldDescriptor } from "./resolve";
 import {
   installStaticMode,
@@ -23,11 +24,26 @@ import {
  * une iframe en bac à sable, sans lui confier le moindre jeton.
  */
 
+interface ItemDescriptor {
+  itemId: string;
+  domPath: string;
+}
+
+interface CollectionDescriptor {
+  collectionId: string;
+  items: ItemDescriptor[];
+  /** Faux quand la liste est verrouillée : aucune poignée n'est proposée. */
+  editable: boolean;
+}
+
 interface Configuration {
   fields: FieldDescriptor[];
+  collections: CollectionDescriptor[];
   /** Origine du panneau. Tout message venant d'ailleurs est ignoré. */
   parentOrigin: string;
   labels: Record<string, string>;
+  /** Libellés des poignées de liste, fournis par le panneau (§12 : pas de jargon). */
+  actions: Partial<Record<"up" | "down" | "duplicate" | "remove", string>>;
 }
 
 function lireConfiguration(): Configuration | null {
@@ -41,8 +57,10 @@ function lireConfiguration(): Configuration | null {
     }
     return {
       fields: objet.fields,
+      collections: Array.isArray(objet.collections) ? objet.collections : [],
       parentOrigin: objet.parentOrigin,
       labels: objet.labels ?? {},
+      actions: objet.actions ?? {},
     };
   } catch {
     return null;
@@ -77,7 +95,35 @@ export function demarrer(configuration: Configuration): void {
     parElement.set(resolution.element, champ);
   }
 
+  /* ── Items de liste : poignées de réordonnancement (§13) ─────────────────── */
+
+  const items = new Map<HTMLElement, { collectionId: string; itemId: string }>();
+  for (const collection of configuration.collections) {
+    if (!collection.editable) continue;
+    for (const item of collection.items) {
+      // Par l'attribut d'abord : après un réordonnancement, le chemin DOM
+      // désigne l'élément qui occupe *maintenant* cette position, pas cet item.
+      const element =
+        document.querySelector<HTMLElement>(
+          `[data-calque-item="${CSS.escape(item.itemId)}"]`,
+        ) ?? document.querySelector<HTMLElement>(item.domPath);
+      if (element !== null) {
+        items.set(element, {
+          collectionId: collection.collectionId,
+          itemId: item.itemId,
+        });
+      }
+    }
+  }
+
   const surligneur = new Highlighter();
+  const poignees = new Poignees(
+    document,
+    configuration.actions,
+    (collectionId, itemId, op) => {
+      envoyer(message("COLLECTION_REQUEST", { collectionId, itemId, op }));
+    },
+  );
   let mode: EditorMode = "edition";
   let neutraliseur: Neutraliseur | null = neutraliserInteractions();
   let survole: string | null = null;
@@ -86,6 +132,21 @@ export function demarrer(configuration: Configuration): void {
 
   const envoyer = (msg: FromPreview): void => {
     window.parent.postMessage(msg, configuration.parentOrigin);
+  };
+
+  const itemDe = (
+    cible: EventTarget | null,
+  ): { element: HTMLElement; collectionId: string; itemId: string } | null => {
+    if (!(cible instanceof Element)) return null;
+    let courant: Element | null = cible;
+    while (courant !== null) {
+      if (courant instanceof HTMLElement) {
+        const item = items.get(courant);
+        if (item !== undefined) return { element: courant, ...item };
+      }
+      courant = courant.parentElement;
+    }
+    return null;
   };
 
   const champDe = (cible: EventTarget | null): FieldDescriptor | null => {
@@ -103,7 +164,10 @@ export function demarrer(configuration: Configuration): void {
 
   const redessiner = (): void => {
     surligneur.clear();
-    if (mode !== "edition") return;
+    if (mode !== "edition") {
+      poignees.cacher();
+      return;
+    }
 
     if (toutesLesZones) {
       for (const element of resolus.values()) surligneur.frame(element, undefined, true);
@@ -122,6 +186,11 @@ export function demarrer(configuration: Configuration): void {
 
   document.addEventListener("mousemove", (evenement) => {
     if (mode !== "edition") return;
+
+    const item = itemDe(evenement.target);
+    if (item === null) poignees.cacher();
+    else poignees.montrer(item.element, item.collectionId, item.itemId);
+
     const champ = champDe(evenement.target);
     const suivant = champ?.fieldId ?? null;
     if (suivant === survole) return;
@@ -258,6 +327,7 @@ export function demarrer(configuration: Configuration): void {
   });
 
   window.addEventListener("scroll", () => {
+    poignees.cacher();
     redessiner();
     envoyer(message("SCROLL_POS", { y: window.scrollY }));
   });
@@ -286,6 +356,7 @@ if (document.readyState === "loading") {
 
 export { appliquerValeur, assainirEnPlace, estEditableEnLigne } from "./apply";
 export { Highlighter } from "./highlight";
+export { Poignees } from "./poignees";
 export { neutraliserInteractions } from "./neutralize";
 export { resolveField, fingerprintOf, hashRapide, shapeDescriptor } from "./resolve";
 export {

@@ -51,6 +51,19 @@ export interface BlocVue {
   collectionIds: string[];
 }
 
+/**
+ * Copie d'un bloc, née dans le brouillon (§13).
+ *
+ * Elle n'a pas d'entrée dans le blueprint : ses champs sont des `dup_`, dérivés
+ * du champ source et du numéro de copie.
+ */
+export interface DuplicationVue {
+  cle: string;
+  sourceBlocId: string;
+  label: string;
+  champs: ChampVue[];
+}
+
 export interface PageVue {
   path: string;
   label: string;

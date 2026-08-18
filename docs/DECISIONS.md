@@ -515,3 +515,101 @@ rastériser lui ferait perdre exactement ce pour quoi il a été choisi.
 _Écarté :_ un envoi par action serveur. _Raison :_ le §14 autorise 10 Mo par fichier, au-delà
 de ce qu'une fonction serverless accepte en corps de requête. Le mécanisme d'URL signée du
 P4 est réutilisé tel quel, avec une clé temporaire effacée après traitement.
+
+---
+
+## P7 — Listes et blocs
+
+**2026-08-18 · Le gabarit est instancié par parse5, pas par recherche d'index** ·
+_Écarté :_ repérer les emplacements `data-f` dans la chaîne et écrire autour. _Raison :_
+c'est du HTML lu à l'expression régulière, que le §21 interdit — et la raison de
+l'interdiction s'est vérifiée : la balise ouvrante du champ était confondue avec celle du
+conteneur qui le précédait, et écrire le titre effaçait la moitié de la carte ajoutée.
+Le gabarit est désormais parsé, et les valeurs s'y écrivent par `splicesForValue`, la
+même fonction que pour une page entière.
+
+**2026-08-18 · Un item ajouté porte son marquage d'édition dans l'aperçu** · _Écarté :_
+le résoudre par chemin DOM comme les autres. _Raison :_ un item ajouté n'existait pas à
+l'analyse : aucun chemin du blueprint ne le désigne. Le builder pose
+`data-calque-field` sur ses valeurs et `data-calque-item` sur sa racine ; sans cela, le
+client verrait une carte qu'il ne pourrait ni sélectionner ni modifier. Publié, le site
+n'en garde aucune trace.
+
+**2026-08-18 · Le panneau fabrique lui-même la vue des items ajoutés** · _Écarté :_
+rafraîchir le modèle serveur après chaque ajout. _Raison :_ le modèle est dérivé du
+blueprint, qui ne connaît pas le brouillon. Le faire recalculer par le serveur ferait
+revalider la route à chaque ajout — exactement ce qui a coûté une modification perdue en
+P6. Les items ajoutés vivent dans le contenu, le panneau en dérive ses vues.
+
+**2026-08-18 · La valeur d'un item ajouté est stockée dans sa liste, pas dans `fields`** ·
+_Écarté :_ écrire dans `content.fields` comme pour tout autre champ. _Raison :_ le
+builder reconstruit un item ajouté depuis `collections[].added` : une valeur posée
+ailleurs serait ignorée à la publication, et perdue au premier réordonnancement.
+
+**2026-08-18 · Une carte ajoutée reprend l'image d'une carte existante** · _Écarté :_ un
+emplacement d'image vide, ou une image de remplacement fournie par Calque. _Raison :_ un
+`src` vide s'affiche cassé, et une carte cassée fait croire que l'ajout a échoué. Une
+image livrée par Calque introduirait un fichier étranger dans le site. On reprend celle
+d'un voisin : la carte est présentable immédiatement, et se remplace en deux clics.
+
+**2026-08-18 · L'aperçu demande, le panneau décide** · _Écarté :_ laisser les poignées de
+l'aperçu réordonner le DOM directement. _Raison :_ le runtime n'a ni le gabarit, ni les
+bornes, ni le contenu — il ne sait pas instancier un item ni jusqu'où une liste peut
+descendre. Il émet une demande, le panneau applique et reconstruit. Une seule source de
+vérité, et l'aperçu reste servi en bac à sable.
+
+**2026-08-18 · Le runtime d'édition n'embarque aucune phrase** · _Écarté :_ les quatre
+libellés de poignées écrits dans le bundle. _Raison :_ c'est un fichier statique, partagé
+par tous les sites et toutes les langues. Les libellés descendent avec la configuration ;
+une opération sans libellé n'obtient pas de bouton, un bouton muet ne valant pas mieux
+qu'un bouton absent (§12).
+
+**2026-08-18 · Le garde-fou de mise en page avertit, il ne bloque pas** · _Écarté :_
+interdire un nombre d'éléments qui déséquilibre la grille. _Raison :_ on ne connaît pas
+la grille — c'est du CSS qu'on ne touche pas. On signale le cas courant (le compte cesse
+de se répartir sur deux, trois ou quatre colonnes) et on laisse publier : un
+avertissement faux qui bloque coûte plus cher qu'une dernière ligne incomplète.
+
+**2026-08-18 · L'arbre remplace `<details>` par une ouverture contrôlée** · _Écarté :_
+garder l'élément natif. _Raison :_ le titre d'un bloc doit le _sélectionner_ — pour le
+masquer ou le dupliquer (§13) — et non le replier. Deux boutons distincts : un chevron
+qui déplie, un titre qui sélectionne.
+
+**2026-08-18 · La proposition d'annulation s'efface au bout de huit secondes** ·
+_Écarté :_ un bandeau persistant jusqu'au geste suivant. _Raison :_ il occuperait le haut
+de l'écran pendant tout le reste de la session. L'annulation générale reprend la
+suppression comme n'importe quelle autre action : le bandeau n'est qu'un raccourci pour
+l'instant qui suit le clic, pas le seul filet.
+
+**2026-08-18 · Un ajout reprend la forme de l'item le plus complet, badge compris** ·
+_Écarté :_ prendre le premier item, ou reconstruire une forme moyenne. _Raison :_ le
+gabarit doit pouvoir exprimer tous les champs de la liste ; le premier item peut être le
+plus pauvre. La conséquence est visible — sur une grille où une carte porte
+« Le plus demandé », l'ajout la reprend — et le rapport d'analyse le dit à l'agence
+(`COLLECTION_HETEROGENE`). Tous ces champs restent modifiables.
+
+**2026-08-18 · L'aperçu pointe la page d'entrée, pas le dossier** · _Écarté :_
+`/api/apercu/<id>/`, plus court. _Raison :_ Next redirige cette URL sans sa barre
+finale, et toutes les adresses relatives du site — `styles.css`, `assets/photo.jpg` —
+se résolvaient alors un cran trop haut. Le site s'affichait sans une seule de ses
+feuilles de style, ce qu'aucun test ne voyait puisqu'ils lisaient le DOM, jamais le
+rendu. Le critère P7 « correctement stylée » se vérifie désormais sur le style calculé.
+
+**2026-08-18 · Le sélecteur d'un bloc masqué tient compte des copies** · _Écarté :_
+utiliser le `domPath` tel quel. _Raison :_ `domPath` compte les frères par
+`nth-of-type`, et une copie s'insère juste après son bloc source : masquer une section
+placée après une section dupliquée faisait disparaître la copie à sa place. Le rang est
+corrigé du nombre de copies insérées avant elle.
+
+**2026-08-18 · SHA-1 est réimplémenté en TypeScript** · _Écarté :_ `node:crypto` côté
+serveur et un hachage différent côté navigateur. _Raison :_ le panneau doit dériver les
+identifiants d'un bloc dupliqué sans aller-retour serveur, et le builder doit retrouver
+exactement les mêmes. Deux implémentations, ce sont deux occasions de diverger — un test
+compare la nôtre à `node:crypto`, y compris aux longueurs qui changent de bloc. Aucun
+rôle de sécurité : c'est une empreinte courte et stable, sur des données publiques.
+
+**2026-08-18 · Supprimer se confirme dans la ligne** · _Écarté :_ une fenêtre de
+confirmation. _Raison :_ le §13 demande une confirmation ; une boîte de dialogue
+recouvre justement l'élément dont il est question, ne se traduit pas et coupe la
+navigation clavier. La ligne se transforme en question, le geste reste sous les yeux, et
+la suppression demeure annulable ensuite.

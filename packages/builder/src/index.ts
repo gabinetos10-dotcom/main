@@ -35,6 +35,7 @@ export { escapeText, escapeAttribute, sanitizeRichtext, sanitizeUrl } from "./es
 export { mapEmbedUrl, sameValue, splicesForValue } from "./writes";
 export { PageIndex } from "./resolve";
 export { renderSitemap, renderRobots } from "./sitemap";
+export { marquerItem, collectionUnchanged } from "./collections";
 
 export const BUILDER_VERSION = "3.0.0";
 
@@ -151,6 +152,7 @@ function buildPage(
         index,
         source,
         content.fields,
+        options.injectEditorRuntime === true,
       );
       if (reecriture === null) {
         unresolved.push(collection.id);
@@ -164,6 +166,23 @@ function buildPage(
     for (const collection of bloc.collections) {
       const etat = content.collections[collection.id];
       if (!collectionUnchanged(collection, etat)) continue;
+
+      // En aperçu, chaque item porte son identifiant : après un
+      // réordonnancement, le chemin DOM ne désigne plus le bon élément.
+      if (options.injectEditorRuntime === true) {
+        for (const item of collection.items) {
+          if (item.domPath === undefined) continue;
+          const element = index.byPath(item.domPath);
+          const debut = element?.sourceCodeLocation?.startTag;
+          if (element === undefined || debut === undefined) continue;
+          const point = debut.startOffset + 1 + tagName(element).length;
+          splices.push({
+            startOffset: point,
+            endOffset: point,
+            replacement: ` data-calque-item="${escapeAttribute(item.itemId)}"`,
+          });
+        }
+      }
 
       for (const item of collection.items) {
         for (const gabarit of collection.itemTemplate.fields) {
@@ -229,10 +248,27 @@ function buildPage(
 
       const locaux: Splice[] = [];
       for (const champ of bloc.fields) {
-        const valeur = content.fields[duplicatedFieldId(champ.id, nonce)];
-        if (valeur === undefined) continue;
         const cible = index.byPath(champ.domPath);
         if (cible === undefined) continue;
+
+        // La copie porte ses propres identifiants : sans ce marquage, cliquer
+        // dans le bloc dupliqué modifierait le bloc d'origine, puisque les deux
+        // partagent chemin DOM et empreinte (§13).
+        const identifiant = duplicatedFieldId(champ.id, nonce);
+        if (options.injectEditorRuntime === true && !champ.locked) {
+          const debut = cible.sourceCodeLocation?.startTag;
+          if (debut !== undefined) {
+            const point = debut.startOffset + 1 + tagName(cible).length;
+            locaux.push({
+              startOffset: point - plage.startOffset,
+              endOffset: point - plage.startOffset,
+              replacement: ` data-calque-field="${escapeAttribute(identifiant)}"`,
+            });
+          }
+        }
+
+        const valeur = content.fields[identifiant];
+        if (valeur === undefined) continue;
         const produits = splicesForValue(champ.type, valeur, { element: cible, source });
         if (produits === null) continue;
         for (const produit of produits) {

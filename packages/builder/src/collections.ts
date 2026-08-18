@@ -1,16 +1,22 @@
 import type { Collection, CollectionState, TemplateField } from "@calque/blueprint";
 import {
   applySplices,
+  attributeRange,
   children,
   elementRange,
+  findAll,
+  getAttr,
+  hasAttr,
   innerRange,
+  parseHtml,
   tagName,
   type Element,
   type Splice,
 } from "@calque/parser";
-import { escapeAttribute, escapeText, sanitizeRichtext, sanitizeUrl } from "./escape";
+import { escapeAttribute, escapeText, sanitizeRichtext } from "./escape";
 import { itemValueKey } from "./initial";
 import type { PageIndex } from "./resolve";
+import { splicesForValue } from "./writes";
 
 /**
  * Ajout, suppression et réordonnancement d'items (§13, §15 étape 4).
@@ -43,105 +49,65 @@ export function collectionUnchanged(
   );
 }
 
-/** Applique une valeur à l'emplacement `data-f="clef"` d'un fragment de gabarit. */
+/**
+ * Instancie un item à partir du gabarit (§13).
+ *
+ * Le gabarit est un fragment de HTML découpé dans le source, dont les éléments
+ * porteurs de valeurs sont marqués `data-f="clef"`. On le **parse** pour
+ * retrouver ces éléments : les repérer à l'index dans la chaîne revient à lire
+ * du HTML à l'expression régulière, ce que le §21 interdit — et ce qui, ici,
+ * confondait la balise d'un champ avec celle du conteneur qui l'entoure, au
+ * point d'effacer la moitié de la carte ajoutée.
+ *
+ * Une fois les éléments résolus, l'écriture est celle de n'importe quel champ :
+ * `splicesForValue`, la même fonction que pour une page entière.
+ */
 function remplirGabarit(
   html: string,
   champs: readonly TemplateField[],
   valeurs: Readonly<Record<string, unknown>>,
+  marquerPour: string | null = null,
 ): string {
-  let sortie = html;
+  const document = parseHtml(html);
 
-  for (const champ of champs) {
-    const valeur = valeurs[champ.key];
-    const marqueur = `data-f="${champ.key}"`;
-    const position = sortie.indexOf(marqueur);
-    if (position === -1) continue;
-
-    const finBalise = sortie.indexOf(">", position);
-    if (finBalise === -1) continue;
-
-    if (champ.type === "image") {
-      const image = (
-        typeof valeur === "object" && valeur !== null ? valeur : {}
-      ) as Record<string, unknown>;
-      const src = sanitizeUrl(String(image["src"] ?? ""));
-      const alt = String(image["alt"] ?? "");
-      sortie =
-        sortie.slice(0, finBalise) +
-        ` src="${escapeAttribute(src)}" alt="${escapeAttribute(alt)}"` +
-        sortie.slice(finBalise);
-      continue;
-    }
-
-    // Champs textuels et liens : le contenu se pose entre les balises.
-    const balise =
-      /<([a-z0-9-]+)/iu.exec(sortie.slice(position - 40, position))?.[1] ?? "";
-    const fermeture = balise.length > 0 ? sortie.indexOf(`</${balise}`, finBalise) : -1;
-    if (fermeture === -1) continue;
-
-    let contenu = "";
-    if (champ.type === "richtext") {
-      contenu = sanitizeRichtext(String(valeur ?? ""), [
-        "b",
-        "strong",
-        "i",
-        "em",
-        "u",
-        "a",
-        "br",
-      ]);
-    } else if (champ.type === "link" || champ.type === "cta") {
-      const lien = (
-        typeof valeur === "object" && valeur !== null ? valeur : {}
-      ) as Record<string, unknown>;
-      contenu = escapeText(String(lien["label"] ?? ""));
-      const href = sanitizeUrl(String(lien["href"] ?? "#"));
-      sortie =
-        sortie.slice(0, finBalise) +
-        ` href="${escapeAttribute(href)}"` +
-        sortie.slice(finBalise);
-      return remplirGabaritSuite(sortie, champs, valeurs, champ.key, contenu);
-    } else {
-      contenu = escapeText(String(valeur ?? ""));
-    }
-
-    sortie = sortie.slice(0, finBalise + 1) + contenu + sortie.slice(fermeture);
+  const parClef = new Map<string, Element>();
+  for (const element of findAll(document, (candidat) => hasAttr(candidat, "data-f"))) {
+    const clef = getAttr(element, "data-f");
+    if (clef !== undefined && !parClef.has(clef)) parClef.set(clef, element);
   }
 
-  return sortie;
-}
+  const splices: Splice[] = [];
 
-/**
- * Reprend le remplissage après une réécriture qui a décalé les offsets.
- *
- * Poser un `href` déplace tout ce qui suit : plutôt que de tenir une
- * comptabilité d'offsets sur une chaîne qu'on modifie, on repart du marqueur.
- */
-function remplirGabaritSuite(
-  html: string,
-  champs: readonly TemplateField[],
-  valeurs: Readonly<Record<string, unknown>>,
-  clefFaite: string,
-  contenu: string,
-): string {
-  const marqueur = `data-f="${clefFaite}"`;
-  const position = html.indexOf(marqueur);
-  const finBalise = html.indexOf(">", position);
-  const balise =
-    /<([a-z0-9-]+)/iu.exec(html.slice(Math.max(0, position - 60), position))?.[1] ?? "a";
-  const fermeture = html.indexOf(`</${balise}`, finBalise);
-  const avec =
-    fermeture === -1
-      ? html
-      : html.slice(0, finBalise + 1) + contenu + html.slice(fermeture);
+  for (const champ of champs) {
+    const element = parClef.get(champ.key);
+    if (element === undefined) continue;
 
-  const restants = champs.filter((champ) => champ.key !== clefFaite);
-  return restants.length === 0 ? avec : remplirGabarit(avec, restants, valeurs);
-}
+    const ecritures = splicesForValue(
+      champ.type,
+      valeurs[champ.key],
+      { element, source: html },
+      champ.constraints,
+    );
+    if (ecritures !== null) splices.push(...ecritures);
+  }
 
-/** Retire les marqueurs `data-f` d'un item instancié : ils ne servent qu'au gabarit. */
-function retirerMarqueurs(html: string): string {
-  return html.replace(/\s+data-f="[^"]*"/gu, "");
+  // Le marqueur du gabarit n'atteint jamais la page : publié, il disparaît ; en
+  // aperçu, il devient le marquage que le runtime d'édition sait résoudre. Sans
+  // lui, un item ajouté serait visible mais pas cliquable — il n'existe dans
+  // aucun chemin DOM du blueprint, puisqu'il n'existait pas à l'analyse.
+  for (const [clef, element] of parClef) {
+    const plage = attributeRange(element, "data-f", html);
+    if (plage === undefined) continue;
+    splices.push({
+      ...plage,
+      replacement:
+        marquerPour === null
+          ? ""
+          : ` data-calque-field="${escapeAttribute(itemValueKey(marquerPour, clef))}"`,
+    });
+  }
+
+  return applySplices(html, splices);
 }
 
 export interface CollectionRewrite {
@@ -150,12 +116,27 @@ export interface CollectionRewrite {
   consumedFieldKeys: string[];
 }
 
+/**
+ * Pose `data-calque-item` sur la balise ouvrante d'un item.
+ *
+ * Après un réordonnancement, le chemin DOM d'un item ne vaut plus rien : c'est
+ * par cet attribut que le runtime d'édition retrouve les items dans la page
+ * reconstruite.
+ */
+export function marquerItem(html: string, itemId: string): string {
+  const ouvrante = /<([a-z][a-z0-9-]*)/iu.exec(html);
+  if (ouvrante === null) return html;
+  const position = ouvrante.index + ouvrante[0].length;
+  return `${html.slice(0, position)} data-calque-item="${itemId}"${html.slice(position)}`;
+}
+
 export function rewriteCollection(
   collection: Collection,
   etat: CollectionState,
   index: PageIndex,
   source: string,
   valeurs: Readonly<Record<string, unknown>>,
+  marquer = false,
 ): CollectionRewrite | null {
   const conteneur = index.byPath(collection.containerPath);
   if (conteneur === undefined) return null;
@@ -178,15 +159,13 @@ export function rewriteCollection(
 
     const ajoute = etat.added[itemId];
     if (ajoute !== undefined) {
-      morceaux.push(
-        retirerMarqueurs(
-          remplirGabarit(
-            collection.itemTemplate.html,
-            collection.itemTemplate.fields,
-            ajoute,
-          ),
-        ),
+      const instancie = remplirGabarit(
+        collection.itemTemplate.html,
+        collection.itemTemplate.fields,
+        ajoute,
+        marquer ? itemId : null,
       );
+      morceaux.push(marquer ? marquerItem(instancie, itemId) : instancie);
       continue;
     }
 
@@ -233,8 +212,8 @@ export function rewriteCollection(
       });
     }
 
-    const brut = source.slice(plage.startOffset, plage.endOffset);
-    morceaux.push(applySplices(brut, local));
+    const brut = applySplices(source.slice(plage.startOffset, plage.endOffset), local);
+    morceaux.push(marquer ? marquerItem(brut, itemId) : brut);
   }
 
   const separateur = deduireSeparateur(conteneur, source);

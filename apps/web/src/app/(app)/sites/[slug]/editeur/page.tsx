@@ -172,7 +172,14 @@ export default async function PageEditeur({
     siteName: site.name,
     slug: site.slug,
     statut: site.status,
-    apercuUrl: `/api/apercu/${site.id}/`,
+    /**
+     * L'aperçu pointe la page d'entrée, pas le dossier.
+     *
+     * `/api/apercu/<id>/` est redirigé sans sa barre finale, et les URL
+     * relatives du site — `styles.css`, `assets/photo.jpg` — se résolvent alors
+     * un cran trop haut : le site s'affichait sans ses feuilles de style.
+     */
+    apercuUrl: `/api/apercu/${site.id}/${dernier.manifest.entry}`,
     pages,
     blocs,
     champs,

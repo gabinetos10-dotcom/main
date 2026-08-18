@@ -1,5 +1,3 @@
-import { createHash } from "node:crypto";
-
 /**
  * Calcul des identifiants stables (§9.1).
  *
@@ -15,8 +13,87 @@ import { createHash } from "node:crypto";
  *     ne sont, par construction, dérivables d'aucun `domPath` du source.
  */
 
+/**
+ * SHA-1, en TypeScript pur.
+ *
+ * `node:crypto` suffirait côté serveur, mais ces identifiants se calculent
+ * aussi dans le navigateur : dupliquer un bloc produit des identifiants `dup_`
+ * que le panneau doit dériver sans aller-retour serveur, et un item ajouté doit
+ * pouvoir être nommé au clic. Une seule implémentation, partagée, garantit que
+ * les deux côtés tombent sur le même identifiant.
+ *
+ * SHA-1 n'a ici aucun rôle de sécurité : c'est une empreinte courte et stable.
+ * Rien de secret n'est haché, et rien ne dépend de sa résistance aux collisions.
+ */
 export function sha1(input: string): string {
-  return createHash("sha1").update(input, "utf8").digest("hex");
+  const octets = new TextEncoder().encode(input);
+  const blocs = Math.floor((octets.length + 8) / 64) + 1;
+  const tampon = new Uint8Array(blocs * 64);
+  tampon.set(octets);
+  tampon[octets.length] = 0x80;
+
+  const vue = new DataView(tampon.buffer);
+  const bits = octets.length * 8;
+  vue.setUint32(blocs * 64 - 8, Math.floor(bits / 2 ** 32), false);
+  vue.setUint32(blocs * 64 - 4, bits >>> 0, false);
+
+  let h0 = 0x67452301;
+  let h1 = 0xefcdab89;
+  let h2 = 0x98badcfe;
+  let h3 = 0x10325476;
+  let h4 = 0xc3d2e1f0;
+
+  const mots = new Uint32Array(80);
+
+  for (let bloc = 0; bloc < blocs; bloc += 1) {
+    for (let i = 0; i < 16; i += 1) mots[i] = vue.getUint32(bloc * 64 + i * 4, false);
+    for (let i = 16; i < 80; i += 1) {
+      const melange =
+        (mots[i - 3] as number) ^
+        (mots[i - 8] as number) ^
+        (mots[i - 14] as number) ^
+        (mots[i - 16] as number);
+      mots[i] = (melange << 1) | (melange >>> 31);
+    }
+
+    let a = h0;
+    let b = h1;
+    let c = h2;
+    let d = h3;
+    let e = h4;
+
+    for (let i = 0; i < 80; i += 1) {
+      const [f, k] =
+        i < 20
+          ? [(b & c) | (~b & d), 0x5a827999]
+          : i < 40
+            ? [b ^ c ^ d, 0x6ed9eba1]
+            : i < 60
+              ? [(b & c) | (b & d) | (c & d), 0x8f1bbcdc]
+              : [b ^ c ^ d, 0xca62c1d6];
+
+      const suivant =
+        (((a << 5) | (a >>> 27)) +
+          (f as number) +
+          e +
+          (k as number) +
+          (mots[i] as number)) >>>
+        0;
+      e = d;
+      d = c;
+      c = (b << 30) | (b >>> 2);
+      b = a;
+      a = suivant;
+    }
+
+    h0 = (h0 + a) >>> 0;
+    h1 = (h1 + b) >>> 0;
+    h2 = (h2 + c) >>> 0;
+    h3 = (h3 + d) >>> 0;
+    h4 = (h4 + e) >>> 0;
+  }
+
+  return [h0, h1, h2, h3, h4].map((mot) => mot.toString(16).padStart(8, "0")).join("");
 }
 
 /** Normalisation avant hachage de contenu : espaces compactés, bords rognés. */

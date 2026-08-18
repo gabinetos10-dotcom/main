@@ -1,7 +1,8 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
-import type { ChampVue, CollectionVue, MediaVue } from "./types";
+import type { ChampVue, MediaVue } from "./types";
 
 /**
  * Panneau de propriétés (§12, zone de droite).
@@ -62,56 +63,33 @@ function CompteurCaracteres({ valeur, maximum }: { valeur: string; maximum?: num
 
 export interface ProprietesProps {
   champ: ChampVue | null;
-  collection: CollectionVue | null;
   valeur: unknown;
   medias: MediaVue[];
+  /**
+   * Compteur de demandes de focus. Il change quand le panneau veut que le
+   * curseur arrive dans le premier champ — après l'ajout d'un élément de liste,
+   * là où le §13 demande de « scroller et donner le focus ».
+   */
+  focus: number;
   onChanger: (valeur: unknown) => void;
-  onChoisirChamp: (champId: string) => void;
   onOuvrirMedias: () => void;
 }
 
 export function Proprietes({
   champ,
-  collection,
   valeur,
   medias,
+  focus,
   onChanger,
-  onChoisirChamp,
   onOuvrirMedias,
 }: ProprietesProps) {
   const t = useTranslations("editeur");
+  const cadre = useRef<HTMLDivElement>(null);
 
-  if (collection !== null) {
-    return (
-      <div className="space-y-4" data-testid="proprietes-liste">
-        <div>
-          <p className="text-[11px] uppercase tracking-wide text-encre-400">
-            {t("liste")}
-          </p>
-          <h2 className="text-[15px] font-medium text-encre-800">{collection.label}</h2>
-          <p className="mt-1 text-[13px] leading-relaxed text-encre-500">
-            {t("listeAide", { nombre: collection.items.length })}
-          </p>
-        </div>
-
-        <ul className="space-y-1.5">
-          {collection.items.map((item, rang) => (
-            <li key={item.itemId}>
-              <button
-                type="button"
-                data-testid={`item-${item.itemId}`}
-                onClick={() => item.champIds[0] && onChoisirChamp(item.champIds[0])}
-                className="flex w-full items-center gap-2 rounded-md border border-papier-300 px-3 py-2 text-left text-[13px] transition hover:border-bleu-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bleu-300"
-              >
-                <span className="w-4 shrink-0 text-encre-400">{rang + 1}</span>
-                <span className="truncate">{item.resume || t("sansTitre")}</span>
-              </button>
-            </li>
-          ))}
-        </ul>
-      </div>
-    );
-  }
+  useEffect(() => {
+    if (focus === 0) return;
+    cadre.current?.querySelector<HTMLElement>('[data-testid="champ-valeur"]')?.focus();
+  }, [focus]);
 
   if (champ === null) {
     return (
@@ -124,7 +102,7 @@ export function Proprietes({
     typeof contraintes["maxLength"] === "number" ? contraintes["maxLength"] : undefined;
 
   return (
-    <div className="space-y-4" data-testid="proprietes">
+    <div ref={cadre} className="space-y-4" data-testid="proprietes">
       <div>
         <p className="text-[11px] uppercase tracking-wide text-encre-400">
           {champ.blocLabel}

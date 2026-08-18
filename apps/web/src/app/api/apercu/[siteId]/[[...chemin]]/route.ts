@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { getTranslations } from "next-intl/server";
 import { z } from "zod";
 import { OVERRIDES_PATH, renderOverrides } from "@calque/builder";
 import {
@@ -166,6 +167,9 @@ export async function GET(
     }
   }
 
+  // Les libellés des poignées descendent d'ici : le runtime est un fichier
+  // statique, partagé par tous les sites, et n'embarque aucune phrase.
+  const t = await getTranslations("editeur");
   const pages = await construireApercu({
     store,
     siteId: site.id,
@@ -175,6 +179,12 @@ export async function GET(
     content: brouillon.data,
     runtimeUrl: "/apercu/editor-runtime.js",
     parentOrigin: new URL(_request.url).origin,
+    actions: {
+      up: t("monter"),
+      down: t("descendre"),
+      duplicate: t("dupliquer"),
+      remove: t("supprimer"),
+    },
   });
 
   const page = pages.get(chemin);

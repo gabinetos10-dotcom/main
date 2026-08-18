@@ -78,6 +78,21 @@ export const errorSchema = enveloppe(
   z.object({ message: z.string(), fieldId: z.optional(z.string()) }),
 );
 
+/**
+ * Demande d'opération sur une liste, faite depuis l'aperçu (§13).
+ *
+ * L'aperçu ne réordonne rien lui-même : il n'a ni le gabarit, ni les bornes, ni
+ * le contenu. Il demande, le panneau décide et reconstruit.
+ */
+export const collectionRequestSchema = enveloppe(
+  "COLLECTION_REQUEST",
+  z.object({
+    collectionId: z.string(),
+    itemId: z.string(),
+    op: z.enum(["up", "down", "duplicate", "remove"]),
+  }),
+);
+
 export const fromPreviewSchema = z.discriminatedUnion("type", [
   readySchema,
   fieldClickSchema,
@@ -85,6 +100,7 @@ export const fromPreviewSchema = z.discriminatedUnion("type", [
   hoverSchema,
   scrollPosSchema,
   errorSchema,
+  collectionRequestSchema,
 ]);
 export type FromPreview = z.infer<typeof fromPreviewSchema>;
 
