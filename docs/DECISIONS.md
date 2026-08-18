@@ -294,3 +294,61 @@ exiger l'export des variables dans le shell. _Raison :_ le RUNBOOK promet
 shell neuf, faute de charger le fichier. Le drapeau de Node n'écrase jamais une variable
 déjà définie : la CI, qui les fournit par l'environnement, garde la main. Correctif de
 P0 relevé en P2.
+
+---
+
+## P3 — Builder
+
+**2026-08-18 · Le builder ne réécrit que ce qui a changé** · _Écarté :_ réécrire chaque
+champ à chaque build. _Raison :_ c'est la seule façon d'obtenir l'identité byte-à-byte du
+§15. Une valeur de texte est normalisée à l'analyse (espaces compactés, `&nbsp;` décodé) ;
+la réécrire systématiquement produirait un fichier différent du source alors que rien n'a
+changé. La comparaison porte sur la valeur du blueprint, pas sur le texte du fichier.
+
+**2026-08-18 · Le builder reparse le source et re-résout chaque champ** · _Écarté :_ se
+fier aux offsets enregistrés dans le blueprint. _Raison :_ le §15 étape 3 demande une
+résolution, et les offsets deviennent faux dès que le source change. La résolution dégrade
+en trois étages — `domPath`, empreinte + hachage, empreinte seule — puis renonce : un
+champ irrésolu part dans `unresolvedFieldIds` et rien n'est écrit.
+
+**2026-08-18 · Les identifiants d'items sont dérivés de la collection et du rang** ·
+_Écarté :_ un compteur par page (`itm_001`, `itm_002`…). _Raison :_ le contenu du client
+est un dictionnaire plat à l'échelle du site. Deux pages numérotant leurs items à partir
+de 1 voyaient leurs valeurs se recouvrir — les horaires de la page contact affichaient les
+plats de la carte. C'est le test d'identité byte-à-byte qui l'a révélé, sur la seule page
+concernée.
+
+**2026-08-18 · Une collection inchangée n'est pas réécrite du tout** · _Écarté :_
+régénérer systématiquement l'intérieur du conteneur depuis les items. _Raison :_ une
+régénération perd l'indentation d'origine et casse l'identité. Deux régimes : inchangée →
+les valeurs s'écrivent comme n'importe quel champ ; modifiée → l'intérieur du conteneur est
+réécrit d'un seul tenant, dans l'ordre demandé.
+
+**2026-08-18 · Les valeurs de jetons sont validées par liste blanche, pas filtrées par
+liste noire** · _Écarté :_ retirer `{`, `}` et `;` d'une valeur libre. _Raison :_ une
+liste noire finit toujours par laisser passer la forme à laquelle on n'avait pas pensé.
+Chaque type de jeton a son motif — couleur, longueur, rayon, police, ombre — et une valeur
+non conforme est rejetée : le jeton garde alors la valeur du site.
+
+**2026-08-18 · Un élément hors liste blanche est déballé, pas supprimé** · _Écarté :_
+supprimer l'élément et son contenu. _Raison :_ supprimer ferait disparaître du texte que
+le client croyait avoir écrit. Déballer ne perd que la mise en forme, ce qui est visible et
+rattrapable.
+
+**2026-08-18 · `reconcile()` est livré en P3, alors que le §22 le place en P10** ·
+_Écarté :_ attendre la phase de re-livraison. _Raison :_ c'est une fonction pure de deux
+blueprints, et l'interface `SiteAdapter` l'exige. La livrer maintenant évite un adaptateur
+incomplet, et son test — insérer une section en tête de page, ce qui décale tous les rangs
+— vérifie du même coup que le blueprint porte bien de quoi survivre à une re-livraison.
+
+**2026-08-18 · Le builder dépend du parser pour les utilitaires d'arbre** · _Écarté :_ un
+package `@calque/html` partagé. _Raison :_ les deux moitiés de l'adaptateur `static-html`
+manipulent le même arbre parse5 avec les mêmes helpers. Un troisième package pour six
+fonctions coûterait plus qu'il ne clarifie ; à revoir si un second adaptateur apparaît en
+v2.
+
+**2026-08-18 · Le masquage d'un bloc passe par un sélecteur CSS dérivé du `domPath`** ·
+_Écarté :_ retirer le bloc du HTML. _Raison :_ le §13 impose que le HTML source ne soit
+jamais supprimé. Un `domPath` est déjà un sélecteur CSS valide — `body > main:nth-of-type(1)
+
+> section:nth-of-type(2)` — ce qui évite d'ajouter un attribut au HTML publié.

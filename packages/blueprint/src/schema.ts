@@ -251,6 +251,8 @@ export const templateFieldSchema = z.object({
 
 export const collectionItemSchema = z.object({
   itemId: z.string(),
+  /** Chemin de l'élément d'origine. Absent pour un item ajouté par le client. */
+  domPath: z.string().optional(),
   /** Valeurs indexées par `templateField.key`. */
   values: z.record(z.string(), z.unknown()),
   /** Localisation de chaque valeur dans le source, même indexation. */

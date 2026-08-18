@@ -176,6 +176,20 @@ export function attributeValueRange(
   return { startOffset: debut, endOffset: fin };
 }
 
+/**
+ * Point d'insertion d'un nouvel attribut : juste après le nom de la balise.
+ *
+ * Une plage de longueur nulle. Le builder en a besoin pour écrire un attribut
+ * qui n'existe pas encore dans le source — un `alt` sur une image qui n'en a
+ * pas, alors que le §14 le rend obligatoire.
+ */
+export function attributeInsertPoint(element: Element): SourceRange | undefined {
+  const debut = element.sourceCodeLocation?.startTag;
+  if (!debut) return undefined;
+  const offset = debut.startOffset + 1 + tagName(element).length;
+  return { startOffset: offset, endOffset: offset };
+}
+
 /* ── Parcours ──────────────────────────────────────────────────────────────── */
 
 export function findFirst(

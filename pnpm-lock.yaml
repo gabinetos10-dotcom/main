@@ -129,6 +129,25 @@ importers:
         specifier: 5.9.3
         version: 5.9.3
 
+  packages/builder:
+    dependencies:
+      '@calque/blueprint':
+        specifier: workspace:*
+        version: link:../blueprint
+      '@calque/parser':
+        specifier: workspace:*
+        version: link:../parser
+      parse5:
+        specifier: 8.0.1
+        version: 8.0.1
+    devDependencies:
+      '@calque/fixtures':
+        specifier: workspace:*
+        version: link:../../fixtures
+      typescript:
+        specifier: 5.9.3
+        version: 5.9.3
+
   packages/db:
     dependencies:
       '@auth/core':

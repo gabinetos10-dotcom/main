@@ -18,6 +18,7 @@ import {
   computeCollectionId,
   computeContentHash,
   computeFieldId,
+  computeItemId,
   fingerprintShapeSimilarity,
   fingerprintSimilarity,
 } from "@calque/blueprint/ids";
@@ -28,6 +29,7 @@ import { lockDecision, type LockContext } from "./lock";
 import { extractSeo } from "./seo";
 import { applySplices, type Splice } from "./splice";
 import {
+  attributeInsertPoint,
   children,
   domPathOf,
   findAll,
@@ -142,7 +144,6 @@ class PageWalker {
   private readonly entries: FieldEntry[] = [];
   private readonly blocksById = new Map<string, Element>();
   private readonly anchorTargets = new Set<string>();
-  private compteurItem = 0;
   private titreDuBloc: string | null = null;
 
   constructor(private readonly options: PageOptions) {
@@ -492,6 +493,7 @@ class PageWalker {
       constraints: { ...entree.field.constraints },
     }));
 
+    const collectionId = computeCollectionId(this.options.path, containerPath);
     const items: CollectionItem[] = groupe.map((membre, index) => {
       const contenu = contenus[index] as Sink;
       const cheminMembre = domPathOf(membre);
@@ -569,9 +571,9 @@ class PageWalker {
         };
       }
 
-      this.compteurItem += 1;
       return {
-        itemId: `itm_${String(this.compteurItem).padStart(3, "0")}`,
+        itemId: computeItemId(collectionId, index),
+        domPath: cheminMembre,
         values,
         valueMeta,
         meta: {
@@ -601,7 +603,7 @@ class PageWalker {
     for (const contenu of contenus) this.entries.push(...contenu.fields);
 
     return {
-      id: computeCollectionId(this.options.path, containerPath),
+      id: collectionId,
       label: libelle,
       containerPath,
       itemSignature: fingerprintOf(modele),
@@ -740,7 +742,16 @@ class PageWalker {
           ? { sourceRange: elementRange(element) }
           : {}),
         ...(Object.keys(candidat.valueRanges).length > 0
-          ? { valueRanges: candidat.valueRanges }
+          ? {
+              valueRanges: {
+                ...candidat.valueRanges,
+                // Point d'insertion d'un attribut absent du source (§14 : le
+                // texte alternatif est obligatoire, même si l'agence l'a oublié).
+                ...(attributeInsertPoint(element) !== undefined
+                  ? { attrPoint: attributeInsertPoint(element) as never }
+                  : {}),
+              },
+            }
           : {}),
       },
     } as Field;

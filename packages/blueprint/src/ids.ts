@@ -40,6 +40,22 @@ export function computeCollectionId(pagePath: string, containerPath: string): st
   return `col_${sha1(`${pagePath}::${containerPath}`).slice(0, 10)}`;
 }
 
+/**
+ * Identifiant d'un item de collection.
+ *
+ * Dérivé de la collection et du rang, jamais d'un compteur de page : le contenu
+ * du client est un dictionnaire plat à l'échelle du **site**, et deux pages
+ * numérotant leurs items à partir de 1 verraient leurs valeurs se recouvrir.
+ */
+export function computeItemId(collectionId: string, index: number): string {
+  return `itm_${sha1(`${collectionId}::${index}`).slice(0, 10)}`;
+}
+
+/** Identifiant d'un item ajouté par le client : sans rang dans le source. */
+export function addedItemId(collectionId: string, nonce: string): string {
+  return `itm_${sha1(`${collectionId}::ajout::${nonce}`).slice(0, 10)}`;
+}
+
 export function computeTokenId(cssVar: string): string {
   return `tok_${sha1(cssVar).slice(0, 8)}`;
 }

@@ -26,6 +26,14 @@ export default defineConfig({
       },
       {
         test: {
+          name: "builder",
+          root: "./packages/builder",
+          environment: "node",
+          include: ["test/**/*.test.ts"],
+        },
+      },
+      {
+        test: {
           name: "db",
           root: "./packages/db",
           environment: "node",

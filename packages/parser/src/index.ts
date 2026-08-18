@@ -22,7 +22,7 @@ export const ADAPTER_ID = "static-html";
 export { analyzePage } from "./page";
 export { analyzeScripts } from "./scripts";
 export { analyzeTheme } from "./theme";
-export { applySplices } from "./splice";
+export { applySplices, type Splice } from "./splice";
 export { compileSimpleSelector } from "./simple-selector";
 export { classify, backgroundImage } from "./classify";
 export { computeDomPath, type DomPathTree } from "./dom-path";

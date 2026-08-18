@@ -1,0 +1,22 @@
+{
+  "name": "@calque/builder",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./adapter": "./src/adapter.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@calque/blueprint": "workspace:*",
+    "@calque/parser": "workspace:*",
+    "parse5": "8.0.1"
+  },
+  "devDependencies": {
+    "@calque/fixtures": "workspace:*",
+    "typescript": "5.9.3"
+  }
+}
