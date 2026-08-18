@@ -1,0 +1,28 @@
+{
+  "name": "@calque/parser",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./report": "./src/report.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "report": "tsx tools/report.mts"
+  },
+  "dependencies": {
+    "@calque/blueprint": "workspace:*",
+    "acorn": "8.18.0",
+    "acorn-walk": "8.3.5",
+    "parse5": "8.0.1",
+    "postcss": "8.5.26"
+  },
+  "devDependencies": {
+    "@calque/fixtures": "workspace:*",
+    "cheerio": "1.2.0",
+    "domhandler": "5.0.3",
+    "tsx": "4.23.12",
+    "typescript": "5.9.3"
+  }
+}

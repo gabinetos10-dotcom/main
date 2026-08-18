@@ -107,7 +107,7 @@ export default tseslint.config(
   // Outillage exécuté par Node hors bundler : globales Node, sorties console
   // assumées (ce sont des scripts d'atelier, pas du code applicatif).
   {
-    files: ["**/tools/**/*.mjs", "scripts/**/*.mjs"],
+    files: ["**/tools/**/*.{mjs,mts}", "scripts/**/*.mjs"],
     languageOptions: {
       globals: { Buffer: "readonly", process: "readonly", console: "readonly" },
     },
@@ -115,7 +115,7 @@ export default tseslint.config(
   },
 
   {
-    files: ["**/*.test.ts", "**/*.spec.ts", "**/tools/**/*.mjs", "e2e/**/*.ts"],
+    files: ["**/*.test.ts", "**/*.spec.ts", "**/tools/**/*.{mjs,mts}", "e2e/**/*.ts"],
     rules: {
       "no-console": "off",
       "@typescript-eslint/no-explicit-any": "off",

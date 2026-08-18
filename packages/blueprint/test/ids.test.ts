@@ -1,13 +1,16 @@
 import { describe, expect, it } from "vitest";
 import {
+  DEFAULT_COLLECTION_SHAPE_FLOOR,
   DEFAULT_COLLECTION_SIMILARITY_THRESHOLD,
   computeContentHash,
   computeFieldId,
   computeFingerprint,
   duplicatedFieldId,
+  fingerprintShapeSimilarity,
   fingerprintSimilarity,
   isDuplicatedId,
   normalizeText,
+  shapeTokens,
   splitFingerprint,
 } from "../src/ids";
 
@@ -148,5 +151,72 @@ describe("fingerprintSimilarity", () => {
 
   it("renvoie 0 sur une empreinte malformée", () => {
     expect(fingerprintSimilarity(carteSimple, "n'importe quoi")).toBe(0);
+  });
+
+  /**
+   * Le troisième segment décrit les enfants sur deux niveaux. Le comparer par
+   * égalité — ce que ferait un hachage — rendrait le seuil inutile : deux cartes
+   * dont l'une porte un badge n'ont jamais exactement la même forme.
+   */
+  it("compare les formes par ressemblance, pas par égalité", () => {
+    const avecImage = computeFingerprint({
+      tagName: "figure",
+      classes: [],
+      shapeHash: "picture(source+img)+figcaption",
+    });
+    const sansPicture = computeFingerprint({
+      tagName: "figure",
+      classes: [],
+      shapeHash: "img+figcaption",
+    });
+
+    const forme = fingerprintShapeSimilarity(avecImage, sansPicture);
+    expect(forme).toBeGreaterThan(0);
+    expect(forme).toBeLessThan(1);
+    expect(fingerprintSimilarity(avecImage, sansPicture)).toBeGreaterThanOrEqual(
+      DEFAULT_COLLECTION_SIMILARITY_THRESHOLD,
+    );
+  });
+
+  /**
+   * Sans plancher de forme, deux colonnes de mise en page — sans classe ni
+   * l'une ni l'autre, donc parfaitement « semblables » côté classes —
+   * franchiraient le seuil global.
+   */
+  it("sépare deux colonnes de mise en page par le plancher de forme", () => {
+    const gauche = computeFingerprint({
+      tagName: "div",
+      classes: [],
+      shapeHash: "h2+dl(div+div+div+div)",
+    });
+    const droite = computeFingerprint({
+      tagName: "div",
+      classes: [],
+      shapeHash: "h2+p(br)+p(a+br+a)",
+    });
+    expect(fingerprintShapeSimilarity(gauche, droite)).toBeLessThan(
+      DEFAULT_COLLECTION_SHAPE_FLOOR,
+    );
+  });
+});
+
+describe("shapeTokens", () => {
+  it("aplatit un descripteur sur deux niveaux", () => {
+    expect(shapeTokens("img+div(h3+p+a)")).toEqual(["img", "div", "h3", "p", "a"]);
+  });
+
+  it("rend une liste vide pour une feuille", () => {
+    expect(shapeTokens("")).toEqual([]);
+  });
+
+  it("gère plusieurs sous-arbres imbriqués", () => {
+    expect(shapeTokens("picture(source+img)+figcaption(h3+p)")).toEqual([
+      "picture",
+      "source",
+      "img",
+      "figcaption",
+      "h3",
+      "p",
+    ]);
   });
 });

@@ -18,6 +18,14 @@ export default defineConfig({
       },
       {
         test: {
+          name: "parser",
+          root: "./packages/parser",
+          environment: "node",
+          include: ["test/**/*.test.ts"],
+        },
+      },
+      {
+        test: {
           name: "db",
           root: "./packages/db",
           environment: "node",

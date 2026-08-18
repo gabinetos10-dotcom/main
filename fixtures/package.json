@@ -4,12 +4,17 @@
   "private": true,
   "type": "module",
   "description": "Sites de test et vérité terrain annotée pour le parser (§22 P1).",
+  "exports": {
+    ".": "./src/index.ts"
+  },
   "scripts": {
     "typecheck": "tsc --noEmit",
     "assets": "node tools/generate-assets.mjs"
   },
+  "dependencies": {
+    "@calque/blueprint": "workspace:*"
+  },
   "devDependencies": {
-    "@calque/blueprint": "workspace:*",
     "cheerio": "1.2.0",
     "sharp": "0.35.3",
     "typescript": "5.9.3"

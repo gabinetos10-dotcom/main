@@ -1,4 +1,4 @@
-import type { Blueprint, LabelPatch } from "./schema";
+import type { Blueprint, FieldOverride, LabelPatch } from "./schema";
 import type { ContentData } from "./types";
 
 /**
@@ -58,8 +58,12 @@ export interface AdapterCapabilities {
 export interface AnalyzeOptions {
   /** Seuil de regroupement des collections. Voir `fingerprintSimilarity`. */
   collectionSimilarityThreshold?: number;
-  /** Surcharges admin persistées : fieldId → { label, editable, locked… }. */
-  fieldOverrides?: Readonly<Record<string, unknown>>;
+  /** Plancher de similarité de forme, sous lequel aucun groupe ne se forme. */
+  collectionShapeFloor?: number;
+  /** Surcharges admin persistées, indexées par `fieldId` (§9.6). */
+  fieldOverrides?: Readonly<Record<string, FieldOverride>>;
+  /** Horodatage injecté, pour rendre l'analyse reproductible en test. */
+  now?: Date;
 }
 
 export interface AnalyzeResult {

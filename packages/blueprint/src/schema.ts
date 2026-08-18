@@ -10,7 +10,7 @@ import { z } from "zod";
  * exige une migration explicite du contenu stocké.
  */
 
-export const BLUEPRINT_VERSION = "1.0" as const;
+export const BLUEPRINT_VERSION = "1.1" as const;
 
 /* ── Types de champs (§9.2) ────────────────────────────────────────────────── */
 
@@ -31,6 +31,12 @@ export const fieldTypeSchema = z.enum([
 
 /* ── Identifiants et métadonnées de résolution (§9.1) ──────────────────────── */
 
+/** Intervalle d'octets dans le fichier source, tel que parse5 le rapporte. */
+export const sourceRangeSchema = z.object({
+  startOffset: z.number().int().min(0),
+  endOffset: z.number().int().min(0),
+});
+
 /**
  * `domPath` est une *piste*, pas une identité. La résolution d'un champ dégrade
  * en trois étages : domPath exact → fingerprint + contentHash → fingerprint seul.
@@ -39,10 +45,26 @@ export const fieldTypeSchema = z.enum([
 export const fieldMetaSchema = z.object({
   fingerprint: z.string(),
   contentHash: z.string().optional(),
-  /** Offsets dans le buffer source, posés par le parser, consommés par le builder. */
-  sourceRange: z
-    .object({ startOffset: z.number().int().min(0), endOffset: z.number().int().min(0) })
-    .optional(),
+  /** Étendue de l'élément entier. Sert au surlignage dans l'aperçu. */
+  sourceRange: sourceRangeSchema.optional(),
+  /**
+   * Étendue de chaque partie réécrivable, par nom de partie : `text`, `src`,
+   * `alt`, `href`, `label`, `action`…
+   *
+   * Une seule étendue ne suffit pas : une image se réécrit dans `src` *et* dans
+   * `alt`, un lien dans son libellé *et* dans son `href`. Le builder du P3 ne
+   * resérialise jamais un élément — il remplace exactement ces intervalles, ce
+   * qui est la condition de l'identité byte-à-byte.
+   */
+  valueRanges: z.record(z.string(), sourceRangeSchema).optional(),
+});
+
+/** Où écrire la valeur d'un champ de gabarit, dans un item de collection. */
+export const valueLocationSchema = z.object({
+  domPath: z.string(),
+  contentHash: z.string().optional(),
+  sourceRange: sourceRangeSchema.optional(),
+  valueRanges: z.record(z.string(), sourceRangeSchema).optional(),
 });
 
 /* ── Contraintes par type ──────────────────────────────────────────────────── */
@@ -231,6 +253,8 @@ export const collectionItemSchema = z.object({
   itemId: z.string(),
   /** Valeurs indexées par `templateField.key`. */
   values: z.record(z.string(), z.unknown()),
+  /** Localisation de chaque valeur dans le source, même indexation. */
+  valueMeta: z.record(z.string(), valueLocationSchema).default({}),
   meta: fieldMetaSchema.partial().optional(),
 });
 
@@ -282,6 +306,12 @@ export const pageSchema = z.object({
   label: z.string(),
   /** Une section `[id]` d'un one-page traitée comme page virtuelle (§8). */
   virtual: z.boolean().default(false),
+  /**
+   * Bloc visé par une page virtuelle. Une page virtuelle ne porte aucun bloc en
+   * propre : elle est une entrée de navigation vers un bloc de la page réelle,
+   * sans quoi le même contenu existerait à deux endroits du blueprint.
+   */
+  anchorBlockId: z.string().optional(),
   seo: seoSchema.default({ title: "", description: "" }),
   blocks: z.array(blockSchema).default([]),
 });
@@ -329,9 +359,29 @@ export const globalGroupSchema = z.object({
       z.object({
         /** Pages où la valeur apparaît : une édition les met toutes à jour. */
         occurrences: z.array(z.string()).default([]),
+        /**
+         * Champs de page portant cette valeur. C'est par eux que l'édition se
+         * propage : le builder réécrit chacun, le panneau global n'en est que
+         * la commande.
+         */
+        fieldIds: z.array(z.string()).default([]),
       }),
     ),
   ),
+});
+
+/* ── Surcharges admin (§9.6) ───────────────────────────────────────────────── */
+
+/**
+ * Décision d'admin persistée, appliquée à l'analyse suivante. Priorité du §9.6 :
+ * annotation explicite dans le HTML > surcharge admin > heuristique.
+ */
+export const fieldOverrideSchema = z.object({
+  label: z.string().optional(),
+  type: fieldTypeSchema.optional(),
+  locked: z.boolean().optional(),
+  /** Force l'apparition d'un champ que l'heuristique a verrouillé. */
+  editable: z.boolean().optional(),
 });
 
 /* ── Verrous et avertissements ─────────────────────────────────────────────── */
@@ -345,6 +395,10 @@ export const lockReasonSchema = z.enum([
   "wrapper-vide",
   "texte-trop-court",
   "compteur-anime",
+  /** Texte écrit par JavaScript au chargement : éditable, il serait écrasé. */
+  "texte-dynamique",
+  /** Champs de saisie et contrôles : le §9.2 n'autorise que les libellés. */
+  "structure-formulaire",
   "shadow-dom",
   "navigation",
   "annotation",
@@ -410,7 +464,10 @@ export const labelPatchSchema = z.object({
 /* ── Types inférés ─────────────────────────────────────────────────────────── */
 
 export type FieldType = z.infer<typeof fieldTypeSchema>;
+export type SourceRange = z.infer<typeof sourceRangeSchema>;
 export type FieldMeta = z.infer<typeof fieldMetaSchema>;
+export type ValueLocation = z.infer<typeof valueLocationSchema>;
+export type FieldOverride = z.infer<typeof fieldOverrideSchema>;
 export type Field = z.infer<typeof fieldSchema>;
 export type TemplateField = z.infer<typeof templateFieldSchema>;
 export type CollectionItem = z.infer<typeof collectionItemSchema>;

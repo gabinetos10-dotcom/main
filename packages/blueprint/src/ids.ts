@@ -64,7 +64,10 @@ export function isDuplicatedId(id: string): boolean {
  * Empreinte structurelle d'un élément (§9.1).
  *
  * Les classes sont triées pour que l'ordre d'écriture dans le HTML n'influe pas.
- * `shapeHash` décrit les enfants sur deux niveaux de profondeur.
+ * Le troisième segment décrit les enfants sur deux niveaux — `img+div(h3+p+a)` —
+ * dans une forme *lisible et comparable*, non hachée : c'est ce qui permet la
+ * similarité graduée ci-dessous. Un hachage ne se compare que par égalité, et
+ * l'égalité est précisément ce qui échoue sur les collections hétérogènes.
  */
 export function computeFingerprint(input: {
   tagName: string;
@@ -90,38 +93,122 @@ export function splitFingerprint(
 }
 
 /**
+ * Aplatit un descripteur de forme en multi-ensemble de balises.
+ * `img+div(h3+p+a)` → `["img", "div", "h3", "p", "a"]`.
+ */
+export function shapeTokens(shape: string): string[] {
+  const tokens: string[] = [];
+
+  const decouper = (entree: string): void => {
+    let profondeur = 0;
+    let debut = 0;
+    for (let i = 0; i <= entree.length; i += 1) {
+      const caractere = entree[i];
+      if (caractere === "(") profondeur += 1;
+      else if (caractere === ")") profondeur -= 1;
+      if ((caractere === "+" && profondeur === 0) || i === entree.length) {
+        const morceau = entree.slice(debut, i);
+        debut = i + 1;
+        if (morceau.length === 0) continue;
+        const ouvrante = morceau.indexOf("(");
+        if (ouvrante === -1) {
+          tokens.push(morceau);
+        } else {
+          tokens.push(morceau.slice(0, ouvrante));
+          decouper(morceau.slice(ouvrante + 1, morceau.lastIndexOf(")")));
+        }
+      }
+    }
+  };
+
+  decouper(shape);
+  return tokens;
+}
+
+/** Indice de Sørensen-Dice sur deux multi-ensembles. Deux vides sont identiques. */
+function dice(a: readonly string[], b: readonly string[]): number {
+  if (a.length === 0 && b.length === 0) return 1;
+  if (a.length === 0 || b.length === 0) return 0;
+
+  const restants = new Map<string, number>();
+  for (const jeton of b) restants.set(jeton, (restants.get(jeton) ?? 0) + 1);
+
+  let communs = 0;
+  for (const jeton of a) {
+    const disponible = restants.get(jeton) ?? 0;
+    if (disponible > 0) {
+      communs += 1;
+      restants.set(jeton, disponible - 1);
+    }
+  }
+
+  return (2 * communs) / (a.length + b.length);
+}
+
+function jaccard(a: readonly string[], b: readonly string[]): number {
+  const gauche = new Set(a);
+  const droite = new Set(b);
+  const union = new Set([...gauche, ...droite]);
+  if (union.size === 0) return 1;
+
+  let intersection = 0;
+  for (const valeur of gauche) if (droite.has(valeur)) intersection += 1;
+  return intersection / union.size;
+}
+
+/** Similarité de forme seule, dans [0..1]. Sert de garde-fou au regroupement. */
+export function fingerprintShapeSimilarity(a: string, b: string): number {
+  const gauche = splitFingerprint(a);
+  const droite = splitFingerprint(b);
+  if (gauche === null || droite === null) return 0;
+  return dice(shapeTokens(gauche.shapeHash), shapeTokens(droite.shapeHash));
+}
+
+/**
  * Similarité entre deux empreintes, dans [0..1].
  *
  * L'égalité stricte du §9.3 produit des faux négatifs sur le cas le plus courant
  * du vibe coding : une grille dont une carte porte un badge « Populaire » et une
- * autre pas. Le regroupement se fait donc sur un seuil (défaut 0,75), pas sur
- * une égalité. Le seuil est calibré sur les fixtures en P2.
+ * autre pas. Le regroupement se fait donc sur un seuil, pas sur une égalité.
  *
- * Pondération : la balise doit correspondre (sinon 0), puis Jaccard sur les
- * classes (60 %) et égalité de forme (40 %).
+ * Pondération : la balise doit correspondre (sinon 0), puis **forme 60 %,
+ * classes 40 %**. La forme pèse davantage parce qu'une classe modificatrice
+ * (`carte--populaire`) est le bruit le plus fréquent, alors qu'une forme
+ * franchement différente signale un composant réellement différent.
+ *
+ * Seuil et pondération calibrés en P2 sur les trois fixtures : voir
+ * `packages/parser/test/collections.test.ts`, qui gèle les cas limites.
  */
 export function fingerprintSimilarity(a: string, b: string): number {
   if (a === b) return 1;
 
-  const left = splitFingerprint(a);
-  const right = splitFingerprint(b);
-  if (left === null || right === null) return 0;
-  if (left.tagName !== right.tagName) return 0;
+  const gauche = splitFingerprint(a);
+  const droite = splitFingerprint(b);
+  if (gauche === null || droite === null) return 0;
+  if (gauche.tagName !== droite.tagName) return 0;
 
-  const setA = new Set(left.classes);
-  const setB = new Set(right.classes);
-  const union = new Set([...setA, ...setB]);
+  const classes = jaccard(gauche.classes, droite.classes);
+  const forme = dice(shapeTokens(gauche.shapeHash), shapeTokens(droite.shapeHash));
 
-  let intersectionSize = 0;
-  for (const cls of setA) {
-    if (setB.has(cls)) intersectionSize += 1;
-  }
-
-  const classScore = union.size === 0 ? 1 : intersectionSize / union.size;
-  const shapeScore = left.shapeHash === right.shapeHash ? 1 : 0;
-
-  return classScore * 0.6 + shapeScore * 0.4;
+  return classes * 0.4 + forme * 0.6;
 }
 
-/** Seuil par défaut de regroupement d'une collection (§9.3, risque 5). */
-export const DEFAULT_COLLECTION_SIMILARITY_THRESHOLD = 0.75;
+/**
+ * Seuil de regroupement d'une collection (§9.3, risque 5).
+ *
+ * 0,65 est le plus haut seuil qui regroupe les trois cartes de la fixture 01
+ * — dont une porte un badge et une autre n'a pas d'image — sans regrouper les
+ * deux colonnes d'une mise en page en `.deux-colonnes`.
+ */
+export const DEFAULT_COLLECTION_SIMILARITY_THRESHOLD = 0.65;
+
+/**
+ * Plancher de similarité de forme. Deux blocs peuvent atteindre le seuil global
+ * par leurs seules classes — souvent absentes des deux côtés, donc parfaitement
+ * « identiques » — sans se ressembler du tout. Ce plancher l'interdit.
+ *
+ * 0,6 sépare exactement, sur les fixtures, la galerie dont un item utilise
+ * `<img>` et les autres `<picture>` (0,67, à regrouper) de deux paragraphes
+ * voisins dont l'un porte des liens (0,5, à ne pas regrouper).
+ */
+export const DEFAULT_COLLECTION_SHAPE_FLOOR = 0.6;

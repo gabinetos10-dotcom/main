@@ -12,7 +12,8 @@ existe pour mettre en échec une hypothèse précise du parser.
 ## Le format `expected.json`
 
 Chaque fixture porte un `expected.json` validé par
-`packages/blueprint/src/expected.ts`. Il sert à mesurer, en P2 :
+`packages/blueprint/src/expected.ts`. Le banc de mesure vit dans
+`packages/parser/test/recall.test.ts` et en tire deux chiffres :
 
 - **le rappel** — part des champs attendus effectivement détectés. Le critère du §9.3 est
   **≥ 90 %**. Un champ marqué `"critical": true` compte double : c'est un champ dont
@@ -61,7 +62,7 @@ défaut de la fixture : **c'est exactement le problème que le mode d'édition s
 
 ## Ce que les fixtures ne couvrent pas
 
-À compléter si le besoin apparaît en P2 :
+À compléter si le besoin apparaît :
 
 - Site livré sous forme de fragments HTML sans `<html>` (composants partagés).
 - Tailwind compilé plutôt que servi par CDN.

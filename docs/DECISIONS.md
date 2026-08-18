@@ -138,3 +138,159 @@ maîtrisé, dimensions et ratios choisis pour exercer le recadrage de P6.
 formatage uniforme. _Raison :_ ce sont des sites livrés par une agence, imités au plus
 près du vibe coding. Les normaliser leur ferait perdre exactement ce qu'elles servent à
 tester : du HTML « tel qu'il a été livré » (§2).
+
+---
+
+## P2 — Parser
+
+**2026-08-18 · `blueprintVersion` passe à `1.1`** · _Écarté :_ rester en `1.0`.
+_Raison :_ quatre ajouts optionnels au schéma, tous exigés par le builder du P3 ou par
+le §8 : `meta.valueRanges` (une étendue par partie réécrivable), `item.valueMeta` (où
+écrire chaque valeur d'un item), `page.anchorBlockId` (page virtuelle d'un one-page),
+`globals[].fields[].fieldIds` (les champs qu'un panneau global commande). Ajouts
+uniquement, donc incrément mineur selon la règle de compatibilité du schéma.
+
+**2026-08-18 · L'empreinte de forme est un descripteur lisible, pas un hachage** ·
+_Écarté :_ `shapeHash` au sens strict du §9.1. _Raison :_ un hachage ne se compare que
+par égalité, et l'égalité est exactement ce qui échoue sur une collection hétérogène.
+`img+div(h3+p+a)` se compare jeton à jeton, se lit dans le rapport d'ingestion, et
+alimente la similarité graduée du §9.3. Le §9.7 montre d'ailleurs une signature de cette
+forme (`article|card shadow|h3+p+a`).
+
+**2026-08-18 · Regroupement à 0,65 de similarité, plancher de forme à 0,6** · _Écarté :_
+le seuil provisoire de 0,75 posé en P0, sans plancher. _Raison :_ calibré sur les trois
+fixtures. 0,65 est le plus haut seuil qui regroupe les trois cartes de la fixture 01 —
+dont une porte un badge et une n'a pas d'image — et le plancher de forme sépare la
+galerie dont un item se passe de `<picture>` (0,67) de deux paragraphes voisins dont
+l'un porte des liens (0,5). Les cas limites sont gelés dans
+`packages/parser/test/collections.test.ts` : le seuil ne peut plus bouger sans qu'un
+test le dise.
+
+**2026-08-18 · Pondération forme 60 % / classes 40 %** · _Écarté :_ classes 60 % / forme
+40 %. _Raison :_ une classe modificatrice (`carte--populaire`) est le bruit le plus
+fréquent du vibe coding, alors qu'une forme franchement différente signale un composant
+réellement différent. Deux conteneurs sans aucune classe ont par ailleurs une similarité
+de classes parfaite, ce qui rendait le critère trompeur.
+
+**2026-08-18 · Un groupe qui tombe sous les faux positifs du §9.3.7 n'est pas une
+collection verrouillée : il n'est pas une collection du tout** · _Écarté :_ émettre une
+`collection` avec `locked: true`. _Raison :_ une collection avale les champs de ses
+items sous forme de valeurs. Un menu verrouillé aurait donc fait disparaître les liens
+de contact et de réseaux sociaux qu'il contient. Le conteneur est consigné dans
+`locked[]` et ses enfants restent des champs ordinaires — ce qui préserve, sur la
+fixture 01, les liens Instagram et Facebook du pied de page.
+
+**2026-08-18 · Le gabarit d'item vient du membre le plus riche, pas du premier** ·
+_Écarté :_ « le premier item devient `itemTemplate` » (§9.3.4). _Raison :_ sur une
+collection hétérogène, le premier item peut être le plus pauvre. Le gabarit serait alors
+incapable d'exprimer les champs des autres — la carte sans image donnerait un gabarit
+sans emplacement d'image, et l'ajout d'une carte illustrée deviendrait impossible.
+
+**2026-08-18 · Les valeurs d'un item sont appariées au gabarit par chemin relatif, puis
+par ordre** · _Écarté :_ appariement par (type, rang dans le type). _Raison :_ un
+appariement indépendant décale toutes les valeurs d'un cran dès qu'un item porte un
+élément en plus : sur la fixture 01, le titre de la première carte atterrissait dans
+l'emplacement du badge. L'alignement monotone garde l'ordre du document.
+
+**2026-08-18 · Le texte visible passe avant l'`id` et la classe dans le libellé d'un
+champ** · _Écarté :_ l'ordre littéral du §9.2 (`aria-label` > `alt` > `id` > classe >
+texte). _Raison :_ sur un site Tailwind, la classe donne « Mt 3 » ou « Btn primaire » —
+du jargon, que le §21 interdit dans l'interface du client. Le texte visible est ce qu'il
+reconnaît. `aria-label` et `alt` restent prioritaires, l'`id` et la classe servent de
+repli quand il n'y a pas de texte.
+
+**2026-08-18 · Un `<button>` sans destination est un champ `text`, pas un `cta`** ·
+_Écarté :_ `cta` pour tout `a`/`button` portant une classe de bouton (§9.2). _Raison :_
+un `cta` porte une valeur `{ label, href }`. Un bouton d'envoi de formulaire n'a pas de
+`href` : le classer `cta` obligerait à en inventer un vide, que le client pourrait
+ensuite « modifier » sans effet.
+
+**2026-08-18 · Un `<a>` vers la page d'accueil, sans autre contenu que du texte, est un
+champ `text`** · _Écarté :_ `link`. _Raison :_ c'est le lien de marque. Sa destination
+ne change jamais ; ce que le client veut modifier est le nom de son entreprise. Un champ
+`link` lui présenterait une URL à ne pas toucher.
+
+**2026-08-18 · Les classes de bouton reconnues incluent `bouton`** · _Écarté :_ la liste
+anglaise du §9.2 (`btn`, `button`, `cta`). _Raison :_ le produit est français et
+l'agence vibe-code en français. Sans `bouton`, aucun bouton des fixtures 02 et 03 n'est
+reconnu comme appel à l'action.
+
+**2026-08-18 · Un `<a>` de menu est verrouillé quelle que soit sa classification** ·
+_Écarté :_ ne verrouiller que les types `link` et `cta`. _Raison :_ le lien « Accueil »
+d'un menu pointe vers la page d'entrée, donc est classé `text` par la règle du lien de
+marque. Sans ce correctif, il aurait été le seul lien du menu resté modifiable. Les
+coordonnées et les réseaux sociaux échappent au verrou : ce sont des contenus, où qu'ils
+soient posés.
+
+**2026-08-18 · Deux éléments feuilles voisins ne forment jamais une collection** ·
+_Écarté :_ s'en tenir au critère « ≥ 2 membres, ≥ 1 champ éditable chacun » du §9.3.3.
+_Raison :_ deux paragraphes de prose ont la même empreinte sans être une liste. Le
+client se verrait offrir un bouton « ajouter un paragraphe » au milieu d'un texte suivi.
+Un item de collection est un composant répété, donc structuré.
+
+**2026-08-18 · L'analyse des scripts passe par un arbre syntaxique (acorn), pas par une
+recherche de texte** · _Écarté :_ expressions régulières sur le JavaScript. _Raison :_
+il faut relier `element.textContent = …` au sélecteur qui a produit `element`, ce
+qu'aucune recherche de motif ne fait de façon fiable. Une approximation verrouillerait,
+sur la fixture 01, tous les liens d'ancrage de la page — quatorze champs perdus pour un
+gain nul.
+
+**2026-08-18 · Un sélecteur de script hors périmètre est ignoré, pas approximé** ·
+_Écarté :_ interpréter au mieux les sélecteurs à combinateur. _Raison :_ ces sélecteurs
+décident d'un verrou. `main section[id]` mal interprété verrouillerait toutes les
+sections de la fixture 03. Ne rien faire est le mauvais choix le moins cher.
+
+**2026-08-18 · Les polices d'une configuration Tailwind CDN sont lues dans le script
+inline** · _Écarté :_ s'en tenir aux sources du §9.4 (`@import`, `@font-face`,
+`font-family`). _Raison :_ un site servi par le CDN Tailwind n'a aucune de ces trois
+sources : sa typographie est écrite en JavaScript. Le panneau de thème s'ouvrirait vide
+sur le cas le plus courant du vibe coding.
+
+**2026-08-18 · `DYNAMIC_TEXT` est remonté par sélecteur détecté, même sans élément
+correspondant** · _Écarté :_ n'avertir que si un élément de la page correspond.
+_Raison :_ c'est exactement le cas du §8 « contenu injecté par JS au runtime » : le
+bandeau de la fixture 02 n'existe pas dans le HTML, il est écrit au chargement.
+N'avertir que sur les éléments présents tairait le cas que l'avertissement vise.
+
+**2026-08-18 · Une page virtuelle ne porte aucun bloc** · _Écarté :_ recopier les blocs
+de la section visée. _Raison :_ le contenu existerait alors deux fois dans le blueprint,
+et une édition en désynchroniserait les copies. La page virtuelle est une entrée de
+navigation : elle pointe un bloc par `anchorBlockId`.
+
+**2026-08-18 · `analyze()` est une fonction, l'adaptateur `StaticHtmlAdapter` attend le
+P3** · _Écarté :_ livrer la classe dès maintenant, avec un `build()` qui lève.
+_Raison :_ le §21 interdit de présenter comme fonctionnel ce qui ne l'est pas. La
+signature de `analyze()` est exactement celle de l'interface : le P3 assemblera
+l'adaptateur autour d'elle et du builder, sans rien refactorer.
+
+**2026-08-18 · Le découpage par intervalles (`applySplices`) vit dans le parser** ·
+_Écarté :_ le placer d'emblée dans `@calque/blueprint`. _Raison :_ le gabarit d'item en
+a besoin dès le P2, mais c'est d'abord un outil de builder. Le P3 le promouvra là où il
+appartient quand il aura deux appelants — le déplacer alors coûte un import.
+
+**2026-08-18 · Les fixtures sont un package chargeable, pas un dossier de fichiers** ·
+_Écarté :_ lecture directe du disque par les tests du parser. _Raison :_ le parser reçoit
+un `SourceSnapshot` (§24), pas des chemins. Faire passer les tests par l'interface évite
+d'écrire un parser qui ne saurait analyser que des fichiers locaux — le P4 lui donnera
+un ZIP déposé sur R2.
+
+**2026-08-18 · Le banc de rappel résout les sélecteurs avec cheerio, mais calcule le
+`domPath` avec le code du parser** · _Écarté :_ une seconde implémentation du `domPath`
+dans les tests. _Raison :_ deux implémentations divergent — sur un `<tbody>` implicite,
+par exemple — et la mesure du rappel deviendrait fausse sans qu'aucun test n'échoue.
+`computeDomPath` est générique sur un accesseur d'arbre ; le test fournit l'accesseur
+cheerio, le parser l'accesseur parse5. Leur accord est lui-même testé.
+
+**2026-08-18 · Le rappel typé tolère un écart de type sur une valeur d'item** ·
+_Écarté :_ exiger le type annoté partout. _Raison :_ un emplacement de collection a un
+seul type pour toute la colonne. Dans une liste de coordonnées dont deux lignes portent
+un lien et une non, exiger le type élément par élément demanderait au gabarit d'être
+trois choses à la fois. On exige la même _forme de valeur_, ce qui garantit que
+l'éditeur affichera un contrôle utilisable.
+
+**2026-08-18 · `pnpm db:migrate` lit `.env` par `--env-file-if-exists`** · _Écarté :_
+exiger l'export des variables dans le shell. _Raison :_ le RUNBOOK promet
+`cp .env.example .env` puis `pnpm db:migrate` ; la commande échouait en réalité sur un
+shell neuf, faute de charger le fichier. Le drapeau de Node n'écrase jamais une variable
+déjà définie : la CI, qui les fournit par l'environnement, garde la main. Correctif de
+P0 relevé en P2.

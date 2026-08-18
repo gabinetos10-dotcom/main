@@ -4,6 +4,6 @@
     "lib": ["ES2023"],
     "types": ["node"]
   },
-  "include": ["*.ts", "tools/**/*.mjs"],
+  "include": ["*.ts", "src/**/*.ts", "tools/**/*.mjs"],
   "exclude": ["0*/**"]
 }

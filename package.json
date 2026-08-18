@@ -2,7 +2,7 @@
   "name": "calque",
   "version": "0.0.0",
   "private": true,
-  "description": "Calque \u2014 vos clients modifient leur site, vous gardez le code.",
+  "description": "Calque — vos clients modifient leur site, vous gardez le code.",
   "packageManager": "pnpm@10.33.0",
   "engines": {
     "node": ">=22.0.0"
@@ -22,6 +22,7 @@
     "db:migrate": "pnpm --filter @calque/db run db:migrate",
     "db:studio": "pnpm --filter @calque/db run db:studio",
     "fixtures:assets": "pnpm --filter @calque/fixtures run assets",
+    "parser:report": "pnpm --filter @calque/parser run report",
     "db:start": "./scripts/postgres-local.sh start",
     "db:stop": "./scripts/postgres-local.sh stop"
   },
