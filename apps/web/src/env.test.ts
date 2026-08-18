@@ -101,6 +101,43 @@ describe("features", () => {
       emailDelivery: true,
       googleSignIn: true,
       errorTracking: true,
+      persistentStorage: false,
     });
+  });
+});
+
+describe("stockage", () => {
+  it("refuse le stockage sur disque pour un déploiement de production", async () => {
+    const { serverEnv } = await chargerEnv({
+      ...BASE,
+      CALQUE_ENV: "production",
+      STORAGE_DRIVER: "filesystem",
+      AUTH_SECRET: "secret",
+    });
+    expect(() => serverEnv()).toThrow(/pas utilisable en production/u);
+  });
+
+  /**
+   * Les tests de bout en bout démarrent une build de production sur une machine
+   * de développement : `NODE_ENV` décrit la build, `CALQUE_ENV` le déploiement.
+   */
+  it("laisse passer une build de production déployée en test", async () => {
+    const { serverEnv } = await chargerEnv({
+      ...BASE,
+      NODE_ENV: "production",
+      CALQUE_ENV: "test",
+      STORAGE_DRIVER: "filesystem",
+      AUTH_SECRET: "secret",
+    });
+    expect(() => serverEnv()).not.toThrow();
+  });
+
+  it("exige les quatre variables R2 avec le pilote r2", async () => {
+    const { serverEnv } = await chargerEnv({
+      ...BASE,
+      STORAGE_DRIVER: "r2",
+      R2_BUCKET: "calque",
+    });
+    expect(() => serverEnv()).toThrow(/R2_ACCOUNT_ID/u);
   });
 });

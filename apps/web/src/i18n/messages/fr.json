@@ -59,12 +59,44 @@
   "tableauDeBord": {
     "titre": "Vos sites",
     "vide": "Aucun site pour l'instant.",
-    "videAide": "Déposez le ZIP d'un site livré pour commencer. L'ingestion arrive à la prochaine étape du produit.",
+    "videAide": "Déposez le ZIP d'un site livré pour commencer.",
     "deconnexion": "Se déconnecter",
-    "connecteEnTantQue": "Connecté en tant que {email}"
+    "connecteEnTantQue": "Connecté en tant que {email}",
+    "deposer": "Déposer un site"
   },
   "commun": {
     "retour": "Retour",
     "chargement": "Chargement…"
+  },
+  "depot": {
+    "titre": "Déposer un site",
+    "sousTitre": "Le ZIP du site tel que vous l'avez livré. Calque l'analyse et vous dit ce que votre client pourra modifier.",
+    "nom": "Nom du site",
+    "nomPlaceholder": "Menuiserie Rousseau",
+    "archive": "Archive du site",
+    "aide": "Un fichier ZIP de 100 Mo maximum, contenant les pages HTML à la racine ou dans un dossier unique.",
+    "deposer": "Déposer et analyser",
+    "envoiEnCours": "Envoi de l'archive…",
+    "analyseEnCours": "Analyse du site…",
+    "erreurFichierManquant": "Choisissez d'abord une archive.",
+    "erreurEnvoi": "L'archive n'a pas pu être envoyée. Réessayez.",
+    "retour": "Retour aux sites"
+  },
+  "rapport": {
+    "retour": "Retour aux sites",
+    "resume": "{pages, plural, one {# page} other {# pages}} · {champs, plural, one {# élément modifiable} other {# éléments modifiables}}",
+    "pages": "pages",
+    "champs": "éléments modifiables",
+    "images": "images",
+    "listes": "listes",
+    "pagesVirtuelles": "Ce site tient sur une seule page : ses {nombre} sections seront présentées à votre client comme autant de pages.",
+    "pageParPage": "Page par page",
+    "colonnePage": "Page",
+    "colonneSections": "Sections",
+    "colonneChamps": "Éléments",
+    "colonneListes": "Listes",
+    "aSavoir": "À savoir avant de donner l'accès",
+    "echec": "L'analyse de ce site n'a pas abouti.",
+    "echecAide": "Vérifiez que l'archive contient bien des pages HTML, puis redéposez-la."
   }
 }

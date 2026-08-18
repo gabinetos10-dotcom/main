@@ -59,12 +59,44 @@
   "tableauDeBord": {
     "titre": "Your sites",
     "vide": "No sites yet.",
-    "videAide": "Upload the ZIP of a delivered site to get started. Ingestion arrives in the next stage of the product.",
+    "videAide": "Upload the ZIP of a delivered site to get started.",
     "deconnexion": "Sign out",
-    "connecteEnTantQue": "Signed in as {email}"
+    "connecteEnTantQue": "Signed in as {email}",
+    "deposer": "Upload a site"
   },
   "commun": {
     "retour": "Back",
     "chargement": "Loading…"
+  },
+  "depot": {
+    "titre": "Upload a site",
+    "sousTitre": "The ZIP of the site exactly as you delivered it. Calque analyses it and tells you what your client will be able to change.",
+    "nom": "Site name",
+    "nomPlaceholder": "Rousseau Joinery",
+    "archive": "Site archive",
+    "aide": "A ZIP file of up to 100 MB, with the HTML pages at the root or inside a single folder.",
+    "deposer": "Upload and analyse",
+    "envoiEnCours": "Uploading…",
+    "analyseEnCours": "Analysing the site…",
+    "erreurFichierManquant": "Pick an archive first.",
+    "erreurEnvoi": "The archive could not be uploaded. Try again.",
+    "retour": "Back to sites"
+  },
+  "rapport": {
+    "retour": "Back to sites",
+    "resume": "{pages, plural, one {# page} other {# pages}} · {champs, plural, one {# editable element} other {# editable elements}}",
+    "pages": "pages",
+    "champs": "editable elements",
+    "images": "images",
+    "listes": "lists",
+    "pagesVirtuelles": "This site is a single page: its {nombre} sections will be shown to your client as separate pages.",
+    "pageParPage": "Page by page",
+    "colonnePage": "Page",
+    "colonneSections": "Sections",
+    "colonneChamps": "Elements",
+    "colonneListes": "Lists",
+    "aSavoir": "Worth knowing before you hand over access",
+    "echec": "This site could not be analysed.",
+    "echecAide": "Check that the archive contains HTML pages, then upload it again."
   }
 }

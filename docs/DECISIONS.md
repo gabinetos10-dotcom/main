@@ -352,3 +352,63 @@ _Écarté :_ retirer le bloc du HTML. _Raison :_ le §13 impose que le HTML sour
 jamais supprimé. Un `domPath` est déjà un sélecteur CSS valide — `body > main:nth-of-type(1)
 
 > section:nth-of-type(2)` — ce qui évite d'ajouter un attribut au HTML publié.
+
+---
+
+## P4 — Ingestion
+
+**2026-08-18 · L'archive est écrite directement dans le stockage par le navigateur** ·
+_Écarté :_ un envoi vers une route de l'application, qui la relaierait. _Raison :_ le §8
+autorise 100 Mo. Les fonctions serverless de Vercel plafonnent le corps d'une requête bien
+en dessous : le parcours aurait fonctionné en local et échoué en production sur les sites
+qui comptent. Le navigateur reçoit une URL signée valable quinze minutes et pour une seule
+clé. En développement, la même interface écrit dans une route protégée par la session.
+
+**2026-08-18 · Les entrées douteuses d'une archive sont écartées, pas rejetantes** ·
+_Écarté :_ refuser toute archive contenant un fichier interdit. _Raison :_ une archive
+contient presque toujours un `.DS_Store` ou un `__MACOSX/`. Refuser le dépôt entier pour
+ça serait insupportable. Seules les menaces qui portent sur l'archive dans son ensemble —
+bombe de décompression, taille, nombre de fichiers — l'interrompent ; le reste est écarté
+et listé dans le rapport.
+
+**2026-08-18 · Le filtre de sécurité s'applique avant la décompression** · _Écarté :_
+décompresser puis vérifier. _Raison :_ une bombe de décompression fait quelques kilo-octets
+et en produit des giga. Vérifier après coup, c'est l'avoir déjà allouée. fflate expose un
+filtre appelé sur les métadonnées de chaque entrée, avant toute allocation — c'est ce qui
+a décidé du choix de la bibliothèque.
+
+**2026-08-18 · `CALQUE_ENV` distingue le déploiement de la build** · _Écarté :_ tout
+décider sur `NODE_ENV`. _Raison :_ les tests de bout en bout démarrent volontairement une
+build de production — c'est le seul moyen de vérifier ce qui sera réellement déployé — sur
+une machine de développement, avec un stockage sur disque. Sans cette distinction il aurait
+fallu soit tester autre chose que la production, soit ouvrir une porte dérobée dans la
+validation du stockage.
+
+**2026-08-18 · Le pilote R2 est écrit à la main plutôt que tiré du SDK AWS** · _Écarté :_
+`@aws-sdk/client-s3`. _Raison :_ le produit n'a besoin que de cinq opérations, et le SDK
+pèse plusieurs mégaoctets qu'il faudrait ensuite exclure du bundle Next. La canonisation
+SigV4 — la partie où une erreur produit une signature valide mais fausse — est testée
+séparément. **Le dialogue HTTP avec un bucket réel n'est pas exercé** : aucune clé R2
+n'existe dans ce dépôt.
+
+**2026-08-18 · Le lecteur de listing S3 découpe la chaîne au lieu d'analyser le XML** ·
+_Écarté :_ un analyseur XML. _Raison :_ ce XML est produit par S3, très contraint, et cinq
+balises suffisent. Ce n'est pas du HTML — l'interdit du §21 ne s'applique pas — et ajouter
+une dépendance d'analyse pour ça coûterait plus qu'il ne rapporte.
+
+**2026-08-18 · Un travail est une fonction pure ; le lanceur décide du quand** ·
+_Écarté :_ écrire INGEST directement dans une route Next. _Raison :_ le §3 fige Trigger.dev
+comme lanceur de production. Séparer la définition du travail de son exécution permet de
+l'exercer en test contre un vrai Postgres, et de brancher Trigger.dev sans réécrire la
+logique. **Seul le lanceur en ligne est écrit et exercé** : aucun projet Trigger.dev n'est
+joignable depuis ce dépôt.
+
+**2026-08-18 · Un dépôt en échec laisse le site visible, en état d'échec** · _Écarté :_
+supprimer le site. _Raison :_ un site qui disparaît laisse l'agence sans explication et
+sans recours. Le statut `echec_ingestion` garde la trace, le message d'erreur reste
+lisible, et redéposer est un geste évident.
+
+**2026-08-18 · L'organisation est créée à la première connexion** · _Écarté :_ un écran
+d'onboarding dédié. _Raison :_ le multi-tenant du §16 n'a pas d'état « utilisateur sans
+organisation » à représenter, et un écran de plus avant le premier dépôt n'apporte rien.
+L'écran d'onboarding du §22 P10 pourra la renommer.

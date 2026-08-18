@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { readFile } from "node:fs/promises";
+import { emailUnique, lienPour } from "../support/connexion";
 
 /**
  * Parcours de connexion complet — le critère d'acceptation de P0 : « je me
@@ -9,29 +9,6 @@ import { readFile } from "node:fs/promises";
  * alimentée par le serveur quand aucune clé Resend n'est configurée. Le jeton,
  * lui, est bien créé en base et consommé une seule fois : rien n'est simulé.
  */
-
-async function dernierLien(): Promise<string> {
-  const chemin = process.env["CALQUE_MAGIC_LINK_SINK"];
-  if (!chemin) throw new Error("CALQUE_MAGIC_LINK_SINK non défini");
-
-  // L'écriture du lien suit l'envoi de la réponse HTTP : on laisse quelques
-  // instants au serveur plutôt que de supposer l'ordre.
-  for (let essai = 0; essai < 40; essai += 1) {
-    try {
-      const lignes = (await readFile(chemin, "utf8")).trim().split("\n").filter(Boolean);
-      const dernier = lignes.at(-1);
-      if (dernier) return dernier;
-    } catch {
-      /* le fichier n'existe pas encore */
-    }
-    await new Promise((r) => setTimeout(r, 250));
-  }
-  throw new Error(`Aucun lien de connexion déposé dans ${chemin}`);
-}
-
-function emailUnique(): string {
-  return `e2e-${Date.now()}-${Math.floor(Math.random() * 1e4)}@calque.test`;
-}
 
 test("une page protégée renvoie vers la connexion", async ({ page }) => {
   await page.goto("/tableau-de-bord");
@@ -57,7 +34,7 @@ test("connexion de bout en bout par lien magique", async ({ page }) => {
 
   await expect(page.getByRole("heading", { name: /boîte mail/iu })).toBeVisible();
 
-  const lien = await dernierLien();
+  const lien = await lienPour(email);
   expect(lien).toContain("/api/auth/callback/");
 
   await page.goto(lien);
@@ -80,7 +57,7 @@ test("la déconnexion referme l'accès", async ({ page }) => {
   await page.getByRole("button", { name: /lien de connexion/iu }).click();
   await expect(page.getByRole("heading", { name: /boîte mail/iu })).toBeVisible();
 
-  await page.goto(await dernierLien());
+  await page.goto(await lienPour(email));
   await expect(page.getByRole("heading", { name: "Vos sites" })).toBeVisible();
 
   await page.getByRole("button", { name: "Se déconnecter" }).click();

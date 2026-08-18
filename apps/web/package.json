@@ -12,7 +12,12 @@
   "dependencies": {
     "@auth/drizzle-adapter": "1.11.3",
     "@calque/blueprint": "workspace:*",
+    "@calque/builder": "workspace:*",
     "@calque/db": "workspace:*",
+    "@calque/ingest": "workspace:*",
+    "@calque/jobs": "workspace:*",
+    "@calque/parser": "workspace:*",
+    "@calque/storage": "workspace:*",
     "@calque/ui": "workspace:*",
     "@sentry/nextjs": "10.70.0",
     "lucide-react": "1.31.0",

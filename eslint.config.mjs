@@ -20,6 +20,8 @@ export default tseslint.config(
       // servent à tester. L'outillage des fixtures, lui, est linté normalement.
       "fixtures/0*/**",
       "packages/db/drizzle/**",
+      // Données locales : sources déposées, builds, stockage de développement.
+      ".data/**",
       // Fichiers générés par Next à chaque build.
       "apps/web/next-env.d.ts",
     ],

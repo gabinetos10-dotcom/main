@@ -1,0 +1,23 @@
+{
+  "name": "@calque/ingest",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@calque/blueprint": "workspace:*",
+    "@calque/parser": "workspace:*",
+    "@calque/storage": "workspace:*",
+    "fflate": "0.8.3",
+    "zod": "4.4.3"
+  },
+  "devDependencies": {
+    "@calque/fixtures": "workspace:*",
+    "typescript": "5.9.3"
+  }
+}

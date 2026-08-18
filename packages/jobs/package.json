@@ -1,0 +1,25 @@
+{
+  "name": "@calque/jobs",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@calque/blueprint": "workspace:*",
+    "@calque/builder": "workspace:*",
+    "@calque/db": "workspace:*",
+    "@calque/ingest": "workspace:*",
+    "@calque/storage": "workspace:*",
+    "zod": "4.4.3"
+  },
+  "devDependencies": {
+    "@calque/fixtures": "workspace:*",
+    "fflate": "0.8.3",
+    "typescript": "5.9.3"
+  }
+}

@@ -17,6 +17,16 @@ function isBuildPhase(): boolean {
 const serverSchema = z
   .object({
     NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
+    /**
+     * Nature du **déploiement**, distincte de `NODE_ENV` qui décrit la *build*.
+     *
+     * Les tests de bout en bout démarrent volontairement une build de production
+     * — c'est le seul moyen de vérifier ce qui sera réellement déployé — mais
+     * sur une machine de développement, avec un stockage sur disque. Confondre
+     * les deux obligerait soit à tester autre chose que la production, soit à
+     * ouvrir une porte dérobée dans la validation du stockage.
+     */
+    CALQUE_ENV: z.enum(["development", "test", "production"]).optional(),
 
     DATABASE_DRIVER: z.enum(["pg", "neon"]).default("pg"),
     DATABASE_URL: z.string().optional(),
@@ -28,6 +38,18 @@ const serverSchema = z
 
     RESEND_API_KEY: z.string().optional(),
     EMAIL_FROM: z.string().default("Calque <bonjour@calque.studio>"),
+
+    /**
+     * Stockage des sources déposées, des médias et des builds (§3 : R2).
+     * `filesystem` est le pilote de développement local ; il n'est jamais
+     * accepté en production, où il perdrait tout à chaque déploiement.
+     */
+    STORAGE_DRIVER: z.enum(["filesystem", "r2"]).default("filesystem"),
+    STORAGE_DIR: z.string().default(".data/stockage"),
+    R2_ACCOUNT_ID: z.string().optional(),
+    R2_BUCKET: z.string().optional(),
+    R2_ACCESS_KEY_ID: z.string().optional(),
+    R2_SECRET_ACCESS_KEY: z.string().optional(),
 
     SENTRY_DSN: z.string().optional(),
     LOG_LEVEL: z
@@ -57,6 +79,35 @@ const serverSchema = z
         code: "custom",
         path: ["AUTH_SECRET"],
         message: "AUTH_SECRET est obligatoire en production.",
+      });
+    }
+    const deploiement = value.CALQUE_ENV ?? value.NODE_ENV;
+    if (
+      !isBuildPhase() &&
+      deploiement === "production" &&
+      value.STORAGE_DRIVER !== "r2"
+    ) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["STORAGE_DRIVER"],
+        message:
+          "Le stockage sur disque n'est pas utilisable en production : les sources déposées disparaîtraient au premier redéploiement.",
+      });
+    }
+    if (
+      value.STORAGE_DRIVER === "r2" &&
+      !(
+        value.R2_ACCOUNT_ID &&
+        value.R2_BUCKET &&
+        value.R2_ACCESS_KEY_ID &&
+        value.R2_SECRET_ACCESS_KEY
+      )
+    ) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["R2_BUCKET"],
+        message:
+          "R2_ACCOUNT_ID, R2_BUCKET, R2_ACCESS_KEY_ID et R2_SECRET_ACCESS_KEY sont requis avec le pilote r2.",
       });
     }
     // Google est tout ou rien : une moitié de configuration produirait un bouton
@@ -104,5 +155,6 @@ export function features() {
     emailDelivery: Boolean(env.RESEND_API_KEY),
     googleSignIn: Boolean(env.AUTH_GOOGLE_ID && env.AUTH_GOOGLE_SECRET),
     errorTracking: Boolean(env.SENTRY_DSN),
+    persistentStorage: env.STORAGE_DRIVER === "r2",
   };
 }

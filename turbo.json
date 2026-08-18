@@ -14,7 +14,14 @@
     "EMAIL_FROM",
     "SENTRY_DSN",
     "NEXT_PUBLIC_SENTRY_DSN",
-    "LOG_LEVEL"
+    "LOG_LEVEL",
+    "CALQUE_ENV",
+    "STORAGE_DRIVER",
+    "STORAGE_DIR",
+    "R2_ACCOUNT_ID",
+    "R2_BUCKET",
+    "R2_ACCESS_KEY_ID",
+    "R2_SECRET_ACCESS_KEY"
   ],
   "tasks": {
     "build": {

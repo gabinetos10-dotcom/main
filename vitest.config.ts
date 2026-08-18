@@ -34,6 +34,32 @@ export default defineConfig({
       },
       {
         test: {
+          name: "ingest",
+          root: "./packages/ingest",
+          environment: "node",
+          include: ["test/**/*.test.ts"],
+        },
+      },
+      {
+        test: {
+          name: "storage",
+          root: "./packages/storage",
+          environment: "node",
+          include: ["test/**/*.test.ts"],
+        },
+      },
+      {
+        test: {
+          name: "jobs",
+          root: "./packages/jobs",
+          environment: "node",
+          include: ["test/**/*.test.ts"],
+          testTimeout: 60_000,
+          hookTimeout: 60_000,
+        },
+      },
+      {
+        test: {
           name: "db",
           root: "./packages/db",
           environment: "node",

@@ -1,7 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
 import { existsSync, mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { join, resolve } from "node:path";
 
 /**
  * Le serveur est démarré en mode production : c'est le seul moyen de vérifier
@@ -11,6 +11,12 @@ import { join } from "node:path";
  * Prérequis : un Postgres joignable et migré.
  *   ./scripts/postgres-local.sh start && pnpm db:migrate
  */
+/**
+ * Racine du dépôt. Playwright charge ce fichier en CommonJS : `import.meta` y
+ * est indisponible. `pnpm e2e` s'exécute depuis la racine du dépôt.
+ */
+const RACINE = process.cwd();
+
 const PORT = Number(process.env["E2E_PORT"] ?? 3100);
 /**
  * `localhost` et non `127.0.0.1` : Auth.js dérive son origine du `NextRequest`,
@@ -88,12 +94,16 @@ export default defineConfig({
     env: {
       PORT: String(PORT),
       NODE_ENV: "production",
+      // Build de production, déploiement de test : voir `CALQUE_ENV` dans env.ts.
+      CALQUE_ENV: "test",
       AUTH_URL: BASE,
       AUTH_SECRET: process.env["AUTH_SECRET"] ?? "secret-e2e-jamais-utilise-ailleurs",
       DATABASE_DRIVER: "pg",
       DATABASE_URL:
         process.env["DATABASE_URL"] ?? "postgres://postgres@127.0.0.1:54329/calque",
       CALQUE_MAGIC_LINK_SINK: PRISE,
+      STORAGE_DRIVER: "filesystem",
+      STORAGE_DIR: resolve(RACINE, ".data/stockage-e2e"),
       LOG_LEVEL: "warn",
     },
   },

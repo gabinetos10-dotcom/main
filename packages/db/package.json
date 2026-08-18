@@ -8,7 +8,8 @@
     "./client": "./src/client.ts",
     "./schema": "./src/schema/index.ts",
     "./auth-adapter": "./src/auth-adapter.ts",
-    "./testing": "./src/testing.ts"
+    "./testing": "./src/testing.ts",
+    "./repositories": "./src/repositories/index.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",

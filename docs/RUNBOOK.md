@@ -103,3 +103,29 @@ pour les sous-ensembles attendus : latin et latin-ext, ce dernier portant « œ 
 
 Le §17 exige que la procédure de restauration soit **documentée et testée**. Tant que la
 ligne « testée » n'est pas cochée, elle ne compte pas.
+
+## À vérifier avant la première mise en production
+
+Deux intégrations sont écrites mais n'ont jamais été exercées depuis ce dépôt, faute
+d'identifiants. Les valider est un préalable, pas une option.
+
+### Stockage R2
+
+`packages/storage/src/r2.ts` parle l'API S3 de Cloudflare R2 avec une signature SigV4
+écrite à la main. La canonisation est testée unitairement ; le dialogue HTTP ne l'est pas.
+
+```bash
+STORAGE_DRIVER=r2 R2_ACCOUNT_ID=… R2_BUCKET=… R2_ACCESS_KEY_ID=… R2_SECRET_ACCESS_KEY=… \
+  pnpm --filter @calque/web run dev
+```
+
+Puis déposer une archive et vérifier, dans le tableau de bord R2, que les objets
+apparaissent sous `sites/{siteId}/sources/{versionId}/`. Vérifier aussi une URL signée :
+le dépôt échoue en silence côté navigateur si la signature est refusée.
+
+### Lanceur de travaux
+
+Seul le lanceur en ligne (`createInlineRunner`) est écrit et exercé. Le §3 fige Trigger.dev
+v3 pour la production : le brancher consiste à écrire une implémentation de `JobRunner` qui
+appelle `job.run` depuis une tâche Trigger.dev, et à la substituer dans les actions
+serveur. Les définitions de travaux (`packages/jobs/src/*.ts`) n'ont pas à changer.

@@ -20,3 +20,4 @@ export {
 } from "./tenant";
 export { runMigrations, MIGRATIONS_DIR } from "./migrations";
 export { PLANS, type Plan, type PlanQuotas } from "./plans";
+export * from "./repositories/index";
