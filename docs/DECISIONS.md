@@ -457,3 +457,61 @@ distinct** · _Écarté :_ prétendre que `*.calque-preview.site` est en place. 
 Cela suppose un domaine et une entrée DNS, qui n'existent pas ici. En attendant, l'iframe
 reste en bac à sable, la CSP interdit tout le superflu et `frame-ancestors` limite
 l'encadrement. C'est consigné dans le runbook comme préalable à la mise en production.
+
+---
+
+## P6 — Interface d'édition
+
+**2026-08-18 · L'autosave passe par une route, pas par une action serveur** ·
+_Écarté :_ `enregistrerBrouillon` en action serveur, comme le reste. _Raison :_ deux
+défauts rédhibitoires. Une action serveur fait revalider la route courante à chaque
+appel — donc re-rendre tout l'éditeur toutes les 800 ms de frappe — et n'accepte pas
+`keepalive`, indispensable pour vider la file au moment où l'onglet se ferme. Le symptôme
+observé était le pire possible : la dernière modification perdue exactement quand
+l'utilisateur croit avoir fini.
+
+**2026-08-18 · L'éditeur envoie un patch de ce qui vient de changer, jamais le contenu
+entier** · _Écarté :_ renvoyer tout le contenu à chaque enregistrement. _Raison :_ deux
+enregistrements différés peuvent se croiser. Avec le contenu entier, le plus ancien
+écrase le plus récent ; avec un patch, chacun ne touche que ses propres clés et l'ordre
+d'arrivée cesse d'importer. C'est aussi ce qui permet à deux onglets de cohabiter (§10).
+
+**2026-08-18 · La file d'enregistrement est vidée sur `pagehide`** · _Écarté :_ se fier
+au seul débounce. _Raison :_ 800 ms suffisent à perdre une modification si l'utilisateur
+recharge ou ferme dans la foulée. `fetch(..., { keepalive: true })` laisse la requête
+partir alors que la page disparaît.
+
+**2026-08-18 · Ouvrir une section annexe garde la sélection courante** · _Écarté :_ une
+sélection exclusive entre l'arbre et les sections. _Raison :_ on ouvre la bibliothèque
+d'images **depuis** un champ image, pour y poser une image. Effacer la sélection en
+chemin faisait réussir le dépôt sans que rien n'apparaisse dans la page.
+
+**2026-08-18 · L'annulation rejoue des patches Immer, pas des états complets** ·
+_Écarté :_ une pile de copies du contenu. _Raison :_ le §4 le demande, et sur un site de
+plusieurs centaines de champs, cinquante copies coûteraient des mégaoctets pour une
+fonctionnalité utilisée trois fois par session.
+
+**2026-08-18 · Le blueprint ne descend pas dans le client** · _Écarté :_ passer le
+blueprint entier au panneau. _Raison :_ il pèse plusieurs centaines de kilo-octets sur un
+site multi-pages, dont l'interface n'a que faire. Le serveur en extrait un modèle
+d'affichage — libellés, types, contraintes, valeurs — et rien d'autre.
+
+**2026-08-18 · Le compteur de caractères avertit sans bloquer** · _Écarté :_ un
+`maxLength` dur sur la saisie. _Raison :_ le §11 est explicite. Dépasser la longueur
+prévue déforme la mise en page ; ce n'est pas une faute, et bloquer la frappe au milieu
+d'un mot est la façon la plus sûre de faire abandonner quelqu'un.
+
+**2026-08-18 · Les variantes d'image ne sont jamais agrandies** · _Écarté :_ produire
+systématiquement les quatre largeurs du §14. _Raison :_ une variante 1600 tirée d'une
+source 800 est plus lourde que l'original pour une image plus floue. Une image plus
+petite que la plus petite largeur cible garde tout de même une déclinaison, sans quoi la
+publication n'aurait aucun `srcset` à écrire.
+
+**2026-08-18 · Un SVG n'est ni recadré ni décliné** · _Écarté :_ le traiter comme les
+autres images. _Raison :_ c'est un vecteur. Le redimensionner n'a pas de sens, le
+rastériser lui ferait perdre exactement ce pour quoi il a été choisi.
+
+**2026-08-18 · Les médias sont déposés par le navigateur, comme les archives** ·
+_Écarté :_ un envoi par action serveur. _Raison :_ le §14 autorise 10 Mo par fichier, au-delà
+de ce qu'une fonction serverless accepte en corps de requête. Le mécanisme d'URL signée du
+P4 est réutilisé tel quel, avec une clé temporaire effacée après traitement.

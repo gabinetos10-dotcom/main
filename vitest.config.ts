@@ -78,6 +78,15 @@ export default defineConfig({
       },
       {
         test: {
+          name: "media",
+          root: "./packages/media",
+          environment: "node",
+          include: ["test/**/*.test.ts"],
+          testTimeout: 30_000,
+        },
+      },
+      {
+        test: {
           name: "db",
           root: "./packages/db",
           environment: "node",

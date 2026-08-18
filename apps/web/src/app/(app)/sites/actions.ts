@@ -1,12 +1,14 @@
 "use server";
 
+import { randomUUID } from "node:crypto";
+
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { getDatabase, sitesRepository } from "@calque/db";
 import { IngestError } from "@calque/ingest";
 import { createIngestJob, createInlineRunner } from "@calque/jobs";
 import { requireContext } from "@/lib/session";
-import { createUploadTarget } from "@/lib/depot";
+import { cleArchive, createUploadTarget } from "@/lib/depot";
 import { objectStore } from "@/lib/storage";
 import { logger } from "@/lib/logger";
 
@@ -61,12 +63,13 @@ export async function preparerDepot(nomBrut: string): Promise<PreparationDepot> 
   }
 
   const site = await sites.create({ name: nom, slug });
-  const cible = createUploadTarget(site.id);
+  const versionId = randomUUID();
+  const cible = createUploadTarget(site.id, cleArchive(site.id, versionId));
 
   return {
     siteId: site.id,
     slug: site.slug,
-    versionId: cible.versionId,
+    versionId,
     uploadUrl: cible.url,
     sameOrigin: cible.sameOrigin,
   };

@@ -8,3 +8,4 @@
 export { organizationsRepository, type OrgMembership } from "./organizations";
 export { sitesRepository, type SiteRow, type IngestedVersion } from "./sites";
 export { draftsRepository, DUREE_VERROU_MS, type DraftRow } from "./drafts";
+export { mediaRepository, type MediaRow } from "./media";

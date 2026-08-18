@@ -1,7 +1,12 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { OVERRIDES_PATH, renderOverrides } from "@calque/builder";
-import { draftsRepository, getDatabase, sitesRepository } from "@calque/db";
+import {
+  draftsRepository,
+  getDatabase,
+  mediaRepository,
+  sitesRepository,
+} from "@calque/db";
 import { keys } from "@calque/storage";
 import { requireContext } from "@/lib/session";
 import { objectStore } from "@/lib/storage";
@@ -24,6 +29,9 @@ import { construireApercu } from "@/lib/apercu";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+
+/** Préfixe des images ajoutées depuis la bibliothèque, absentes du source. */
+const CHEMIN_MEDIAS = "assets/calque/";
 
 const paramsSchema = z.object({
   siteId: z.string().uuid(),
@@ -125,8 +133,31 @@ export async function GET(
   const estPage = chemin.endsWith(".html") || chemin.endsWith(".htm");
 
   if (!estPage) {
-    // Images, polices, feuilles de style : inchangées par le build, servies
-    // directement depuis le stockage plutôt que reconstruites à chaque frappe.
+    // Une image choisie dans la bibliothèque n'existe pas dans le source : son
+    // chemin est fabriqué à partir de son empreinte, et elle vit sous les médias.
+    if (chemin.startsWith(CHEMIN_MEDIAS)) {
+      const nom = chemin.slice(CHEMIN_MEDIAS.length);
+      const prefixe = nom.split(".")[0] ?? "";
+      const extension = nom.split(".").pop() ?? "";
+      const medias = await mediaRepository(handle, contexte.org.orgId).list(site.id);
+      const media = medias.find((candidat) => candidat.hash.startsWith(prefixe));
+      if (media !== undefined) {
+        try {
+          const octets = await store.get(
+            keys.media(site.id, media.hash, `origine.${extension}`),
+          );
+          return new Response(new Uint8Array(octets), {
+            headers: entetes(typeDe(chemin)),
+          });
+        } catch {
+          /* le média est référencé mais absent : on tombe dans le 404 commun */
+        }
+      }
+      return NextResponse.json({ erreur: "Média inconnu." }, { status: 404 });
+    }
+
+    // Images, polices, feuilles de style du site : inchangées par le build,
+    // servies directement depuis le stockage plutôt que reconstruites.
     try {
       const octets = await store.get(keys.source(site.id, dernier.siteVersionId, chemin));
       return new Response(new Uint8Array(octets), { headers: entetes(typeDe(chemin)) });
