@@ -412,3 +412,48 @@ lisible, et redéposer est un geste évident.
 d'onboarding dédié. _Raison :_ le multi-tenant du §16 n'a pas d'état « utilisateur sans
 organisation » à représenter, et un écran de plus avant le premier dépôt n'apporte rien.
 L'écran d'onboarding du §22 P10 pourra la renommer.
+
+---
+
+## P5 — Runtime d'édition
+
+**2026-08-18 · Le runtime est injecté en tête du `<head>`, pas en fin de `<body>`** ·
+_Écarté :_ l'emplacement habituel d'un script d'instrumentation. _Raison :_ le mode
+d'édition statique doit neutraliser GSAP ou AOS **avant** que le CDN ne les définisse.
+Injecté en fin de page, le runtime arrive après la bibliothèque, les éléments sont déjà
+revenus à `opacity: 0`, et l'aperçu de la fixture 03 reste une page blanche.
+
+**2026-08-18 · Les bouchons sont posés en propriétés non réinscriptibles** · _Écarté :_
+une simple affectation `window.gsap = bouchon`. _Raison :_ le script du CDN s'exécute
+ensuite et écraserait le bouchon. `Object.defineProperty` avec `writable: false` fait
+échouer silencieusement cette réécriture — ce qui est exactement le comportement voulu.
+
+**2026-08-18 · Un élément hors liste blanche est déballé à la frappe** · _Écarté :_
+bloquer le collage. _Raison :_ le §11 impose « aucun HTML collé », mais refuser le collage
+rendrait l'édition pénible. Le texte est inséré en clair, la mise en forme reconnue
+survit, le reste est déballé.
+
+**2026-08-18 · `zod/mini` dans le protocole** · _Écarté :_ Zod complet, comme partout
+ailleurs. _Raison :_ le §11 impose Zod des deux côtés, et le §4 fixe le runtime à 40 kB
+gzip. Zod complet en coûte 67 à lui seul. La variante mini a la même sémantique de
+validation et ramène le bundle à 9,5 kB.
+
+**2026-08-18 · L'aperçu construit les pages à la demande, mais sert les médias depuis le
+stockage** · _Écarté :_ reconstruire le site entier à chaque requête. _Raison :_ le build
+recopie tous les fichiers, images comprises. À chaque frappe, cela chargerait tout le site
+en mémoire pour renvoyer une page. L'option `pagesOnly` limite la sortie aux pages ; le
+reste est inchangé par le build et servi directement.
+
+**2026-08-18 · L'identifiant de version est imposé par l'appelant, pas généré par la
+base** · _Écarté :_ laisser Postgres générer la clé de `site_versions`. _Raison :_ les
+fichiers sont déjà écrits dans le stockage sous cet identifiant. Deux identifiants
+distincts obligeaient à une table de correspondance — et, en pratique, l'aperçu cherchait
+les sources là où elles n'étaient pas, avec un échec qui n'apparaissait qu'à l'ouverture
+de l'éditeur.
+
+**2026-08-18 · L'aperçu est servi par l'application, pas encore depuis un eTLD+1
+distinct** · _Écarté :_ prétendre que `*.calque-preview.site` est en place. _Raison :_ le
+§11 le demande pour que les cookies de session soient inaccessibles depuis la page éditée.
+Cela suppose un domaine et une entrée DNS, qui n'existent pas ici. En attendant, l'iframe
+reste en bac à sable, la CSP interdit tout le superflu et `frame-ancestors` limite
+l'encadrement. C'est consigné dans le runbook comme préalable à la mise en production.

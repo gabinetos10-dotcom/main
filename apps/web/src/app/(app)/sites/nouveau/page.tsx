@@ -10,7 +10,7 @@ export default async function PageDepot() {
   const t = await getTranslations("depot");
 
   return (
-    <>
+    <div className="mx-auto max-w-5xl px-6 py-10">
       <Link
         href="/tableau-de-bord"
         className="text-[13px] text-encre-500 hover:underline"
@@ -28,6 +28,6 @@ export default async function PageDepot() {
           <FormulaireDepot />
         </CardContent>
       </Card>
-    </>
+    </div>
   );
 }

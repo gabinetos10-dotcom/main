@@ -75,11 +75,15 @@ export async function build(
   );
 
   for (const fichier of source.files) {
+    const estPage = fichier.kind === "page" && pages.has(fichier.path);
+    if (options.pagesOnly === true && !estPage) continue;
+
     const contenu = fichier.content ?? (await source.read(fichier.path));
 
     const page = pages.get(fichier.path);
     if (fichier.kind !== "page" || page === undefined) {
-      fichiers.push({ path: fichier.path, content: contenu });
+      if (options.pagesOnly !== true)
+        fichiers.push({ path: fichier.path, content: contenu });
       continue;
     }
 
@@ -296,13 +300,22 @@ function buildPage(
       });
     }
 
-    const body = findFirst(document, (element) => tagName(element) === "body");
-    const fin = body?.sourceCodeLocation?.endTag;
-    if (fin !== undefined && options.editorRuntimeUrl !== undefined) {
+    /**
+     * Le runtime est injecté **en tête du `<head>`**, avant les `<script>` du
+     * site. C'est le seul instant où il peut neutraliser GSAP ou AOS avant que
+     * le CDN ne les définisse : injecté en fin de `<body>`, il arriverait après
+     * la bibliothèque et l'aperçu resterait une page vide (§11).
+     */
+    const debutHead = head?.sourceCodeLocation?.startTag;
+    if (debutHead !== undefined && options.editorRuntimeUrl !== undefined) {
+      const configuration =
+        options.editorConfig === undefined
+          ? ""
+          : `<script type="application/json" id="calque-config">${jsonPourScript(options.editorConfig)}</script>`;
       splices.push({
-        startOffset: fin.startOffset,
-        endOffset: fin.startOffset,
-        replacement: `<script type="module" src="${escapeAttribute(options.editorRuntimeUrl)}"></script>\n`,
+        startOffset: debutHead.endOffset,
+        endOffset: debutHead.endOffset,
+        replacement: `\n${configuration}<script src="${escapeAttribute(options.editorRuntimeUrl)}"></script>`,
       });
     }
   }
@@ -343,6 +356,20 @@ function splicesDeNettoyage(document: Node, source: string): Splice[] {
 
   parcourir(document);
   return splices;
+}
+
+/**
+ * Sérialise une configuration pour une balise `<script type="application/json">`.
+ *
+ * `</script>` dans une chaîne fermerait la balise et injecterait du contenu dans
+ * la page : c'est la seule séquence qui compte à l'intérieur d'un script JSON.
+ */
+function jsonPourScript(valeur: unknown): string {
+  return JSON.stringify(valeur)
+    .replace(/</gu, "\\u003c")
+    .replace(/>/gu, "\\u003e")
+    .replace(/\u2028/gu, "\\u2028")
+    .replace(/\u2029/gu, "\\u2029");
 }
 
 /** `menu.html` + `assets/x.css` → `assets/x.css` ; `a/b.html` → `../assets/x.css`. */

@@ -1,0 +1,22 @@
+{
+  "name": "@calque/editor-runtime",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./bundle": "./dist/editor-runtime.js"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "build": "node build.mjs"
+  },
+  "dependencies": {
+    "@calque/protocol": "workspace:*"
+  },
+  "devDependencies": {
+    "esbuild": "0.28.2",
+    "happy-dom": "20.11.2",
+    "typescript": "5.9.3"
+  }
+}

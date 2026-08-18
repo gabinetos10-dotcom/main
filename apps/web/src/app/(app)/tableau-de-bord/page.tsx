@@ -23,7 +23,7 @@ export default async function PageTableauDeBord() {
   const sites = await sitesRepository(handle, contexte.org.orgId).list();
 
   return (
-    <>
+    <div className="mx-auto max-w-5xl px-6 py-10">
       <div className="flex items-center justify-between gap-4">
         <h1 className="titre-display text-3xl">{t("titre")}</h1>
         <Link
@@ -66,6 +66,6 @@ export default async function PageTableauDeBord() {
           ))}
         </ul>
       )}
-    </>
+    </div>
   );
 }

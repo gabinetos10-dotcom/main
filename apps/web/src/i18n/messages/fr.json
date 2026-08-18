@@ -97,6 +97,17 @@
     "colonneListes": "Listes",
     "aSavoir": "À savoir avant de donner l'accès",
     "echec": "L'analyse de ce site n'a pas abouti.",
-    "echecAide": "Vérifiez que l'archive contient bien des pages HTML, puis redéposez-la."
+    "echecAide": "Vérifiez que l'archive contient bien des pages HTML, puis redéposez-la.",
+    "ouvrirEditeur": "Ouvrir l'éditeur"
+  },
+  "editeur": {
+    "apercu": "Aperçu du site",
+    "voirZones": "Voir les zones modifiables",
+    "valeur": "Contenu",
+    "aucuneSelection": "Cliquez sur un texte ou une image dans l'aperçu, ou choisissez-le dans la liste de gauche.",
+    "enregistrement": "Enregistrement…",
+    "enregistre": "Enregistré",
+    "erreurEnregistrement": "Non enregistré — vos modifications sont encore à l'écran.",
+    "ouvrir": "Ouvrir l'éditeur"
   }
 }

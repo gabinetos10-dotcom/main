@@ -26,7 +26,7 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": [".next/**", "!.next/cache/**", "dist/**"]
+      "outputs": [".next/**", "!.next/cache/**", "dist/**", "public/apercu/**"]
     },
     "typecheck": {
       "dependsOn": ["^typecheck"],

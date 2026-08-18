@@ -123,6 +123,18 @@ Puis déposer une archive et vérifier, dans le tableau de bord R2, que les obje
 apparaissent sous `sites/{siteId}/sources/{versionId}/`. Vérifier aussi une URL signée :
 le dépôt échoue en silence côté navigateur si la signature est refusée.
 
+### Domaine d'aperçu
+
+Le §11 veut l'aperçu servi depuis `*.calque-preview.site`, un eTLD+1 distinct de
+`app.calque.studio`, pour que les cookies de session soient hors de portée de la page
+éditée. Aujourd'hui l'aperçu est servi par l'application elle-même, sous
+`/api/apercu/{siteId}/…`, avec l'iframe en bac à sable et une CSP restrictive.
+
+Mettre en place le domaine dédié demande : l'enregistrement DNS générique, un certificat,
+et une réécriture qui route `{siteId}.calque-preview.site` vers la route d'aperçu. La
+`parentOrigin` transmise au runtime et le `frame-ancestors` de la CSP devront alors
+pointer sur `app.calque.studio`.
+
 ### Lanceur de travaux
 
 Seul le lanceur en ligne (`createInlineRunner`) est écrit et exercé. Le §3 fige Trigger.dev

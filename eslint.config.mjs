@@ -22,6 +22,9 @@ export default tseslint.config(
       "packages/db/drizzle/**",
       // Données locales : sources déposées, builds, stockage de développement.
       ".data/**",
+      // Bundles générés : le runtime d'édition, copié dans public/ à la build.
+      "**/dist/**",
+      "apps/web/public/apercu/**",
       // Fichiers générés par Next à chaque build.
       "apps/web/next-env.d.ts",
     ],
@@ -109,7 +112,12 @@ export default tseslint.config(
   // Outillage exécuté par Node hors bundler : globales Node, sorties console
   // assumées (ce sont des scripts d'atelier, pas du code applicatif).
   {
-    files: ["**/tools/**/*.{mjs,mts}", "scripts/**/*.mjs"],
+    files: [
+      "**/tools/**/*.{mjs,mts}",
+      "scripts/**/*.mjs",
+      "**/build.mjs",
+      "**/scripts/*.mjs",
+    ],
     languageOptions: {
       globals: { Buffer: "readonly", process: "readonly", console: "readonly" },
     },

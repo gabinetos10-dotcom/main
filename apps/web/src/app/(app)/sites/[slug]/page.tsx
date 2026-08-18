@@ -99,7 +99,7 @@ export default async function PageRapport({
   const infos = blueprint.warnings.filter((a) => a.severity === "info");
 
   return (
-    <>
+    <div className="mx-auto max-w-5xl px-6 py-10">
       <Link
         href="/tableau-de-bord"
         className="text-[13px] text-encre-500 hover:underline"
@@ -107,9 +107,18 @@ export default async function PageRapport({
         ← {t("retour")}
       </Link>
 
-      <h1 className="titre-display mt-4 text-3xl" data-testid="titre-rapport">
-        {site.name}
-      </h1>
+      <div className="mt-4 flex items-start justify-between gap-4">
+        <h1 className="titre-display text-3xl" data-testid="titre-rapport">
+          {site.name}
+        </h1>
+        <Link
+          href={`/sites/${site.slug}/editeur`}
+          data-testid="lien-editeur"
+          className="inline-flex h-10 shrink-0 items-center rounded-md bg-encre-900 px-4 text-[14px] font-medium text-papier-50 transition hover:bg-encre-800"
+        >
+          {t("ouvrirEditeur")}
+        </Link>
+      </div>
       <p className="mt-2 text-[15px] text-encre-600">
         {t("resume", { pages: reelles.length, champs })}
       </p>
@@ -175,6 +184,6 @@ export default async function PageRapport({
           </ul>
         </>
       )}
-    </>
+    </div>
   );
 }

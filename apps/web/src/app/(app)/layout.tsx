@@ -51,7 +51,8 @@ export default async function LayoutApplication({
           </div>
         </div>
       </header>
-      <main className="mx-auto max-w-5xl px-6 py-10">{children}</main>
+      {/* La largeur est décidée par chaque page : l'éditeur occupe tout l'écran. */}
+      <main>{children}</main>
     </div>
   );
 }

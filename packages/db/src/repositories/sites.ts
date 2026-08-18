@@ -123,8 +123,17 @@ export function sitesRepository(handle: DbHandle, orgId: string) {
      * brouillon initial. En une transaction — un blueprint sans brouillon
      * laisserait l'éditeur devant un site vide.
      */
+    /**
+     * L'identifiant de version est **imposé par l'appelant**, pas généré ici.
+     *
+     * C'est le même que celui sous lequel les fichiers ont été écrits dans le
+     * stockage : `sites/{siteId}/sources/{versionId}/…`. Laisser la base en
+     * générer un autre obligerait à tenir une table de correspondance, et une
+     * clé de stockage qu'on ne peut pas dériver d'une ligne est une clé perdue.
+     */
     async recordIngestion(input: {
       siteId: string;
+      siteVersionId: string;
       label: string;
       manifest: SourceManifest;
       blueprint: Blueprint;
@@ -136,6 +145,7 @@ export function sitesRepository(handle: DbHandle, orgId: string) {
         const [version] = await db
           .insert(siteVersions)
           .values({
+            id: input.siteVersionId,
             siteId: input.siteId,
             label: input.label,
             sourceManifest: input.manifest,

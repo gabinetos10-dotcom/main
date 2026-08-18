@@ -324,6 +324,24 @@ describe("annotations et runtime d'édition", () => {
     expect(sortie).toContain("<h1>Bonjour</h1>");
   });
 
+  it("sérialise la configuration du runtime sans pouvoir fermer sa balise", async () => {
+    const { snapshot, blueprint, contenu } = await analyserFragment();
+    const sortie = html(
+      (
+        await build(snapshot, blueprint, contenu, {
+          injectEditorRuntime: true,
+          editorRuntimeUrl: "/runtime.js",
+          editorConfig: { labels: { a: "</script><img src=x onerror=alert(1)>" } },
+        })
+      ).files,
+      "index.html",
+    );
+
+    expect(sortie).toContain('id="calque-config"');
+    expect(sortie).not.toContain("</script><img");
+    expect(sortie).toContain("\\u003c/script\\u003e");
+  });
+
   it("marque les champs et injecte le runtime en mode aperçu", async () => {
     const { snapshot, blueprint, contenu } = await analyserFragment();
     const sortie = html(
@@ -331,12 +349,20 @@ describe("annotations et runtime d'édition", () => {
         await build(snapshot, blueprint, contenu, {
           injectEditorRuntime: true,
           editorRuntimeUrl: "/runtime.js",
+          editorConfig: {
+            fields: [],
+            parentOrigin: "https://app.calque.studio",
+            labels: {},
+          },
         })
       ).files,
       "index.html",
     );
 
     expect(sortie).toMatch(/data-calque-field="fld_[0-9a-f]{10}"/u);
-    expect(sortie).toContain('<script type="module" src="/runtime.js"></script>');
+    // Le runtime est en tête du <head>, avant les scripts du site : c'est le
+    // seul instant où il peut neutraliser une bibliothèque d'animation (§11).
+    expect(sortie).toContain('<script src="/runtime.js"></script>');
+    expect(sortie.indexOf("/runtime.js")).toBeLessThan(sortie.indexOf("<title>"));
   });
 });

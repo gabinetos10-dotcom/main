@@ -97,6 +97,17 @@
     "colonneListes": "Lists",
     "aSavoir": "Worth knowing before you hand over access",
     "echec": "This site could not be analysed.",
-    "echecAide": "Check that the archive contains HTML pages, then upload it again."
+    "echecAide": "Check that the archive contains HTML pages, then upload it again.",
+    "ouvrirEditeur": "Open the editor"
+  },
+  "editeur": {
+    "apercu": "Site preview",
+    "voirZones": "Show editable areas",
+    "valeur": "Content",
+    "aucuneSelection": "Click a text or an image in the preview, or pick one from the list on the left.",
+    "enregistrement": "Saving…",
+    "enregistre": "Saved",
+    "erreurEnregistrement": "Not saved — your changes are still on screen.",
+    "ouvrir": "Open the editor"
   }
 }

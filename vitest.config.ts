@@ -60,6 +60,24 @@ export default defineConfig({
       },
       {
         test: {
+          name: "protocol",
+          root: "./packages/protocol",
+          environment: "node",
+          include: ["test/**/*.test.ts"],
+        },
+      },
+      {
+        test: {
+          name: "editor-runtime",
+          root: "./packages/editor-runtime",
+          // Le runtime ne vit que dans un navigateur : le tester dans Node
+          // reviendrait à tester autre chose que ce qui sera exécuté.
+          environment: "happy-dom",
+          include: ["test/**/*.test.ts"],
+        },
+      },
+      {
+        test: {
           name: "db",
           root: "./packages/db",
           environment: "node",

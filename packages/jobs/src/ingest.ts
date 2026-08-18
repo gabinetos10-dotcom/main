@@ -71,6 +71,7 @@ export function createIngestJob(deps: IngestDependencies) {
 
         const enregistre = await sites.recordIngestion({
           siteId: payload.siteId,
+          siteVersionId: payload.versionId,
           label: payload.label,
           manifest,
           blueprint,

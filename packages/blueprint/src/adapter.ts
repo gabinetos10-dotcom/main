@@ -86,8 +86,19 @@ export interface BuildOptions {
   /** Injecte le runtime éditeur. Vrai en aperçu, TOUJOURS faux en publication. */
   injectEditorRuntime?: boolean;
   editorRuntimeUrl?: string;
+  /**
+   * Configuration lue par le runtime : liste des champs, origine du panneau,
+   * libellés. Sérialisée en JSON dans une balise `<script type="application/json">`.
+   */
+  editorConfig?: unknown;
   /** Régénère `sitemap.xml` et `robots.txt` (§15, étape 8). */
   siteUrl?: string;
+  /**
+   * N'émet que les pages. L'aperçu sert les images et les polices directement
+   * depuis le stockage : les recopier à chaque frappe chargerait tout le site
+   * en mémoire pour rien.
+   */
+  pagesOnly?: boolean;
 }
 
 export interface BuildResult {

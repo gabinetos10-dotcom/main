@@ -183,3 +183,42 @@ describe("travail INGEST", () => {
     await contexte.handle.close();
   });
 });
+
+describe("clés de stockage", () => {
+  /**
+   * L'identifiant de la version en base doit être **exactement** celui sous
+   * lequel les fichiers ont été écrits. Sinon l'aperçu cherche les sources là où
+   * elles ne sont pas, et l'échec n'apparaît qu'à l'ouverture de l'éditeur.
+   */
+  it("la version enregistrée porte l'identifiant sous lequel le stockage a écrit", async () => {
+    const contexte = await preparer();
+    const versionId = crypto.randomUUID();
+    await contexte.store.put(
+      keys.archive(contexte.siteId, versionId),
+      await zipperFixture("01-artisan-landing"),
+    );
+
+    const resultat = await createInlineRunner().enqueue(
+      createIngestJob({ handle: contexte.handle, store: contexte.store }),
+      {
+        orgId: contexte.orgId,
+        siteId: contexte.siteId,
+        versionId,
+        label: "Livraison initiale",
+        actorId: contexte.userId,
+      },
+    );
+
+    expect(resultat.siteVersionId).toBe(versionId);
+
+    const versions = await contexte.handle.db.select().from(schema.siteVersions);
+    expect(versions[0]?.id).toBe(versionId);
+
+    for (const fichier of versions[0]?.sourceManifest.files ?? []) {
+      expect(await contexte.store.has(fichier.key)).toBe(true);
+      expect(fichier.key).toContain(`/sources/${versionId}/`);
+    }
+
+    await contexte.handle.close();
+  });
+});

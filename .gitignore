@@ -35,3 +35,6 @@ blob-report/
 
 # sentry
 .sentryclirc
+
+# Bundle du runtime d'édition, copié à la build.
+apps/web/public/apercu/
