@@ -65,108 +65,326 @@
   }
 
   /* ============================================================
-     3. PRELOADER — « ORBITE NOUS »
-     Aéré et en mouvement : le logo flotte doucement au centre,
-     un satellite jaune tourne en orbite elliptique autour de lui
-     (animation CSS continue), pendant qu'une fineline de
-     progression suit le chargement RÉEL de la vidéo du hero.
-     Sortie : tout s'estompe, le rideau glisse vers le haut.
+     3. PRELOADER — « L'ENCRE »
+     La signature NOUS est la jauge : l'encre jaune la remplit de
+     gauche à droite, une plume de lumière suit le bord de l'encre.
+     La progression n'est PAS décorative — elle pondère le
+     chargement réel (vidéo, polices, images clés, window.load),
+     avec un filet qui garde la jauge vivante sur réseau lent.
+     Sortie : l'encre inonde l'écran, la signature s'inverse en
+     noir au passage du niveau, puis le rideau jaune se soulève
+     pendant que le hero démarre derrière.
      ============================================================ */
   var preloader = document.getElementById('preloader');
   var nav = document.getElementById('nav');
+  var entered = false;
 
   function enterSite() {
-    nav.classList.add('is-in');
+    if (entered) { return; }
+    entered = true;
+    if (nav) { nav.classList.add('is-in'); }
     lockScroll(false);
     playHeroVideo();
     if (introTl) { introTl.play(); }
   }
 
-  if (preloader && hasGsap && !REDUCED) {
-    lockScroll(true);
-    var counterEl = document.getElementById('counter');
-    var barEl = document.getElementById('preloaderBar');
-    var counter = { v: 0 };
+  (function initPreloader() {
+    if (!preloader) { enterSite(); return; }
 
-    function renderCount() {
-      var v = Math.round(counter.v);
-      if (counterEl) { counterEl.textContent = (v < 10 ? '0' : '') + v; }
-      if (barEl) { barEl.style.transform = 'scaleX(' + (counter.v / 100) + ')'; }
+    var counterEl = document.getElementById('counter');
+    var statusEl = document.getElementById('plStatus');
+    var gaugeEl = document.getElementById('plGauge');
+    var skipBtn = document.getElementById('plSkip');
+    var taglineEl = document.getElementById('plTagline');
+    var signEl = preloader.querySelector('.pl__sign');
+    var plClockEl = document.getElementById('plClock');
+    var onMove = null;
+    var inTl = null;
+
+    lockScroll(true);
+
+    // — Horloge d'atelier (même heure que le pied de page) —
+    if (plClockEl) {
+      try {
+        plClockEl.textContent = new Date().toLocaleTimeString('fr-FR', {
+          timeZone: 'Europe/Paris', hour: '2-digit', minute: '2-digit'
+        });
+      } catch (e) {
+        plClockEl.textContent = new Date().toLocaleTimeString('fr-FR');
+      }
     }
 
-    // La vidéo est-elle prête ? (canplay, ou timeout de sécurité)
-    var videoReady = false;
-    function markReady() { videoReady = true; }
-    if (heroVideo) {
-      if (heroVideo.readyState >= 3) { videoReady = true; }
-      else {
-        heroVideo.addEventListener('canplay', markReady, { once: true });
-        heroVideo.addEventListener('canplaythrough', markReady, { once: true });
+    // — La baseline est découpée en lettres : elles s'allument au
+    //   rythme de la progression (seconde lecture de la jauge) —
+    var letters = [];
+    if (taglineEl) {
+      var txt = taglineEl.textContent.trim();
+      taglineEl.textContent = '';
+      for (var i = 0; i < txt.length; i++) {
+        var sp = document.createElement('span');
+        if (txt.charAt(i) === ' ') { sp.className = 'is-space'; sp.innerHTML = '&nbsp;'; }
+        else { sp.textContent = txt.charAt(i); }
+        taglineEl.appendChild(sp);
+        letters.push(sp);
       }
-    } else { videoReady = true; }
-    setTimeout(markReady, 3500); // ne jamais bloquer l'entrée pour la vidéo
+    }
 
-    // États initiaux
-    gsap.set('.preloader__logo', { opacity: 0, scale: 0.94, y: 10 });
-    gsap.set('.preloader__orbit', { opacity: 0 });
-    gsap.set('.preloader__foot', { opacity: 0, y: 10 });
+    /* ---- Phases annoncées : on dit ce qui se passe, pas « chargement… » ---- */
+    var PHASES = [
+      { at: 0, label: "Préparation de l'atelier" },
+      { at: 30, label: 'Chargement des visuels' },
+      { at: 60, label: 'Mise en récit' },
+      { at: 88, label: 'Derniers réglages' },
+      { at: 100, label: 'Bienvenue' }
+    ];
+    var phaseIdx = -1;
+    function setPhase(v) {
+      var idx = 0;
+      for (var i = 0; i < PHASES.length; i++) { if (v >= PHASES[i].at) { idx = i; } }
+      if (idx === phaseIdx) { return; }
+      phaseIdx = idx;
+      if (statusEl) { statusEl.textContent = PHASES[idx].label; }
+    }
 
-    // Flottement continu du logo (tué avant la sortie pour
-    // éviter tout conflit avec le tween de translation final)
-    var floatT = gsap.to('.preloader__logo', {
-      y: -8, duration: 1.6, yoyo: true, repeat: -1, ease: 'sine.inOut', delay: 1.15
+    /* ---- Chargement réel : chaque ressource pèse son poids ---- */
+    var real = 0;
+    function track(weight, subscribe) {
+      var settled = false;
+      function done() {
+        if (settled) { return; }
+        settled = true;
+        real += weight;
+      }
+      setTimeout(done, 3000); // aucune ressource ne retient la jauge plus de 3 s
+      subscribe(done);
+    }
+
+    // La vidéo du hero : la ressource la plus lourde. On se contente de
+    // « loadeddata » — la première image suffit, le poster couvre le reste.
+    track(0.28, function (done) {
+      if (!heroVideo) { done(); return; }
+      if (heroVideo.readyState >= 2) { done(); return; }
+      ['loadeddata', 'canplay', 'canplaythrough', 'error'].forEach(function (ev) {
+        heroVideo.addEventListener(ev, done, { once: true });
+      });
+    });
+    // Les polices : évite le saut typographique juste après l'entrée
+    track(0.16, function (done) {
+      if (document.fonts && document.fonts.ready) { document.fonts.ready.then(done, done); }
+      else { done(); }
+    });
+    // Les images de la première vue
+    ['medias/nous-script-blanc.png', 'medias/poster.jpg', 'medias/nous-wordmark-blanc.png']
+      .forEach(function (src) {
+        track(0.08, function (done) {
+          var im = new Image();
+          im.onload = done; im.onerror = done;
+          im.src = src;
+        });
+      });
+    // Le document complet
+    track(0.32, function (done) {
+      if (document.readyState === 'complete') { done(); return; }
+      window.addEventListener('load', done, { once: true });
     });
 
-    var preTl = gsap.timeline({
-      onComplete: function () {
-        if (preloader && preloader.parentNode) { preloader.remove(); }
-      }
-    });
+    /* ---- Visite déjà vue dans la session : on n'impose pas deux fois l'intro ---- */
+    var seen = false;
+    try {
+      seen = sessionStorage.getItem('nous.intro') === '1';
+      sessionStorage.setItem('nous.intro', '1');
+    } catch (e) { /* mode privé : on garde l'intro complète */ }
 
-    // — Entrée : logo, orbite, fineline
-    preTl
-      .to('.preloader__logo', { opacity: 1, scale: 1, y: 0, duration: 0.9, ease: 'expo.out' }, 0.1)
-      .to('.preloader__orbit', { opacity: 1, duration: 0.8, ease: 'power1.out' }, 0.3)
-      .to('.preloader__foot', { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' }, 0.35)
-      .to(counter, {
-        v: 92, duration: 1.7, ease: 'power2.inOut',
-        onUpdate: renderCount
-      }, 0.3);
+    var MIN_MS = seen ? 550 : 1500;   // durée plancher : pas de « flash » de rideau
+    var MAX_MS = seen ? 1600 : 2800;  // plafond : une ressource lente ne retient jamais l'entrée
+    var now = function () {
+      return (window.performance && performance.now) ? performance.now() : Date.now();
+    };
+    var started = now();
 
-    // — Gate : on attend la vidéo (max 3,5 s) avant de boucler le compteur
-    preTl
-      .call(function () {
-        if (videoReady) { return; }
-        preTl.pause();
-        var waiter = setInterval(function () {
-          if (videoReady) { clearInterval(waiter); preTl.play(); }
-        }, 80);
-      }, null, 2.15)
-      .to(counter, {
-        v: 100, duration: 0.45, ease: 'power2.out',
-        onUpdate: renderCount
-      })
+    /* ---- Rendu : une seule variable CSS pilote toute la scène ---- */
+    var shown = 0;
+    var litCount = 0;
+    function paint(v) {
+      var r = Math.round(v);
+      preloader.style.setProperty('--p', (v / 100).toFixed(4));
+      if (counterEl) { counterEl.textContent = (r < 10 ? '0' : '') + r; }
+      if (gaugeEl) { gaugeEl.setAttribute('aria-valuenow', r); }
+      setPhase(r);
+      var n = Math.round(v / 100 * letters.length);
+      while (litCount < n) { letters[litCount].classList.add('is-lit'); litCount++; }
+      while (litCount > n) { litCount--; letters[litCount].classList.remove('is-lit'); }
+    }
 
-    // — Sortie : tout s'estompe, puis le rideau glisse vers le haut
-      .call(function () { floatT.kill(); }, null, '+=0.2')
-      .to(['.preloader__orbit', '.preloader__foot'],
-        { opacity: 0, duration: 0.35, ease: 'power1.in' }, '<')
-      .to('.preloader__logo', { y: -24, opacity: 0, duration: 0.45, ease: 'expo.in' }, '<')
-      .to(preloader, { yPercent: -100, duration: 0.85, ease: 'expo.inOut' }, '-=0.15')
-      // …et le hero démarre sa cascade PENDANT la sortie (transition continue)
-      .call(enterSite, null, '-=0.55');
+    /* ---- Boucle : la valeur affichée poursuit la valeur réelle,
+           sans jamais reculer ni se figer ---- */
+    var finished = false;
+    var rafId = 0;
+    function tick() {
+      var elapsed = now() - started;
+      // Filet anti-blocage : la jauge continue d'avancer, mais reste
+      // arrimée au réel (jamais plus de 30 points d'avance).
+      var trickle = 92 * (1 - Math.exp(-elapsed / (seen ? 380 : 1050)));
+      var ready = elapsed >= MIN_MS && (real >= 0.999 || elapsed >= MAX_MS);
+      var target = ready
+        ? 100
+        : Math.min(96, Math.max(real * 100, Math.min(trickle, real * 100 + 30)));
+      shown += (target - shown) * (ready ? 0.28 : 0.085);
+      if (ready && 100 - shown < 0.4) { shown = 100; }
+      paint(shown);
+      if (shown >= 100) { finish(); }
+    }
+    function startLoop() {
+      if (hasGsap) { gsap.ticker.add(tick); }
+      else { (function loop() { rafId = requestAnimationFrame(loop); tick(); })(); }
+    }
+    function stopLoop() {
+      if (hasGsap) { gsap.ticker.remove(tick); }
+      else if (rafId) { cancelAnimationFrame(rafId); }
+    }
 
-    // Skip au clic
-    preloader.addEventListener('click', function () {
+    /* ---- Sorties ---- */
+    var bySkip = false; // sortie demandée par l'utilisateur : on accélère le geste
+
+    function cleanup() {
+      if (onMove) { window.removeEventListener('mousemove', onMove); }
+      document.removeEventListener('keydown', onKey);
+      if (preloader && preloader.parentNode) { preloader.parentNode.removeChild(preloader); }
+      enterSite(); // filet : le site s'ouvre même si la timeline a été coupée
+    }
+
+    function simpleExit() {
+      preloader.classList.add('pl--out');
+      enterSite();
+      setTimeout(cleanup, 700);
+    }
+
+    function exit() {
+      if (skipBtn) { skipBtn.disabled = true; }
       preloader.style.pointerEvents = 'none';
-      preTl.progress(1);
-    });
-    // Sécurité : ne jamais rester bloqué
-    setTimeout(function () { if (document.body.contains(preloader)) { preTl.progress(1); } }, 10000);
-  } else {
-    if (preloader) { preloader.remove(); }
-    enterSite();
-  }
+
+      if (!hasGsap || REDUCED) { simpleExit(); return; }
+
+      // On solde l'entrée (si elle court encore) et on coupe le magnétisme
+      // avant de reprendre la main sur .pl__stage.
+      if (inTl) { inTl.progress(1).kill(); inTl = null; }
+      if (onMove) { window.removeEventListener('mousemove', onMove); onMove = null; }
+      gsap.killTweensOf('.pl__stage');
+      gsap.killTweensOf('.pl__band');
+      gsap.set('.pl__stage', { x: 0, y: 0 });
+
+      // Le niveau d'encre est partagé : --f pilote les colonnes (plein
+      // écran) et --fl l'inversion de la signature, calculée sur sa
+      // position réelle pour que le logo bascule pile au passage du niveau.
+      var rect = signEl ? signEl.getBoundingClientRect() : { bottom: 0, height: 1 };
+      var vh = window.innerHeight;
+      var ink = { f: 0 };
+
+      gsap.timeline({ onComplete: cleanup })
+        // 1. La plume éclate au bout de la signature
+        .to('.pl__nib', { opacity: 0, scaleX: 26, duration: .45, ease: 'expo.out' }, 0)
+        // 2. Le HUD s'efface : plus rien ne distrait de la marque
+        .to(['.pl__head', '.pl__foot', '.pl__gauge', '.pl__eyebrow', '.pl__tagline'],
+          { opacity: 0, duration: .28, ease: 'power2.in' }, .03)
+        // 3. L'encre monte et retourne la signature (jaune → noir)
+        .to(ink, {
+          f: 1, duration: .62, ease: 'power2.inOut',
+          onUpdate: function () {
+            var level = vh * (1 - ink.f);
+            var fl = (rect.bottom - level) / rect.height;
+            preloader.style.setProperty('--f', ink.f.toFixed(4));
+            preloader.style.setProperty('--fl', Math.max(0, Math.min(1, fl)).toFixed(4));
+          }
+        }, .12)
+        .set(['.pl__bg', '.pl__band'], { opacity: 0 }, .76)
+        // 4. Battement : la marque « signe » la page
+        .to('.pl__sign', { scale: 1.04, duration: .16, ease: 'power2.out' }, .76)
+        .to('.pl__sign', { scale: 1, duration: .24, ease: 'power2.inOut' }, .92)
+        // 5. Le rideau jaune se soulève ; le hero démarre derrière
+        .to('.pl__flood-col', { yPercent: -101, duration: .82, ease: 'expo.inOut', stagger: .05 }, 1.06)
+        .to('.pl__stage', { yPercent: -101, duration: .82, ease: 'expo.inOut' }, 1.14)
+        .call(enterSite, null, 1.24)
+        // Sortie demandée (ou session déjà vue) : même geste, joué plus vite
+        .timeScale(bySkip ? 2 : (seen ? 1.35 : 1));
+    }
+
+    function finish() {
+      if (finished) { return; }
+      finished = true;
+      stopLoop();
+      if (statusEl) { statusEl.textContent = 'Bienvenue'; }
+      // Sortie anticipée (bouton, Échap, clic) : on laisse quand même
+      // la signature se terminer, on ne coupe pas le geste en deux.
+      if (hasGsap && !REDUCED && shown < 99) {
+        var snap = { v: shown };
+        gsap.to(snap, {
+          v: 100, duration: bySkip ? .22 : .3, ease: 'power2.out',
+          onUpdate: function () { paint(snap.v); },
+          onComplete: function () { paint(100); exit(); }
+        });
+        return;
+      }
+      paint(100);
+      exit();
+    }
+
+    /* ---- Sortie à la demande : bouton visible, Échap, ou clic ---- */
+    function skipNow() {
+      if (finished) { return; }
+      bySkip = true;
+      finish();
+    }
+    function onKey(e) {
+      if (e.key === 'Escape' || e.key === 'Esc') { skipNow(); }
+    }
+    document.addEventListener('keydown', onKey);
+    if (skipBtn) {
+      skipBtn.addEventListener('click', function (e) { e.stopPropagation(); skipNow(); });
+    }
+    preloader.addEventListener('click', skipNow);
+
+    // Filet dur : le site s'ouvre au bout de 9 s quoi qu'il arrive
+    setTimeout(finish, 9000);
+
+    /* ---- Entrée en scène ---- */
+    if (hasGsap && !REDUCED) {
+      gsap.set(['.pl__head', '.pl__foot', '.pl__gauge'], { opacity: 0, y: 14 });
+      gsap.set('.pl__eyebrow', { opacity: 0, y: 10 });
+      gsap.set('.pl__sign', { opacity: 0, scale: .965 });
+      gsap.set('.pl__tagline', { opacity: 0 });
+
+      inTl = gsap.timeline({ defaults: { ease: 'expo.out' } })
+        .to('.pl__sign', { opacity: 1, scale: 1, duration: 1.1 }, .05)
+        .to('.pl__eyebrow', { opacity: 1, y: 0, duration: .8 }, .22)
+        .to(['.pl__head', '.pl__foot', '.pl__gauge'],
+          { opacity: 1, y: 0, duration: .9, stagger: .06 }, .28)
+        .to('.pl__nib', { opacity: 1, duration: .5, ease: 'power2.out' }, .35)
+        .to('.pl__tagline', { opacity: 1, duration: .8 }, .42)
+        .to('.pl__skip', { opacity: 1, duration: .5 }, 1.15);
+
+      // Magnétisme : la scène suit très légèrement le curseur,
+      // le bandeau de fond part en sens inverse (profondeur).
+      if (FINE_POINTER) {
+        var qx = gsap.quickTo('.pl__stage', 'x', { duration: .9, ease: 'power3' });
+        var qy = gsap.quickTo('.pl__stage', 'y', { duration: .9, ease: 'power3' });
+        var qb = gsap.quickTo('.pl__band', 'x', { duration: 1.3, ease: 'power3' });
+        onMove = function (e) {
+          var nx = e.clientX / window.innerWidth - .5;
+          var ny = e.clientY / window.innerHeight - .5;
+          qx(nx * 26); qy(ny * 16); qb(nx * -58);
+        };
+        window.addEventListener('mousemove', onMove);
+      }
+    } else {
+      // Mouvement réduit / pas de GSAP : la scène est posée, pas animée.
+      // La plume reste affichée — elle marque le bord de l'encre, donc la progression.
+      if (skipBtn) { skipBtn.style.opacity = '1'; }
+      var nibEl = preloader.querySelector('.pl__nib');
+      if (nibEl) { nibEl.style.opacity = '1'; }
+    }
+
+    startLoop();
+  }());
 
   /* ============================================================
      4. CURSEUR PERSONNALISÉ (dot + ring, label optionnel)

@@ -16,6 +16,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
   <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">
+  <!-- Sans JS, le préchargeur ne pourrait pas se retirer : on ne l'affiche pas. -->
+  <noscript><style>#preloader { display: none !important; }</style></noscript>
 </head>
 <body>
 
@@ -29,24 +31,71 @@
   <!-- ===== BARRE DE PROGRESSION SCROLL ===== -->
   <div class="scroll-progress" aria-hidden="true"></div>
 
-  <!-- ===== PRELOADER — ORBITE NOUS ===== -->
-  <div class="preloader" id="preloader">
-    <div class="preloader__bg" aria-hidden="true"></div>
+  <!-- ===== PRELOADER — « L'ENCRE » =====
+       La signature NOUS s'écrit en direct : l'encre jaune avance
+       exactement au rythme du chargement réel des médias.
+       À 100 %, l'encre inonde l'écran, le logo s'inverse en noir,
+       puis le rideau jaune se soulève sur le hero. -->
+  <div class="pl" id="preloader" aria-label="Chargement du site NOUS">
 
-    <!-- Le logo flotte, un satellite jaune tourne sur un anneau elliptique -->
-    <div class="preloader__stage">
-      <div class="preloader__mark">
-        <img src="medias/nous-script-jaune.png" alt="NOUS." class="preloader__logo" id="preLogo">
-        <div class="preloader__orbit" aria-hidden="true">
-          <span class="preloader__orbit-spin"><i class="preloader__sat"></i></span>
-        </div>
+    <!-- Fond : nuit, halo jaune mouvant, trame d'atelier, vignettage -->
+    <div class="pl__bg" aria-hidden="true">
+      <span class="pl__halo"></span>
+      <span class="pl__grid"></span>
+      <span class="pl__vignette"></span>
+    </div>
+
+    <!-- Bandeau typographique lent, en filigrane -->
+    <div class="pl__band" aria-hidden="true">
+      <div class="pl__band-track">
+        <span class="pl__band-group">L'HISTOIRE C'EST NOUS&nbsp;<i>✳</i>&nbsp;L'HISTOIRE C'EST NOUS&nbsp;<i>✳</i>&nbsp;</span>
+        <span class="pl__band-group">L'HISTOIRE C'EST NOUS&nbsp;<i>✳</i>&nbsp;L'HISTOIRE C'EST NOUS&nbsp;<i>✳</i>&nbsp;</span>
       </div>
     </div>
 
-    <!-- Pied : fineline de progression + pourcentage -->
-    <div class="preloader__foot" id="preFoot" aria-hidden="true">
-      <span class="preloader__hairline"><span class="preloader__hairline-fill" id="preloaderBar"></span></span>
-      <span class="preloader__pct"><span id="counter">00</span>%</span>
+    <!-- Encre de sortie : 5 colonnes montent, puis emportent le rideau -->
+    <div class="pl__flood" aria-hidden="true">
+      <span class="pl__flood-col"></span>
+      <span class="pl__flood-col"></span>
+      <span class="pl__flood-col"></span>
+      <span class="pl__flood-col"></span>
+      <span class="pl__flood-col"></span>
+    </div>
+
+    <!-- Scène : la signature qui s'écrit + la baseline qui s'allume -->
+    <div class="pl__stage" id="plStage">
+      <p class="pl__eyebrow" aria-hidden="true"><i class="pl__star">✳</i><span>L'encre coule</span></p>
+
+      <div class="pl__sign" aria-hidden="true">
+        <span class="pl__sign-layer pl__sign-ghost"></span>
+        <span class="pl__sign-layer pl__sign-ink"></span>
+        <span class="pl__sign-layer pl__sign-print"></span>
+        <span class="pl__nib"></span>
+      </div>
+
+      <p class="pl__tagline" id="plTagline" aria-hidden="true">L'HISTOIRE C'EST NOUS.</p>
+    </div>
+
+    <!-- En-tête : méta d'atelier + sortie rapide -->
+    <div class="pl__head pl__hud">
+      <span class="pl__meta" aria-hidden="true">NOUS&nbsp;<i>✳</i>&nbsp;AGENCE DE BRANDING — FRANCE <span id="plClock">--:--</span></span>
+      <button class="pl__skip" id="plSkip" type="button" data-cursor="hover">
+        <span>Passer l'intro</span><span class="pl__skip-key">ESC</span>
+      </button>
+    </div>
+
+    <!-- Pied : statut lisible (annoncé) + compteur -->
+    <div class="pl__foot">
+      <p class="pl__status"><i class="pl__star" aria-hidden="true">✳</i><span id="plStatus" role="status" aria-live="polite">Préparation de l'atelier</span></p>
+      <p class="pl__count" aria-hidden="true"><span id="counter">00</span><i>%</i></p>
+    </div>
+
+    <!-- Jauge pleine largeur, segmentée en quatre temps -->
+    <div class="pl__gauge" id="plGauge" role="progressbar" aria-label="Progression du chargement" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+      <span class="pl__gauge-fill"></span>
+      <span class="pl__gauge-tick" style="left:25%"></span>
+      <span class="pl__gauge-tick" style="left:50%"></span>
+      <span class="pl__gauge-tick" style="left:75%"></span>
     </div>
   </div>
 

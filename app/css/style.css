@@ -120,72 +120,224 @@ img, canvas, svg { display: block; max-width: 100%; }
   .cursor-dot.is-hidden, .cursor-ring.is-hidden { opacity: 0; }
 }
 
-/* ---------- PRELOADER — SÉQUENCE D'ATELIER ---------- */
-/* ---------- PRELOADER — ORBITE NOUS ---------- */
-.preloader {
+/* ---------- PRELOADER — « L'ENCRE » ----------
+   La signature NOUS sert elle-même de jauge : l'encre jaune
+   la remplit de gauche à droite, comme une main qui écrit,
+   et la plume lumineuse suit exactement le bord de l'encre.
+   Toute la scène est pilotée par des variables posées en JS :
+   --p (progression) puis --f / --fl (niveau d'encre à la sortie). */
+.pl {
+  --p: 0;   /* progression du chargement, 0 → 1 */
+  --f: 0;   /* niveau de l'encre à la sortie, plein écran */
+  --fl: 0;  /* le même niveau, ramené à la boîte de la signature */
   position: fixed; inset: 0; z-index: 9800;
-  cursor: pointer; will-change: transform;
+  cursor: pointer; color: var(--cream-txt);
+  contain: layout paint;
+  transition: opacity .6s ease; /* déclarée en amont : le repli .pl--out doit pouvoir filer */
 }
-.preloader__bg { position: absolute; inset: 0; background: var(--night); }
 
-/* Centre : le logo flotte doucement, cerné d'un anneau elliptique
-   parcouru en continu par un satellite jaune */
-.preloader__stage {
-  position: absolute; inset: 0; z-index: 2;
-  display: flex; align-items: center; justify-content: center;
+/* — Fond : nuit + halo jaune vivant + trame d'atelier + vignettage — */
+.pl__bg { position: absolute; inset: 0; z-index: 0; background: var(--night); overflow: hidden; }
+.pl__halo {
+  position: absolute; left: 50%; top: 50%;
+  width: 130vmax; height: 130vmax; margin: -65vmax 0 0 -65vmax;
+  background: radial-gradient(circle at center,
+    rgba(255, 191, 0, .20), rgba(255, 191, 0, .06) 32%, transparent 60%);
+  animation: plHalo 12s ease-in-out infinite;
+  will-change: transform;
 }
-.preloader__mark { position: relative; }
-.preloader__logo {
-  display: block; position: relative; z-index: 1;
-  width: clamp(240px, 34vw, 520px); height: auto;
-  will-change: transform, opacity;
+@keyframes plHalo {
+  0%, 100% { transform: translate(-6%, 4%) scale(1); opacity: .8; }
+  50%      { transform: translate(7%, -5%) scale(1.16); opacity: 1; }
 }
-/* L'ellipse = un cercle aplati (scaleY) : le satellite suit exactement
-   la même trajectoire que l'anneau, sans MotionPath */
-.preloader__orbit {
-  position: absolute; z-index: 0; left: 50%; top: 50%;
-  width: calc(100% + clamp(110px, 16vw, 250px)); aspect-ratio: 1;
-  transform: translate(-50%, -50%) scaleY(.56);
-  pointer-events: none;
+.pl__grid {
+  position: absolute; inset: -2px;
+  background-image:
+    linear-gradient(to right, rgba(245, 243, 239, .055) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(245, 243, 239, .055) 1px, transparent 1px);
+  background-size: clamp(58px, 7vw, 98px) clamp(58px, 7vw, 98px);
+  -webkit-mask-image: radial-gradient(ellipse at center, #000 10%, transparent 72%);
+          mask-image: radial-gradient(ellipse at center, #000 10%, transparent 72%);
 }
-.preloader__orbit::before {
-  content: ''; position: absolute; inset: 0; border-radius: 50%;
-  border: 1px solid rgba(245, 243, 239, .15);
-}
-.preloader__orbit-spin {
+.pl__vignette {
   position: absolute; inset: 0;
-  animation: spin 3.4s linear infinite;
-}
-.preloader__sat {
-  position: absolute; top: 0; left: 50%;
-  width: 11px; height: 11px; margin: -5.5px 0 0 -5.5px;
-  border-radius: 50%; background: var(--yellow);
-  box-shadow: 0 0 22px rgba(255, 191, 0, .8);
-  transform: scaleY(1.7857); /* contre-aplati : le point reste rond */
+  background: radial-gradient(ellipse at center, transparent 38%, rgba(10, 10, 10, .78) 100%);
 }
 
-/* Pied : fineline de progression + pourcentage */
-.preloader__foot {
-  position: absolute; left: var(--pad); right: var(--pad);
-  bottom: calc(var(--pad) * .9); z-index: 3;
-  display: flex; align-items: center; gap: clamp(.9rem, 2.5vw, 1.4rem);
+/* — Bandeau typographique en filigrane, derrière la signature — */
+.pl__band {
+  position: absolute; z-index: 1; left: 0; right: 0; top: 50%;
+  transform: translateY(-52%);
+  overflow: hidden; pointer-events: none; opacity: .055;
+  will-change: transform;
 }
-.preloader__hairline {
-  flex: 1; height: 1px; position: relative;
-  background: rgba(245, 243, 239, .14);
+.pl__band-track { display: flex; width: max-content; animation: plBand 42s linear infinite; }
+.pl__band-group {
+  font-family: var(--font-display); font-size: clamp(6rem, 17vw, 17rem);
+  line-height: .84; white-space: nowrap; padding-right: .3em;
+  color: transparent; -webkit-text-stroke: 1px var(--cream-txt);
 }
-.preloader__hairline-fill {
-  position: absolute; inset: 0; background: var(--yellow);
-  transform: scaleX(0); transform-origin: left center;
+.pl__band-group i { font-style: normal; }
+@keyframes plBand { to { transform: translateX(-50%); } }
+
+/* — Encre de sortie : cinq colonnes qui montent puis emportent tout — */
+.pl__flood { position: absolute; inset: 0; z-index: 2; display: flex; pointer-events: none; }
+.pl__flood-col {
+  flex: 1 1 20%; background: var(--yellow);
+  box-shadow: 0 0 0 1.5px var(--yellow);
+  transform: scaleY(var(--f)); transform-origin: bottom center;
+  will-change: transform;
 }
-.preloader__pct {
-  font-family: var(--font-mono); font-size: .62rem; letter-spacing: .18em;
-  color: var(--yellow); min-width: 3.4em; text-align: right;
+
+/* — Scène centrale — */
+.pl__stage {
+  position: absolute; inset: 0; z-index: 3;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: clamp(1.3rem, 3.2vw, 2.4rem);
+  padding-inline: var(--pad);
+  will-change: transform;
 }
+.pl__eyebrow {
+  display: flex; align-items: center; gap: .75em;
+  font-family: var(--font-mono); font-size: clamp(.5rem, .68vw, .6rem);
+  letter-spacing: .34em; text-transform: uppercase; color: var(--yellow);
+}
+.pl__star { display: inline-block; font-style: normal; animation: spin 7s linear infinite; }
+
+/* La signature : trois calques masqués par le PNG du logo.
+   fantôme (creux) · encre (jaune, découpée par --p) · empreinte (noire, à l'inversion) */
+.pl__sign { position: relative; width: min(80vw, 660px); aspect-ratio: 1594 / 316; }
+.pl__sign-layer {
+  position: absolute; inset: 0;
+  -webkit-mask: url("../medias/nous-script-blanc.png") center / contain no-repeat;
+          mask: url("../medias/nous-script-blanc.png") center / contain no-repeat;
+}
+.pl__sign-ghost {
+  background: rgba(245, 243, 239, .11);
+  clip-path: inset(0 0 calc(var(--fl) * 100%) 0);
+}
+.pl__sign-ink {
+  background: linear-gradient(96deg,
+    var(--yellow-dark) 0%, var(--yellow) 36%, var(--yellow-bright) 72%, #FFE9A8 100%);
+  filter: drop-shadow(0 0 34px rgba(255, 191, 0, .45));
+  clip-path: inset(0 calc(100% - var(--p) * 100%) calc(var(--fl) * 100%) 0);
+}
+/* L'empreinte noire n'existe que sous le niveau d'encre : la
+   signature se retourne exactement là où le jaune est passé. */
+.pl__sign-print {
+  background: var(--night);
+  clip-path: inset(calc(100% - var(--fl) * 100%) calc(100% - var(--p) * 100%) 0 0);
+}
+
+/* La plume : trait de lumière posé sur le bord exact de l'encre */
+.pl__nib {
+  position: absolute; top: -26%; bottom: -26%;
+  left: calc(var(--p) * 100%); width: 1px; margin-left: -.5px;
+  background: linear-gradient(to bottom,
+    transparent, rgba(255, 204, 51, .85) 20%, #FFF6D0 50%, rgba(255, 204, 51, .85) 80%, transparent);
+  box-shadow: 0 0 26px 3px rgba(255, 191, 0, .5);
+  opacity: 0;
+}
+.pl__nib::after {
+  content: ''; position: absolute; left: 50%; top: 50%;
+  width: 9px; height: 9px; margin: -4.5px 0 0 -4.5px; border-radius: 50%;
+  background: #FFF6D0; box-shadow: 0 0 20px 7px rgba(255, 191, 0, .6);
+}
+
+/* La baseline s'allume lettre à lettre, au rythme de --p */
+.pl__tagline {
+  display: flex; flex-wrap: wrap; justify-content: center;
+  font-family: var(--font-display);
+  font-size: clamp(.9rem, 2.1vw, 1.55rem);
+  letter-spacing: clamp(.2em, .62vw, .38em);
+  text-indent: clamp(.2em, .62vw, .38em);
+  color: var(--cream-txt);
+}
+.pl__tagline span { opacity: .12; transition: opacity .55s var(--ease-out); }
+.pl__tagline span.is-lit { opacity: 1; }
+.pl__tagline span.is-space { width: .42em; }
+
+/* — En-tête : méta d'atelier + sortie rapide — */
+.pl__head {
+  position: absolute; z-index: 5;
+  top: calc(var(--pad) * .75 + env(safe-area-inset-top, 0px));
+  left: calc(var(--pad) + env(safe-area-inset-left, 0px));
+  right: calc(var(--pad) + env(safe-area-inset-right, 0px));
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+}
+.pl__meta {
+  font-family: var(--font-mono); font-size: clamp(.48rem, .66vw, .58rem);
+  letter-spacing: .24em; text-transform: uppercase; color: rgba(245, 243, 239, .4);
+}
+.pl__meta i { color: var(--yellow); font-style: normal; }
+.pl__skip {
+  display: inline-flex; align-items: center; gap: .8em;
+  padding: .5rem .85rem; border-radius: 100px;
+  border: 1px solid rgba(245, 243, 239, .3);
+  font-family: var(--font-mono); font-size: clamp(.5rem, .68vw, .6rem);
+  letter-spacing: .2em; text-transform: uppercase; color: rgba(245, 243, 239, .78);
+  opacity: 0; /* révélé par le JS après ~1,2 s */
+  transition: color .35s, background-color .35s, border-color .35s;
+}
+.pl__skip:hover, .pl__skip:focus-visible {
+  color: var(--night); background: var(--yellow); border-color: var(--yellow);
+}
+.pl__skip:focus-visible { outline: 2px solid var(--yellow); outline-offset: 3px; }
+.pl__skip-key {
+  border: 1px solid currentColor; border-radius: 3px;
+  padding: 0 .4em; font-size: .88em; opacity: .75;
+}
+
+/* — Pied : statut annoncé + compteur monumental — */
+.pl__foot {
+  position: absolute; z-index: 5;
+  left: calc(var(--pad) + env(safe-area-inset-left, 0px));
+  right: calc(var(--pad) + env(safe-area-inset-right, 0px));
+  bottom: calc(var(--pad) * .8 + env(safe-area-inset-bottom, 0px));
+  display: flex; align-items: flex-end; justify-content: space-between; gap: 1.2rem;
+}
+.pl__status {
+  display: flex; align-items: center; gap: .8em; padding-bottom: .5rem;
+  font-family: var(--font-mono); font-size: clamp(.54rem, .74vw, .64rem);
+  letter-spacing: .2em; text-transform: uppercase; color: rgba(245, 243, 239, .74);
+}
+.pl__status .pl__star { color: var(--yellow); animation-duration: 5s; }
+.pl__count {
+  display: flex; align-items: baseline; gap: .1em;
+  font-family: var(--font-display); line-height: .74;
+  font-size: clamp(3.6rem, 12vw, 9rem);
+  font-variant-numeric: tabular-nums;
+}
+.pl__count > span { display: inline-block; min-width: 1.9ch; text-align: right; }
+.pl__count i { font-style: normal; font-size: .24em; color: var(--yellow); letter-spacing: .06em; }
+
+/* — Jauge pleine largeur : les repères apparaissent au passage de l'encre — */
+.pl__gauge {
+  position: absolute; z-index: 5; left: 0; right: 0;
+  bottom: env(safe-area-inset-bottom, 0px);
+  height: 3px; background: rgba(245, 243, 239, .1);
+}
+.pl__gauge-fill {
+  position: absolute; inset: 0;
+  background: linear-gradient(90deg, var(--yellow-dark), var(--yellow-bright));
+  box-shadow: 0 0 18px rgba(255, 191, 0, .6);
+  transform: scaleX(var(--p)); transform-origin: left center;
+}
+.pl__gauge-tick { position: absolute; top: 0; bottom: 0; width: 1px; background: rgba(10, 10, 10, .55); }
+
+/* Repli sans GSAP / mouvement réduit : sortie en fondu simple */
+.pl--out { opacity: 0; pointer-events: none; }
 
 @media (max-width: 768px) {
-  .preloader__logo { width: clamp(200px, 58vw, 360px); }
-  .preloader__orbit { width: calc(100% + clamp(84px, 22vw, 140px)); }
+  .pl__sign { width: min(86vw, 420px); }
+  .pl__tagline { font-size: clamp(.78rem, 3vw, 1.1rem); letter-spacing: .26em; text-indent: .26em; }
+  .pl__foot { align-items: flex-end; }
+  .pl__count { font-size: clamp(3rem, 17vw, 5.4rem); }
+  .pl__skip-key { display: none; }
+}
+@media (max-width: 480px) {
+  .pl__status { font-size: .5rem; letter-spacing: .14em; gap: .5em; }
+  .pl__meta { max-width: 52vw; line-height: 1.5; }
 }
 
 /* ---------- NAVIGATION ---------- */
@@ -1062,7 +1214,8 @@ img, canvas, svg { display: block; max-width: 100%; }
 
 /* ---------- REDUCED MOTION ---------- */
 @media (prefers-reduced-motion: reduce) {
-  .grain, .marquee__track, .values-track, .preloader__orbit-spin { animation: none !important; }
+  .grain, .marquee__track, .values-track,
+  .pl__halo, .pl__band-track, .pl__star { animation: none !important; }
   .hero__line-inner { transform: none; }
   .manifesto__text .w { opacity: 1; transform: none; filter: none; }
   .hero__video { transform: none; }
