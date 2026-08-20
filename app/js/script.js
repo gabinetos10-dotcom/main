@@ -97,7 +97,7 @@
     var statusEl = document.getElementById('plStatus');
     var gaugeEl = document.getElementById('plGauge');
     var skipBtn = document.getElementById('plSkip');
-    var signEl = preloader.querySelector('.pl__sign');
+    var signEl = preloader.querySelector('.pl__logo');
     var onMove = null;
     var inTl = null;
 
@@ -270,8 +270,8 @@
         }, .12)
         .set('.pl__bg', { opacity: 0 }, .76)
         // 4. Battement : la marque « signe » la page
-        .to('.pl__sign', { scale: 1.04, duration: .16, ease: 'power2.out' }, .76)
-        .to('.pl__sign', { scale: 1, duration: .24, ease: 'power2.inOut' }, .92)
+        .to('.pl__logo', { scale: 1.04, duration: .16, ease: 'power2.out' }, .76)
+        .to('.pl__logo', { scale: 1, duration: .24, ease: 'power2.inOut' }, .92)
         // 5. Le rideau jaune se soulève ; le hero démarre derrière
         .to('.pl__flood-col', { yPercent: -101, duration: .82, ease: 'expo.inOut', stagger: .05 }, 1.06)
         .to('.pl__stage', { yPercent: -101, duration: .82, ease: 'expo.inOut' }, 1.14)
@@ -321,12 +321,12 @@
     /* ---- Entrée en scène ---- */
     if (hasGsap && !REDUCED) {
       gsap.set('.pl__eyebrow', { opacity: 0, y: 10 });
-      gsap.set('.pl__sign', { opacity: 0, scale: .965 });
+      gsap.set('.pl__logo', { opacity: 0, scale: .965 });
       gsap.set(['.pl__meter', '.pl__status'], { opacity: 0, y: 10 });
 
       inTl = gsap.timeline({ defaults: { ease: 'expo.out' } })
         .to('.pl__eyebrow', { opacity: 1, y: 0, duration: .7 }, 0)
-        .to('.pl__sign', { opacity: 1, scale: 1, duration: 1.1 }, .12)
+        .to('.pl__logo', { opacity: 1, scale: 1, duration: 1.1 }, .12)
         .to('.pl__nib', { opacity: 1, duration: .5, ease: 'power2.out' }, .38)
         .to(['.pl__meter', '.pl__status'],
           { opacity: 1, y: 0, duration: .8, stagger: .08 }, .34)
@@ -353,54 +353,6 @@
 
     startLoop();
   }());
-
-  /* ============================================================
-     4. CURSEUR PERSONNALISÉ (dot + ring, label optionnel)
-     ============================================================ */
-  (function initCursor() {
-    if (!FINE_POINTER || REDUCED) { return; }
-    var dot = document.getElementById('cursorDot');
-    var ring = document.getElementById('cursorRing');
-    var label = document.getElementById('cursorLabel');
-    if (!dot || !ring) { return; }
-
-    var mx = -100, my = -100, rx = -100, ry = -100;
-    window.addEventListener('mousemove', function (e) {
-      mx = e.clientX; my = e.clientY;
-      dot.style.transform = 'translate(' + (mx - 4) + 'px,' + (my - 4) + 'px)';
-    }, { passive: true });
-
-    (function follow() {
-      requestAnimationFrame(follow);
-      rx += (mx - rx) * 0.16;
-      ry += (my - ry) * 0.16;
-      ring.style.transform = 'translate(' + rx + 'px,' + ry + 'px) translate(-50%,-50%)';
-    })();
-
-    document.querySelectorAll('[data-cursor]').forEach(function (el) {
-      el.addEventListener('mouseenter', function () {
-        var mode = el.getAttribute('data-cursor');
-        if (mode && mode !== 'hover') {
-          ring.classList.add('is-label');
-          label.textContent = mode;
-        } else {
-          ring.classList.add('is-hover');
-        }
-      });
-      el.addEventListener('mouseleave', function () {
-        ring.classList.remove('is-hover');
-        ring.classList.remove('is-label');
-        label.textContent = '';
-      });
-    });
-
-    document.addEventListener('mouseleave', function () {
-      dot.classList.add('is-hidden'); ring.classList.add('is-hidden');
-    });
-    document.addEventListener('mouseenter', function () {
-      dot.classList.remove('is-hidden'); ring.classList.remove('is-hidden');
-    });
-  })();
 
   /* ============================================================
      5. REVEALS AU SCROLL (GSAP ScrollTrigger)
@@ -970,44 +922,7 @@
   }());
 
   /* ============================================================
-     19. LE BANDEAU RÉPOND AU SCROLL
-     Le marquee accélère avec la molette et repart dans l'autre
-     sens quand on remonte : la page entière semble entraînée.
-     ============================================================ */
-  (function initMarqueeVelocity() {
-    if (!hasGsap || REDUCED) { return; }
-    var tracks = document.querySelectorAll('.marquee__track, .values-track');
-    if (!tracks.length) { return; }
-
-    var last = window.scrollY || 0, vel = 0, raf = 0;
-
-    function apply() {
-      raf = 0;
-      var boost = Math.min(Math.abs(vel) / 26, 5.5);
-      var dir = vel > 0 ? 'normal' : 'reverse';
-      tracks.forEach(function (t) {
-        t.style.animationPlayState = 'running';
-        t.style.animationDirection = dir;
-        t.style.animationDuration = (t.dataset.base || 24) / (1 + boost) + 's';
-      });
-    }
-
-    tracks.forEach(function (t) {
-      t.dataset.base = parseFloat(getComputedStyle(t).animationDuration) || 24;
-    });
-
-    function onScroll() {
-      var y = window.scrollY || 0;
-      vel = vel * 0.72 + (y - last) * 0.28;
-      last = y;
-      if (!raf) { raf = requestAnimationFrame(apply); }
-    }
-    window.addEventListener('scroll', onScroll, { passive: true });
-    if (lenis) { lenis.on('scroll', onScroll); }
-  }());
-
-  /* ============================================================
-     20. MOBILE — NE PAS FAIRE PAYER LA VIDÉO À TOUT LE MONDE
+     19. MOBILE — NE PAS FAIRE PAYER LA VIDÉO À TOUT LE MONDE
      4 Mo de vidéo décorative sur un forfait limité, c'est non :
      en mode économie de données ou sur réseau lent, on garde le
      poster et on n'ouvre jamais le flux.
@@ -1487,6 +1402,8 @@ window.NOUS_ARCADE = window.NOUS_ARCADE || { active: 'tri', on: {} };
 
   var LW = 920, LH = 580, mode = '';
   var LANES = 3, ROAD_PAD = 92;
+  // Taille des obstacles : ils doivent se lire de loin, en pleine course.
+  var BH = 104, BGAP = 14, BFONT = 19, TOKEN_R = 34, TOKEN_FONT = 26;
   var scale = 1, dpr = 1;
   var running = false, over = false, inView = true, rafId = null, lastT = 0;
   var car = { x: 0, w: 62, h: 104, tilt: 0, target: 0 };
@@ -1500,15 +1417,18 @@ window.NOUS_ARCADE = window.NOUS_ARCADE || { active: 'tri', on: {} };
     var w = (roadRight() - roadLeft()) / LANES;
     return roadLeft() + w * (i + 0.5);
   }
+  function blockW() { return (roadRight() - roadLeft()) / LANES - BGAP; }
 
   function setMode(m) {
     mode = m;
     if (m === 'portrait') {
-      LW = 560; LH = 800; ROAD_PAD = 46;
-      car.w = 74; car.h = 124;
+      LW = 560; LH = 800; ROAD_PAD = 40;
+      car.w = 76; car.h = 128;
+      BH = 118; BGAP = 12; BFONT = 21; TOKEN_R = 38; TOKEN_FONT = 30;
     } else {
       LW = 920; LH = 580; ROAD_PAD = 92;
       car.w = 62; car.h = 104;
+      BH = 104; BGAP = 14; BFONT = 19; TOKEN_R = 34; TOKEN_FONT = 26;
     }
     car.x = LW / 2;
     car.target = car.x;
@@ -1566,12 +1486,12 @@ window.NOUS_ARCADE = window.NOUS_ARCADE || { active: 'tri', on: {} };
     for (var i = 0; i < LANES; i++) {
       if (i === free) {
         if (Math.random() < 0.45) {
-          items.push({ lane: i, y: -70, good: true, label: pick(GOOD), hit: false });
+          items.push({ lane: i, y: -TOKEN_R * 2, good: true, label: pick(GOOD), hit: false });
         }
         continue;
       }
       if (Math.random() < 0.72) {
-        items.push({ lane: i, y: -80, good: false, label: pick(BAD), hit: false });
+        items.push({ lane: i, y: -BH - 20, good: false, label: pick(BAD), hit: false });
       }
     }
   }
@@ -1618,7 +1538,8 @@ window.NOUS_ARCADE = window.NOUS_ARCADE || { active: 'tri', on: {} };
     spawnIn -= dt;
     if (spawnIn <= 0) {
       spawn();
-      spawnIn = Math.max(26, 62 - dist / 26);
+      // Les blocs sont hauts : on laisse de quoi voir arriver la vague suivante.
+      spawnIn = Math.max(40, 82 - dist / 26);
     }
 
     var carTop = LH - 150, carBot = LH - 150 + car.h;
@@ -1629,8 +1550,8 @@ window.NOUS_ARCADE = window.NOUS_ARCADE || { active: 'tri', on: {} };
       if (it.hit) { continue; }
 
       var ix = laneX(it.lane);
-      var iw = it.good ? 54 : (roadRight() - roadLeft()) / LANES - 26;
-      var ih = it.good ? 54 : 62;
+      var iw = it.good ? TOKEN_R * 2 : blockW();
+      var ih = it.good ? TOKEN_R * 2 : BH;
       var overlapX = Math.abs(ix - car.x) < (iw + car.w) / 2 - 8;
       var overlapY = it.y + ih > carTop + 12 && it.y < carBot - 12;
       if (!overlapX || !overlapY) { continue; }
@@ -1672,6 +1593,30 @@ window.NOUS_ARCADE = window.NOUS_ARCADE || { active: 'tri', on: {} };
     ctx.closePath();
   }
 
+  // « TENDANCE JETABLE » ne tient pas sur une ligne à cette taille :
+  // on coupe aux espaces plutôt que de rapetisser la typo.
+  var wrapCache = {};
+  function wrapLabel(label, maxW) {
+    var key = label + '|' + Math.round(maxW) + '|' + BFONT;
+    if (wrapCache[key]) { return wrapCache[key]; }
+    var out;
+    if (ctx.measureText(label).width <= maxW) {
+      out = [label];
+    } else {
+      var words = label.split(' ');
+      var line = '', lines = [];
+      for (var i = 0; i < words.length; i++) {
+        var test = line ? line + ' ' + words[i] : words[i];
+        if (line && ctx.measureText(test).width > maxW) { lines.push(line); line = words[i]; }
+        else { line = test; }
+      }
+      if (line) { lines.push(line); }
+      out = lines.slice(0, 2);
+    }
+    wrapCache[key] = out;
+    return out;
+  }
+
   function render() {
     var sx = shake > 0 ? (Math.random() - 0.5) * shake * 0.6 : 0;
     var sy = shake > 0 ? (Math.random() - 0.5) * shake * 0.6 : 0;
@@ -1704,33 +1649,49 @@ window.NOUS_ARCADE = window.NOUS_ARCADE || { active: 'tri', on: {} };
     items.forEach(function (it) {
       if (it.hit) { return; }
       var ix = laneX(it.lane);
-      if (it.good) {
-        ctx.beginPath();
-        ctx.arc(ix, it.y + 27, 24, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(255,191,0,0.16)';
-        ctx.fill();
-        ctx.strokeStyle = '#FFBF00';
-        ctx.lineWidth = 2;
-        ctx.stroke();
-        ctx.fillStyle = '#FFBF00';
-        ctx.font = '700 20px "Space Mono", monospace';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText('✳', ix, it.y + 28);
-        return;
-      }
-      var w = (roadRight() - roadLeft()) / LANES - 26;
-      roundRect(ix - w / 2, it.y, w, 62, 8);
-      ctx.fillStyle = 'rgba(28,22,16,0.94)';
-      ctx.fill();
-      ctx.strokeStyle = 'rgba(200,120,60,0.65)';
-      ctx.lineWidth = 1.5;
-      ctx.stroke();
-      ctx.fillStyle = 'rgba(245,243,239,0.8)';
-      ctx.font = (it.label.length > 12 ? 10 : 11) + 'px "Space Mono", monospace';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText(it.label, ix, it.y + 31);
+
+      if (it.good) {
+        var cyT = it.y + TOKEN_R;
+        ctx.beginPath();
+        ctx.arc(ix, cyT, TOKEN_R - 3, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255,191,0,0.18)';
+        ctx.fill();
+        ctx.strokeStyle = '#FFBF00';
+        ctx.lineWidth = 2.5;
+        ctx.stroke();
+        ctx.fillStyle = '#FFBF00';
+        ctx.font = '700 ' + TOKEN_FONT + 'px "Space Mono", monospace';
+        ctx.fillText('✳', ix, cyT + 1);
+        return;
+      }
+
+      // Panneau d'obstacle : large, haut, bordé de rouge sourd —
+      // le libellé se lit d'un coup d'œil, en deux lignes s'il le faut.
+      var w = blockW();
+      roundRect(ix - w / 2, it.y, w, BH, 12);
+      ctx.fillStyle = 'rgba(26,20,15,0.96)';
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(214,116,52,0.8)';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      // Bandeau d'alerte en haut du panneau
+      ctx.save();
+      roundRect(ix - w / 2, it.y, w, BH, 12);
+      ctx.clip();
+      ctx.fillStyle = 'rgba(214,116,52,0.28)';
+      ctx.fillRect(ix - w / 2, it.y, w, 6);
+      ctx.restore();
+
+      ctx.fillStyle = 'rgba(245,243,239,0.94)';
+      ctx.font = '700 ' + BFONT + 'px "Space Mono", monospace';
+      var lines = wrapLabel(it.label, w - 22);
+      var lh = BFONT * 1.32;
+      var top = it.y + BH / 2 - (lines.length - 1) * lh / 2 + 3;
+      for (var li = 0; li < lines.length; li++) {
+        ctx.fillText(lines[li], ix, top + li * lh);
+      }
     });
 
     // La voiture NOUS
@@ -1827,9 +1788,11 @@ window.NOUS_ARCADE = window.NOUS_ARCADE || { active: 'tri', on: {} };
 
 /* ============================================================
    25. L'ATELIER · 03 — LE CHOIX
-   « NOUS. » ne bouge pas d'un pixel. « Une autre agence » se
-   dérobe dès que le pointeur l'approche, jusqu'à devenir
-   injoignable. La démonstration EST la blague.
+   « NOUS. » ne bouge pas d'un pixel. « Une autre agence » n'est
+   pas un bouton et porte pointer-events: none : elle ne peut être
+   cliquée par AUCUN moyen — souris, doigt ou clavier. Elle se
+   contente de fuir le pointeur, en laissant sa trace derrière elle.
+   La démonstration EST la blague.
    ============================================================ */
 (function () {
   'use strict';
@@ -1839,12 +1802,15 @@ window.NOUS_ARCADE = window.NOUS_ARCADE || { active: 'tri', on: {} };
   var field = document.getElementById('choiceField');
   var other = document.getElementById('choiceOther');
   var otherLabel = document.getElementById('choiceOtherLabel');
+  var trails = document.getElementById('choiceTrails');
   var nous = document.getElementById('choiceNous');
   var triesEl = document.getElementById('choiceTries');
+  var triesS = document.getElementById('choiceTriesS');
   var hintEl = document.getElementById('choiceHint');
   var winEl = document.getElementById('choiceWin');
   var winText = document.getElementById('choiceWinText');
   var resetBtn = document.getElementById('choiceReset');
+  var REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   var EXCUSES = [
     'Une autre agence',
@@ -1861,7 +1827,7 @@ window.NOUS_ARCADE = window.NOUS_ARCADE || { active: 'tri', on: {} };
   var HINTS = [
     'Approchez le curseur de « une autre agence ».',
     'Elle vous a vu venir.',
-    'Elle prend de la distance.',
+    'Elle prend ses distances.',
     'Toujours pas disponible.',
     'Vous commencez à comprendre.',
     'NOUS., en revanche, n’a pas bougé.',
@@ -1870,102 +1836,260 @@ window.NOUS_ARCADE = window.NOUS_ARCADE || { active: 'tri', on: {} };
   ];
 
   var tries = 0;
-  var pos = { x: 0, y: 120 };
   var lastFlee = 0;
 
-  function place(x, y, s) {
-    pos.x = x; pos.y = y;
+  function place(x, y, scale, rot) {
     other.style.setProperty('--ox', x.toFixed(1) + 'px');
     other.style.setProperty('--oy', y.toFixed(1) + 'px');
-    other.style.setProperty('--os', s.toFixed(3));
+    other.style.setProperty('--os', scale.toFixed(3));
+    other.style.setProperty('--orot', rot.toFixed(1) + 'deg');
   }
 
   function reset() {
     tries = 0;
     triesEl.textContent = '0';
+    if (triesS) { triesS.textContent = ''; }
     otherLabel.textContent = EXCUSES[0];
     hintEl.textContent = HINTS[0];
     other.style.opacity = '1';
-    other.style.borderColor = '';
-    other.disabled = false;
-    place(0, 120, 1);
+    other.style.filter = '';
+    trails.innerHTML = '';
+    place(0, 150, 1, 0);
     winEl.hidden = true;
   }
 
-  // Elle fuit vers le point le plus éloigné du pointeur, en restant
-  // dans l'aire de jeu et sans jamais passer sous « NOUS. ».
+  // Une trace à l'endroit qu'elle vient de quitter : on lit son trajet.
+  function dropTrail() {
+    if (REDUCED) { return; }
+    var fr = field.getBoundingClientRect();
+    var br = other.getBoundingClientRect();
+    var t = document.createElement('span');
+    t.className = 'choice__trail';
+    t.style.width = br.width + 'px';
+    t.style.height = br.height + 'px';
+    t.style.left = (br.left - fr.left + br.width / 2) + 'px';
+    t.style.top = (br.top - fr.top + br.height / 2) + 'px';
+    trails.appendChild(t);
+    setTimeout(function () { if (t.parentNode) { t.parentNode.removeChild(t); } }, 1200);
+  }
+
+  // Elle vise le point le plus éloigné du pointeur, en restant dans
+  // l'aire de jeu et sans jamais passer sous « NOUS. ».
   function flee(px, py) {
     var now = performance.now();
     if (now - lastFlee < 130) { return; }
     lastFlee = now;
+    dropTrail();
 
     var fr = field.getBoundingClientRect();
     var br = other.getBoundingClientRect();
+    var nr = nous.getBoundingClientRect();
     var cx = fr.width / 2, cy = fr.height / 2;
-    var halfW = br.width / 2 + 10, halfH = br.height / 2 + 10;
-    var maxX = Math.max(0, cx - halfW);
-    var maxY = Math.max(0, cy - halfH);
+    var hw = br.width / 2, hh = br.height / 2;
+    var maxX = Math.max(0, cx - hw - 10);
+    var maxY = Math.max(0, cy - hh - 10);
 
     var rx = px - fr.left - cx;   // pointeur, en repère centré
     var ry = py - fr.top - cy;
 
+    // La carte de NOUS., en repère centré, avec une marge de garde :
+    // l'autre agence ne doit JAMAIS venir se poser dessus.
+    var nx1 = nr.left - fr.left - cx - 14, nx2 = nr.right - fr.left - cx + 14;
+    var ny1 = nr.top - fr.top - cy - 14, ny2 = nr.bottom - fr.top - cy + 14;
+    function overlapsNous(tx, ty) {
+      return tx + hw > nx1 && tx - hw < nx2 && ty + hh > ny1 && ty - hh < ny2;
+    }
+
     var best = null, bestD = -1;
-    for (var i = 0; i < 14; i++) {
+    for (var i = 0; i < 24; i++) {
       var a = Math.random() * Math.PI * 2;
-      var tx = Math.cos(a) * maxX * (0.55 + Math.random() * 0.45);
-      var ty = Math.sin(a) * maxY * (0.55 + Math.random() * 0.45);
+      var tx = Math.cos(a) * maxX * (0.6 + Math.random() * 0.4);
+      var ty = Math.sin(a) * maxY * (0.6 + Math.random() * 0.4);
+      if (overlapsNous(tx, ty)) { continue; }
       var d = Math.hypot(tx - rx, ty - ry);
-      // On pénalise le centre : c'est la place de NOUS.
-      if (Math.abs(tx) < maxX * 0.34 && Math.abs(ty) < maxY * 0.34) { d *= 0.25; }
       if (d > bestD) { bestD = d; best = { x: tx, y: ty }; }
+    }
+    if (!best) {
+      // Aire trop étroite pour un tirage libre : on se rabat sur le
+      // coin le plus éloigné du pointeur, qui reste hors de NOUS.
+      var corners = [
+        { x: -maxX, y: -maxY }, { x: maxX, y: -maxY },
+        { x: -maxX, y: maxY }, { x: maxX, y: maxY }
+      ];
+      for (var c = 0; c < corners.length; c++) {
+        var cd = Math.hypot(corners[c].x - rx, corners[c].y - ry);
+        if (!overlapsNous(corners[c].x, corners[c].y) && cd > bestD) {
+          bestD = cd; best = corners[c];
+        }
+      }
+      if (!best) { best = { x: 0, y: maxY }; }
     }
 
     tries++;
     triesEl.textContent = tries;
+    if (triesS) { triesS.textContent = tries > 1 ? 's' : ''; }
     otherLabel.textContent = EXCUSES[Math.min(tries, EXCUSES.length - 1)];
     hintEl.textContent = HINTS[Math.min(tries, HINTS.length - 1)];
-    place(best.x, best.y, Math.max(0.62, 1 - tries * 0.045));
-    other.style.opacity = String(Math.max(0.3, 1 - tries * 0.06));
-    if (tries >= 9) {
-      other.disabled = true;
-      other.style.borderColor = 'rgba(245,243,239,.16)';
-      hintEl.textContent = 'Injoignable. Il reste NOUS.';
-    }
+    place(best.x, best.y, Math.max(0.6, 1 - tries * 0.045),
+      (Math.random() - 0.5) * Math.min(tries * 3, 14));
+    // Elle s'efface, mais reste lisible : la blague ne marche que
+    // si on lit encore l'excuse qu'elle affiche en s'enfuyant.
+    other.style.opacity = String(Math.max(0.46, 1 - tries * 0.05));
+    other.style.filter = 'blur(' + Math.min(tries * 0.18, 1.3).toFixed(2) + 'px)';
+    if (tries >= 9) { hintEl.textContent = 'Injoignable. Il reste NOUS.'; }
   }
 
   function onPointer(e) {
-    if (!winEl.hidden || other.disabled) { return; }
+    if (!winEl.hidden) { return; }
     var br = other.getBoundingClientRect();
     var dx = e.clientX - (br.left + br.width / 2);
     var dy = e.clientY - (br.top + br.height / 2);
-    // Le rayon de fuite est plus large au doigt : on n'a pas de survol.
-    var reach = e.pointerType === 'touch' ? 118 : 96;
+    // Le rayon de fuite est plus large au doigt : il n'y a pas de survol.
+    var reach = e.pointerType === 'touch' ? 130 : 108;
     if (Math.hypot(dx, dy) < reach) { flee(e.clientX, e.clientY); }
   }
 
   field.addEventListener('pointermove', onPointer);
   field.addEventListener('pointerdown', onPointer);
-  // Au doigt, la fuite doit précéder le clic : on intercepte à la source.
-  other.addEventListener('pointerdown', function (e) {
-    e.preventDefault();
-    flee(e.clientX, e.clientY);
-  });
-  // Au clavier, elle reste « cliquable » — mais elle décline poliment.
-  other.addEventListener('click', function (e) {
-    e.preventDefault();
-    hintEl.textContent = 'Elle a décliné. Comme d’habitude.';
-    var fr = field.getBoundingClientRect();
-    flee(fr.left + fr.width / 2, fr.top + fr.height / 2);
-  });
 
   nous.addEventListener('click', function () {
     winText.textContent = tries === 0
       ? 'Vous n’avez même pas essayé l’autre. Bon réflexe.'
-      : tries + ' tentative' + (tries > 1 ? 's' : '') + ' de l’autre côté. Ici, personne ne se dérobe.';
+      : tries + ' tentative' + (tries > 1 ? 's' : '') + ' de l’autre côté, zéro réponse. Ici, personne ne se dérobe.';
     winEl.hidden = false;
   });
   resetBtn.addEventListener('click', reset);
 
+  window.NOUS_ARCADE = window.NOUS_ARCADE || { active: 'tri', on: {} };
   window.NOUS_ARCADE.on.choix = { enter: reset };
   reset();
+}());
+
+/* ============================================================
+   26. LE CLIC A UNE SIGNATURE
+   Chaque appui sur une cible laisse une onde jaune et quelques
+   astérisques : le site répond au doigt et à l'œil, dans sa
+   propre langue graphique.
+   ============================================================ */
+(function () {
+  'use strict';
+
+  var REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (REDUCED) { return; }
+
+  var layer = document.createElement('div');
+  layer.className = 'fx';
+  layer.setAttribute('aria-hidden', 'true');
+  document.body.appendChild(layer);
+
+  function spark(x, y, opts) {
+    opts = opts || {};
+    var ring = document.createElement('span');
+    ring.className = 'fx__ring';
+    ring.style.left = x + 'px';
+    ring.style.top = y + 'px';
+    if (opts.dark) { ring.classList.add('fx__ring--dark'); }
+    layer.appendChild(ring);
+    setTimeout(function () { ring.remove(); }, 700);
+
+    var n = opts.count || 7;
+    for (var i = 0; i < n; i++) {
+      var star = document.createElement('span');
+      star.className = 'fx__star';
+      star.textContent = '✳';
+      var a = (Math.PI * 2 * i) / n + Math.random() * 0.6;
+      var d = (opts.spread || 58) * (0.6 + Math.random() * 0.7);
+      star.style.left = x + 'px';
+      star.style.top = y + 'px';
+      star.style.setProperty('--dx', (Math.cos(a) * d).toFixed(1) + 'px');
+      star.style.setProperty('--dy', (Math.sin(a) * d - 14).toFixed(1) + 'px');
+      star.style.setProperty('--rot', ((Math.random() - 0.5) * 220).toFixed(0) + 'deg');
+      star.style.fontSize = (14 + Math.random() * 12).toFixed(0) + 'px';
+      star.style.animationDelay = (Math.random() * 60).toFixed(0) + 'ms';
+      if (opts.dark) { star.classList.add('fx__star--dark'); }
+      layer.appendChild(star);
+      setTimeout(function (el) { return function () { el.remove(); }; }(star), 900);
+    }
+  }
+  window.NOUS_SPARK = spark;
+
+  // Seules les vraies cibles répondent : cliquer dans le vide ne fait rien.
+  var TARGETS = 'a[href], button, .arcade__tab, .service, .about__card, [data-legal], .contact-tab';
+  document.addEventListener('pointerdown', function (e) {
+    if (e.button !== undefined && e.button !== 0) { return; }
+    var t = e.target.closest ? e.target.closest(TARGETS) : null;
+    if (!t || t.disabled) { return; }
+    // Sur fond clair, l'onde jaune vif se voit mal : on l'assombrit.
+    var light = !!t.closest('.game, .about, .stats, .manifesto, .footer, .legal__panel');
+    spark(e.clientX, e.clientY, { dark: light });
+  }, { passive: true });
+}());
+
+/* ============================================================
+   27. EASTER EGG — « L'HISTOIRE C'EST NOUS »
+   Cinq clics sur le logo de la barre de navigation (ou le code
+   ↑↑↓↓←→←→) déclenchent une pluie d'encre : le site se signe
+   lui-même, puis reprend son cours.
+   ============================================================ */
+(function () {
+  'use strict';
+
+  var REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var logo = document.querySelector('.nav__logo');
+  var busy = false;
+
+  function rain() {
+    if (busy) { return; }
+    busy = true;
+
+    var el = document.createElement('div');
+    el.className = 'egg';
+    el.setAttribute('aria-hidden', 'true');
+    el.innerHTML =
+      '<div class="egg__rain"></div>' +
+      '<p class="egg__word"><span>L’HISTOIRE</span><span>C’EST</span><span>NOUS<i>.</i></span></p>';
+    document.body.appendChild(el);
+
+    if (!REDUCED) {
+      var rainEl = el.querySelector('.egg__rain');
+      for (var i = 0; i < 34; i++) {
+        var d = document.createElement('span');
+        d.className = 'egg__drop';
+        d.textContent = '✳';
+        d.style.left = (Math.random() * 100).toFixed(2) + '%';
+        d.style.fontSize = (12 + Math.random() * 26).toFixed(0) + 'px';
+        d.style.animationDelay = (Math.random() * 700).toFixed(0) + 'ms';
+        d.style.animationDuration = (1500 + Math.random() * 1100).toFixed(0) + 'ms';
+        d.style.opacity = (0.35 + Math.random() * 0.65).toFixed(2);
+        rainEl.appendChild(d);
+      }
+    }
+
+    // Le message vit deux secondes et demie, puis le site reprend.
+    setTimeout(function () { el.classList.add('is-out'); }, 2100);
+    setTimeout(function () { el.remove(); busy = false; }, 2900);
+  }
+  window.NOUS_EGG = rain;
+
+  if (logo) {
+    var hits = 0, timer = null;
+    logo.addEventListener('click', function (e) {
+      hits++;
+      clearTimeout(timer);
+      timer = setTimeout(function () { hits = 0; }, 1200);
+      if (hits >= 5) {
+        e.preventDefault();
+        hits = 0;
+        rain();
+      }
+    });
+  }
+
+  // Le code, pour ceux qui cherchent ailleurs.
+  var CODE = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight'];
+  var step = 0;
+  window.addEventListener('keydown', function (e) {
+    step = (e.key === CODE[step]) ? step + 1 : (e.key === CODE[0] ? 1 : 0);
+    if (step === CODE.length) { step = 0; rain(); }
+  });
 }());

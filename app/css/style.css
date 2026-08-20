@@ -91,43 +91,6 @@ img, canvas, svg { display: block; max-width: 100%; }
   80% { transform: translate(4%, 4%); }
 }
 
-/* ---------- CURSEUR PERSONNALISÉ ---------- */
-.cursor-dot, .cursor-ring { display: none; }
-@media (hover: hover) and (pointer: fine) {
-  .cursor-dot {
-    display: block; position: fixed; z-index: 9901; top: 0; left: 0;
-    width: 8px; height: 8px; border-radius: 50%;
-    background: var(--yellow); pointer-events: none;
-    transform: translate(-50%, -50%);
-    transition: opacity .3s;
-  }
-  .cursor-ring {
-    display: flex; align-items: center; justify-content: center;
-    position: fixed; z-index: 9900; top: 0; left: 0;
-    width: 42px; height: 42px; border-radius: 50%;
-    border: 1.5px solid var(--yellow);
-    pointer-events: none;
-    transform: translate(-50%, -50%);
-    transition: width .35s var(--ease-out), height .35s var(--ease-out),
-                background-color .35s, border-color .35s, opacity .3s;
-  }
-  .cursor-ring__label {
-    font-family: var(--font-mono); font-size: .52rem; letter-spacing: .14em;
-    color: var(--night); opacity: 0; transition: opacity .25s;
-  }
-  .cursor-ring.is-hover {
-    width: 64px; height: 64px;
-    background: rgba(255, 191, 0, .16);
-    border-color: var(--yellow);
-  }
-  .cursor-ring.is-label {
-    width: 84px; height: 84px;
-    background: var(--yellow); border-color: var(--yellow);
-  }
-  .cursor-ring.is-label .cursor-ring__label { opacity: 1; }
-  .cursor-dot.is-hidden, .cursor-ring.is-hidden { opacity: 0; }
-}
-
 /* ---------- PRELOADER — « L'ENCRE » ----------
    Une seule colonne centrée, lue de haut en bas :
    « chargement » → la signature qui se remplit d'encre →
@@ -160,9 +123,18 @@ img, canvas, svg { display: block; max-width: 100%; }
   0%, 100% { transform: translate(-6%, 4%) scale(1); opacity: .8; }
   50%      { transform: translate(7%, -5%) scale(1.16); opacity: 1; }
 }
+/* La lueur derrière le logo s'intensifie avec le chargement.
+   Elle est portée par un calque plein écran : un dégradé posé sur
+   une boîte étroite se ferait trancher net à ses bords. */
+.pl__glow {
+  position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(circle 30vmax at 50% 50%,
+    rgba(255, 191, 0, .24), rgba(255, 191, 0, .05) 40%, rgba(255, 191, 0, 0) 70%);
+  opacity: calc(.12 + var(--p) * .88);
+}
 .pl__vignette {
   position: absolute; inset: 0;
-  background: radial-gradient(ellipse at center, transparent 40%, rgba(10, 10, 10, .8) 100%);
+  background: radial-gradient(ellipse at center, rgba(10, 10, 10, 0) 40%, rgba(10, 10, 10, .8) 100%);
 }
 
 /* — Encre de sortie : cinq colonnes qui montent puis emportent tout — */
@@ -189,28 +161,30 @@ img, canvas, svg { display: block; max-width: 100%; }
 }
 .pl__star { display: inline-block; font-style: normal; animation: spin 7s linear infinite; }
 
-/* La signature : trois calques masqués par le PNG du logo.
-   fantôme (creux) · encre (jaune, découpée par --p) · empreinte (noire, à l'inversion) */
-.pl__sign { position: relative; width: min(78vw, 560px); aspect-ratio: 1594 / 316; }
-.pl__sign-layer {
-  position: absolute; inset: 0;
-  -webkit-mask: url("../medias/nous-script-blanc.png") center / contain no-repeat;
-          mask: url("../medias/nous-script-blanc.png") center / contain no-repeat;
+/* LE LOGO — trois exemplaires de la même image, superposés.
+   Aucun masque CSS : de simples découpes (clip-path) pilotées par
+   --p et --fl. Si le navigateur ne suivait pas, le logo resterait
+   affiché — c'est une vraie <img>, pas un effet. */
+.pl__logo {
+  position: relative; width: min(78vw, 560px); aspect-ratio: 1594 / 316;
 }
-.pl__sign-ghost {
-  background: rgba(245, 243, 239, .13);
+
+.pl__logo-img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%; object-fit: contain;
+}
+/* Le creux : le logo en attente */
+.pl__logo-ghost {
+  opacity: .17;
   clip-path: inset(0 0 calc(var(--fl) * 100%) 0);
 }
-.pl__sign-ink {
-  background: linear-gradient(96deg,
-    var(--yellow-dark) 0%, var(--yellow) 36%, var(--yellow-bright) 72%, #FFE9A8 100%);
-  filter: drop-shadow(0 0 34px rgba(255, 191, 0, .45));
+/* L'encre : elle avance exactement au rythme du chargement */
+.pl__logo-ink {
   clip-path: inset(0 calc(100% - var(--p) * 100%) calc(var(--fl) * 100%) 0);
 }
-/* L'empreinte noire n'existe que sous le niveau d'encre : la
-   signature se retourne exactement là où le jaune est passé. */
-.pl__sign-print {
-  background: var(--night);
+/* L'empreinte noire n'existe que sous le niveau d'encre : le logo
+   se retourne exactement là où le jaune est passé, à la sortie. */
+.pl__logo-print {
   clip-path: inset(calc(100% - var(--fl) * 100%) calc(100% - var(--p) * 100%) 0 0);
 }
 
@@ -285,7 +259,7 @@ img, canvas, svg { display: block; max-width: 100%; }
 .pl--out { opacity: 0; pointer-events: none; }
 
 @media (max-width: 768px) {
-  .pl__sign { width: min(86vw, 420px); }
+  .pl__logo { width: min(86vw, 420px); }
   .pl__meter { width: min(86vw, 400px); }
   .pl__eyebrow { letter-spacing: .3em; }
   .pl__skip-key { display: none; }
@@ -890,88 +864,165 @@ img, canvas, svg { display: block; max-width: 100%; }
 }
 .game__life.is-lost { background: var(--ink-faint); opacity: .35; }
 
-/* ---------- 03 · LE CHOIX ---------- */
+/* ---------- 03 · LE CHOIX ----------
+   Deux réponses, une seule atteignable. « NOUS. » est une vraie
+   cible ; « une autre agence » n'est même pas un bouton et porte
+   pointer-events: none — elle est incliquable par construction,
+   à la souris, au doigt comme au clavier. */
 .choice {
-  position: relative; border-radius: 18px; overflow: hidden;
-  background: var(--night); color: var(--cream-txt);
-  padding: clamp(1.6rem, 4vw, 3rem);
-  box-shadow: 0 30px 80px rgba(10, 10, 10, .28);
+  position: relative; border-radius: 22px; overflow: hidden;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 46%, #1a1408 0%, transparent 70%),
+    var(--night);
+  color: var(--cream-txt);
+  padding: clamp(1.6rem, 4vw, 3.2rem);
+  box-shadow: 0 34px 90px rgba(10, 10, 10, .32);
 }
 .choice::before {
   content: ''; position: absolute; inset: 0; pointer-events: none;
-  background:
-    radial-gradient(circle at 50% 40%, rgba(255, 191, 0, .14), transparent 58%),
-    linear-gradient(rgba(245, 243, 239, .04) 1px, transparent 1px) 0 0 / 100% 44px;
+  background-image:
+    linear-gradient(rgba(245, 243, 239, .045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(245, 243, 239, .045) 1px, transparent 1px);
+  background-size: 52px 52px;
+  -webkit-mask-image: radial-gradient(ellipse at center, #000 8%, transparent 76%);
+          mask-image: radial-gradient(ellipse at center, #000 8%, transparent 76%);
 }
+.choice__head { position: relative; text-align: center; }
+.choice__label {
+  display: inline-flex; align-items: center; gap: .7em;
+  font-family: var(--font-mono); font-size: .58rem;
+  letter-spacing: .34em; text-transform: uppercase; color: var(--yellow);
+  margin-bottom: .9rem;
+}
+.choice__label i { font-style: normal; display: inline-block; animation: spin 8s linear infinite; }
 .choice__question {
-  position: relative; text-align: center;
   font-family: var(--font-display); text-transform: uppercase;
-  font-size: clamp(1.6rem, 4.2vw, 3rem); line-height: 1.05;
-  letter-spacing: .02em;
+  font-size: clamp(1.7rem, 4.6vw, 3.4rem); line-height: 1.02; letter-spacing: .01em;
 }
-/* L'aire de jeu : « autre agence » se déplace en absolu à l'intérieur */
+
+/* L'aire de jeu : la carte fuyante s'y déplace en absolu */
 .choice__field {
-  position: relative; margin: clamp(1.6rem, 4vw, 2.6rem) 0;
-  min-height: clamp(300px, 44vw, 420px);
+  position: relative; margin: clamp(1.8rem, 4vw, 3rem) 0;
+  min-height: clamp(330px, 46vw, 460px);
   display: flex; align-items: center; justify-content: center;
 }
+.choice__trails { position: absolute; inset: 0; pointer-events: none; }
+/* Chaque fuite laisse une trace qui s'efface : on voit le trajet. */
+.choice__trail {
+  position: absolute; left: 50%; top: 50%;
+  border: 1px dashed rgba(255, 191, 0, .5); border-radius: 18px;
+  animation: trailFade 1.15s var(--ease-out) forwards;
+  pointer-events: none;
+}
+@keyframes trailFade {
+  from { opacity: .85; transform: translate(-50%, -50%) scale(1); }
+  to   { opacity: 0;  transform: translate(-50%, -50%) scale(1.35); }
+}
+
+/* — La bonne réponse : massive, chaude, parfaitement immobile — */
 .choice__nous {
   position: relative; z-index: 2;
-  display: flex; flex-direction: column; align-items: center; gap: .5rem;
-  padding: clamp(1.6rem, 4vw, 2.6rem) clamp(2.2rem, 7vw, 5rem);
-  border-radius: 20px; background: var(--yellow); color: var(--night);
-  box-shadow: 0 22px 60px rgba(255, 191, 0, .3);
-  transition: transform .4s var(--ease-out), box-shadow .4s var(--ease-out);
+  display: flex; flex-direction: column; align-items: center; gap: .55rem;
+  padding: clamp(1.7rem, 4vw, 2.8rem) clamp(2.4rem, 7vw, 5.2rem);
+  border-radius: 24px;
+  background: linear-gradient(150deg, var(--yellow-bright), var(--yellow) 46%, var(--yellow-dark));
+  color: var(--night);
+  box-shadow: 0 24px 70px rgba(255, 191, 0, .34), inset 0 1px 0 rgba(255, 255, 255, .35);
+  transition: transform .45s var(--ease-out), box-shadow .45s var(--ease-out);
 }
-.choice__nous:hover { transform: scale(1.03); box-shadow: 0 28px 70px rgba(255, 191, 0, .42); }
-.choice__nous:active { transform: scale(.99); }
-.choice__nous:focus-visible { outline: 3px solid var(--cream-txt); outline-offset: 4px; }
+.choice__nous::after {
+  content: ''; position: absolute; inset: -14px; border-radius: 32px;
+  border: 1px solid rgba(255, 191, 0, .35);
+  animation: nousPulse 3.4s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes nousPulse {
+  0%, 100% { transform: scale(1); opacity: .5; }
+  50%      { transform: scale(1.035); opacity: .9; }
+}
+.choice__nous:hover { transform: translateY(-4px); box-shadow: 0 32px 84px rgba(255, 191, 0, .46); }
+.choice__nous:active { transform: translateY(-1px) scale(.99); }
+.choice__nous:focus-visible { outline: 3px solid var(--cream-txt); outline-offset: 6px; }
+.choice__nous-star {
+  position: absolute; top: .8rem; right: 1.1rem;
+  font-size: 1rem; opacity: .5; animation: spin 9s linear infinite;
+}
 .choice__nous-word {
-  font-family: var(--font-display); line-height: .84;
-  font-size: clamp(3.4rem, 11vw, 7.5rem); letter-spacing: .01em;
+  font-family: var(--font-display); line-height: .82;
+  font-size: clamp(3.6rem, 12vw, 8rem); letter-spacing: .01em;
 }
-.choice__nous-word em { font-style: normal; color: var(--night); }
+.choice__nous-word em { font-style: normal; }
 .choice__nous-sub {
-  font-family: var(--font-mono); font-size: clamp(.55rem, 1.1vw, .66rem);
-  letter-spacing: .18em; text-transform: uppercase; opacity: .72;
+  font-family: var(--font-mono); font-size: clamp(.54rem, 1.05vw, .64rem);
+  letter-spacing: .2em; text-transform: uppercase; opacity: .68;
 }
-/* L'autre agence : elle se dérobe. Transition courte = fuite crédible. */
+.choice__nous-cta {
+  margin-top: .5rem; padding: .42rem 1.1rem; border-radius: 100px;
+  background: var(--night); color: var(--yellow);
+  font-family: var(--font-mono); font-size: .56rem;
+  letter-spacing: .2em; text-transform: uppercase;
+}
+
+/* — L'autre : une carte fantôme, jamais atteignable — */
 .choice__other {
   position: absolute; z-index: 3; left: 50%; top: 50%;
-  padding: .95rem 1.6rem; border-radius: 100px;
-  border: 1px dashed rgba(245, 243, 239, .4);
-  background: rgba(245, 243, 239, .06); color: rgba(245, 243, 239, .7);
-  font-family: var(--font-mono); font-size: clamp(.58rem, 1.1vw, .68rem);
-  letter-spacing: .14em; text-transform: uppercase; white-space: nowrap;
-  transform: translate(-50%, -50%) translate(var(--ox, 0px), var(--oy, 120px)) scale(var(--os, 1));
-  transition: transform .34s cubic-bezier(.22, 1, .28, 1), opacity .34s, border-color .34s;
+  pointer-events: none; /* incliquable, définitivement */
+  display: flex; flex-direction: column; align-items: center; gap: .4rem;
+  padding: 1rem 1.5rem; border-radius: 16px;
+  border: 1px dashed rgba(245, 243, 239, .34);
+  background: rgba(245, 243, 239, .05);
+  backdrop-filter: blur(2px);
+  transform: translate(-50%, -50%) translate(var(--ox, 0px), var(--oy, 150px))
+             rotate(var(--orot, 0deg)) scale(var(--os, 1));
+  transition: transform .34s cubic-bezier(.22, 1, .28, 1), opacity .34s, filter .34s;
 }
-.choice__other:focus-visible { outline: 2px solid var(--yellow); outline-offset: 3px; }
+.choice__other-tag {
+  font-family: var(--font-mono); font-size: .54rem; letter-spacing: .2em;
+  text-transform: uppercase; color: #E8A06E;
+}
+.choice__other-label {
+  font-family: var(--font-alt); font-size: clamp(.78rem, 1.4vw, .95rem);
+  color: rgba(245, 243, 239, .74); white-space: nowrap;
+}
+
+/* — Le compte des tentatives — */
 .choice__foot {
-  position: relative; display: flex; align-items: center; justify-content: space-between;
+  position: relative; display: flex; align-items: baseline; justify-content: space-between;
   gap: 1rem; flex-wrap: wrap;
-  font-family: var(--font-mono); font-size: .6rem; letter-spacing: .18em;
-  text-transform: uppercase;
 }
-.choice__counter { color: var(--yellow); }
-.choice__hint { color: var(--cream-soft); }
+.choice__counter { display: flex; align-items: baseline; gap: .6rem; }
+.choice__counter-num {
+  font-family: var(--font-display); font-size: clamp(1.8rem, 4vw, 2.8rem);
+  line-height: 1; color: var(--yellow); font-variant-numeric: tabular-nums;
+}
+.choice__counter-lbl {
+  font-family: var(--font-mono); font-size: .58rem; letter-spacing: .2em;
+  text-transform: uppercase; color: var(--cream-soft);
+}
+.choice__hint {
+  font-family: var(--font-mono); font-size: .6rem; letter-spacing: .16em;
+  text-transform: uppercase; color: var(--cream-soft); text-align: right;
+}
+
+/* — L'issue — */
 .choice__win {
   position: absolute; inset: 0; z-index: 5;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: 1rem; text-align: center; padding: 1.5rem;
-  background: rgba(10, 10, 10, .95);
+  gap: .9rem; text-align: center; padding: 1.5rem;
+  background: rgba(10, 10, 10, .96);
   animation: arcadeIn .45s var(--ease-out);
 }
 .choice__win[hidden] { display: none; }
+.choice__win-star { font-size: 1.6rem; color: var(--yellow); animation: spin 6s linear infinite; }
 .choice__win-title {
   font-family: var(--font-display); text-transform: uppercase;
-  font-size: clamp(2.6rem, 8vw, 5.4rem); line-height: .9; color: var(--yellow);
+  font-size: clamp(2.8rem, 9vw, 6rem); line-height: .88; color: var(--yellow);
 }
 .choice__win-text {
   font-family: var(--font-alt); font-style: italic;
-  font-size: 1.05rem; color: var(--cream-soft); max-width: 34ch;
+  font-size: 1.05rem; color: var(--cream-soft); max-width: 36ch;
 }
-.choice__win-btns { display: flex; gap: .8rem; flex-wrap: wrap; justify-content: center; margin-top: .6rem; }
+.choice__win-btns { display: flex; gap: .8rem; flex-wrap: wrap; justify-content: center; margin-top: .7rem; }
 
 /* ---------- CONTACT (CTA FINAL) ---------- */
 .cta { overflow: hidden; }
@@ -1355,10 +1406,67 @@ img, canvas, svg { display: block; max-width: 100%; }
   .game__side > * { flex: 1 1 100%; }
 }
 
+/* ---------- SIGNATURE DU CLIC ----------
+   Une onde et quelques astérisques à l'endroit exact de l'appui.
+   Le calque ne capte rien : il ne fait que dessiner. */
+.fx { position: fixed; inset: 0; z-index: 9550; pointer-events: none; overflow: hidden; }
+.fx__ring {
+  position: absolute; width: 14px; height: 14px; margin: -7px 0 0 -7px;
+  border-radius: 50%; border: 2.5px solid var(--yellow);
+  animation: fxRing .68s var(--ease-out) forwards;
+}
+.fx__ring--dark { border-color: var(--yellow-dark); }
+@keyframes fxRing {
+  from { transform: scale(.4); opacity: .95; }
+  to   { transform: scale(9); opacity: 0; }
+}
+.fx__star {
+  position: absolute; color: var(--yellow); line-height: 1;
+  transform: translate(-50%, -50%);
+  animation: fxStar .78s var(--ease-out) forwards;
+}
+.fx__star--dark { color: var(--yellow-dark); }
+@keyframes fxStar {
+  from { transform: translate(-50%, -50%) translate(0, 0) rotate(0deg) scale(.4); opacity: 1; }
+  to   { transform: translate(-50%, -50%) translate(var(--dx), var(--dy)) rotate(var(--rot)) scale(1); opacity: 0; }
+}
+
+/* ---------- EASTER EGG — LA PLUIE D'ENCRE ---------- */
+.egg {
+  position: fixed; inset: 0; z-index: 9720; pointer-events: none;
+  background: rgba(10, 10, 10, .82);
+  display: flex; align-items: center; justify-content: center;
+  animation: eggIn .4s var(--ease-out);
+}
+.egg.is-out { animation: eggOut .7s var(--ease-out) forwards; }
+@keyframes eggIn { from { opacity: 0; } }
+@keyframes eggOut { to { opacity: 0; } }
+.egg__rain { position: absolute; inset: 0; overflow: hidden; }
+.egg__drop {
+  position: absolute; top: -8%; color: var(--yellow);
+  animation: eggDrop linear infinite;
+}
+@keyframes eggDrop {
+  from { transform: translateY(0) rotate(0deg); }
+  to   { transform: translateY(118vh) rotate(340deg); }
+}
+.egg__word {
+  position: relative; text-align: center; color: var(--cream-txt);
+  font-family: var(--font-display); text-transform: uppercase;
+  font-size: clamp(2.4rem, 9vw, 7rem); line-height: .9; letter-spacing: .02em;
+}
+.egg__word span { display: block; animation: eggWord .8s var(--ease-out) backwards; }
+.egg__word span:nth-child(2) { animation-delay: .1s; color: var(--yellow); }
+.egg__word span:nth-child(3) { animation-delay: .2s; }
+.egg__word i { font-style: normal; color: var(--yellow); }
+@keyframes eggWord { from { opacity: 0; transform: translateY(38px) rotate(2deg); } }
+
 /* ---------- REDUCED MOTION ---------- */
 @media (prefers-reduced-motion: reduce) {
   .grain, .marquee__track, .values-track,
   .pl__halo, .pl__star { animation: none !important; }
+  .fx, .egg__rain { display: none !important; }
+  .egg__word span { animation: none; }
   .hero__line-inner { transform: none; }
   .manifesto__text .w { opacity: 1; transform: none; filter: none; }
   .hero__video { transform: none; }
