@@ -32,28 +32,19 @@
   <div class="scroll-progress" aria-hidden="true"></div>
 
   <!-- ===== PRELOADER — « L'ENCRE » =====
-       La signature NOUS s'écrit en direct : l'encre jaune avance
-       exactement au rythme du chargement réel des médias.
-       À 100 %, l'encre inonde l'écran, le logo s'inverse en noir,
-       puis le rideau jaune se soulève sur le hero. -->
+       Une seule colonne à lire, de haut en bas : ce qui charge,
+       la signature qui se remplit, la barre + le pourcentage,
+       et l'étape en cours écrite en clair.
+       À 100 %, l'encre inonde l'écran, la signature s'inverse en
+       noir, puis le rideau jaune se soulève sur le hero. -->
   <div class="pl" id="preloader" aria-label="Chargement du site NOUS">
 
-    <!-- Fond : nuit, halo jaune mouvant, trame d'atelier, vignettage -->
     <div class="pl__bg" aria-hidden="true">
       <span class="pl__halo"></span>
-      <span class="pl__grid"></span>
       <span class="pl__vignette"></span>
     </div>
 
-    <!-- Bandeau typographique lent, en filigrane -->
-    <div class="pl__band" aria-hidden="true">
-      <div class="pl__band-track">
-        <span class="pl__band-group">L'HISTOIRE C'EST NOUS&nbsp;<i>✳</i>&nbsp;L'HISTOIRE C'EST NOUS&nbsp;<i>✳</i>&nbsp;</span>
-        <span class="pl__band-group">L'HISTOIRE C'EST NOUS&nbsp;<i>✳</i>&nbsp;L'HISTOIRE C'EST NOUS&nbsp;<i>✳</i>&nbsp;</span>
-      </div>
-    </div>
-
-    <!-- Encre de sortie : 5 colonnes montent, puis emportent le rideau -->
+    <!-- Encre de sortie : cinq colonnes montent, puis emportent le rideau -->
     <div class="pl__flood" aria-hidden="true">
       <span class="pl__flood-col"></span>
       <span class="pl__flood-col"></span>
@@ -62,10 +53,10 @@
       <span class="pl__flood-col"></span>
     </div>
 
-    <!-- Scène : la signature qui s'écrit + la baseline qui s'allume -->
     <div class="pl__stage" id="plStage">
-      <p class="pl__eyebrow" aria-hidden="true"><i class="pl__star">✳</i><span>L'encre coule</span></p>
+      <p class="pl__eyebrow" aria-hidden="true"><i class="pl__star">✳</i><span>Chargement</span></p>
 
+      <!-- La signature se remplit d'encre au rythme du chargement réel -->
       <div class="pl__sign" aria-hidden="true">
         <span class="pl__sign-layer pl__sign-ghost"></span>
         <span class="pl__sign-layer pl__sign-ink"></span>
@@ -73,30 +64,21 @@
         <span class="pl__nib"></span>
       </div>
 
-      <p class="pl__tagline" id="plTagline" aria-hidden="true">L'HISTOIRE C'EST NOUS.</p>
+      <!-- La même progression, en clair : barre + pourcentage -->
+      <div class="pl__meter">
+        <span class="pl__bar" id="plGauge" role="progressbar" aria-label="Progression du chargement"
+              aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+          <span class="pl__bar-fill"></span>
+        </span>
+        <span class="pl__pct" aria-hidden="true"><span id="counter">0</span> %</span>
+      </div>
+
+      <p class="pl__status" id="plStatus" role="status" aria-live="polite">Préparation de l'atelier</p>
     </div>
 
-    <!-- En-tête : méta d'atelier + sortie rapide -->
-    <div class="pl__head pl__hud">
-      <span class="pl__meta" aria-hidden="true">NOUS&nbsp;<i>✳</i>&nbsp;AGENCE DE BRANDING — FRANCE <span id="plClock">--:--</span></span>
-      <button class="pl__skip" id="plSkip" type="button" data-cursor="hover">
-        <span>Passer l'intro</span><span class="pl__skip-key">ESC</span>
-      </button>
-    </div>
-
-    <!-- Pied : statut lisible (annoncé) + compteur -->
-    <div class="pl__foot">
-      <p class="pl__status"><i class="pl__star" aria-hidden="true">✳</i><span id="plStatus" role="status" aria-live="polite">Préparation de l'atelier</span></p>
-      <p class="pl__count" aria-hidden="true"><span id="counter">00</span><i>%</i></p>
-    </div>
-
-    <!-- Jauge pleine largeur, segmentée en quatre temps -->
-    <div class="pl__gauge" id="plGauge" role="progressbar" aria-label="Progression du chargement" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-      <span class="pl__gauge-fill"></span>
-      <span class="pl__gauge-tick" style="left:25%"></span>
-      <span class="pl__gauge-tick" style="left:50%"></span>
-      <span class="pl__gauge-tick" style="left:75%"></span>
-    </div>
+    <button class="pl__skip" id="plSkip" type="button" data-cursor="hover">
+      <span>Passer l'intro</span><span class="pl__skip-key">ESC</span>
+    </button>
   </div>
 
   <!-- ===== NAVIGATION ===== -->
@@ -374,40 +356,141 @@
       </svg>
     </div>
 
-    <!-- ===== L'ATELIER — LE JEU ===== -->
+    <!-- ===== L'ATELIER — LES JEUX ===== -->
     <section class="game section" id="atelier">
       <div class="container">
         <div class="section__head">
           <p class="section__label" data-reveal>(04) — L'ATELIER</p>
           <h2 class="section__title">
             <span class="reveal-line"><span class="reveal-line__inner">À VOUS</span></span>
-            <span class="reveal-line"><span class="reveal-line__inner">DE <em class="accent">PORTER</em>.</span></span>
+            <span class="reveal-line"><span class="reveal-line__inner">DE <em class="accent">JOUER</em>.</span></span>
           </h2>
-          <p class="game__sub" data-reveal>Une marque forte, c'est un tri permanent. Cassez les briques : ce qui fait une marque élargit la raquette, le reste la fait rétrécir. À la souris, au doigt ou aux flèches du clavier.</p>
-          <span class="tape tape--game" aria-hidden="true">HIGH SCORE : À VOUS</span>
+          <p class="game__sub" data-reveal>Trois jeux, trois manières de comprendre notre métier. Chacun a un objectif différent — il est écrit sur l'onglet.</p>
+          <span class="tape tape--game" aria-hidden="true">3 JEUX · 3 OBJECTIFS</span>
         </div>
-        <div class="game__layout">
-          <div class="game__frame" data-reveal>
-            <canvas id="gameCanvas"></canvas>
-            <div class="game__overlay" id="gameOverlay">
-              <p class="game__overlay-title" id="gameOverlayTitle">PRÊT ?</p>
-              <p class="game__overlay-text" id="gameOverlayText">Portez ce qui compte, laissez le reste.</p>
-              <button class="btn btn--primary" id="gameBtn" data-cursor="hover"><span class="btn__text">Lancer la partie</span></button>
+
+        <!-- Onglets : l'objectif de chaque jeu est annoncé d'entrée -->
+        <div class="arcade__tabs" role="tablist" aria-label="Les jeux de l'atelier" data-reveal>
+          <button class="arcade__tab is-active" role="tab" type="button" id="tab-tri"
+                  aria-controls="panel-tri" aria-selected="true" data-cursor="hover">
+            <span class="arcade__tab-num">01</span>
+            <span class="arcade__tab-name">Le tri</span>
+            <span class="arcade__tab-goal">Objectif — ne garder que ce qui fait une marque</span>
+          </button>
+          <button class="arcade__tab" role="tab" type="button" id="tab-route"
+                  aria-controls="panel-route" aria-selected="false" tabindex="-1" data-cursor="hover">
+            <span class="arcade__tab-num">02</span>
+            <span class="arcade__tab-name">La route</span>
+            <span class="arcade__tab-goal">Objectif — éviter les mauvaises pratiques</span>
+          </button>
+          <button class="arcade__tab" role="tab" type="button" id="tab-choix"
+                  aria-controls="panel-choix" aria-selected="false" tabindex="-1" data-cursor="hover">
+            <span class="arcade__tab-num">03</span>
+            <span class="arcade__tab-name">Le choix</span>
+            <span class="arcade__tab-goal">Objectif — réussir à cliquer sur une autre agence</span>
+          </button>
+        </div>
+
+        <!-- ---------- 01 · LE TRI (casse-briques) ---------- -->
+        <div class="arcade__panel is-active" role="tabpanel" id="panel-tri" aria-labelledby="tab-tri">
+          <p class="arcade__brief">
+            <b>Comment jouer —</b> déplacez la raquette à la souris, au doigt ou aux flèches ← →.
+            Chaque brique <b>utile</b> élargit la raquette&nbsp;; chaque <b>mauvaise pratique</b> la rétrécit.
+            Cassez toutes les bonnes briques avant que la raquette ne disparaisse.
+          </p>
+          <div class="game__layout">
+            <div class="game__frame">
+              <canvas id="gameCanvas"></canvas>
+              <div class="game__overlay" id="gameOverlay">
+                <p class="game__overlay-title" id="gameOverlayTitle">PRÊT ?</p>
+                <p class="game__overlay-text" id="gameOverlayText">Portez ce qui compte, laissez le reste.</p>
+                <button class="btn btn--primary" id="gameBtn" data-cursor="hover"><span class="btn__text">Lancer la partie</span></button>
+              </div>
+            </div>
+            <aside class="game__side">
+              <div class="game__score-box">
+                <p class="game__score-label">SCORE</p>
+                <p class="game__score" id="gameScore">0</p>
+              </div>
+              <div class="game__log">
+                <p class="game__log-head game__log-head--good">ON PORTE ✓</p>
+                <div class="game__chips" id="chipsGood"><span class="game__chip-empty">—</span></div>
+                <p class="game__log-head game__log-head--bad">ON LAISSE ✕</p>
+                <div class="game__chips" id="chipsBad"><span class="game__chip-empty">—</span></div>
+              </div>
+              <p class="game__hint">CONTRÔLES — SOURIS · DOIGT · FLÈCHES ← →</p>
+            </aside>
+          </div>
+        </div>
+
+        <!-- ---------- 02 · LA ROUTE (slalom des mauvaises pratiques) ---------- -->
+        <div class="arcade__panel" role="tabpanel" id="panel-route" aria-labelledby="tab-route" hidden>
+          <p class="arcade__brief">
+            <b>Comment jouer —</b> conduisez la voiture NOUS à la souris, au doigt ou aux flèches ← →.
+            <b>Évitez</b> les blocs sombres : ce sont les mauvaises pratiques d'une marque.
+            <b>Ramassez</b> les jetons jaunes : ce sont les bons réflexes. Trois erreurs et la course s'arrête.
+          </p>
+          <div class="game__layout">
+            <div class="game__frame">
+              <canvas id="roadCanvas"></canvas>
+              <div class="game__overlay" id="roadOverlay">
+                <p class="game__overlay-title" id="roadOverlayTitle">EN ROUTE ?</p>
+                <p class="game__overlay-text" id="roadOverlayText">Évitez les mauvaises pratiques, ramassez les bons réflexes.</p>
+                <button class="btn btn--primary" id="roadBtn" data-cursor="hover"><span class="btn__text">Prendre le volant</span></button>
+              </div>
+            </div>
+            <aside class="game__side">
+              <div class="game__score-box">
+                <p class="game__score-label">DISTANCE</p>
+                <p class="game__score"><span id="roadDist">0</span><small>&nbsp;m</small></p>
+                <p class="game__lives" id="roadLives" aria-label="Erreurs restantes">
+                  <span class="game__life"></span><span class="game__life"></span><span class="game__life"></span>
+                </p>
+              </div>
+              <div class="game__log">
+                <p class="game__log-head game__log-head--good">BONS RÉFLEXES ✓</p>
+                <div class="game__chips" id="roadChipsGood"><span class="game__chip-empty">—</span></div>
+                <p class="game__log-head game__log-head--bad">PERCUTÉ ✕</p>
+                <div class="game__chips" id="roadChipsBad"><span class="game__chip-empty">—</span></div>
+              </div>
+              <p class="game__hint">CONTRÔLES — SOURIS · DOIGT · FLÈCHES ← →</p>
+            </aside>
+          </div>
+        </div>
+
+        <!-- ---------- 03 · LE CHOIX (l'autre agence est injoignable) ---------- -->
+        <div class="arcade__panel" role="tabpanel" id="panel-choix" aria-labelledby="tab-choix" hidden>
+          <p class="arcade__brief">
+            <b>Comment jouer —</b> une seule question, deux réponses. Essayez de cliquer sur celle
+            que vous voulez. <b>Nous, on ne bouge pas.</b>
+          </p>
+          <div class="choice" id="choiceArena">
+            <p class="choice__question">Quelle agence vous convient le&nbsp;mieux&nbsp;?</p>
+
+            <div class="choice__field" id="choiceField">
+              <button class="choice__nous" id="choiceNous" type="button" data-cursor="hover">
+                <span class="choice__nous-word">NOUS<em>.</em></span>
+                <span class="choice__nous-sub">Toujours là. On ne bouge pas.</span>
+              </button>
+              <button class="choice__other" id="choiceOther" type="button">
+                <span id="choiceOtherLabel">Une autre agence</span>
+              </button>
+            </div>
+
+            <div class="choice__foot">
+              <p class="choice__counter">TENTATIVES&nbsp;: <span id="choiceTries">0</span></p>
+              <p class="choice__hint" id="choiceHint" role="status" aria-live="polite">Approchez le curseur de « une autre agence ».</p>
+            </div>
+
+            <div class="choice__win" id="choiceWin" hidden>
+              <p class="choice__win-title">ÉVIDEMMENT.</p>
+              <p class="choice__win-text" id="choiceWinText">Vous avez cliqué sur la seule qui ne se dérobe pas.</p>
+              <div class="choice__win-btns">
+                <a href="#contact" class="btn btn--primary" data-cursor="hover"><span class="btn__text">Parler projet</span></a>
+                <button class="btn btn--ghost-light" id="choiceReset" type="button" data-cursor="hover"><span class="btn__text">Recommencer</span></button>
+              </div>
             </div>
           </div>
-          <aside class="game__side" data-reveal>
-            <div class="game__score-box">
-              <p class="game__score-label">SCORE</p>
-              <p class="game__score" id="gameScore">0</p>
-            </div>
-            <div class="game__log">
-              <p class="game__log-head game__log-head--good">ON PORTE ✓</p>
-              <div class="game__chips" id="chipsGood"><span class="game__chip-empty">—</span></div>
-              <p class="game__log-head game__log-head--bad">ON LAISSE ✕</p>
-              <div class="game__chips" id="chipsBad"><span class="game__chip-empty">—</span></div>
-            </div>
-            <p class="game__hint">CONTRÔLES — SOURIS · DOIGT · FLÈCHES ← →</p>
-          </aside>
         </div>
       </div>
     </section>

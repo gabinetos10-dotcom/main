@@ -60,6 +60,14 @@ body.is-locked { overflow: hidden; }
 
 a { color: inherit; text-decoration: none; }
 button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
+/* Tactile : pas de voile bleu au tap, pas d'attente de double-tap */
+a, button, summary, [role="tab"], input, textarea, select {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+/* Un anneau de focus visible et cohérent partout où rien n'est prévu */
+:focus-visible { outline: 2px solid var(--yellow-dark); outline-offset: 3px; border-radius: 2px; }
+.section--dark :focus-visible, .footer :focus-visible { outline-color: var(--yellow); }
 img, canvas, svg { display: block; max-width: 100%; }
 
 .container { width: 100%; max-width: 1520px; margin-inline: auto; padding-inline: var(--pad); }
@@ -121,11 +129,13 @@ img, canvas, svg { display: block; max-width: 100%; }
 }
 
 /* ---------- PRELOADER — « L'ENCRE » ----------
-   La signature NOUS sert elle-même de jauge : l'encre jaune
-   la remplit de gauche à droite, comme une main qui écrit,
-   et la plume lumineuse suit exactement le bord de l'encre.
-   Toute la scène est pilotée par des variables posées en JS :
-   --p (progression) puis --f / --fl (niveau d'encre à la sortie). */
+   Une seule colonne centrée, lue de haut en bas :
+   « chargement » → la signature qui se remplit d'encre →
+   la barre + le pourcentage → l'étape en cours, écrite en clair.
+   La signature, la barre et le pourcentage disent la MÊME chose :
+   trois lectures de --p, pour qu'on comprenne au premier coup d'œil.
+   Variables posées en JS : --p (progression), puis --f / --fl
+   (niveau d'encre à la sortie). */
 .pl {
   --p: 0;   /* progression du chargement, 0 → 1 */
   --f: 0;   /* niveau de l'encre à la sortie, plein écran */
@@ -136,7 +146,7 @@ img, canvas, svg { display: block; max-width: 100%; }
   transition: opacity .6s ease; /* déclarée en amont : le repli .pl--out doit pouvoir filer */
 }
 
-/* — Fond : nuit + halo jaune vivant + trame d'atelier + vignettage — */
+/* — Fond : nuit + halo jaune vivant + vignettage — */
 .pl__bg { position: absolute; inset: 0; z-index: 0; background: var(--night); overflow: hidden; }
 .pl__halo {
   position: absolute; left: 50%; top: 50%;
@@ -150,35 +160,10 @@ img, canvas, svg { display: block; max-width: 100%; }
   0%, 100% { transform: translate(-6%, 4%) scale(1); opacity: .8; }
   50%      { transform: translate(7%, -5%) scale(1.16); opacity: 1; }
 }
-.pl__grid {
-  position: absolute; inset: -2px;
-  background-image:
-    linear-gradient(to right, rgba(245, 243, 239, .055) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(245, 243, 239, .055) 1px, transparent 1px);
-  background-size: clamp(58px, 7vw, 98px) clamp(58px, 7vw, 98px);
-  -webkit-mask-image: radial-gradient(ellipse at center, #000 10%, transparent 72%);
-          mask-image: radial-gradient(ellipse at center, #000 10%, transparent 72%);
-}
 .pl__vignette {
   position: absolute; inset: 0;
-  background: radial-gradient(ellipse at center, transparent 38%, rgba(10, 10, 10, .78) 100%);
+  background: radial-gradient(ellipse at center, transparent 40%, rgba(10, 10, 10, .8) 100%);
 }
-
-/* — Bandeau typographique en filigrane, derrière la signature — */
-.pl__band {
-  position: absolute; z-index: 1; left: 0; right: 0; top: 50%;
-  transform: translateY(-52%);
-  overflow: hidden; pointer-events: none; opacity: .055;
-  will-change: transform;
-}
-.pl__band-track { display: flex; width: max-content; animation: plBand 42s linear infinite; }
-.pl__band-group {
-  font-family: var(--font-display); font-size: clamp(6rem, 17vw, 17rem);
-  line-height: .84; white-space: nowrap; padding-right: .3em;
-  color: transparent; -webkit-text-stroke: 1px var(--cream-txt);
-}
-.pl__band-group i { font-style: normal; }
-@keyframes plBand { to { transform: translateX(-50%); } }
 
 /* — Encre de sortie : cinq colonnes qui montent puis emportent tout — */
 .pl__flood { position: absolute; inset: 0; z-index: 2; display: flex; pointer-events: none; }
@@ -189,31 +174,31 @@ img, canvas, svg { display: block; max-width: 100%; }
   will-change: transform;
 }
 
-/* — Scène centrale — */
+/* — La colonne centrale — */
 .pl__stage {
   position: absolute; inset: 0; z-index: 3;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: clamp(1.3rem, 3.2vw, 2.4rem);
+  gap: clamp(1.5rem, 3.4vw, 2.4rem);
   padding-inline: var(--pad);
   will-change: transform;
 }
 .pl__eyebrow {
-  display: flex; align-items: center; gap: .75em;
-  font-family: var(--font-mono); font-size: clamp(.5rem, .68vw, .6rem);
-  letter-spacing: .34em; text-transform: uppercase; color: var(--yellow);
+  display: flex; align-items: center; gap: .8em;
+  font-family: var(--font-mono); font-size: clamp(.56rem, .78vw, .68rem);
+  letter-spacing: .38em; text-transform: uppercase; color: var(--yellow);
 }
 .pl__star { display: inline-block; font-style: normal; animation: spin 7s linear infinite; }
 
 /* La signature : trois calques masqués par le PNG du logo.
    fantôme (creux) · encre (jaune, découpée par --p) · empreinte (noire, à l'inversion) */
-.pl__sign { position: relative; width: min(80vw, 660px); aspect-ratio: 1594 / 316; }
+.pl__sign { position: relative; width: min(78vw, 560px); aspect-ratio: 1594 / 316; }
 .pl__sign-layer {
   position: absolute; inset: 0;
   -webkit-mask: url("../medias/nous-script-blanc.png") center / contain no-repeat;
           mask: url("../medias/nous-script-blanc.png") center / contain no-repeat;
 }
 .pl__sign-ghost {
-  background: rgba(245, 243, 239, .11);
+  background: rgba(245, 243, 239, .13);
   clip-path: inset(0 0 calc(var(--fl) * 100%) 0);
 }
 .pl__sign-ink {
@@ -231,7 +216,7 @@ img, canvas, svg { display: block; max-width: 100%; }
 
 /* La plume : trait de lumière posé sur le bord exact de l'encre */
 .pl__nib {
-  position: absolute; top: -26%; bottom: -26%;
+  position: absolute; top: -24%; bottom: -24%;
   left: calc(var(--p) * 100%); width: 1px; margin-left: -.5px;
   background: linear-gradient(to bottom,
     transparent, rgba(255, 204, 51, .85) 20%, #FFF6D0 50%, rgba(255, 204, 51, .85) 80%, transparent);
@@ -244,35 +229,43 @@ img, canvas, svg { display: block; max-width: 100%; }
   background: #FFF6D0; box-shadow: 0 0 20px 7px rgba(255, 191, 0, .6);
 }
 
-/* La baseline s'allume lettre à lettre, au rythme de --p */
-.pl__tagline {
-  display: flex; flex-wrap: wrap; justify-content: center;
-  font-family: var(--font-display);
-  font-size: clamp(.9rem, 2.1vw, 1.55rem);
-  letter-spacing: clamp(.2em, .62vw, .38em);
-  text-indent: clamp(.2em, .62vw, .38em);
-  color: var(--cream-txt);
+/* — La même progression, en clair : barre + pourcentage — */
+.pl__meter {
+  display: flex; align-items: center; gap: clamp(.9rem, 2vw, 1.4rem);
+  width: min(78vw, 460px);
 }
-.pl__tagline span { opacity: .12; transition: opacity .55s var(--ease-out); }
-.pl__tagline span.is-lit { opacity: 1; }
-.pl__tagline span.is-space { width: .42em; }
+.pl__bar {
+  flex: 1; position: relative; height: 3px; border-radius: 2px;
+  background: rgba(245, 243, 239, .16);
+}
+.pl__bar-fill {
+  position: absolute; inset: 0; border-radius: inherit;
+  background: linear-gradient(90deg, var(--yellow-dark), var(--yellow-bright));
+  box-shadow: 0 0 16px rgba(255, 191, 0, .6);
+  transform: scaleX(var(--p)); transform-origin: left center;
+}
+.pl__pct {
+  font-family: var(--font-display); line-height: 1;
+  font-size: clamp(1.5rem, 3.4vw, 2.4rem);
+  font-variant-numeric: tabular-nums;
+  min-width: 3.4ch; text-align: right; color: var(--cream-txt);
+}
 
-/* — En-tête : méta d'atelier + sortie rapide — */
-.pl__head {
+/* — L'étape en cours, écrite en toutes lettres — */
+.pl__status {
+  font-family: var(--font-mono); font-size: clamp(.58rem, .8vw, .68rem);
+  letter-spacing: .2em; text-transform: uppercase;
+  color: rgba(245, 243, 239, .6); text-align: center;
+  min-height: 1.4em;
+}
+
+/* — Sortie rapide, toujours atteignable — */
+.pl__skip {
   position: absolute; z-index: 5;
   top: calc(var(--pad) * .75 + env(safe-area-inset-top, 0px));
-  left: calc(var(--pad) + env(safe-area-inset-left, 0px));
   right: calc(var(--pad) + env(safe-area-inset-right, 0px));
-  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
-}
-.pl__meta {
-  font-family: var(--font-mono); font-size: clamp(.48rem, .66vw, .58rem);
-  letter-spacing: .24em; text-transform: uppercase; color: rgba(245, 243, 239, .4);
-}
-.pl__meta i { color: var(--yellow); font-style: normal; }
-.pl__skip {
   display: inline-flex; align-items: center; gap: .8em;
-  padding: .5rem .85rem; border-radius: 100px;
+  padding: .6rem .95rem; border-radius: 100px;
   border: 1px solid rgba(245, 243, 239, .3);
   font-family: var(--font-mono); font-size: clamp(.5rem, .68vw, .6rem);
   letter-spacing: .2em; text-transform: uppercase; color: rgba(245, 243, 239, .78);
@@ -288,61 +281,21 @@ img, canvas, svg { display: block; max-width: 100%; }
   padding: 0 .4em; font-size: .88em; opacity: .75;
 }
 
-/* — Pied : statut annoncé + compteur monumental — */
-.pl__foot {
-  position: absolute; z-index: 5;
-  left: calc(var(--pad) + env(safe-area-inset-left, 0px));
-  right: calc(var(--pad) + env(safe-area-inset-right, 0px));
-  bottom: calc(var(--pad) * .8 + env(safe-area-inset-bottom, 0px));
-  display: flex; align-items: flex-end; justify-content: space-between; gap: 1.2rem;
-}
-.pl__status {
-  display: flex; align-items: center; gap: .8em; padding-bottom: .5rem;
-  font-family: var(--font-mono); font-size: clamp(.54rem, .74vw, .64rem);
-  letter-spacing: .2em; text-transform: uppercase; color: rgba(245, 243, 239, .74);
-}
-.pl__status .pl__star { color: var(--yellow); animation-duration: 5s; }
-.pl__count {
-  display: flex; align-items: baseline; gap: .1em;
-  font-family: var(--font-display); line-height: .74;
-  font-size: clamp(3.6rem, 12vw, 9rem);
-  font-variant-numeric: tabular-nums;
-}
-.pl__count > span { display: inline-block; min-width: 1.9ch; text-align: right; }
-.pl__count i { font-style: normal; font-size: .24em; color: var(--yellow); letter-spacing: .06em; }
-
-/* — Jauge pleine largeur : les repères apparaissent au passage de l'encre — */
-.pl__gauge {
-  position: absolute; z-index: 5; left: 0; right: 0;
-  bottom: env(safe-area-inset-bottom, 0px);
-  height: 3px; background: rgba(245, 243, 239, .1);
-}
-.pl__gauge-fill {
-  position: absolute; inset: 0;
-  background: linear-gradient(90deg, var(--yellow-dark), var(--yellow-bright));
-  box-shadow: 0 0 18px rgba(255, 191, 0, .6);
-  transform: scaleX(var(--p)); transform-origin: left center;
-}
-.pl__gauge-tick { position: absolute; top: 0; bottom: 0; width: 1px; background: rgba(10, 10, 10, .55); }
-
 /* Repli sans GSAP / mouvement réduit : sortie en fondu simple */
 .pl--out { opacity: 0; pointer-events: none; }
 
 @media (max-width: 768px) {
   .pl__sign { width: min(86vw, 420px); }
-  .pl__tagline { font-size: clamp(.78rem, 3vw, 1.1rem); letter-spacing: .26em; text-indent: .26em; }
-  .pl__foot { align-items: flex-end; }
-  .pl__count { font-size: clamp(3rem, 17vw, 5.4rem); }
+  .pl__meter { width: min(86vw, 400px); }
+  .pl__eyebrow { letter-spacing: .3em; }
   .pl__skip-key { display: none; }
-}
-@media (max-width: 480px) {
-  .pl__status { font-size: .5rem; letter-spacing: .14em; gap: .5em; }
-  .pl__meta { max-width: 52vw; line-height: 1.5; }
+  .pl__skip { padding: .7rem 1.1rem; }
 }
 
 /* ---------- NAVIGATION ---------- */
 .nav {
   position: fixed; top: 0; left: 0; right: 0; z-index: 9500;
+  padding-top: env(safe-area-inset-top, 0px);
   height: var(--nav-h);
   display: flex; align-items: center; justify-content: space-between;
   padding-inline: var(--pad);
@@ -365,12 +318,24 @@ img, canvas, svg { display: block; max-width: 100%; }
 .nav__logo-img { height: 30px; width: auto; transition: transform .5s var(--ease-out); }
 .nav__links { display: flex; gap: clamp(1.4rem, 3vw, 2.8rem); align-items: center; }
 .nav__link {
+  position: relative;
   font-size: .78rem; font-weight: 400; letter-spacing: .12em; text-transform: uppercase;
   overflow: hidden; display: inline-block; line-height: 1.4;
   color: var(--cream-txt);
   transition: color .5s;
 }
 .nav__link span { display: inline-block; position: relative; transition: transform .5s var(--ease-out); }
+/* Repère de lecture : la section qu'on traverse est marquée */
+.nav__link.is-current { color: var(--yellow); }
+.nav__link.is-current::after {
+  /* .nav__link est en overflow:hidden : le repère reste dans la boîte */
+  content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 1px;
+  background: var(--yellow);
+  animation: navMark .45s var(--ease-out); transform-origin: left center;
+}
+@keyframes navMark { from { transform: scaleX(0); } }
+.mobile-menu__link.is-current .mobile-menu__word { color: var(--yellow); }
+.mobile-menu__link.is-current .mobile-menu__num { opacity: 1; }
 .nav__link span::after {
   content: attr(data-text); position: absolute; left: 0; top: 100%;
   color: var(--yellow);
@@ -412,6 +377,9 @@ img, canvas, svg { display: block; max-width: 100%; }
   transform: translate(6px, 6px);
   box-shadow: 0 0 0 rgba(10, 10, 10, .9);
 }
+/* Retour au clic. Sur pointeur fin, le magnétisme écrit déjà un
+   transform en ligne : c'est lui qui fait office de retour. */
+.btn:active { transform: scale(.97); }
 .btn--ghost { border: 1px solid var(--ink); color: var(--ink); }
 .btn--ghost-light { border: 1px solid rgba(245, 243, 239, .85); color: var(--cream-txt); }
 .btn--small { padding: .7rem 1.5rem; font-size: .68rem; background: var(--night); color: var(--cream-txt); border: 1px solid transparent; }
@@ -422,7 +390,9 @@ img, canvas, svg { display: block; max-width: 100%; }
 
 /* ---------- BURGER ---------- */
 .burger {
-  display: none; position: fixed; top: 13px; right: var(--pad); z-index: 9700;
+  display: none; position: fixed; z-index: 9700;
+  top: calc(13px + env(safe-area-inset-top, 0px));
+  right: calc(var(--pad) + env(safe-area-inset-right, 0px));
   width: 44px; height: 44px;
 }
 .burger::after {
@@ -861,6 +831,148 @@ img, canvas, svg { display: block; max-width: 100%; }
   color: var(--ink-faint); text-align: center;
 }
 
+/* ---------- L'ATELIER — ONGLETS DES TROIS JEUX ---------- */
+.arcade__tabs {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: .8rem; margin: 2.6rem 0 1.6rem;
+}
+.arcade__tab {
+  position: relative; overflow: hidden; text-align: left;
+  display: flex; flex-direction: column; gap: .35rem;
+  padding: 1.1rem 1.3rem 1.15rem;
+  border: 1px solid var(--line); border-radius: 14px;
+  background: rgba(245, 243, 239, .5);
+  transition: border-color .35s, background-color .35s, transform .45s var(--ease-out);
+}
+.arcade__tab::after {
+  content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 3px;
+  background: var(--yellow); transform: scaleX(0); transform-origin: left center;
+  transition: transform .5s var(--ease-out);
+}
+.arcade__tab:hover { border-color: var(--yellow-dark); transform: translateY(-3px); }
+.arcade__tab:focus-visible { outline: 2px solid var(--yellow-dark); outline-offset: 3px; }
+.arcade__tab.is-active { background: var(--night); border-color: var(--night); }
+.arcade__tab.is-active::after { transform: scaleX(1); }
+.arcade__tab-num {
+  font-family: var(--font-mono); font-size: .58rem; letter-spacing: .24em;
+  color: var(--yellow-dark);
+}
+.arcade__tab.is-active .arcade__tab-num { color: var(--yellow); }
+.arcade__tab-name {
+  font-family: var(--font-display); font-size: clamp(1.5rem, 2.4vw, 2.1rem);
+  line-height: .95; text-transform: uppercase; color: var(--ink);
+}
+.arcade__tab.is-active .arcade__tab-name { color: var(--cream-txt); }
+.arcade__tab-goal {
+  font-family: var(--font-mono); font-size: .58rem; letter-spacing: .06em;
+  line-height: 1.5; color: var(--ink-soft);
+}
+.arcade__tab.is-active .arcade__tab-goal { color: var(--cream-soft); }
+
+/* Le mode d'emploi, en clair, avant chaque jeu */
+.arcade__brief {
+  max-width: 760px; margin-bottom: 1.6rem;
+  font-size: .92rem; line-height: 1.8; color: var(--ink-soft);
+  border-left: 2px solid var(--yellow); padding-left: 1.1rem;
+}
+.arcade__brief b { color: var(--ink); font-weight: 600; }
+
+.arcade__panel[hidden] { display: none; }
+.arcade__panel.is-active { animation: arcadeIn .5s var(--ease-out); }
+@keyframes arcadeIn { from { opacity: 0; transform: translateY(14px); } }
+
+#roadCanvas { display: block; width: 100%; aspect-ratio: 920 / 580; touch-action: none; }
+.game__score small { font-family: var(--font-mono); font-size: .34em; letter-spacing: .1em; }
+.game__lives { display: flex; gap: .4rem; margin-top: .7rem; }
+.game__life {
+  width: 22px; height: 8px; border-radius: 3px; background: var(--yellow);
+  transition: background-color .3s, opacity .3s;
+}
+.game__life.is-lost { background: var(--ink-faint); opacity: .35; }
+
+/* ---------- 03 · LE CHOIX ---------- */
+.choice {
+  position: relative; border-radius: 18px; overflow: hidden;
+  background: var(--night); color: var(--cream-txt);
+  padding: clamp(1.6rem, 4vw, 3rem);
+  box-shadow: 0 30px 80px rgba(10, 10, 10, .28);
+}
+.choice::before {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background:
+    radial-gradient(circle at 50% 40%, rgba(255, 191, 0, .14), transparent 58%),
+    linear-gradient(rgba(245, 243, 239, .04) 1px, transparent 1px) 0 0 / 100% 44px;
+}
+.choice__question {
+  position: relative; text-align: center;
+  font-family: var(--font-display); text-transform: uppercase;
+  font-size: clamp(1.6rem, 4.2vw, 3rem); line-height: 1.05;
+  letter-spacing: .02em;
+}
+/* L'aire de jeu : « autre agence » se déplace en absolu à l'intérieur */
+.choice__field {
+  position: relative; margin: clamp(1.6rem, 4vw, 2.6rem) 0;
+  min-height: clamp(300px, 44vw, 420px);
+  display: flex; align-items: center; justify-content: center;
+}
+.choice__nous {
+  position: relative; z-index: 2;
+  display: flex; flex-direction: column; align-items: center; gap: .5rem;
+  padding: clamp(1.6rem, 4vw, 2.6rem) clamp(2.2rem, 7vw, 5rem);
+  border-radius: 20px; background: var(--yellow); color: var(--night);
+  box-shadow: 0 22px 60px rgba(255, 191, 0, .3);
+  transition: transform .4s var(--ease-out), box-shadow .4s var(--ease-out);
+}
+.choice__nous:hover { transform: scale(1.03); box-shadow: 0 28px 70px rgba(255, 191, 0, .42); }
+.choice__nous:active { transform: scale(.99); }
+.choice__nous:focus-visible { outline: 3px solid var(--cream-txt); outline-offset: 4px; }
+.choice__nous-word {
+  font-family: var(--font-display); line-height: .84;
+  font-size: clamp(3.4rem, 11vw, 7.5rem); letter-spacing: .01em;
+}
+.choice__nous-word em { font-style: normal; color: var(--night); }
+.choice__nous-sub {
+  font-family: var(--font-mono); font-size: clamp(.55rem, 1.1vw, .66rem);
+  letter-spacing: .18em; text-transform: uppercase; opacity: .72;
+}
+/* L'autre agence : elle se dérobe. Transition courte = fuite crédible. */
+.choice__other {
+  position: absolute; z-index: 3; left: 50%; top: 50%;
+  padding: .95rem 1.6rem; border-radius: 100px;
+  border: 1px dashed rgba(245, 243, 239, .4);
+  background: rgba(245, 243, 239, .06); color: rgba(245, 243, 239, .7);
+  font-family: var(--font-mono); font-size: clamp(.58rem, 1.1vw, .68rem);
+  letter-spacing: .14em; text-transform: uppercase; white-space: nowrap;
+  transform: translate(-50%, -50%) translate(var(--ox, 0px), var(--oy, 120px)) scale(var(--os, 1));
+  transition: transform .34s cubic-bezier(.22, 1, .28, 1), opacity .34s, border-color .34s;
+}
+.choice__other:focus-visible { outline: 2px solid var(--yellow); outline-offset: 3px; }
+.choice__foot {
+  position: relative; display: flex; align-items: center; justify-content: space-between;
+  gap: 1rem; flex-wrap: wrap;
+  font-family: var(--font-mono); font-size: .6rem; letter-spacing: .18em;
+  text-transform: uppercase;
+}
+.choice__counter { color: var(--yellow); }
+.choice__hint { color: var(--cream-soft); }
+.choice__win {
+  position: absolute; inset: 0; z-index: 5;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 1rem; text-align: center; padding: 1.5rem;
+  background: rgba(10, 10, 10, .95);
+  animation: arcadeIn .45s var(--ease-out);
+}
+.choice__win[hidden] { display: none; }
+.choice__win-title {
+  font-family: var(--font-display); text-transform: uppercase;
+  font-size: clamp(2.6rem, 8vw, 5.4rem); line-height: .9; color: var(--yellow);
+}
+.choice__win-text {
+  font-family: var(--font-alt); font-style: italic;
+  font-size: 1.05rem; color: var(--cream-soft); max-width: 34ch;
+}
+.choice__win-btns { display: flex; gap: .8rem; flex-wrap: wrap; justify-content: center; margin-top: .6rem; }
+
 /* ---------- CONTACT (CTA FINAL) ---------- */
 .cta { overflow: hidden; }
 /* Rond jaune franc, ancré dans le coin supérieur droit mais ENTIÈREMENT
@@ -1166,6 +1278,15 @@ img, canvas, svg { display: block; max-width: 100%; }
   .game__side { flex-direction: row; flex-wrap: wrap; }
   .game__side > * { flex: 1 1 220px; }
   .game__hint { flex-basis: 100%; }
+  /* Onglets : bandeau défilable plutôt que trois colonnes écrasées */
+  .arcade__tabs {
+    display: flex; grid-template-columns: none;
+    overflow-x: auto; scroll-snap-type: x mandatory;
+    margin-inline: calc(var(--pad) * -1); padding-inline: var(--pad);
+    padding-bottom: .5rem; scrollbar-width: none;
+  }
+  .arcade__tabs::-webkit-scrollbar { display: none; }
+  .arcade__tab { flex: 0 0 min(74vw, 300px); scroll-snap-align: start; }
   .tape { display: none; }
   .about__deck { grid-template-columns: repeat(3, 1fr); gap: 1rem; }
   .about__desc { font-size: .74rem; }
@@ -1174,6 +1295,17 @@ img, canvas, svg { display: block; max-width: 100%; }
 @media (max-width: 768px) {
   :root { --nav-h: 70px; }
   .burger { display: block; }
+  /* Cibles tactiles : 44 px minimum, partout où l'on tape */
+  .footer__link, .footer__legal-link, .footer__top-btn, .contact-tab, .mobile-menu__link {
+    min-height: 44px; display: flex; align-items: center;
+  }
+  .footer__legal { gap: .4rem 1.6rem; }
+  .mobile-menu__link { min-height: 56px; }
+  /* Pied de page et menu : sous l'encoche et au-dessus de la barre système */
+  .footer { padding-bottom: calc(2rem + env(safe-area-inset-bottom, 0px)); }
+  .mobile-menu__foot { padding-bottom: env(safe-area-inset-bottom, 0px); }
+  /* Le grain animé coûte cher en GPU sur mobile : on le fige, on le garde */
+  .grain { animation: none; opacity: .05; }
   .nav__cta { display: none; }
   .hero__logo-script { width: min(80vw, 520px); }
   .hero__bottom { gap: 1.5rem; }
@@ -1199,6 +1331,10 @@ img, canvas, svg { display: block; max-width: 100%; }
 /* Petits écrans : les titres passent en échelle strictement fluide
    (les mots longs comme « REPRÉSENTATION. » tiennent dans l'écran) */
 @media (max-width: 640px) {
+  /* En portrait les terrains passent en 560×800 : le JS borne leur
+     largeur pour que la hauteur tienne dans l'écran. Ici on centre. */
+  #gameCanvas, #roadCanvas { margin-inline: auto; }
+  .game__frame { display: flex; justify-content: center; background: var(--night); }
   .section__title { font-size: clamp(2.4rem, 12.5vw, 3.9rem); }
   .section__title--long { font-size: clamp(2.2rem, 11.5vw, 3.6rem); }
   .cta__title { font-size: clamp(3rem, 16vw, 4.6rem); }
@@ -1206,6 +1342,13 @@ img, canvas, svg { display: block; max-width: 100%; }
 }
 
 @media (max-width: 480px) {
+  .arcade__tab { flex-basis: min(82vw, 290px); padding: 1rem 1.1rem; }
+  /* Sur un écran étroit, un libellé sur une seule ligne remplirait
+     toute la largeur : elle ne pourrait plus fuir que verticalement. */
+  .choice__other { white-space: normal; max-width: 44vw; text-align: center; line-height: 1.5; }
+  .arcade__brief { font-size: .86rem; padding-left: .9rem; }
+  .choice__field { min-height: 340px; }
+  .choice__nous { padding: 1.4rem 1.8rem; }
   .mobile-menu__word { font-size: clamp(2.4rem, 12vw, 3.4rem); }
   .hero__tagline-line { font-size: clamp(2.1rem, 9vw, 3rem); }
   .contact-tab { font-size: .54rem; letter-spacing: .12em; gap: .4rem; }
@@ -1215,7 +1358,7 @@ img, canvas, svg { display: block; max-width: 100%; }
 /* ---------- REDUCED MOTION ---------- */
 @media (prefers-reduced-motion: reduce) {
   .grain, .marquee__track, .values-track,
-  .pl__halo, .pl__band-track, .pl__star { animation: none !important; }
+  .pl__halo, .pl__star { animation: none !important; }
   .hero__line-inner { transform: none; }
   .manifesto__text .w { opacity: 1; transform: none; filter: none; }
   .hero__video { transform: none; }

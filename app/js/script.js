@@ -48,7 +48,7 @@
   }
 
   function playHeroVideo() {
-    if (!heroVideo) { return; }
+    if (!heroVideo || heroVideo.dataset.frugal === '1') { return; }
     var p = heroVideo.play();
     if (p && p.catch) { p.catch(function () { /* autoplay bloqué : le poster reste */ }); }
   }
@@ -66,8 +66,10 @@
 
   /* ============================================================
      3. PRELOADER — « L'ENCRE »
-     La signature NOUS est la jauge : l'encre jaune la remplit de
-     gauche à droite, une plume de lumière suit le bord de l'encre.
+     Une seule colonne à lire : « chargement » → la signature qui se
+     remplit d'encre → la barre + le pourcentage → l'étape en cours.
+     Les trois lectures disent la même chose (--p), pour qu'on
+     comprenne au premier coup d'œil.
      La progression n'est PAS décorative — elle pondère le
      chargement réel (vidéo, polices, images clés, window.load),
      avec un filet qui garde la jauge vivante sur réseau lent.
@@ -95,47 +97,20 @@
     var statusEl = document.getElementById('plStatus');
     var gaugeEl = document.getElementById('plGauge');
     var skipBtn = document.getElementById('plSkip');
-    var taglineEl = document.getElementById('plTagline');
     var signEl = preloader.querySelector('.pl__sign');
-    var plClockEl = document.getElementById('plClock');
     var onMove = null;
     var inTl = null;
 
     lockScroll(true);
 
-    // — Horloge d'atelier (même heure que le pied de page) —
-    if (plClockEl) {
-      try {
-        plClockEl.textContent = new Date().toLocaleTimeString('fr-FR', {
-          timeZone: 'Europe/Paris', hour: '2-digit', minute: '2-digit'
-        });
-      } catch (e) {
-        plClockEl.textContent = new Date().toLocaleTimeString('fr-FR');
-      }
-    }
-
-    // — La baseline est découpée en lettres : elles s'allument au
-    //   rythme de la progression (seconde lecture de la jauge) —
-    var letters = [];
-    if (taglineEl) {
-      var txt = taglineEl.textContent.trim();
-      taglineEl.textContent = '';
-      for (var i = 0; i < txt.length; i++) {
-        var sp = document.createElement('span');
-        if (txt.charAt(i) === ' ') { sp.className = 'is-space'; sp.innerHTML = '&nbsp;'; }
-        else { sp.textContent = txt.charAt(i); }
-        taglineEl.appendChild(sp);
-        letters.push(sp);
-      }
-    }
-
-    /* ---- Phases annoncées : on dit ce qui se passe, pas « chargement… » ---- */
+    /* ---- Étapes écrites en clair : on dit ce qui charge ---- */
     var PHASES = [
-      { at: 0, label: "Préparation de l'atelier" },
-      { at: 30, label: 'Chargement des visuels' },
-      { at: 60, label: 'Mise en récit' },
-      { at: 88, label: 'Derniers réglages' },
-      { at: 100, label: 'Bienvenue' }
+      { at: 0, label: 'Préparation de la page' },
+      { at: 25, label: 'Chargement des images' },
+      { at: 50, label: 'Chargement de la vidéo' },
+      { at: 78, label: 'Mise en place du contenu' },
+      { at: 94, label: 'Derniers réglages' },
+      { at: 100, label: 'Prêt — bienvenue' }
     ];
     var phaseIdx = -1;
     function setPhase(v) {
@@ -204,16 +179,14 @@
 
     /* ---- Rendu : une seule variable CSS pilote toute la scène ---- */
     var shown = 0;
-    var litCount = 0;
     function paint(v) {
       var r = Math.round(v);
+      // --p alimente d'un coup les trois lectures : l'encre de la
+      // signature, la barre et la plume. Le compteur suit le même chiffre.
       preloader.style.setProperty('--p', (v / 100).toFixed(4));
-      if (counterEl) { counterEl.textContent = (r < 10 ? '0' : '') + r; }
+      if (counterEl) { counterEl.textContent = r; }
       if (gaugeEl) { gaugeEl.setAttribute('aria-valuenow', r); }
       setPhase(r);
-      var n = Math.round(v / 100 * letters.length);
-      while (litCount < n) { letters[litCount].classList.add('is-lit'); litCount++; }
-      while (litCount > n) { litCount--; letters[litCount].classList.remove('is-lit'); }
     }
 
     /* ---- Boucle : la valeur affichée poursuit la valeur réelle,
@@ -270,7 +243,6 @@
       if (inTl) { inTl.progress(1).kill(); inTl = null; }
       if (onMove) { window.removeEventListener('mousemove', onMove); onMove = null; }
       gsap.killTweensOf('.pl__stage');
-      gsap.killTweensOf('.pl__band');
       gsap.set('.pl__stage', { x: 0, y: 0 });
 
       // Le niveau d'encre est partagé : --f pilote les colonnes (plein
@@ -284,7 +256,7 @@
         // 1. La plume éclate au bout de la signature
         .to('.pl__nib', { opacity: 0, scaleX: 26, duration: .45, ease: 'expo.out' }, 0)
         // 2. Le HUD s'efface : plus rien ne distrait de la marque
-        .to(['.pl__head', '.pl__foot', '.pl__gauge', '.pl__eyebrow', '.pl__tagline'],
+        .to(['.pl__skip', '.pl__eyebrow', '.pl__meter', '.pl__status'],
           { opacity: 0, duration: .28, ease: 'power2.in' }, .03)
         // 3. L'encre monte et retourne la signature (jaune → noir)
         .to(ink, {
@@ -296,7 +268,7 @@
             preloader.style.setProperty('--fl', Math.max(0, Math.min(1, fl)).toFixed(4));
           }
         }, .12)
-        .set(['.pl__bg', '.pl__band'], { opacity: 0 }, .76)
+        .set('.pl__bg', { opacity: 0 }, .76)
         // 4. Battement : la marque « signe » la page
         .to('.pl__sign', { scale: 1.04, duration: .16, ease: 'power2.out' }, .76)
         .to('.pl__sign', { scale: 1, duration: .24, ease: 'power2.inOut' }, .92)
@@ -348,30 +320,26 @@
 
     /* ---- Entrée en scène ---- */
     if (hasGsap && !REDUCED) {
-      gsap.set(['.pl__head', '.pl__foot', '.pl__gauge'], { opacity: 0, y: 14 });
       gsap.set('.pl__eyebrow', { opacity: 0, y: 10 });
       gsap.set('.pl__sign', { opacity: 0, scale: .965 });
-      gsap.set('.pl__tagline', { opacity: 0 });
+      gsap.set(['.pl__meter', '.pl__status'], { opacity: 0, y: 10 });
 
       inTl = gsap.timeline({ defaults: { ease: 'expo.out' } })
-        .to('.pl__sign', { opacity: 1, scale: 1, duration: 1.1 }, .05)
-        .to('.pl__eyebrow', { opacity: 1, y: 0, duration: .8 }, .22)
-        .to(['.pl__head', '.pl__foot', '.pl__gauge'],
-          { opacity: 1, y: 0, duration: .9, stagger: .06 }, .28)
-        .to('.pl__nib', { opacity: 1, duration: .5, ease: 'power2.out' }, .35)
-        .to('.pl__tagline', { opacity: 1, duration: .8 }, .42)
-        .to('.pl__skip', { opacity: 1, duration: .5 }, 1.15);
+        .to('.pl__eyebrow', { opacity: 1, y: 0, duration: .7 }, 0)
+        .to('.pl__sign', { opacity: 1, scale: 1, duration: 1.1 }, .12)
+        .to('.pl__nib', { opacity: 1, duration: .5, ease: 'power2.out' }, .38)
+        .to(['.pl__meter', '.pl__status'],
+          { opacity: 1, y: 0, duration: .8, stagger: .08 }, .34)
+        .to('.pl__skip', { opacity: 1, duration: .5 }, 1.1);
 
-      // Magnétisme : la scène suit très légèrement le curseur,
-      // le bandeau de fond part en sens inverse (profondeur).
+      // Magnétisme discret : la colonne suit très légèrement le curseur
       if (FINE_POINTER) {
         var qx = gsap.quickTo('.pl__stage', 'x', { duration: .9, ease: 'power3' });
         var qy = gsap.quickTo('.pl__stage', 'y', { duration: .9, ease: 'power3' });
-        var qb = gsap.quickTo('.pl__band', 'x', { duration: 1.3, ease: 'power3' });
         onMove = function (e) {
           var nx = e.clientX / window.innerWidth - .5;
           var ny = e.clientY / window.innerHeight - .5;
-          qx(nx * 26); qy(ny * 16); qb(nx * -58);
+          qx(nx * 18); qy(ny * 12);
         };
         window.addEventListener('mousemove', onMove);
       }
@@ -664,6 +632,39 @@
     menu.querySelectorAll('a').forEach(function (link) {
       link.addEventListener('click', function () { closeMenu(); });
     });
+
+    // Au clavier, le menu doit être une vraie boucle : le focus entre
+    // dedans à l'ouverture, y reste tant qu'il est ouvert, et revient
+    // au burger à la fermeture.
+    var firstLink = menu.querySelector('a');
+    function focusables() {
+      return Array.prototype.filter.call(
+        menu.querySelectorAll('a[href], button:not([disabled])'),
+        function (el) { return el.offsetParent !== null; });
+    }
+    menu.addEventListener('keydown', function (e) {
+      if (!isOpen || e.key !== 'Tab') { return; }
+      var f = focusables();
+      if (!f.length) { return; }
+      var first = f[0], last = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    });
+    var _open = openMenu, _close = closeMenu;
+    openMenu = function () {
+      _open();
+      menu.removeAttribute('inert');
+      if (firstLink) { setTimeout(function () { firstLink.focus(); }, 380); }
+    };
+    closeMenu = function () {
+      var wasOpen = isOpen;
+      _close();
+      menu.setAttribute('inert', '');
+      if (wasOpen && document.activeElement && menu.contains(document.activeElement)) {
+        burger.focus();
+      }
+    };
+    menu.setAttribute('inert', '');
   })();
 
   /* ============================================================
@@ -896,10 +897,138 @@
     setTimeout(function () { positionInk(tabT); }, 600);
   })();
 
+  /* ============================================================
+     17. REPÈRE DE LECTURE — LA NAV SUIT LA SECTION
+     On ne sait jamais où on est dans une page longue : le lien
+     de la section traversée s'allume, dans la nav comme dans le
+     menu mobile.
+     ============================================================ */
+  (function initScrollSpy() {
+    var links = Array.prototype.slice.call(
+      document.querySelectorAll('.nav__link[href^="#"], .mobile-menu__link[href^="#"]'));
+    if (!links.length) { return; }
+
+    var targets = [];
+    links.forEach(function (a) {
+      var id = a.getAttribute('href').slice(1);
+      var el = document.getElementById(id);
+      if (el && targets.indexOf(el) < 0) { targets.push(el); }
+    });
+    if (!targets.length) { return; }
+
+    var current = '';
+    function setCurrent(id) {
+      if (id === current) { return; }
+      current = id;
+      links.forEach(function (a) {
+        var on = a.getAttribute('href') === '#' + id;
+        a.classList.toggle('is-current', on);
+        if (a.classList.contains('nav__link')) {
+          if (on) { a.setAttribute('aria-current', 'true'); }
+          else { a.removeAttribute('aria-current'); }
+        }
+      });
+    }
+
+    if ('IntersectionObserver' in window) {
+      // La bande active est le tiers haut de l'écran : la section
+      // « courante » est celle qu'on est en train de lire, pas celle
+      // qui affleure en bas.
+      var seen = {};
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) { seen[en.target.id] = en.isIntersecting; });
+        for (var i = targets.length - 1; i >= 0; i--) {
+          if (seen[targets[i].id]) { setCurrent(targets[i].id); return; }
+        }
+        setCurrent('');
+      }, { rootMargin: '-18% 0px -62% 0px', threshold: 0 });
+      targets.forEach(function (t) { io.observe(t); });
+    }
+  }());
+
+  /* ============================================================
+     18. MAGNÉTISME DES BOUTONS + RETOUR AU CLIC
+     Les cibles principales attirent légèrement le curseur : on
+     sent le bouton avant de l'atteindre. Pointeur fin uniquement.
+     ============================================================ */
+  (function initMagnetic() {
+    if (!FINE_POINTER || REDUCED || !hasGsap) { return; }
+    var els = document.querySelectorAll('.btn, .arcade__tab, .choice__nous, .contact-tab');
+
+    els.forEach(function (el) {
+      var qx = gsap.quickTo(el, 'x', { duration: .5, ease: 'power3' });
+      var qy = gsap.quickTo(el, 'y', { duration: .5, ease: 'power3' });
+      var pull = el.classList.contains('btn') ? 0.32 : 0.16;
+
+      el.addEventListener('mousemove', function (e) {
+        var r = el.getBoundingClientRect();
+        qx((e.clientX - (r.left + r.width / 2)) * pull);
+        qy((e.clientY - (r.top + r.height / 2)) * pull);
+      });
+      el.addEventListener('mouseleave', function () { qx(0); qy(0); });
+    });
+  }());
+
+  /* ============================================================
+     19. LE BANDEAU RÉPOND AU SCROLL
+     Le marquee accélère avec la molette et repart dans l'autre
+     sens quand on remonte : la page entière semble entraînée.
+     ============================================================ */
+  (function initMarqueeVelocity() {
+    if (!hasGsap || REDUCED) { return; }
+    var tracks = document.querySelectorAll('.marquee__track, .values-track');
+    if (!tracks.length) { return; }
+
+    var last = window.scrollY || 0, vel = 0, raf = 0;
+
+    function apply() {
+      raf = 0;
+      var boost = Math.min(Math.abs(vel) / 26, 5.5);
+      var dir = vel > 0 ? 'normal' : 'reverse';
+      tracks.forEach(function (t) {
+        t.style.animationPlayState = 'running';
+        t.style.animationDirection = dir;
+        t.style.animationDuration = (t.dataset.base || 24) / (1 + boost) + 's';
+      });
+    }
+
+    tracks.forEach(function (t) {
+      t.dataset.base = parseFloat(getComputedStyle(t).animationDuration) || 24;
+    });
+
+    function onScroll() {
+      var y = window.scrollY || 0;
+      vel = vel * 0.72 + (y - last) * 0.28;
+      last = y;
+      if (!raf) { raf = requestAnimationFrame(apply); }
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    if (lenis) { lenis.on('scroll', onScroll); }
+  }());
+
+  /* ============================================================
+     20. MOBILE — NE PAS FAIRE PAYER LA VIDÉO À TOUT LE MONDE
+     4 Mo de vidéo décorative sur un forfait limité, c'est non :
+     en mode économie de données ou sur réseau lent, on garde le
+     poster et on n'ouvre jamais le flux.
+     ============================================================ */
+  (function initVideoBudget() {
+    if (!heroVideo) { return; }
+    var c = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    var frugal = !!(c && (c.saveData || /(^|-)2g$/.test(c.effectiveType || '')));
+    if (!frugal) { return; }
+    heroVideo.removeAttribute('autoplay');
+    heroVideo.preload = 'none';
+    var src = heroVideo.querySelector('source');
+    if (src) { src.removeAttribute('src'); }
+    heroVideo.load(); // le poster reste affiché, aucun octet de vidéo n'est demandé
+    heroVideo.dataset.frugal = '1';
+  }());
+
 })();
 
 /* ============================================================
-   18. L'ATELIER NOUS — BREAKOUT DU BRANDING
+   22. L'ATELIER · 01 — LE TRI (CASSE-BRIQUES)
    Les bons ingrédients d'une marque élargissent la raquette,
    les mauvaises pratiques la font rétrécir.
    ============================================================ */
@@ -988,10 +1117,14 @@
       resetBall();
     }
     dpr = Math.min(window.devicePixelRatio || 1, 2);
-    scale = rect.width / LW;
-    canvas.width = Math.round(rect.width * dpr);
-    canvas.height = Math.round(rect.width * (LH / LW) * dpr);
-    canvas.style.height = (rect.width * (LH / LW)) + 'px';
+    // En portrait le terrain est haut : on borne sa largeur pour que
+    // la hauteur tienne dans l'écran, sans faire défiler la page.
+    var w = Math.min(rect.width, window.innerHeight * 0.74 * (LW / LH));
+    scale = w / LW;
+    canvas.width = Math.round(w * dpr);
+    canvas.height = Math.round(w * (LH / LW) * dpr);
+    canvas.style.width = w + 'px';
+    canvas.style.height = (w * (LH / LW)) + 'px';
     render();
   }
 
@@ -1224,6 +1357,7 @@
     paddle.target = (t.clientX - rect.left) / scale - paddle.w / 2;
   }, { passive: false });
   window.addEventListener('keydown', function (e) {
+    if (window.NOUS_ARCADE && window.NOUS_ARCADE.active !== 'tri') { return; }
     if (e.key === 'ArrowLeft') { keys.left = true; }
     if (e.key === 'ArrowRight') { keys.right = true; }
   });
@@ -1243,5 +1377,595 @@
   window.addEventListener('resize', resize);
   if (document.fonts && document.fonts.ready) { document.fonts.ready.then(render); }
 
+  // Un seul jeu tourne à la fois : l'onglet pilote la boucle.
+  window.NOUS_ARCADE = window.NOUS_ARCADE || { active: 'tri', on: {} };
+  window.NOUS_ARCADE.on.tri = {
+    enter: function () {
+      resize();
+      lastT = performance.now();
+      if (!rafId) { rafId = requestAnimationFrame(loop); }
+    },
+    leave: function () {
+      running = false;
+      if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
+      overlay.classList.remove('is-hidden');
+    }
+  };
+
   resize();
+  if (!rafId) { rafId = requestAnimationFrame(loop); }
 })();
+
+/* ============================================================
+   23. L'ATELIER — PILOTE DES ONGLETS
+   Un seul jeu vivant à la fois : on prévient celui qu'on quitte
+   pour qu'il coupe sa boucle, et celui qu'on ouvre pour qu'il
+   se remette à l'échelle du panneau désormais visible.
+   ============================================================ */
+window.NOUS_ARCADE = window.NOUS_ARCADE || { active: 'tri', on: {} };
+
+(function () {
+  'use strict';
+
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.arcade__tab'));
+  if (!tabs.length) { return; }
+  var arcade = window.NOUS_ARCADE;
+
+  function panelOf(tab) { return document.getElementById(tab.getAttribute('aria-controls')); }
+  function keyOf(tab) { return tab.id.replace('tab-', ''); }
+
+  function activate(tab, focus) {
+    var key = keyOf(tab);
+    if (key === arcade.active) { return; }
+    var leaving = arcade.active;
+
+    tabs.forEach(function (t) {
+      var on = t === tab;
+      t.classList.toggle('is-active', on);
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+      t.tabIndex = on ? 0 : -1;
+      var panel = panelOf(t);
+      if (!panel) { return; }
+      panel.hidden = !on;
+      panel.classList.toggle('is-active', on);
+    });
+
+    arcade.active = key;
+    if (arcade.on[leaving] && arcade.on[leaving].leave) { arcade.on[leaving].leave(); }
+    if (arcade.on[key] && arcade.on[key].enter) { arcade.on[key].enter(); }
+    if (focus) { tab.focus(); }
+    if (window.ScrollTrigger) { ScrollTrigger.refresh(); }
+  }
+
+  tabs.forEach(function (tab) {
+    tab.addEventListener('click', function () { activate(tab, false); });
+  });
+
+  // Navigation clavier normalisée pour un jeu d'onglets
+  document.querySelector('.arcade__tabs').addEventListener('keydown', function (e) {
+    var i = tabs.indexOf(document.activeElement);
+    if (i < 0) { return; }
+    var next = -1;
+    if (e.key === 'ArrowRight') { next = (i + 1) % tabs.length; }
+    else if (e.key === 'ArrowLeft') { next = (i - 1 + tabs.length) % tabs.length; }
+    else if (e.key === 'Home') { next = 0; }
+    else if (e.key === 'End') { next = tabs.length - 1; }
+    if (next < 0) { return; }
+    e.preventDefault();
+    activate(tabs[next], true);
+  });
+}());
+
+/* ============================================================
+   24. L'ATELIER · 02 — LA ROUTE
+   Objectif : éviter les mauvaises pratiques. Les blocs sombres
+   coûtent une erreur (trois et la course s'arrête), les jetons
+   jaunes sont les bons réflexes. La vitesse monte avec la distance.
+   ============================================================ */
+(function () {
+  'use strict';
+
+  var canvas = document.getElementById('roadCanvas');
+  if (!canvas) { return; }
+  var ctx = canvas.getContext('2d');
+  var frame = canvas.parentElement;
+  var overlay = document.getElementById('roadOverlay');
+  var overlayTitle = document.getElementById('roadOverlayTitle');
+  var overlayText = document.getElementById('roadOverlayText');
+  var btn = document.getElementById('roadBtn');
+  var distEl = document.getElementById('roadDist');
+  var livesEl = document.getElementById('roadLives');
+  var chipsGood = document.getElementById('roadChipsGood');
+  var chipsBad = document.getElementById('roadChipsBad');
+  var REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  var BAD = ['BRIEF FLOU', 'LOGO EN CLIPART', 'COPIER LE VOISIN', 'PROMESSE VIDE',
+             'DIX POLICES', 'CHARTE IGNORÉE', 'TENDANCE JETABLE', 'CIBLE INCONNUE',
+             'GREENWASHING', 'TON QUI CHANGE', 'STOCK PHOTO', 'SLOGAN CREUX'];
+  var GOOD = ['CLARTÉ', 'PREUVES', 'COHÉRENCE', 'ÉCOUTE', 'ANCRAGE', 'AUDACE',
+              'CONSTANCE', 'VÉRITÉ'];
+
+  var LW = 920, LH = 580, mode = '';
+  var LANES = 3, ROAD_PAD = 92;
+  var scale = 1, dpr = 1;
+  var running = false, over = false, inView = true, rafId = null, lastT = 0;
+  var car = { x: 0, w: 62, h: 104, tilt: 0, target: 0 };
+  var items = [], floats = [], stripes = [];
+  var dist = 0, speed = 0, lives = 3, spawnIn = 0, shake = 0, invuln = 0;
+  var keys = { left: false, right: false };
+
+  function roadLeft() { return ROAD_PAD; }
+  function roadRight() { return LW - ROAD_PAD; }
+  function laneX(i) {
+    var w = (roadRight() - roadLeft()) / LANES;
+    return roadLeft() + w * (i + 0.5);
+  }
+
+  function setMode(m) {
+    mode = m;
+    if (m === 'portrait') {
+      LW = 560; LH = 800; ROAD_PAD = 46;
+      car.w = 74; car.h = 124;
+    } else {
+      LW = 920; LH = 580; ROAD_PAD = 92;
+      car.w = 62; car.h = 104;
+    }
+    car.x = LW / 2;
+    car.target = car.x;
+    stripes = [];
+    for (var i = 0; i < 14; i++) { stripes.push(i * (LH / 7)); }
+  }
+
+  function resize() {
+    var rect = frame.getBoundingClientRect();
+    if (!rect.width) { return; }
+    var newMode = rect.width < 640 ? 'portrait' : 'landscape';
+    if (newMode !== mode) { setMode(newMode); }
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    // Même contrainte que le casse-briques : le terrain portrait doit
+    // tenir dans l'écran pour qu'on voie arriver les obstacles.
+    var w = Math.min(rect.width, window.innerHeight * 0.74 * (LW / LH));
+    scale = w / LW;
+    canvas.width = Math.round(w * dpr);
+    canvas.height = Math.round(w * (LH / LW) * dpr);
+    canvas.style.width = w + 'px';
+    canvas.style.height = (w * (LH / LW)) + 'px';
+    render();
+  }
+
+  function addChip(container, label, bad) {
+    if (!container) { return; }
+    var empty = container.querySelector('.game__chip-empty');
+    if (empty) { empty.remove(); }
+    if (container.querySelector('[data-l="' + label + '"]')) { return; }
+    var chip = document.createElement('span');
+    chip.className = 'game__chip' + (bad ? ' game__chip--bad' : '');
+    chip.setAttribute('data-l', label);
+    chip.textContent = label;
+    container.appendChild(chip);
+  }
+
+  function resetChips() {
+    chipsGood.innerHTML = '<span class="game__chip-empty">—</span>';
+    chipsBad.innerHTML = '<span class="game__chip-empty">—</span>';
+  }
+
+  function paintLives() {
+    var dots = livesEl.querySelectorAll('.game__life');
+    for (var i = 0; i < dots.length; i++) {
+      dots[i].classList.toggle('is-lost', i >= lives);
+    }
+    livesEl.setAttribute('aria-label', lives + ' erreur' + (lives > 1 ? 's' : '') + ' restante' + (lives > 1 ? 's' : ''));
+  }
+
+  function pick(a) { return a[Math.floor(Math.random() * a.length)]; }
+
+  function spawn() {
+    // Une seule voie est laissée libre : on peut toujours passer.
+    var free = Math.floor(Math.random() * LANES);
+    for (var i = 0; i < LANES; i++) {
+      if (i === free) {
+        if (Math.random() < 0.45) {
+          items.push({ lane: i, y: -70, good: true, label: pick(GOOD), hit: false });
+        }
+        continue;
+      }
+      if (Math.random() < 0.72) {
+        items.push({ lane: i, y: -80, good: false, label: pick(BAD), hit: false });
+      }
+    }
+  }
+
+  function endRace() {
+    running = false; over = true;
+    var m = Math.floor(dist);
+    overlayTitle.textContent = m >= 900 ? 'BELLE TENUE DE ROUTE.' : 'SORTIE DE ROUTE.';
+    overlayText.textContent = m >= 900
+      ? m + ' m parcourus sans céder aux mauvaises pratiques.'
+      : 'Trois mauvaises pratiques encaissées après ' + m + ' m.';
+    btn.querySelector('.btn__text').textContent = 'Reprendre le volant';
+    overlay.classList.remove('is-hidden');
+  }
+
+  function start() {
+    items = []; floats = [];
+    dist = 0; speed = 6.4; lives = 3; spawnIn = 20; shake = 0; invuln = 0;
+    car.x = LW / 2; car.target = car.x; car.tilt = 0;
+    over = false;
+    distEl.textContent = '0';
+    paintLives();
+    resetChips();
+    overlay.classList.add('is-hidden');
+    running = true;
+    lastT = performance.now();
+    if (!rafId) { rafId = requestAnimationFrame(loop); }
+  }
+
+  function update(dt) {
+    speed = Math.min(6.4 + dist / 260, 15);
+    dist += speed * dt * 0.16;
+    distEl.textContent = Math.floor(dist);
+
+    if (keys.left) { car.target -= 9 * dt; }
+    if (keys.right) { car.target += 9 * dt; }
+    var minX = roadLeft() + car.w / 2 + 4;
+    var maxX = roadRight() - car.w / 2 - 4;
+    car.target = Math.max(minX, Math.min(car.target, maxX));
+    var prev = car.x;
+    car.x += (car.target - car.x) * Math.min(0.22 * dt, 1);
+    car.tilt += ((car.x - prev) * 0.045 - car.tilt) * Math.min(0.2 * dt, 1);
+
+    spawnIn -= dt;
+    if (spawnIn <= 0) {
+      spawn();
+      spawnIn = Math.max(26, 62 - dist / 26);
+    }
+
+    var carTop = LH - 150, carBot = LH - 150 + car.h;
+    for (var i = items.length - 1; i >= 0; i--) {
+      var it = items[i];
+      it.y += speed * dt;
+      if (it.y > LH + 90) { items.splice(i, 1); continue; }
+      if (it.hit) { continue; }
+
+      var ix = laneX(it.lane);
+      var iw = it.good ? 54 : (roadRight() - roadLeft()) / LANES - 26;
+      var ih = it.good ? 54 : 62;
+      var overlapX = Math.abs(ix - car.x) < (iw + car.w) / 2 - 8;
+      var overlapY = it.y + ih > carTop + 12 && it.y < carBot - 12;
+      if (!overlapX || !overlapY) { continue; }
+
+      it.hit = true;
+      if (it.good) {
+        floats.push({ x: ix, y: it.y, txt: it.label, good: true, life: 1 });
+        addChip(chipsGood, it.label, false);
+      } else if (invuln <= 0) {
+        lives--;
+        paintLives();
+        shake = 16;
+        invuln = 70;
+        floats.push({ x: ix, y: it.y, txt: it.label, good: false, life: 1 });
+        addChip(chipsBad, it.label, true);
+        if (lives <= 0) { endRace(); return; }
+      }
+    }
+
+    if (invuln > 0) { invuln -= dt; }
+    if (shake > 0) { shake = Math.max(0, shake - dt); }
+
+    for (var s = 0; s < stripes.length; s++) {
+      stripes[s] += speed * dt;
+      if (stripes[s] > LH + 40) { stripes[s] -= LH + 80; }
+    }
+
+    floats.forEach(function (f) { f.y -= 0.9 * dt; f.life -= 0.016 * dt; });
+    floats = floats.filter(function (f) { return f.life > 0; });
+  }
+
+  function roundRect(x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+  }
+
+  function render() {
+    var sx = shake > 0 ? (Math.random() - 0.5) * shake * 0.6 : 0;
+    var sy = shake > 0 ? (Math.random() - 0.5) * shake * 0.6 : 0;
+    ctx.setTransform(dpr * scale, 0, 0, dpr * scale, sx * dpr * scale, sy * dpr * scale);
+    ctx.clearRect(-20, -20, LW + 40, LH + 40);
+
+    // Bas-côtés
+    ctx.fillStyle = 'rgba(245,243,239,0.035)';
+    ctx.fillRect(0, 0, roadLeft(), LH);
+    ctx.fillRect(roadRight(), 0, LW - roadRight(), LH);
+
+    // Bords de chaussée
+    ctx.strokeStyle = 'rgba(245,243,239,0.28)';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(roadLeft(), 0); ctx.lineTo(roadLeft(), LH);
+    ctx.moveTo(roadRight(), 0); ctx.lineTo(roadRight(), LH);
+    ctx.stroke();
+
+    // Lignes de voie
+    ctx.fillStyle = 'rgba(245,243,239,0.16)';
+    for (var l = 1; l < LANES; l++) {
+      var lx = roadLeft() + (roadRight() - roadLeft()) / LANES * l - 2;
+      for (var s = 0; s < stripes.length; s++) {
+        ctx.fillRect(lx, stripes[s] - 40, 4, 46);
+      }
+    }
+
+    // Obstacles et jetons
+    items.forEach(function (it) {
+      if (it.hit) { return; }
+      var ix = laneX(it.lane);
+      if (it.good) {
+        ctx.beginPath();
+        ctx.arc(ix, it.y + 27, 24, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255,191,0,0.16)';
+        ctx.fill();
+        ctx.strokeStyle = '#FFBF00';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        ctx.fillStyle = '#FFBF00';
+        ctx.font = '700 20px "Space Mono", monospace';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('✳', ix, it.y + 28);
+        return;
+      }
+      var w = (roadRight() - roadLeft()) / LANES - 26;
+      roundRect(ix - w / 2, it.y, w, 62, 8);
+      ctx.fillStyle = 'rgba(28,22,16,0.94)';
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(200,120,60,0.65)';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+      ctx.fillStyle = 'rgba(245,243,239,0.8)';
+      ctx.font = (it.label.length > 12 ? 10 : 11) + 'px "Space Mono", monospace';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(it.label, ix, it.y + 31);
+    });
+
+    // La voiture NOUS
+    var cy = LH - 150;
+    ctx.save();
+    ctx.translate(car.x, cy + car.h / 2);
+    ctx.rotate(Math.max(-0.22, Math.min(car.tilt, 0.22)));
+    if (invuln > 0 && Math.floor(invuln / 6) % 2 === 0) { ctx.globalAlpha = 0.45; }
+    roundRect(-car.w / 2, -car.h / 2, car.w, car.h, 14);
+    ctx.fillStyle = '#FFBF00';
+    ctx.shadowColor = 'rgba(255,191,0,0.55)';
+    ctx.shadowBlur = 22;
+    ctx.fill();
+    ctx.shadowBlur = 0;
+    // pare-brise + capot
+    ctx.fillStyle = 'rgba(10,10,10,0.82)';
+    roundRect(-car.w / 2 + 9, -car.h / 2 + 16, car.w - 18, 26, 6);
+    ctx.fill();
+    roundRect(-car.w / 2 + 9, car.h / 2 - 40, car.w - 18, 22, 6);
+    ctx.fill();
+    ctx.restore();
+    ctx.globalAlpha = 1;
+
+    // Étiquettes flottantes
+    floats.forEach(function (f) {
+      ctx.fillStyle = (f.good ? 'rgba(255,191,0,' : 'rgba(224,150,96,') + f.life + ')';
+      ctx.font = '700 13px "Space Mono", monospace';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText((f.good ? '+ ' : '✕ ') + f.txt, f.x, f.y);
+    });
+  }
+
+  function loop(t) {
+    rafId = requestAnimationFrame(loop);
+    var dt = (t - lastT) / 16.7;
+    lastT = t;
+    dt = Math.max(0.4, Math.min(dt, 2.2));
+    if (running && inView && !document.hidden) { update(dt); }
+    render();
+  }
+
+  function pointTo(clientX) {
+    var rect = canvas.getBoundingClientRect();
+    car.target = (clientX - rect.left) / scale;
+  }
+  canvas.addEventListener('mousemove', function (e) { pointTo(e.clientX); });
+  canvas.addEventListener('touchstart', function (e) { pointTo(e.touches[0].clientX); }, { passive: true });
+  canvas.addEventListener('touchmove', function (e) {
+    e.preventDefault();
+    pointTo(e.touches[0].clientX);
+  }, { passive: false });
+  window.addEventListener('keydown', function (e) {
+    if (window.NOUS_ARCADE.active !== 'route') { return; }
+    if (e.key === 'ArrowLeft') { keys.left = true; }
+    if (e.key === 'ArrowRight') { keys.right = true; }
+  });
+  window.addEventListener('keyup', function (e) {
+    if (e.key === 'ArrowLeft') { keys.left = false; }
+    if (e.key === 'ArrowRight') { keys.right = false; }
+  });
+
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function (entries) {
+      inView = entries[0].isIntersecting;
+      if (inView) { lastT = performance.now(); }
+    }, { threshold: 0.15 }).observe(frame);
+  }
+
+  btn.addEventListener('click', start);
+  window.addEventListener('resize', resize);
+  if (document.fonts && document.fonts.ready) { document.fonts.ready.then(render); }
+
+  // Le panneau est masqué au départ : on ne mesure qu'à l'ouverture.
+  window.NOUS_ARCADE.on.route = {
+    enter: function () {
+      resize();
+      lastT = performance.now();
+      if (!rafId) { rafId = requestAnimationFrame(loop); }
+    },
+    leave: function () {
+      running = false;
+      if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
+      if (!over) {
+        overlay.classList.remove('is-hidden');
+        btn.querySelector('.btn__text').textContent = 'Prendre le volant';
+      }
+    }
+  };
+  if (REDUCED) {
+    overlayText.textContent = 'Course à défilement rapide — à lancer seulement si vous le souhaitez.';
+  }
+}());
+
+/* ============================================================
+   25. L'ATELIER · 03 — LE CHOIX
+   « NOUS. » ne bouge pas d'un pixel. « Une autre agence » se
+   dérobe dès que le pointeur l'approche, jusqu'à devenir
+   injoignable. La démonstration EST la blague.
+   ============================================================ */
+(function () {
+  'use strict';
+
+  var arena = document.getElementById('choiceArena');
+  if (!arena) { return; }
+  var field = document.getElementById('choiceField');
+  var other = document.getElementById('choiceOther');
+  var otherLabel = document.getElementById('choiceOtherLabel');
+  var nous = document.getElementById('choiceNous');
+  var triesEl = document.getElementById('choiceTries');
+  var hintEl = document.getElementById('choiceHint');
+  var winEl = document.getElementById('choiceWin');
+  var winText = document.getElementById('choiceWinText');
+  var resetBtn = document.getElementById('choiceReset');
+
+  var EXCUSES = [
+    'Une autre agence',
+    'Je suis en réunion',
+    'On vous rappelle',
+    'Le devis arrive',
+    'Notre stagiaire s’en occupe',
+    'On a un template pour ça',
+    'Relancez en septembre',
+    'C’est en validation',
+    'Mauvais réseau…',
+    'Injoignable'
+  ];
+  var HINTS = [
+    'Approchez le curseur de « une autre agence ».',
+    'Elle vous a vu venir.',
+    'Elle prend de la distance.',
+    'Toujours pas disponible.',
+    'Vous commencez à comprendre.',
+    'NOUS., en revanche, n’a pas bougé.',
+    'Elle est désormais hors de portée.',
+    'Le choix se fait tout seul.'
+  ];
+
+  var tries = 0;
+  var pos = { x: 0, y: 120 };
+  var lastFlee = 0;
+
+  function place(x, y, s) {
+    pos.x = x; pos.y = y;
+    other.style.setProperty('--ox', x.toFixed(1) + 'px');
+    other.style.setProperty('--oy', y.toFixed(1) + 'px');
+    other.style.setProperty('--os', s.toFixed(3));
+  }
+
+  function reset() {
+    tries = 0;
+    triesEl.textContent = '0';
+    otherLabel.textContent = EXCUSES[0];
+    hintEl.textContent = HINTS[0];
+    other.style.opacity = '1';
+    other.style.borderColor = '';
+    other.disabled = false;
+    place(0, 120, 1);
+    winEl.hidden = true;
+  }
+
+  // Elle fuit vers le point le plus éloigné du pointeur, en restant
+  // dans l'aire de jeu et sans jamais passer sous « NOUS. ».
+  function flee(px, py) {
+    var now = performance.now();
+    if (now - lastFlee < 130) { return; }
+    lastFlee = now;
+
+    var fr = field.getBoundingClientRect();
+    var br = other.getBoundingClientRect();
+    var cx = fr.width / 2, cy = fr.height / 2;
+    var halfW = br.width / 2 + 10, halfH = br.height / 2 + 10;
+    var maxX = Math.max(0, cx - halfW);
+    var maxY = Math.max(0, cy - halfH);
+
+    var rx = px - fr.left - cx;   // pointeur, en repère centré
+    var ry = py - fr.top - cy;
+
+    var best = null, bestD = -1;
+    for (var i = 0; i < 14; i++) {
+      var a = Math.random() * Math.PI * 2;
+      var tx = Math.cos(a) * maxX * (0.55 + Math.random() * 0.45);
+      var ty = Math.sin(a) * maxY * (0.55 + Math.random() * 0.45);
+      var d = Math.hypot(tx - rx, ty - ry);
+      // On pénalise le centre : c'est la place de NOUS.
+      if (Math.abs(tx) < maxX * 0.34 && Math.abs(ty) < maxY * 0.34) { d *= 0.25; }
+      if (d > bestD) { bestD = d; best = { x: tx, y: ty }; }
+    }
+
+    tries++;
+    triesEl.textContent = tries;
+    otherLabel.textContent = EXCUSES[Math.min(tries, EXCUSES.length - 1)];
+    hintEl.textContent = HINTS[Math.min(tries, HINTS.length - 1)];
+    place(best.x, best.y, Math.max(0.62, 1 - tries * 0.045));
+    other.style.opacity = String(Math.max(0.3, 1 - tries * 0.06));
+    if (tries >= 9) {
+      other.disabled = true;
+      other.style.borderColor = 'rgba(245,243,239,.16)';
+      hintEl.textContent = 'Injoignable. Il reste NOUS.';
+    }
+  }
+
+  function onPointer(e) {
+    if (!winEl.hidden || other.disabled) { return; }
+    var br = other.getBoundingClientRect();
+    var dx = e.clientX - (br.left + br.width / 2);
+    var dy = e.clientY - (br.top + br.height / 2);
+    // Le rayon de fuite est plus large au doigt : on n'a pas de survol.
+    var reach = e.pointerType === 'touch' ? 118 : 96;
+    if (Math.hypot(dx, dy) < reach) { flee(e.clientX, e.clientY); }
+  }
+
+  field.addEventListener('pointermove', onPointer);
+  field.addEventListener('pointerdown', onPointer);
+  // Au doigt, la fuite doit précéder le clic : on intercepte à la source.
+  other.addEventListener('pointerdown', function (e) {
+    e.preventDefault();
+    flee(e.clientX, e.clientY);
+  });
+  // Au clavier, elle reste « cliquable » — mais elle décline poliment.
+  other.addEventListener('click', function (e) {
+    e.preventDefault();
+    hintEl.textContent = 'Elle a décliné. Comme d’habitude.';
+    var fr = field.getBoundingClientRect();
+    flee(fr.left + fr.width / 2, fr.top + fr.height / 2);
+  });
+
+  nous.addEventListener('click', function () {
+    winText.textContent = tries === 0
+      ? 'Vous n’avez même pas essayé l’autre. Bon réflexe.'
+      : tries + ' tentative' + (tries > 1 ? 's' : '') + ' de l’autre côté. Ici, personne ne se dérobe.';
+    winEl.hidden = false;
+  });
+  resetBtn.addEventListener('click', reset);
+
+  window.NOUS_ARCADE.on.choix = { enter: reset };
+  reset();
+}());
