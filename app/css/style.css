@@ -596,7 +596,7 @@ img, canvas, svg { display: block; max-width: 100%; }
 .service__desc strong { font-weight: 500; color: var(--cream-txt); transition: color .45s; }
 .service__tags { display: flex; gap: .5rem; flex-wrap: wrap; margin-top: .9rem; }
 .service__tags span {
-  font-family: var(--font-mono); font-size: .56rem; letter-spacing: .16em;
+  font-family: var(--font-mono); font-size: .66rem; letter-spacing: .14em;
   border: 1px solid var(--line-light); border-radius: 100px; padding: .32rem .8rem;
   color: var(--cream-soft); transition: color .45s, border-color .45s;
 }
@@ -803,6 +803,13 @@ img, canvas, svg { display: block; max-width: 100%; }
 .game__hint {
   font-family: var(--font-mono); font-size: .56rem; letter-spacing: .18em;
   color: var(--ink-faint); text-align: center;
+}
+/* On n'annonce que les contrôles dont on dispose réellement :
+   parler de souris et de flèches sur un téléphone n'aide personne. */
+.hint-coarse { display: none; }
+@media (pointer: coarse) {
+  .hint-fine { display: none; }
+  .hint-coarse { display: inline; }
 }
 
 /* ---------- L'ATELIER — ONGLETS DES TROIS JEUX ---------- */
@@ -1325,10 +1332,25 @@ img, canvas, svg { display: block; max-width: 100%; }
   .stats__grid { grid-template-columns: repeat(2, 1fr); row-gap: 3rem; }
   .footer__top { grid-template-columns: 1fr 1fr; }
   .cta__grid { grid-template-columns: 1fr; gap: 2.8rem; }
-  .game__layout { grid-template-columns: 1fr; }
-  .game__side { flex-direction: row; flex-wrap: wrap; }
-  .game__side > * { flex: 1 1 220px; }
-  .game__hint { flex-basis: 100%; }
+  /* Sur une colonne, l'ordre naturel mettrait le score SOUS le
+     terrain : on ne le verrait jamais en jouant. display:contents
+     dissout le panneau latéral pour qu'on puisse réordonner. */
+  .game__layout { display: flex; flex-direction: column; gap: 1rem; }
+  .game__side { display: contents; }
+  .game__score-box { order: 1; }
+  .game__frame { order: 2; }
+  .game__hint { order: 3; }
+  .game__log { order: 4; }
+  /* Score compact, sur une seule ligne : il coiffe le terrain
+     sans lui voler de hauteur. */
+  .game__score-box {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: .8rem 1.2rem; flex-wrap: wrap; padding: .75rem 1.1rem;
+  }
+  .game__score-label { flex: 0 0 auto; }
+  .game__score { font-size: clamp(1.7rem, 7vw, 2.3rem); margin-left: auto; }
+  .game__lives { margin-top: 0; flex: 0 0 auto; }
+  .game__log { padding: 1.1rem 1.3rem; }
   /* Onglets : bandeau défilable plutôt que trois colonnes écrasées */
   .arcade__tabs {
     display: flex; grid-template-columns: none;
@@ -1337,7 +1359,15 @@ img, canvas, svg { display: block; max-width: 100%; }
     padding-bottom: .5rem; scrollbar-width: none;
   }
   .arcade__tabs::-webkit-scrollbar { display: none; }
-  .arcade__tab { flex: 0 0 min(74vw, 300px); scroll-snap-align: start; }
+  .arcade__tab {
+    flex: 0 0 min(74vw, 300px); scroll-snap-align: start;
+    display: grid; grid-template-columns: auto 1fr; gap: .1rem .6rem;
+    align-items: baseline; padding: .85rem 1.1rem .95rem;
+  }
+  .arcade__tab-num { grid-row: 1; }
+  .arcade__tab-name { grid-row: 1; font-size: clamp(1.3rem, 5.4vw, 1.7rem); }
+  .arcade__tab-goal { grid-column: 1 / -1; line-height: 1.45; }
+  .arcade__brief { margin-bottom: 1.1rem; font-size: .88rem; line-height: 1.7; }
   .tape { display: none; }
   .about__deck { grid-template-columns: repeat(3, 1fr); gap: 1rem; }
   .about__desc { font-size: .74rem; }
@@ -1346,12 +1376,6 @@ img, canvas, svg { display: block; max-width: 100%; }
 @media (max-width: 768px) {
   :root { --nav-h: 70px; }
   .burger { display: block; }
-  /* Cibles tactiles : 44 px minimum, partout où l'on tape */
-  .footer__link, .footer__legal-link, .footer__top-btn, .contact-tab, .mobile-menu__link {
-    min-height: 44px; display: flex; align-items: center;
-  }
-  .footer__legal { gap: .4rem 1.6rem; }
-  .mobile-menu__link { min-height: 56px; }
   /* Pied de page et menu : sous l'encoche et au-dessus de la barre système */
   .footer { padding-bottom: calc(2rem + env(safe-area-inset-bottom, 0px)); }
   .mobile-menu__foot { padding-bottom: env(safe-area-inset-bottom, 0px); }
@@ -1382,6 +1406,19 @@ img, canvas, svg { display: block; max-width: 100%; }
 /* Petits écrans : les titres passent en échelle strictement fluide
    (les mots longs comme « REPRÉSENTATION. » tiennent dans l'écran) */
 @media (max-width: 640px) {
+  /* La carte NOUS. occupait presque toute la largeur : l'autre
+     agence n'avait plus où fuir. On la réduit et on donne de la
+     hauteur au terrain — la fuite se joue alors en haut/en bas. */
+  .choice { padding: 1.4rem 1.1rem 1.6rem; }
+  .choice__field { min-height: 430px; }
+  .choice__nous { padding: 1.2rem 1.7rem; border-radius: 20px; }
+  .choice__nous-word { font-size: clamp(2.8rem, 15vw, 4.4rem); }
+  .choice__nous-sub { font-size: .5rem; letter-spacing: .14em; }
+  .choice__nous-cta { font-size: .5rem; padding: .38rem .9rem; }
+  .choice__other { padding: .7rem 1.05rem; max-width: 66%; }
+  .choice__other-label { font-size: .74rem; white-space: normal; text-align: center; line-height: 1.45; }
+  .choice__foot { gap: .5rem; }
+  .choice__hint { text-align: left; font-size: .54rem; }
   /* En portrait les terrains passent en 560×800 : le JS borne leur
      largeur pour que la hauteur tienne dans l'écran. Ici on centre. */
   #gameCanvas, #roadCanvas { margin-inline: auto; }
@@ -1398,12 +1435,53 @@ img, canvas, svg { display: block; max-width: 100%; }
      toute la largeur : elle ne pourrait plus fuir que verticalement. */
   .choice__other { white-space: normal; max-width: 44vw; text-align: center; line-height: 1.5; }
   .arcade__brief { font-size: .86rem; padding-left: .9rem; }
-  .choice__field { min-height: 340px; }
-  .choice__nous { padding: 1.4rem 1.8rem; }
+  /* Très petit écran : c'est le sous-titre qui fixait la largeur de
+     la carte et ne laissait aucune marge de fuite. On le replie. */
+  .choice__nous { padding: 1.1rem 1.4rem; }
+  .choice__nous-sub { max-width: 15ch; text-align: center; line-height: 1.5; }
+  /* Carte réduite : l'astérisque de coin viendrait mordre le point
+     de « NOUS. ». On le retire plutôt que de le laisser gêner. */
+  .choice__nous-star { display: none; }
+  .choice__nous-word { font-size: clamp(2.4rem, 13vw, 3.6rem); }
+  .choice__other { max-width: 72%; }
   .mobile-menu__word { font-size: clamp(2.4rem, 12vw, 3.4rem); }
   .hero__tagline-line { font-size: clamp(2.1rem, 9vw, 3rem); }
   .contact-tab { font-size: .54rem; letter-spacing: .12em; gap: .4rem; }
   .game__side > * { flex: 1 1 100%; }
+}
+
+/* ---------- CIBLES TACTILES ----------
+   Le doigt ne vise pas comme une souris : 44 px de haut minimum
+   partout où l'on tape. Réglé sur le type de pointeur et non sur
+   la largeur — une tablette large se tape aussi au doigt, et un
+   mobile en paysage dépasse les 768 px. */
+@media (pointer: coarse) {
+  .footer__link, .footer__legal-link, .footer__top-btn,
+  .contact-tab, .mobile-menu__link, .cta__social,
+  .contact-view__fallback, .nav__logo, .arcade__tab {
+    min-height: 44px;
+  }
+  .footer__link, .footer__legal-link, .footer__top-btn,
+  .cta__social, .contact-view__fallback, .nav__logo {
+    display: inline-flex; align-items: center;
+  }
+  .footer__legal { gap: .4rem 1.6rem; }
+  .mobile-menu__link { min-height: 56px; display: flex; align-items: center; }
+  /* Le lien mail est la cible la plus importante de la page :
+     on lui donne une vraie zone de frappe. */
+  .cta__maillink { display: inline-flex; align-items: center; min-height: 48px; }
+  .cta__socials { gap: .2rem; }
+
+  /* Plancher de lisibilité : sous 10 px, les micro-libellés
+     deviennent illisibles au bras tendu. */
+  .about__card-head, .about__chips span, .stat__label,
+  .game__log-head, .game__score-label, .game__hint, .arcade__tab-num {
+    font-size: .68rem; letter-spacing: .16em;
+  }
+  .arcade__tab-goal { font-size: .66rem; letter-spacing: .04em; }
+  .contact-view__fallback { font-size: .68rem; letter-spacing: .12em; }
+  .game__chip { font-size: .64rem; }
+  .game__chip-empty { font-size: .68rem; }
 }
 
 /* ---------- SIGNATURE DU CLIC ----------

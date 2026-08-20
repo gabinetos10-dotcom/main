@@ -982,10 +982,12 @@
   function setMode(m) {
     mode = m;
     if (m === 'portrait') {
-      LW = 560; LH = 800; COLS = 4; ROWS = 5;
-      GAP = 12; TOP = 66; SIDE = 30; BH = 58;
-      brickFont = 14; brickFontSm = 12;
-      paddleW0 = 128; paddle.h = 16; ball.r = 13;
+      // Le canvas est réduit de moitié à l'écran : tout est doublé
+      // ici pour que les briques restent lisibles au pouce.
+      LW = 560; LH = 800; COLS = 3; ROWS = 5;
+      GAP = 12; TOP = 58; SIDE = 26; BH = 80;
+      brickFont = 24; brickFontSm = 21;
+      paddleW0 = 150; paddle.h = 20; ball.r = 16;
     } else {
       LW = 920; LH = 580; COLS = 5; ROWS = 4;
       GAP = 14; TOP = 76; SIDE = 44; BH = 48;
@@ -1008,10 +1010,18 @@
   }
 
   function buildBricks() {
-    var items = GOOD.map(function (g) { return { label: g, good: true }; })
-      .concat(BAD.map(function (b) { return { label: b, good: false }; }));
+    // En portrait le terrain est étroit : on joue avec moins de
+    // briques, mais on les voit. Mieux vaut court et lisible.
+    var goods = GOOD.slice(), bads = BAD.slice();
+    if (mode === 'portrait') {
+      shuffle(goods); shuffle(bads);
+      goods = goods.slice(0, 8);
+      bads = bads.slice(0, 6);
+    }
+    var items = goods.map(function (g) { return { label: g, good: true }; })
+      .concat(bads.map(function (b) { return { label: b, good: false }; }));
     shuffle(items);
-    totalGoods = GOOD.length;
+    totalGoods = goods.length;
     bricks = items.map(function (it, i) {
       return {
         x: SIDE + (i % COLS) * (BW + GAP),
@@ -1081,6 +1091,26 @@
     overlay.classList.remove('is-hidden');
   }
 
+
+  // Au lancement, le terrain doit être sous les yeux — et le score
+  // avec lui : sur mobile il est empilé juste au-dessus, et le
+  // centrage du seul terrain le repoussait hors de l'écran.
+  function bringIntoView() {
+    var vh = window.innerHeight;
+    var box = frame.closest('.arcade__panel') || document;
+    var hud = box.querySelector ? box.querySelector('.game__score-box') : null;
+    var r = frame.getBoundingClientRect();
+    var top = hud ? Math.min(r.top, hud.getBoundingClientRect().top) : r.top;
+    // La barre de navigation est fixe : sans cette marge, le score
+    // se retrouve visible « techniquement » mais caché dessous.
+    var navEl = document.getElementById('nav');
+    var navH = navEl ? navEl.offsetHeight : 0;
+    if (top >= navH && r.bottom <= vh) { return; }
+    var y = window.scrollY + top - navH - 12;
+    // Si l'ensemble ne tient pas, on privilégie le terrain.
+    if (r.bottom - top > vh - 12) { y = window.scrollY + r.top - (vh - r.height) / 2; }
+    window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
+  }
   function start() {
     buildBricks();
     paddle.w = paddleW0;
@@ -1093,6 +1123,7 @@
     resetChips();
     resetBall();
     overlay.classList.add('is-hidden');
+    bringIntoView();
     running = true;
     lastT = performance.now();
     if (!rafId) { rafId = requestAnimationFrame(loop); }
@@ -1186,6 +1217,39 @@
     ctx.closePath();
   }
 
+  // « COPIE CONFORME » ne tient pas sur une ligne dans une brique
+  // étroite : on coupe d'abord aux espaces. Et quand le libellé est
+  // un seul mot long — « AMATEURISME » — on réduit la typo juste ce
+  // qu'il faut, plutôt que de le laisser déborder du bloc.
+  function fitLabel(label, maxW, base, weight) {
+    var size = base;
+    ctx.font = weight + size + 'px "Space Mono", monospace';
+    var lines = [label];
+    if (ctx.measureText(label).width > maxW) {
+      var words = label.split(' ');
+      if (words.length > 1) {
+        var line = '';
+        lines = [];
+        for (var i = 0; i < words.length; i++) {
+          var test = line ? line + ' ' + words[i] : words[i];
+          if (line && ctx.measureText(test).width > maxW) { lines.push(line); line = words[i]; }
+          else { line = test; }
+        }
+        if (line) { lines.push(line); }
+        lines = lines.slice(0, 2);
+      }
+    }
+    var widest = 0;
+    for (var j = 0; j < lines.length; j++) {
+      widest = Math.max(widest, ctx.measureText(lines[j]).width);
+    }
+    if (widest > maxW) {
+      size = Math.max(9, Math.floor(size * maxW / widest));
+      ctx.font = weight + size + 'px "Space Mono", monospace';
+    }
+    return { lines: lines, size: size };
+  }
+
   function render() {
     ctx.setTransform(dpr * scale, 0, 0, dpr * scale, 0, 0);
     ctx.clearRect(0, 0, LW, LH);
@@ -1207,11 +1271,15 @@
       ctx.strokeStyle = 'rgba(245,243,239,0.22)';
       ctx.lineWidth = 1;
       ctx.stroke();
-      ctx.fillStyle = 'rgba(245,243,239,0.82)';
-      ctx.font = (b.label.length > 11 ? brickFontSm : brickFont) + 'px "Space Mono", monospace';
+      ctx.fillStyle = 'rgba(245,243,239,0.9)';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText(b.label, b.x + b.w / 2, b.y + b.h / 2);
+      var fit = fitLabel(b.label, b.w - 14, b.label.length > 11 ? brickFontSm : brickFont, '');
+      var lh = fit.size * 1.24;
+      var top = b.y + b.h / 2 - (fit.lines.length - 1) * lh / 2;
+      for (var li = 0; li < fit.lines.length; li++) {
+        ctx.fillText(fit.lines[li], b.x + b.w / 2, top + li * lh);
+      }
     });
 
     // Flashs d'impact
@@ -1424,7 +1492,7 @@ window.NOUS_ARCADE = window.NOUS_ARCADE || { active: 'tri', on: {} };
     if (m === 'portrait') {
       LW = 560; LH = 800; ROAD_PAD = 40;
       car.w = 76; car.h = 128;
-      BH = 118; BGAP = 12; BFONT = 21; TOKEN_R = 38; TOKEN_FONT = 30;
+      BH = 132; BGAP = 12; BFONT = 26; TOKEN_R = 42; TOKEN_FONT = 34;
     } else {
       LW = 920; LH = 580; ROAD_PAD = 92;
       car.w = 62; car.h = 104;
@@ -1507,6 +1575,26 @@ window.NOUS_ARCADE = window.NOUS_ARCADE || { active: 'tri', on: {} };
     overlay.classList.remove('is-hidden');
   }
 
+
+  // Au lancement, le terrain doit être sous les yeux — et le score
+  // avec lui : sur mobile il est empilé juste au-dessus, et le
+  // centrage du seul terrain le repoussait hors de l'écran.
+  function bringIntoView() {
+    var vh = window.innerHeight;
+    var box = frame.closest('.arcade__panel') || document;
+    var hud = box.querySelector ? box.querySelector('.game__score-box') : null;
+    var r = frame.getBoundingClientRect();
+    var top = hud ? Math.min(r.top, hud.getBoundingClientRect().top) : r.top;
+    // La barre de navigation est fixe : sans cette marge, le score
+    // se retrouve visible « techniquement » mais caché dessous.
+    var navEl = document.getElementById('nav');
+    var navH = navEl ? navEl.offsetHeight : 0;
+    if (top >= navH && r.bottom <= vh) { return; }
+    var y = window.scrollY + top - navH - 12;
+    // Si l'ensemble ne tient pas, on privilégie le terrain.
+    if (r.bottom - top > vh - 12) { y = window.scrollY + r.top - (vh - r.height) / 2; }
+    window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
+  }
   function start() {
     items = []; floats = [];
     dist = 0; speed = 6.4; lives = 3; spawnIn = 20; shake = 0; invuln = 0;
@@ -1516,6 +1604,7 @@ window.NOUS_ARCADE = window.NOUS_ARCADE || { active: 'tri', on: {} };
     paintLives();
     resetChips();
     overlay.classList.add('is-hidden');
+    bringIntoView();
     running = true;
     lastT = performance.now();
     if (!rafId) { rafId = requestAnimationFrame(loop); }
@@ -1593,28 +1682,36 @@ window.NOUS_ARCADE = window.NOUS_ARCADE || { active: 'tri', on: {} };
     ctx.closePath();
   }
 
-  // « TENDANCE JETABLE » ne tient pas sur une ligne à cette taille :
-  // on coupe aux espaces plutôt que de rapetisser la typo.
-  var wrapCache = {};
-  function wrapLabel(label, maxW) {
-    var key = label + '|' + Math.round(maxW) + '|' + BFONT;
-    if (wrapCache[key]) { return wrapCache[key]; }
-    var out;
-    if (ctx.measureText(label).width <= maxW) {
-      out = [label];
-    } else {
+  // « TENDANCE JETABLE » se coupe aux espaces ; « GREENWASHING »,
+  // qui est un seul mot, voit sa typo réduite juste ce qu'il faut.
+  // Dans les deux cas le libellé reste DANS le panneau.
+  function fitLabel(label, maxW, base, weight) {
+    var size = base;
+    ctx.font = weight + size + 'px "Space Mono", monospace';
+    var lines = [label];
+    if (ctx.measureText(label).width > maxW) {
       var words = label.split(' ');
-      var line = '', lines = [];
-      for (var i = 0; i < words.length; i++) {
-        var test = line ? line + ' ' + words[i] : words[i];
-        if (line && ctx.measureText(test).width > maxW) { lines.push(line); line = words[i]; }
-        else { line = test; }
+      if (words.length > 1) {
+        var line = '';
+        lines = [];
+        for (var i = 0; i < words.length; i++) {
+          var test = line ? line + ' ' + words[i] : words[i];
+          if (line && ctx.measureText(test).width > maxW) { lines.push(line); line = words[i]; }
+          else { line = test; }
+        }
+        if (line) { lines.push(line); }
+        lines = lines.slice(0, 2);
       }
-      if (line) { lines.push(line); }
-      out = lines.slice(0, 2);
     }
-    wrapCache[key] = out;
-    return out;
+    var widest = 0;
+    for (var j = 0; j < lines.length; j++) {
+      widest = Math.max(widest, ctx.measureText(lines[j]).width);
+    }
+    if (widest > maxW) {
+      size = Math.max(11, Math.floor(size * maxW / widest));
+      ctx.font = weight + size + 'px "Space Mono", monospace';
+    }
+    return { lines: lines, size: size };
   }
 
   function render() {
@@ -1685,12 +1782,11 @@ window.NOUS_ARCADE = window.NOUS_ARCADE || { active: 'tri', on: {} };
       ctx.restore();
 
       ctx.fillStyle = 'rgba(245,243,239,0.94)';
-      ctx.font = '700 ' + BFONT + 'px "Space Mono", monospace';
-      var lines = wrapLabel(it.label, w - 22);
-      var lh = BFONT * 1.32;
-      var top = it.y + BH / 2 - (lines.length - 1) * lh / 2 + 3;
-      for (var li = 0; li < lines.length; li++) {
-        ctx.fillText(lines[li], ix, top + li * lh);
+      var fit = fitLabel(it.label, w - 20, BFONT, '700 ');
+      var lh = fit.size * 1.3;
+      var top = it.y + BH / 2 - (fit.lines.length - 1) * lh / 2 + 3;
+      for (var li = 0; li < fit.lines.length; li++) {
+        ctx.fillText(fit.lines[li], ix, top + li * lh);
       }
     });
 
