@@ -452,6 +452,9 @@ img, canvas, svg { display: block; max-width: 100%; }
 .hero__line { display: block; overflow: hidden; padding-top: .08em; margin-top: -.08em; }
 .hero__line-inner { display: block; transform: translateY(112%); will-change: transform; }
 .hero__logo-line { line-height: 0; }
+/* Le logo est une image dans une ligne à line-height 0 : sans
+   cette marge, la baseline vient se coller dessous. */
+.hero__line--logo { margin-bottom: clamp(.7rem, 2vw, 1.6rem); }
 .hero__logo-script {
   width: clamp(340px, 52vw, 920px); height: auto;
   transform: translateZ(0);
@@ -554,45 +557,26 @@ img, canvas, svg { display: block; max-width: 100%; }
 /* ---------- PRÉSENTATION ---------- */
 .manifesto { background: var(--cream); padding-top: clamp(5rem, 10vw, 9rem); }
 
-/* Les mots-clés : ce que fait l'agence, lisible en une seconde,
-   avant d'entrer dans le texte. Séparés par un astérisque jaune —
-   le motif de la marque sert de ponctuation. */
-.intro__keywords {
-  display: flex; flex-wrap: wrap; align-items: baseline;
-  gap: .3rem clamp(.9rem, 2vw, 1.6rem);
-  list-style: none; margin: clamp(1.6rem, 3vw, 2.4rem) 0 clamp(2.4rem, 5vw, 3.6rem);
-  max-width: 1100px;
+/* Le texte de présentation. Les mots-clés du métier sont dans les
+   phrases et surlignés au jaune de la marque : on lit une
+   présentation, pas une liste de tags. */
+.intro__text {
+  max-width: 62ch;
+  margin: clamp(1.6rem, 3vw, 2.4rem) 0 clamp(2.6rem, 5vw, 3.8rem);
+  font-size: clamp(1.05rem, 1.5vw, 1.35rem);
+  line-height: 1.75; color: var(--ink-soft);
 }
-.intro__keywords li {
-  position: relative;
-  font-family: var(--font-display); font-weight: 400;
-  font-size: clamp(1.4rem, 3vw, 2.6rem);
-  line-height: 1.12; letter-spacing: .03em; text-transform: uppercase;
-  color: var(--ink);
-}
-.intro__keywords li + li::before {
-  content: '✳'; color: var(--yellow-dark);
-  font-family: var(--font-body); font-size: .42em;
-  margin-right: clamp(.9rem, 2vw, 1.6rem);
-  position: relative; top: -.35em;
-}
-/* Un mot sur deux passe en contour : le bloc respire sans
-   qu'aucun mot-clé ne prenne le pas sur les autres. */
-.intro__keywords li:nth-child(even) {
-  color: transparent; -webkit-text-stroke: 1.6px var(--ink);
-}
-/* Sous cette taille, un contour de 1,6 px devient sale : on garde
-   l'alternance, mais par la valeur plutôt que par le trait. */
-@media (max-width: 640px) {
-  .intro__keywords li { font-size: clamp(1.15rem, 6vw, 1.6rem); }
-  .intro__keywords li:nth-child(even) {
-    color: var(--ink-soft); -webkit-text-stroke: 0;
-  }
+.intro__text .kw {
+  font-style: normal; font-weight: 600; color: var(--ink);
+  /* Surlignage au marqueur : il suit le texte même sur deux lignes,
+     contrairement à un fond qui casserait aux retours de ligne. */
+  box-shadow: inset 0 -.36em 0 rgba(255, 191, 0, .38);
+  transition: box-shadow .4s var(--ease-out);
 }
 @media (hover: hover) and (pointer: fine) {
-  .intro__keywords li { transition: color .4s, -webkit-text-stroke-color .4s; }
-  .intro__keywords li:hover { color: var(--yellow-dark); -webkit-text-stroke-color: var(--yellow-dark); }
+  .intro__text .kw:hover { box-shadow: inset 0 -1em 0 rgba(255, 191, 0, .38); }
 }
+
 .manifesto__text {
   font-family: var(--font-display); font-weight: 700;
   font-size: clamp(1.9rem, 4.6vw, 4.1rem); line-height: 1.16;
