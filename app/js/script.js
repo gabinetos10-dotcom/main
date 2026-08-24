@@ -355,7 +355,7 @@
   }());
 
   /* ============================================================
-     5. REVEALS AU SCROLL (GSAP ScrollTrigger)
+     4. REVEALS AU SCROLL (GSAP ScrollTrigger)
      ============================================================ */
   if (hasGsap && !REDUCED) {
 
@@ -399,7 +399,33 @@
   }
 
   /* ============================================================
-     6. MANIFESTE — RÉVÉLATION MOT PAR MOT
+     5. PRÉSENTATION — LE TEXTE S'INSTALLE, LES MOTS-CLÉS S'ALLUMENT
+     Le bloc entre par la gauche, puis chaque mot-clé se surligne
+     l'un après l'autre — comme passé au marqueur à la lecture.
+     ============================================================ */
+  (function initIntro() {
+    var block = document.getElementById('intro');
+    if (!block) { return; }
+    // Sans GSAP ou en mouvement réduit, le CSS laisse déjà tout
+    // en place : texte visible et surlignages pleins.
+    if (!hasGsap || REDUCED) { return; }
+
+    var text = document.getElementById('introText');
+    var aside = block.querySelectorAll('.intro__star, .intro__kicker');
+    var kws = block.querySelectorAll('.kw');
+
+    gsap.set(aside, { opacity: 0, x: -18 });
+    gsap.set(text, { opacity: 0, y: 26 });
+    gsap.set(kws, { '--kw': 0 });
+
+    gsap.timeline({ scrollTrigger: { trigger: block, start: 'top 80%', once: true } })
+      .to(aside, { opacity: 1, x: 0, duration: .75, stagger: .08, ease: 'power3.out' }, 0)
+      .to(text, { opacity: 1, y: 0, duration: .95, ease: 'power3.out' }, .1)
+      .to(kws, { '--kw': 1, duration: .55, stagger: .11, ease: 'power2.out' }, .55);
+  })();
+
+  /* ============================================================
+     6. LA CITATION — RÉVÉLATION MOT PAR MOT
      ============================================================ */
   (function initManifesto() {
     var el = document.getElementById('manifestoText');
@@ -943,7 +969,7 @@
 })();
 
 /* ============================================================
-   22. L'ATELIER · 01 — LE TRI (CASSE-BRIQUES)
+   20. L'ATELIER · 01 — LE TRI (CASSE-BRIQUES)
    Les bons ingrédients d'une marque élargissent la raquette,
    les mauvaises pratiques la font rétrécir.
    ============================================================ */
@@ -1380,7 +1406,7 @@
 })();
 
 /* ============================================================
-   23. L'ATELIER — PILOTE DES ONGLETS
+   21. L'ATELIER — PILOTE DES ONGLETS
    Un seul jeu vivant à la fois : on prévient celui qu'on quitte
    pour qu'il coupe sa boucle, et celui qu'on ouvre pour qu'il
    se remette à l'échelle du panneau désormais visible.
@@ -1440,7 +1466,7 @@ window.NOUS_ARCADE = window.NOUS_ARCADE || { active: 'tri', on: {} };
 }());
 
 /* ============================================================
-   24. L'ATELIER · 02 — LA ROUTE
+   22. L'ATELIER · 02 — LA ROUTE
    Objectif : éviter les mauvaises pratiques. Les blocs sombres
    coûtent une erreur (trois et la course s'arrête), les jetons
    jaunes sont les bons réflexes. La vitesse monte avec la distance.
@@ -1883,7 +1909,7 @@ window.NOUS_ARCADE = window.NOUS_ARCADE || { active: 'tri', on: {} };
 }());
 
 /* ============================================================
-   25. L'ATELIER · 03 — LE CHOIX
+   23. L'ATELIER · 03 — LE CHOIX
    « NOUS. » ne bouge pas d'un pixel. « Une autre agence » n'est
    pas un bouton et porte pointer-events: none : elle ne peut être
    cliquée par AUCUN moyen — souris, doigt ou clavier. Elle se
@@ -2062,7 +2088,7 @@ window.NOUS_ARCADE = window.NOUS_ARCADE || { active: 'tri', on: {} };
 }());
 
 /* ============================================================
-   26. LE CLIC A UNE SIGNATURE
+   24. LE CLIC A UNE SIGNATURE
    Chaque appui sur une cible laisse une onde jaune et quelques
    astérisques : le site répond au doigt et à l'œil, dans sa
    propre langue graphique.
@@ -2122,7 +2148,7 @@ window.NOUS_ARCADE = window.NOUS_ARCADE || { active: 'tri', on: {} };
 }());
 
 /* ============================================================
-   27. EASTER EGG — « L'HISTOIRE C'EST NOUS »
+   25. EASTER EGG — « L'HISTOIRE C'EST NOUS »
    Cinq clics sur le logo de la barre de navigation (ou le code
    ↑↑↓↓←→←→) déclenchent une pluie d'encre : le site se signe
    lui-même, puis reprend son cours.

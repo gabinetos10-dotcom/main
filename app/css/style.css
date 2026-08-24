@@ -557,31 +557,114 @@ img, canvas, svg { display: block; max-width: 100%; }
 /* ---------- PRÉSENTATION ---------- */
 .manifesto { background: var(--cream); padding-top: clamp(5rem, 10vw, 9rem); }
 
-/* Le texte de présentation. Les mots-clés du métier sont dans les
-   phrases et surlignés au jaune de la marque : on lit une
-   présentation, pas une liste de tags. */
+/* --- LE BLOC DE PRÉSENTATION ---
+   Mise en page éditoriale : un intertitre en colonne, le texte en
+   regard, une lettrine pour l'entrée. Les mots-clés du métier sont
+   portés par les phrases et se surlignent au fil de la lecture. */
+.intro {
+  display: grid;
+  grid-template-columns: minmax(140px, 200px) minmax(0, 1fr);
+  gap: clamp(1.2rem, 4vw, 3.4rem);
+  max-width: 1080px;
+  margin: clamp(1.6rem, 3vw, 2.6rem) 0 clamp(3.4rem, 7vw, 5.6rem);
+  padding-top: clamp(1.3rem, 3vw, 2.1rem);
+  border-top: 1px solid var(--line);
+}
+.intro__aside { display: flex; flex-direction: column; gap: .85rem; }
+.intro__star {
+  display: block; width: 1em; font-size: 1.15rem;
+  color: var(--yellow-dark); animation: spin 14s linear infinite;
+}
+.intro__kicker {
+  font-family: var(--font-display); text-transform: uppercase;
+  font-size: clamp(1.2rem, 2vw, 1.7rem); line-height: 1.02;
+  letter-spacing: .02em; color: var(--ink);
+}
+/* Deux lignes en colonne, une seule quand l'aside passe à
+   l'horizontale. Un <br> masqué aurait soudé les deux mots. */
+.intro__kicker span { display: block; }
 .intro__text {
-  max-width: 62ch;
-  margin: clamp(1.6rem, 3vw, 2.4rem) 0 clamp(2.6rem, 5vw, 3.8rem);
-  font-size: clamp(1.05rem, 1.5vw, 1.35rem);
-  line-height: 1.75; color: var(--ink-soft);
+  max-width: 58ch;
+  font-size: clamp(1.06rem, 1.45vw, 1.3rem);
+  line-height: 1.78; color: var(--ink-soft);
+}
+/* Lettrine en CSS plutôt qu'en balise : le texte reste entier
+   pour les lecteurs d'écran. */
+.intro__text::first-letter {
+  float: left; font-family: var(--font-display); font-weight: 800;
+  font-size: 3.4em; line-height: .76; color: var(--yellow-dark);
+  padding-right: .1em; margin-top: .05em;
+}
+
+/* Le surlignage se déploie de gauche à droite : --kw va de 0 à 1.
+   box-decoration-break garde le trait juste quand le mot-clé passe
+   à la ligne — ce qui arrive tout le temps sur mobile. */
+@property --kw {
+  syntax: '<number>'; initial-value: 1; inherits: false;
 }
 .intro__text .kw {
+  --kw: 1;
   font-style: normal; font-weight: 600; color: var(--ink);
-  /* Surlignage au marqueur : il suit le texte même sur deux lignes,
-     contrairement à un fond qui casserait aux retours de ligne. */
-  box-shadow: inset 0 -.36em 0 rgba(255, 191, 0, .38);
-  transition: box-shadow .4s var(--ease-out);
+  padding-inline: .08em;
+  background-image: linear-gradient(rgba(255, 191, 0, .42), rgba(255, 191, 0, .42));
+  background-repeat: no-repeat;
+  background-position: 0 92%;
+  background-size: calc(var(--kw) * 100%) .34em;
+  -webkit-box-decoration-break: clone;
+          box-decoration-break: clone;
 }
 @media (hover: hover) and (pointer: fine) {
-  .intro__text .kw:hover { box-shadow: inset 0 -1em 0 rgba(255, 191, 0, .38); }
+  .intro__text .kw { transition: background-size .35s var(--ease-out); }
+  .intro__text .kw:hover { background-size: calc(var(--kw) * 100%) 1.05em; }
+}
+
+/* --- LA CITATION --- */
+.quote {
+  position: relative; max-width: 1240px;
+  padding-left: clamp(1.1rem, 3vw, 2.8rem);
+}
+.quote::before {
+  content: ''; position: absolute; left: 0; top: .2rem; bottom: 3.4rem;
+  width: 3px; border-radius: 2px; background: var(--yellow);
+}
+/* Le guillemet est dans le flux, plein et lisible : en absolu et
+   en filigrane il sortait de la boîte et ne se voyait pas. */
+.quote__mark {
+  display: block; line-height: .62;
+  font-family: var(--font-display);
+  /* Bebas dessine un guillemet compact : on le monte en taille
+     pour qu'il pèse autant qu'un vrai signe d'ouverture. */
+  font-size: clamp(4.4rem, 9vw, 8rem);
+  color: var(--yellow);
+  margin-bottom: clamp(.1rem, .8vw, .5rem);
+}
+.quote__text { position: relative; z-index: 1; }
+.quote__by {
+  position: relative; z-index: 1;
+  display: flex; align-items: center; gap: .9rem; flex-wrap: wrap;
+  margin-top: clamp(1.5rem, 3vw, 2.4rem);
+  font-family: var(--font-mono); font-size: .66rem; letter-spacing: .16em;
+  text-transform: uppercase; color: var(--ink-faint);
+}
+.quote__by-line {
+  flex: 0 0 auto; width: clamp(26px, 4vw, 56px); height: 1px;
+  background: var(--yellow-dark);
+}
+.quote__by b { font-weight: 700; color: var(--ink); }
+.quote__by b em { font-style: normal; color: var(--yellow-dark); }
+
+@media (max-width: 720px) {
+  .intro { grid-template-columns: 1fr; gap: 1.1rem; }
+  .intro__aside { flex-direction: row; align-items: center; gap: .8rem; }
+  .intro__kicker span { display: inline; }
+  .intro__text::first-letter { font-size: 2.9em; }
 }
 
 .manifesto__text {
   font-family: var(--font-display); font-weight: 700;
   font-size: clamp(1.9rem, 4.6vw, 4.1rem); line-height: 1.16;
   letter-spacing: .01em;
-  max-width: 1240px; margin-top: 1rem;
+  max-width: 1140px; margin-top: 0;
   perspective: 1000px;
 }
 .manifesto__text .w {
@@ -590,11 +673,6 @@ img, canvas, svg { display: block; max-width: 100%; }
   will-change: transform, filter, opacity;
 }
 .manifesto__text em { font-style: normal; color: var(--yellow-dark); }
-.manifesto__sign {
-  margin-top: clamp(2rem, 4vw, 3rem);
-  font-family: var(--font-mono); font-size: .68rem; letter-spacing: .22em;
-  color: var(--ink-soft); text-transform: uppercase;
-}
 
 /* ---------- SERVICES / MÉTHODE ---------- */
 .services { overflow: hidden; }
