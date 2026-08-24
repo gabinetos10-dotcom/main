@@ -413,18 +413,58 @@
     // Chaque bloc s'anime pour lui-même, à son entrée dans la vue.
     Array.prototype.forEach.call(blocks, function (block) {
       var text = block.querySelector('.intro__text');
-      var aside = block.querySelectorAll('.intro__star, .intro__kicker');
+      var kicker = block.querySelector('.intro__kicker');
       var kws = block.querySelectorAll('.kw');
+      var media = block.querySelector('.intro__media');
       if (!text) { return; }
 
-      gsap.set(aside, { opacity: 0, x: -18 });
+      // L'image entre du côté où elle se trouve.
+      var fromLeft = block.classList.contains('intro--media-left');
+
+      gsap.set(kicker, { opacity: 0, x: -18 });
       gsap.set(text, { opacity: 0, y: 26 });
       gsap.set(kws, { '--kw': 0 });
+      if (media) { gsap.set(media, { opacity: 0, x: fromLeft ? -34 : 34, y: 18 }); }
 
-      gsap.timeline({ scrollTrigger: { trigger: block, start: 'top 80%', once: true } })
-        .to(aside, { opacity: 1, x: 0, duration: .75, stagger: .08, ease: 'power3.out' }, 0)
-        .to(text, { opacity: 1, y: 0, duration: .95, ease: 'power3.out' }, .1)
-        .to(kws, { '--kw': 1, duration: .55, stagger: .11, ease: 'power2.out' }, .55);
+      var tl = gsap.timeline({ scrollTrigger: { trigger: block, start: 'top 80%', once: true } });
+      if (media) {
+        tl.to(media, { opacity: 1, x: 0, y: 0, duration: 1.05, ease: 'expo.out' }, 0);
+      }
+      tl.to(kicker, { opacity: 1, x: 0, duration: .75, ease: 'power3.out' }, .12)
+        .to(text, { opacity: 1, y: 0, duration: .95, ease: 'power3.out' }, .22)
+        .to(kws, { '--kw': 1, duration: .55, stagger: .11, ease: 'power2.out' }, .68);
+
+      if (!media) { return; }
+
+      // Glissement au scroll : l'image déborde en hauteur, elle se
+      // déplace dans son cadre — le relief prend de la profondeur.
+      var img = media.querySelector('.intro__media-img');
+      if (img && window.ScrollTrigger) {
+        gsap.fromTo(img, { yPercent: -10 }, {
+          yPercent: 0, ease: 'none',
+          scrollTrigger: { trigger: media, start: 'top bottom', end: 'bottom top', scrub: true }
+        });
+      }
+
+      // Basculement 3D suivant le curseur. Pointeur fin seulement :
+      // au doigt il n'y a pas de survol, et le relief tient déjà au
+      // cadre décalé et à l'ombre.
+      if (!FINE_POINTER) { return; }
+      var frame = media.querySelector('.intro__media-frame');
+      if (!frame) { return; }
+      var qrx = gsap.quickTo(frame, 'rotationX', { duration: .5, ease: 'power3' });
+      var qry = gsap.quickTo(frame, 'rotationY', { duration: .5, ease: 'power3' });
+      var qs = gsap.quickTo(frame, 'scale', { duration: .5, ease: 'power3' });
+
+      media.addEventListener('mousemove', function (e) {
+        var r = media.getBoundingClientRect();
+        var nx = (e.clientX - r.left) / r.width - .5;
+        var ny = (e.clientY - r.top) / r.height - .5;
+        qry(nx * 13); qrx(-ny * 13); qs(1.02);
+      });
+      media.addEventListener('mouseleave', function () {
+        qry(0); qrx(0); qs(1);
+      });
     });
   })();
 

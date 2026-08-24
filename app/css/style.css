@@ -557,43 +557,102 @@ img, canvas, svg { display: block; max-width: 100%; }
 /* ---------- PRÉSENTATION ---------- */
 .manifesto { background: var(--cream); padding-top: clamp(5rem, 10vw, 9rem); }
 
-/* --- LE BLOC DE PRÉSENTATION ---
-   Mise en page éditoriale : un intertitre en colonne, le texte en
-   regard, une lettrine pour l'entrée. Les mots-clés du métier sont
-   portés par les phrases et se surlignent au fil de la lecture. */
+/* --- LES BLOCS DE PRÉSENTATION ---
+   Une image et un texte côte à côte, alternés d'un bloc à l'autre.
+   L'image est montée en relief : un cadre jaune décalé derrière,
+   une ombre portée profonde, un basculement 3D qui suit le curseur
+   et un léger glissement au scroll. */
 .intro {
   display: grid;
-  grid-template-columns: minmax(140px, 200px) minmax(0, 1fr);
-  gap: clamp(1.2rem, 4vw, 3.4rem);
-  max-width: 1080px;
-  margin: clamp(1.6rem, 3vw, 2.6rem) 0 clamp(3.4rem, 7vw, 5.6rem);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.06fr);
+  gap: clamp(1.6rem, 4.5vw, 4rem);
+  align-items: center;
+  max-width: 1120px;
+  margin: clamp(1.6rem, 3vw, 2.6rem) 0 clamp(3.6rem, 8vw, 6rem);
   padding-top: clamp(1.3rem, 3vw, 2.1rem);
   border-top: 1px solid var(--line);
 }
 .intro + .intro { margin-top: 0; }
-.intro__aside { display: flex; flex-direction: column; gap: .85rem; }
-.intro__star {
-  display: block; width: 1em; font-size: 1.15rem;
-  color: var(--yellow-dark); animation: spin 14s linear infinite;
+/* Un bloc sur deux inverse l'ordre : image à gauche, puis à droite. */
+.intro--media-right .intro__media { order: 2; }
+
+/* --- L'IMAGE EN RELIEF --- */
+.intro__media {
+  position: relative; aspect-ratio: 4 / 5;
+  perspective: 1000px;
 }
+/* Le cadre jaune décalé : c'est lui qui crée la profondeur. */
+.intro__media-back {
+  position: absolute; inset: 0; border-radius: 20px;
+  background: var(--yellow);
+  transform: translate(clamp(10px, 1.5vw, 20px), clamp(10px, 1.5vw, 20px));
+  transition: transform .55s var(--ease-out);
+}
+.intro--media-right .intro__media-back {
+  transform: translate(clamp(-20px, -1.5vw, -10px), clamp(10px, 1.5vw, 20px));
+}
+.intro__media-frame {
+  position: absolute; inset: 0; display: block;
+  border-radius: 20px; overflow: hidden; background: var(--night);
+  box-shadow: 0 26px 58px rgba(10, 10, 10, .3), 0 4px 14px rgba(10, 10, 10, .18);
+  transform-style: preserve-3d;
+  transition: box-shadow .55s var(--ease-out);
+  will-change: transform;
+}
+/* L'image déborde en hauteur : elle peut glisser au scroll sans
+   jamais découvrir le fond du cadre. */
+.intro__media-img {
+  width: 100%; height: 112%; object-fit: cover;
+  will-change: transform;
+}
+/* Le reflet se déplace avec le basculement. */
+.intro__media-gloss {
+  position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(115deg,
+    rgba(255, 255, 255, .3) 0%, rgba(255, 255, 255, .06) 34%, rgba(255, 255, 255, 0) 58%);
+  opacity: 0; transition: opacity .5s var(--ease-out);
+}
+.intro__media-tag {
+  position: absolute; z-index: 2; left: clamp(.8rem, 1.6vw, 1.2rem); bottom: clamp(.8rem, 1.6vw, 1.2rem);
+  display: inline-flex; align-items: center; gap: .55em;
+  padding: .5rem .9rem; border-radius: 100px;
+  background: rgba(10, 10, 10, .72);
+  backdrop-filter: blur(6px);
+  font-family: var(--font-mono); font-size: .58rem; letter-spacing: .18em;
+  text-transform: uppercase; color: var(--cream-txt);
+}
+.intro__media-tag i { font-style: normal; color: var(--yellow); }
+@media (hover: hover) and (pointer: fine) {
+  .intro__media:hover .intro__media-frame {
+    box-shadow: 0 40px 80px rgba(10, 10, 10, .38), 0 6px 18px rgba(10, 10, 10, .2);
+  }
+  .intro__media:hover .intro__media-gloss { opacity: 1; }
+  .intro__media:hover .intro__media-back { transform: translate(0, 0); }
+  .intro--media-right .intro__media:hover .intro__media-back { transform: translate(0, 0); }
+}
+
+/* --- LE TEXTE --- */
 .intro__kicker {
+  display: flex; align-items: baseline; gap: .5em; flex-wrap: wrap;
+  margin-bottom: clamp(.9rem, 2vw, 1.3rem);
   font-family: var(--font-display); text-transform: uppercase;
-  font-size: clamp(1.2rem, 2vw, 1.7rem); line-height: 1.02;
+  font-size: clamp(1.25rem, 2.1vw, 1.8rem); line-height: 1.02;
   letter-spacing: .02em; color: var(--ink);
 }
-/* Deux lignes en colonne, une seule quand l'aside passe à
-   l'horizontale. Un <br> masqué aurait soudé les deux mots. */
-.intro__kicker span { display: block; }
+.intro__star {
+  font-style: normal; font-size: .62em; color: var(--yellow-dark);
+  display: inline-block; animation: spin 14s linear infinite;
+}
 .intro__text {
-  max-width: 58ch;
-  font-size: clamp(1.06rem, 1.45vw, 1.3rem);
-  line-height: 1.78; color: var(--ink-soft);
+  max-width: 52ch;
+  font-size: clamp(1.04rem, 1.4vw, 1.24rem);
+  line-height: 1.76; color: var(--ink-soft);
 }
 /* Lettrine en CSS plutôt qu'en balise : le texte reste entier
    pour les lecteurs d'écran. */
 .intro__text::first-letter {
   float: left; font-family: var(--font-display); font-weight: 800;
-  font-size: 3.4em; line-height: .76; color: var(--yellow-dark);
+  font-size: 3.2em; line-height: .76; color: var(--yellow-dark);
   padding-right: .1em; margin-top: .05em;
 }
 
@@ -617,6 +676,15 @@ img, canvas, svg { display: block; max-width: 100%; }
 @media (hover: hover) and (pointer: fine) {
   .intro__text .kw { transition: background-size .35s var(--ease-out); }
   .intro__text .kw:hover { background-size: calc(var(--kw) * 100%) 1.05em; }
+}
+
+@media (max-width: 860px) {
+  /* Une colonne : l'image ouvre le bloc, le texte suit. */
+  .intro { grid-template-columns: 1fr; gap: clamp(1.3rem, 4vw, 2rem); }
+  .intro--media-right .intro__media { order: 0; }
+  .intro__media { aspect-ratio: 3 / 2; max-width: 520px; }
+  .intro__media-img { height: 118%; }
+  .intro__text::first-letter { font-size: 2.9em; }
 }
 
 /* --- LA CITATION --- */
@@ -654,12 +722,6 @@ img, canvas, svg { display: block; max-width: 100%; }
 .quote__by b { font-weight: 700; color: var(--ink); }
 .quote__by b em { font-style: normal; color: var(--yellow-dark); }
 
-@media (max-width: 720px) {
-  .intro { grid-template-columns: 1fr; gap: 1.1rem; }
-  .intro__aside { flex-direction: row; align-items: center; gap: .8rem; }
-  .intro__kicker span { display: inline; }
-  .intro__text::first-letter { font-size: 2.9em; }
-}
 
 .manifesto__text {
   font-family: var(--font-display); font-weight: 700;
