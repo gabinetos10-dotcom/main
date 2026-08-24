@@ -404,24 +404,28 @@
      l'un après l'autre — comme passé au marqueur à la lecture.
      ============================================================ */
   (function initIntro() {
-    var block = document.getElementById('intro');
-    if (!block) { return; }
+    var blocks = document.querySelectorAll('.intro');
+    if (!blocks.length) { return; }
     // Sans GSAP ou en mouvement réduit, le CSS laisse déjà tout
     // en place : texte visible et surlignages pleins.
     if (!hasGsap || REDUCED) { return; }
 
-    var text = document.getElementById('introText');
-    var aside = block.querySelectorAll('.intro__star, .intro__kicker');
-    var kws = block.querySelectorAll('.kw');
+    // Chaque bloc s'anime pour lui-même, à son entrée dans la vue.
+    Array.prototype.forEach.call(blocks, function (block) {
+      var text = block.querySelector('.intro__text');
+      var aside = block.querySelectorAll('.intro__star, .intro__kicker');
+      var kws = block.querySelectorAll('.kw');
+      if (!text) { return; }
 
-    gsap.set(aside, { opacity: 0, x: -18 });
-    gsap.set(text, { opacity: 0, y: 26 });
-    gsap.set(kws, { '--kw': 0 });
+      gsap.set(aside, { opacity: 0, x: -18 });
+      gsap.set(text, { opacity: 0, y: 26 });
+      gsap.set(kws, { '--kw': 0 });
 
-    gsap.timeline({ scrollTrigger: { trigger: block, start: 'top 80%', once: true } })
-      .to(aside, { opacity: 1, x: 0, duration: .75, stagger: .08, ease: 'power3.out' }, 0)
-      .to(text, { opacity: 1, y: 0, duration: .95, ease: 'power3.out' }, .1)
-      .to(kws, { '--kw': 1, duration: .55, stagger: .11, ease: 'power2.out' }, .55);
+      gsap.timeline({ scrollTrigger: { trigger: block, start: 'top 80%', once: true } })
+        .to(aside, { opacity: 1, x: 0, duration: .75, stagger: .08, ease: 'power3.out' }, 0)
+        .to(text, { opacity: 1, y: 0, duration: .95, ease: 'power3.out' }, .1)
+        .to(kws, { '--kw': 1, duration: .55, stagger: .11, ease: 'power2.out' }, .55);
+    });
   })();
 
   /* ============================================================
