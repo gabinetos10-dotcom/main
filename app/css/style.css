@@ -564,10 +564,12 @@ img, canvas, svg { display: block; max-width: 100%; }
    et un léger glissement au scroll. */
 .intro {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.06fr);
-  gap: clamp(1.6rem, 4.5vw, 4rem);
+  /* Pas de largeur maximale ici : le conteneur en impose déjà une.
+     Un max-width plus étroit calait le bloc à gauche et laissait
+     200 à 270 px de vide à droite sur un écran d'ordinateur. */
+  grid-template-columns: minmax(0, .9fr) minmax(0, 1fr);
+  gap: clamp(1.6rem, 4vw, 3.8rem);
   align-items: center;
-  max-width: 1120px;
   margin: clamp(1.6rem, 3vw, 2.6rem) 0 clamp(3.6rem, 8vw, 6rem);
   padding-top: clamp(1.3rem, 3vw, 2.1rem);
   border-top: 1px solid var(--line);
@@ -578,7 +580,10 @@ img, canvas, svg { display: block; max-width: 100%; }
 
 /* --- L'IMAGE EN RELIEF --- */
 .intro__media {
-  position: relative; aspect-ratio: 4 / 5;
+  /* Colonne large : un portrait 4/5 y deviendrait très haut et
+     laisserait le texte flotter au milieu du vide. Le carré tient
+     la hauteur du bloc au niveau du texte. */
+  position: relative; aspect-ratio: 1 / 1;
   perspective: 1000px;
 }
 /* Le cadre jaune décalé : c'est lui qui crée la profondeur. */
@@ -603,6 +608,7 @@ img, canvas, svg { display: block; max-width: 100%; }
    jamais découvrir le fond du cadre. */
 .intro__media-img {
   width: 100%; height: 112%; object-fit: cover;
+  object-position: center 42%; /* on cadre sur le regard */
   will-change: transform;
 }
 /* Le reflet se déplace avec le basculement. */
@@ -644,9 +650,10 @@ img, canvas, svg { display: block; max-width: 100%; }
   display: inline-block; animation: spin 14s linear infinite;
 }
 .intro__text {
-  max-width: 52ch;
-  font-size: clamp(1.04rem, 1.4vw, 1.24rem);
-  line-height: 1.76; color: var(--ink-soft);
+  /* Le corps monte avec la largeur de la colonne : c'est lui qui
+     tient la longueur de ligne autour de 60-65 signes. */
+  font-size: clamp(1.05rem, 1.45vw, 1.45rem);
+  line-height: 1.74; color: var(--ink-soft);
 }
 /* Lettrine en CSS plutôt qu'en balise : le texte reste entier
    pour les lecteurs d'écran. */
@@ -682,14 +689,16 @@ img, canvas, svg { display: block; max-width: 100%; }
   /* Une colonne : l'image ouvre le bloc, le texte suit. */
   .intro { grid-template-columns: 1fr; gap: clamp(1.3rem, 4vw, 2rem); }
   .intro--media-right .intro__media { order: 0; }
-  .intro__media { aspect-ratio: 3 / 2; max-width: 520px; }
+  /* Pleine largeur de colonne : un max-width recréerait ici le
+     même calage à gauche que sur grand écran. */
+  .intro__media { aspect-ratio: 3 / 2; }
   .intro__media-img { height: 118%; }
   .intro__text::first-letter { font-size: 2.9em; }
 }
 
 /* --- LA CITATION --- */
 .quote {
-  position: relative; max-width: 1240px;
+  position: relative;
   padding-left: clamp(1.1rem, 3vw, 2.8rem);
 }
 .quote::before {
@@ -727,7 +736,7 @@ img, canvas, svg { display: block; max-width: 100%; }
   font-family: var(--font-display); font-weight: 700;
   font-size: clamp(1.9rem, 4.6vw, 4.1rem); line-height: 1.16;
   letter-spacing: .01em;
-  max-width: 1140px; margin-top: 0;
+  margin-top: 0;
   perspective: 1000px;
 }
 .manifesto__text .w {
