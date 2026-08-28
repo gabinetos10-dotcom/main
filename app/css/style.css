@@ -1555,28 +1555,47 @@ img, canvas, svg { display: block; max-width: 100%; }
   .game__score { font-size: clamp(1.7rem, 7vw, 2.3rem); margin-left: auto; }
   .game__lives { margin-top: 0; flex: 0 0 auto; }
   .game__log { padding: 1.1rem 1.3rem; }
-  /* Onglets : bandeau défilable plutôt que trois colonnes écrasées */
-  .arcade__tabs {
-    display: flex; grid-template-columns: none;
-    overflow-x: auto; scroll-snap-type: x mandatory;
-    margin-inline: calc(var(--pad) * -1); padding-inline: var(--pad);
-    padding-bottom: .5rem; scrollbar-width: none;
-  }
-  .arcade__tabs::-webkit-scrollbar { display: none; }
-  .arcade__tab {
-    flex: 0 0 min(74vw, 300px); scroll-snap-align: start;
-    display: grid; grid-template-columns: auto 1fr; gap: .1rem .6rem;
-    align-items: baseline; padding: .85rem 1.1rem .95rem;
-  }
-  .arcade__tab-num { grid-row: 1; }
-  .arcade__tab-name { grid-row: 1; font-size: clamp(1.3rem, 5.4vw, 1.7rem); }
-  .arcade__tab-goal { grid-column: 1 / -1; line-height: 1.45; }
-  .arcade__brief { margin-bottom: 1.1rem; font-size: .88rem; line-height: 1.7; }
   .tape { display: none; }
   .about__deck { grid-template-columns: repeat(3, 1fr); gap: 1rem; }
   .about__desc { font-size: .88rem; }
   .about__desc--quote { font-size: 1rem; }
   .about__initial { font-size: clamp(2rem, 4.4vw, 2.9rem); }
+}
+
+@media (max-width: 860px) {
+  /* Les trois jeux passent en accordéon : chacun porte son panneau
+     juste dessous. Tout est visible d'emblée — il n'y a rien à
+     faire glisser pour découvrir qu'il existe d'autres jeux —
+     et les cartes gardent la marge du conteneur. */
+  .arcade { display: flex; flex-direction: column; margin: 2.2rem 0 1.6rem; }
+  .arcade__tabs { display: contents; }
+  #tab-tri { order: 1; } #panel-tri { order: 2; }
+  #tab-route { order: 3; } #panel-route { order: 4; }
+  #tab-choix { order: 5; } #panel-choix { order: 6; }
+  .arcade__tab {
+    display: grid; grid-template-columns: auto 1fr; gap: .12rem .6rem;
+    align-items: baseline;
+    padding: 1rem 3rem 1.05rem 1.2rem;
+    margin-bottom: .7rem;
+  }
+  .arcade__tab-num { grid-row: 1; }
+  .arcade__tab-name { grid-row: 1; font-size: clamp(1.35rem, 5.6vw, 1.8rem); }
+  .arcade__tab-goal { grid-column: 1 / -1; line-height: 1.45; }
+  /* Le chevron dit ce que fait le bouton : ouvrir, ou refermer. */
+  .arcade__tab::before {
+    content: ''; position: absolute; right: 1.3rem; top: 50%;
+    width: 9px; height: 9px;
+    border-right: 2px solid var(--ink-soft); border-bottom: 2px solid var(--ink-soft);
+    transform: translateY(-70%) rotate(45deg);
+    transition: transform .4s var(--ease-out), border-color .4s;
+  }
+  .arcade__tab.is-active::before {
+    transform: translateY(-30%) rotate(-135deg); border-color: var(--yellow);
+  }
+  /* Le panneau ouvert prolonge son onglet. */
+  .arcade__tab.is-active { margin-bottom: 0; border-radius: 14px 14px 0 0; }
+  .arcade__panel { padding-top: 1.2rem; margin-bottom: .7rem; }
+  .arcade__brief { margin-bottom: 1.1rem; font-size: .88rem; line-height: 1.7; }
 }
 
 @media (max-width: 768px) {
@@ -1636,7 +1655,7 @@ img, canvas, svg { display: block; max-width: 100%; }
 }
 
 @media (max-width: 480px) {
-  .arcade__tab { flex-basis: min(82vw, 290px); padding: 1rem 1.1rem; }
+  .arcade__tab { padding: .9rem 2.7rem 1rem 1.05rem; }
   /* Sur un écran étroit, un libellé sur une seule ligne remplirait
      toute la largeur : elle ne pourrait plus fuir que verticalement. */
   .choice__other { white-space: normal; max-width: 44vw; text-align: center; line-height: 1.5; }

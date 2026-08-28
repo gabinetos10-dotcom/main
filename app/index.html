@@ -414,7 +414,10 @@
           <span class="tape tape--game" aria-hidden="true">3 JEUX · 3 OBJECTIFS</span>
         </div>
 
-        <!-- Onglets : l'objectif de chaque jeu est annoncé d'entrée -->
+        <!-- Onglets sur grand écran, accordéon sur mobile : le
+             conteneur permet d'intercaler chaque panneau sous son
+             propre onglet, par l'ordre CSS. -->
+        <div class="arcade">
         <div class="arcade__tabs" role="tablist" aria-label="Les jeux de l'atelier" data-reveal>
           <button class="arcade__tab is-active" role="tab" type="button" id="tab-tri"
                   aria-controls="panel-tri" aria-selected="true">
@@ -559,6 +562,7 @@
               </div>
             </div>
           </div>
+        </div>
         </div>
       </div>
     </section>

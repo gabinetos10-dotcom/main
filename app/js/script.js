@@ -1467,6 +1467,19 @@ window.NOUS_ARCADE = window.NOUS_ARCADE || { active: 'tri', on: {} };
   function panelOf(tab) { return document.getElementById(tab.getAttribute('aria-controls')); }
   function keyOf(tab) { return tab.id.replace('tab-', ''); }
 
+  // En accordéon, refermer un panneau fait remonter tout ce qui suit :
+  // l'onglet qu'on vient d'ouvrir peut se retrouver hors de l'écran.
+  // On le ramène sous la barre de navigation, jamais autrement.
+  function keepInView(tab) {
+    var nav = document.getElementById('nav');
+    var navH = nav ? nav.offsetHeight : 0;
+    requestAnimationFrame(function () {
+      var r = tab.getBoundingClientRect();
+      if (r.top >= navH && r.bottom <= window.innerHeight) { return; }
+      window.scrollTo({ top: window.scrollY + r.top - navH - 12, behavior: 'smooth' });
+    });
+  }
+
   function activate(tab, focus) {
     var key = keyOf(tab);
     if (key === arcade.active) { return; }
@@ -1488,6 +1501,7 @@ window.NOUS_ARCADE = window.NOUS_ARCADE || { active: 'tri', on: {} };
     if (arcade.on[key] && arcade.on[key].enter) { arcade.on[key].enter(); }
     if (focus) { tab.focus(); }
     if (window.ScrollTrigger) { ScrollTrigger.refresh(); }
+    keepInView(tab);
   }
 
   tabs.forEach(function (tab) {
