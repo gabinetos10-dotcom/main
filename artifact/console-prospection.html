@@ -1,0 +1,1381 @@
+<title>Prospection Sans-Site</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&display=swap">
+<style>
+:root {
+  --papier: #E4E9E3;
+  --surface: #FAFBF8;
+  --surface-creuse: #EEF1EC;
+  --encre: #16201E;
+  --encre-douce: #4C5A56;
+  --encre-faible: #78857F;
+  --trait: #C6D0C7;
+  --trait-fin: #DCE3DB;
+  --accent: #1C5D86;
+  --accent-doux: #DCE8EF;
+  --accent-encre: #124260;
+  --sur-accent: #FFFFFF;
+  --signal: #A65B0C;
+  --signal-doux: #F3E6D4;
+  --ok: #2C6E4B;
+  --ok-doux: #DCEBE1;
+  --attention: #96670A;
+  --attention-doux: #F2E9D2;
+  --alerte: #9C3A32;
+  --alerte-doux: #F2DEDB;
+  --ombre: 0 1px 2px rgba(22, 32, 30, .06), 0 6px 18px -12px rgba(22, 32, 30, .3);
+  --rayon: 6px;
+  --police-titre: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --police-texte: "Source Sans 3", "Segoe UI", system-ui, sans-serif;
+  --police-donnee: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --papier: #111917;
+    --surface: #19221F;
+    --surface-creuse: #141D1B;
+    --encre: #E3E9E2;
+    --encre-douce: #A8B4AE;
+    --encre-faible: #7C8A84;
+    --trait: #2E3A37;
+    --trait-fin: #232E2B;
+    --accent: #74B4DC;
+    --accent-doux: #1B3444;
+    --accent-encre: #A8D2EE;
+  --sur-accent: #0D1A22;
+    --signal: #DFA25A;
+    --signal-doux: #3A2C18;
+    --ok: #67B98C;
+    --ok-doux: #16301F;
+    --attention: #D3A94F;
+    --attention-doux: #33290F;
+    --alerte: #DE8A82;
+    --alerte-doux: #37211F;
+    --ombre: 0 1px 2px rgba(0, 0, 0, .4), 0 8px 22px -14px rgba(0, 0, 0, .8);
+  }
+}
+:root[data-theme="dark"] {
+  --papier: #111917;
+  --surface: #19221F;
+  --surface-creuse: #141D1B;
+  --encre: #E3E9E2;
+  --encre-douce: #A8B4AE;
+  --encre-faible: #7C8A84;
+  --trait: #2E3A37;
+  --trait-fin: #232E2B;
+  --accent: #74B4DC;
+  --accent-doux: #1B3444;
+  --accent-encre: #A8D2EE;
+  --sur-accent: #0D1A22;
+  --signal: #DFA25A;
+  --signal-doux: #3A2C18;
+  --ok: #67B98C;
+  --ok-doux: #16301F;
+  --attention: #D3A94F;
+  --attention-doux: #33290F;
+  --alerte: #DE8A82;
+  --alerte-doux: #37211F;
+  --ombre: 0 1px 2px rgba(0, 0, 0, .4), 0 8px 22px -14px rgba(0, 0, 0, .8);
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--papier);
+  color: var(--encre);
+  font-family: var(--police-texte);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3 { font-family: var(--police-titre); margin: 0; text-wrap: balance; }
+button, input, select, textarea { font: inherit; color: inherit; }
+a { color: var(--accent); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 3px; }
+.mono { font-family: var(--police-donnee); font-variant-numeric: tabular-nums; }
+</style>
+<style>
+/* ---------------------------------------------------------- ossature --- */
+.cadre { max-width: 1440px; margin: 0 auto; padding: 18px 20px 40px; }
+
+.barre {
+  display: flex; flex-wrap: wrap; gap: 16px;
+  align-items: center; justify-content: space-between;
+  padding-bottom: 14px; border-bottom: 1px solid var(--trait);
+}
+.marque { display: flex; align-items: center; gap: 12px; }
+.boussole { width: 34px; height: 34px; flex: none; }
+.barre h1 { font-size: 20px; letter-spacing: -.015em; font-weight: 700; }
+.barre p { margin: 1px 0 0; font-size: 13px; color: var(--encre-douce); }
+.actions { display: flex; flex-wrap: wrap; gap: 8px; }
+
+/* -------------------------------------------------------- commandes --- */
+.bouton {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 13px; border: 1px solid var(--trait);
+  background: var(--surface); border-radius: var(--rayon);
+  font-family: var(--police-titre); font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: background .12s, border-color .12s;
+}
+.bouton:hover { border-color: var(--accent); color: var(--accent); }
+.bouton[disabled] { opacity: .45; cursor: not-allowed; }
+.bouton.primaire { background: var(--accent); border-color: var(--accent); color: var(--sur-accent); }
+.bouton.primaire:hover { background: var(--accent-encre); border-color: var(--accent-encre); color: var(--papier); }
+.bouton.discret { border-color: transparent; background: transparent; color: var(--encre-douce); }
+.bouton.discret:hover { background: var(--surface-creuse); color: var(--accent); }
+.bouton.mini { padding: 4px 9px; font-size: 12px; }
+
+/* ----------------------------------------------------------- releve --- */
+.releve {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(132px, 1fr));
+  gap: 1px; margin: 18px 0 0;
+  background: var(--trait-fin); border: 1px solid var(--trait-fin);
+  border-radius: var(--rayon); overflow: hidden;
+}
+.mesure { background: var(--surface); padding: 11px 14px; }
+.mesure dt {
+  font-family: var(--police-titre); font-size: 10.5px; font-weight: 600;
+  letter-spacing: .09em; text-transform: uppercase; color: var(--encre-faible);
+}
+.mesure dd {
+  margin: 3px 0 0; font-family: var(--police-donnee); font-size: 22px;
+  font-weight: 500; font-variant-numeric: tabular-nums; letter-spacing: -.02em;
+}
+.mesure dd small { font-size: 12px; color: var(--encre-faible); margin-left: 4px; }
+.mesure.pointe dd { color: var(--signal); }
+
+/* ---------------------------------------------------------- filtres --- */
+.filtres {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+  margin: 16px 0 12px; padding-bottom: 12px;
+  border-bottom: 1px dashed var(--trait);
+}
+.champ {
+  padding: 7px 11px; border: 1px solid var(--trait);
+  background: var(--surface); border-radius: var(--rayon); font-size: 14px;
+}
+.champ:focus { border-color: var(--accent); }
+#recherche { min-width: 210px; flex: 1 1 210px; max-width: 320px; }
+.puces { display: flex; flex-wrap: wrap; gap: 6px; }
+.puce {
+  padding: 5px 10px; border: 1px solid var(--trait); border-radius: 999px;
+  background: var(--surface); font-size: 12.5px; cursor: pointer;
+  font-family: var(--police-titre); font-weight: 500; white-space: nowrap;
+}
+.puce[aria-pressed="true"] {
+  background: var(--accent-doux); border-color: var(--accent); color: var(--accent-encre);
+}
+.compteur-filtre { margin-left: auto; font-size: 13px; color: var(--encre-douce); }
+
+/* -------------------------------------------------------------- plan --- */
+.plan { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 400px); gap: 18px; align-items: start; }
+@media (max-width: 1020px) { .plan { grid-template-columns: minmax(0, 1fr); } }
+
+.liste {
+  border: 1px solid var(--trait); border-radius: var(--rayon);
+  background: var(--surface); overflow: hidden;
+}
+.ligne {
+  display: grid;
+  grid-template-columns: 3px minmax(0, 1fr) auto;
+  gap: 0 14px; align-items: center;
+  width: 100%; padding: 0; border: 0; border-bottom: 1px solid var(--trait-fin);
+  background: transparent; text-align: left; cursor: pointer;
+}
+.ligne:last-child { border-bottom: 0; }
+.ligne:hover { background: var(--surface-creuse); }
+.ligne[aria-current="true"] { background: var(--accent-doux); }
+.jauge { align-self: stretch; background: var(--trait); }
+.jauge.chaud { background: var(--signal); }
+.jauge.tiede { background: var(--attention); }
+.jauge.froid { background: var(--trait); }
+.corps-ligne { padding: 11px 0; min-width: 0; }
+.titre-ligne {
+  display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap;
+  font-family: var(--police-titre); font-weight: 600; font-size: 15px;
+}
+.meta-ligne {
+  margin-top: 3px; font-size: 12.5px; color: var(--encre-douce);
+  display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: center;
+}
+.contact-ligne { font-size: 12.5px; margin-top: 4px; }
+.contact-ligne .mono { font-size: 12px; }
+.sans-email { color: var(--encre-faible); font-style: italic; }
+.flanc-ligne { padding: 11px 14px 11px 0; text-align: right; display: grid; gap: 6px; justify-items: end; }
+.pointage { font-family: var(--police-donnee); font-size: 17px; font-variant-numeric: tabular-nums; }
+
+.etiquette {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 2px 7px; border-radius: 3px; font-size: 11px;
+  font-family: var(--police-titre); font-weight: 600;
+  letter-spacing: .03em; white-space: nowrap;
+}
+.etiquette.vitrine-AUCUNE { background: var(--signal-doux); color: var(--signal); }
+.etiquette.vitrine-SITE_MORT { background: var(--alerte-doux); color: var(--alerte); }
+.etiquette.vitrine-RESEAU_SOCIAL { background: var(--accent-doux); color: var(--accent-encre); }
+.etiquette.vitrine-PLATEFORME { background: var(--surface-creuse); color: var(--encre-douce); }
+.etiquette.vitrine-SITE { background: var(--surface-creuse); color: var(--encre-faible); }
+
+.statut {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 2px 8px 2px 6px; border-radius: 999px; font-size: 11.5px;
+  font-family: var(--police-titre); font-weight: 600; border: 1px solid transparent;
+}
+.statut::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.statut.a_contacter { color: var(--encre-faible); border-color: var(--trait); }
+.statut.contacte { color: var(--accent-encre); background: var(--accent-doux); }
+.statut.relance { color: var(--attention); background: var(--attention-doux); }
+.statut.rdv { color: var(--ok); background: var(--ok-doux); }
+.statut.gagne { color: var(--sur-accent); background: var(--ok); }
+.statut.perdu { color: var(--alerte); background: var(--alerte-doux); }
+
+.vide { padding: 44px 24px; text-align: center; color: var(--encre-douce); }
+.vide h3 { font-size: 16px; margin-bottom: 6px; }
+
+/* ----------------------------------------------------------- dossier --- */
+.dossier {
+  border: 1px solid var(--trait); border-radius: var(--rayon);
+  background: var(--surface); box-shadow: var(--ombre);
+  position: sticky; top: 16px; max-height: calc(100vh - 40px); overflow-y: auto;
+}
+@media (max-width: 1020px) { .dossier { position: static; max-height: none; } }
+.dossier-tete { padding: 16px 16px 12px; border-bottom: 1px solid var(--trait-fin); }
+.dossier-tete h2 { font-size: 18px; letter-spacing: -.01em; }
+.dossier-tete .meta-ligne { margin-top: 5px; }
+.bloc { padding: 14px 16px; border-bottom: 1px solid var(--trait-fin); }
+.bloc:last-child { border-bottom: 0; }
+.bloc h3 {
+  font-size: 10.5px; letter-spacing: .09em; text-transform: uppercase;
+  color: var(--encre-faible); font-weight: 600; margin-bottom: 9px;
+}
+.paire { display: flex; justify-content: space-between; gap: 12px; padding: 3px 0; font-size: 13.5px; }
+.paire dt { color: var(--encre-douce); flex: none; }
+.paire dd { margin: 0; text-align: right; min-width: 0; overflow-wrap: anywhere; }
+.rangee-boutons { display: flex; flex-wrap: wrap; gap: 6px; }
+.zone-texte {
+  width: 100%; min-height: 92px; padding: 9px 11px; resize: vertical;
+  border: 1px solid var(--trait); border-radius: var(--rayon);
+  background: var(--surface-creuse); font-size: 13.5px; line-height: 1.55;
+}
+.pistes { display: grid; gap: 6px; }
+.piste {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  padding: 7px 10px; border: 1px solid var(--trait-fin); border-radius: var(--rayon);
+  background: var(--surface-creuse); font-size: 13px; text-decoration: none;
+}
+.piste:hover { border-color: var(--accent); }
+.piste span:last-child { color: var(--encre-faible); font-size: 11px; }
+.note-email {
+  display: inline-block; padding: 1px 6px; border-radius: 3px; margin-left: 6px;
+  font-family: var(--police-donnee); font-size: 11px;
+  background: var(--surface-creuse); color: var(--encre-douce);
+}
+
+/* ---------------------------------------------------------- fenetres --- */
+dialog {
+  border: 1px solid var(--trait); border-radius: 8px; padding: 0;
+  background: var(--surface); color: var(--encre);
+  max-width: 640px; width: calc(100% - 32px); box-shadow: 0 24px 60px -20px rgba(0,0,0,.45);
+}
+dialog::backdrop { background: rgba(16, 26, 24, .55); }
+.fenetre-tete { padding: 16px 18px 10px; border-bottom: 1px solid var(--trait-fin); }
+.fenetre-tete h2 { font-size: 17px; }
+.fenetre-corps { padding: 16px 18px; max-height: 62vh; overflow-y: auto; }
+.fenetre-pied { padding: 12px 18px; border-top: 1px solid var(--trait-fin); display: flex; justify-content: flex-end; gap: 8px; }
+.fenetre-corps p { margin: 0 0 10px; max-width: 62ch; }
+.fenetre-corps ol, .fenetre-corps ul { margin: 0 0 12px; padding-left: 20px; max-width: 62ch; }
+.fenetre-corps li { margin-bottom: 5px; }
+.fenetre-corps code {
+  font-family: var(--police-donnee); font-size: 12.5px;
+  background: var(--surface-creuse); padding: 1px 5px; border-radius: 3px;
+}
+.depot {
+  border: 1px dashed var(--trait); border-radius: var(--rayon);
+  padding: 20px; text-align: center; background: var(--surface-creuse); margin-bottom: 12px;
+}
+.depot.survol { border-color: var(--accent); background: var(--accent-doux); }
+
+.avis {
+  margin-top: 10px; padding: 9px 12px; border-left: 3px solid var(--accent);
+  background: var(--accent-doux); color: var(--accent-encre);
+  font-size: 13px; border-radius: 0 var(--rayon) var(--rayon) 0;
+}
+.avis.alerte { border-color: var(--alerte); background: var(--alerte-doux); color: var(--alerte); }
+
+#toast {
+  position: fixed; left: 50%; bottom: 22px; transform: translate(-50%, 12px);
+  background: var(--encre); color: var(--papier); padding: 9px 16px;
+  border-radius: 999px; font-size: 13.5px; font-family: var(--police-titre); font-weight: 500;
+  opacity: 0; pointer-events: none; transition: opacity .18s, transform .18s; z-index: 60;
+}
+#toast.visible { opacity: 1; transform: translate(-50%, 0); }
+
+.pied {
+  margin-top: 22px; padding-top: 14px; border-top: 1px solid var(--trait);
+  font-size: 12.5px; color: var(--encre-faible); display: flex;
+  flex-wrap: wrap; gap: 6px 18px; justify-content: space-between;
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+
+<div class="cadre">
+  <header class="barre">
+    <div class="marque">
+      <svg class="boussole" viewBox="0 0 40 40" aria-hidden="true">
+        <circle cx="20" cy="20" r="18" fill="none" stroke="var(--trait)" stroke-width="1.5"></circle>
+        <circle cx="20" cy="20" r="12.5" fill="none" stroke="var(--trait-fin)" stroke-width="1"></circle>
+        <path d="M20 6.5 L24 20 L20 33.5 L16 20 Z" fill="var(--accent)"></path>
+        <path d="M20 6.5 L24 20 L20 20 Z" fill="var(--signal)"></path>
+        <circle cx="20" cy="20" r="2.2" fill="var(--surface)" stroke="var(--encre)" stroke-width="1.2"></circle>
+      </svg>
+      <div>
+        <h1>Prospection sans-site</h1>
+        <p id="sousTitre">Chargement du secteur…</p>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="bouton" id="btnAide" type="button">Mode d'emploi</button>
+      <button class="bouton" id="btnExport" type="button">Exporter</button>
+      <button class="bouton primaire" id="btnImport" type="button">Importer une collecte</button>
+    </div>
+  </header>
+
+  <dl class="releve" id="releve"></dl>
+
+  <section class="filtres" aria-label="Filtres">
+    <input class="champ" id="recherche" type="search" placeholder="Enseigne, ville, e-mail…" aria-label="Rechercher">
+    <select class="champ" id="filtreSegment" aria-label="Segment"><option value="">Tous les segments</option></select>
+    <select class="champ" id="filtreVitrine" aria-label="Vitrine">
+      <option value="">Toutes les vitrines</option>
+      <option value="AUCUNE">Aucune presence web</option>
+      <option value="SITE_MORT">Lien mort / constructeur gratuit</option>
+      <option value="RESEAU_SOCIAL">Reseau social uniquement</option>
+      <option value="PLATEFORME">Plateforme tierce uniquement</option>
+    </select>
+    <select class="champ" id="filtreStatut" aria-label="Statut">
+      <option value="">Tous les statuts</option>
+      <option value="a_contacter">A contacter</option>
+      <option value="contacte">Contacte</option>
+      <option value="relance">Relance</option>
+      <option value="rdv">Rendez-vous</option>
+      <option value="gagne">Gagne</option>
+      <option value="perdu">Perdu</option>
+    </select>
+    <div class="puces" role="group" aria-label="Presence d'un e-mail">
+      <button class="puce" id="puceAvecEmail" type="button" aria-pressed="true">Avec e-mail</button>
+      <button class="puce" id="puceSansEmail" type="button" aria-pressed="false">A enrichir</button>
+    </div>
+    <select class="champ" id="tri" aria-label="Tri">
+      <option value="score">Trier par score</option>
+      <option value="avis">Trier par nombre d'avis</option>
+      <option value="note">Trier par note Google</option>
+      <option value="nom">Trier par nom</option>
+    </select>
+    <span class="compteur-filtre" id="compteur"></span>
+  </section>
+
+  <div class="plan">
+    <section class="liste" id="liste" aria-label="Prospects"></section>
+    <aside class="dossier" id="dossier" aria-label="Fiche du prospect"></aside>
+  </div>
+
+  <footer class="pied">
+    <span id="etatStockage">Stockage local</span>
+    <span>Les adresses collectees concernent des professionnels : rappelez l'origine des donnees et proposez un desabonnement des le premier message (RGPD, art. 14).</span>
+  </footer>
+</div>
+
+<dialog id="dlgImport">
+  <div class="fenetre-tete"><h2>Importer une collecte</h2></div>
+  <div class="fenetre-corps">
+    <p>Deposez le fichier <code>prospects.json</code> ou <code>prospects.csv</code> produit par le collecteur, ou collez le JSON directement.</p>
+    <div class="depot" id="depot">
+      <input type="file" id="fichier" accept=".json,.csv,text/csv,application/json" hidden>
+      <button class="bouton" type="button" id="btnParcourir">Choisir un fichier</button>
+      <p style="margin:9px 0 0;font-size:13px;color:var(--encre-douce)">ou glissez-le ici</p>
+    </div>
+    <textarea class="zone-texte" id="collage" placeholder='{"prospects": [ … ]}' aria-label="Coller le JSON"></textarea>
+    <div id="avisImport"></div>
+  </div>
+  <div class="fenetre-pied">
+    <button class="bouton discret" type="button" data-fermer>Annuler</button>
+    <button class="bouton primaire" type="button" id="btnValiderImport">Importer</button>
+  </div>
+</dialog>
+
+<dialog id="dlgAide">
+  <div class="fenetre-tete"><h2>Mode d'emploi</h2></div>
+  <div class="fenetre-corps" id="corpsAide"></div>
+  <div class="fenetre-pied"><button class="bouton primaire" type="button" data-fermer>Compris</button></div>
+</dialog>
+
+<dialog id="dlgExport">
+  <div class="fenetre-tete"><h2>Exporter</h2></div>
+  <div class="fenetre-corps">
+    <p id="resumeExport"></p>
+    <textarea class="zone-texte" id="apercuExport" style="min-height:180px;font-family:var(--police-donnee);font-size:12px" readonly aria-label="Apercu CSV"></textarea>
+  </div>
+  <div class="fenetre-pied">
+    <button class="bouton discret" type="button" data-fermer>Fermer</button>
+    <button class="bouton" type="button" id="btnCopierExport">Copier</button>
+    <button class="bouton primaire" type="button" id="btnTelechargerExport">Telecharger le CSV</button>
+  </div>
+</dialog>
+
+<div id="toast" role="status" aria-live="polite"></div>
+<script type="application/json" id="jeuExemple">{"lieu":"Nantes (jeu d'exemple)","prospects":[{"id":"DEMO_001","nom":"Le Comptoir de Camille","segment":"restaurant","typeGoogle":"Restaurant","adresse":"72 route de Vannes, 44000 Nantes, France","ville":"Nantes","codePostal":"44000","telephone":"02 40 62 29 22","vitrine":"AUCUNE","note":4.6,"avis":214,"score":66,"mapsUrl":"https://www.google.com/maps/search/?api=1&query=Le%20Comptoir%20de%20Camille%20Nantes","lat":47.23814,"lng":-1.52554},{"id":"DEMO_002","nom":"Chez Nino Pizzeria","segment":"pizzeria","typeGoogle":"Pizzeria","adresse":"123 rue Crebillon, 44000 Nantes, France","ville":"Nantes","codePostal":"44000","telephone":"02 40 75 39 33","siteWeb":"https://www.facebook.com/chez-nino-pizzeria","vitrine":"RESEAU_SOCIAL","email":"contact@cheznino-pizza.fr","sourceEmail":"https://www.facebook.com/chez-nino-pizzeria","confianceEmail":88,"note":4.4,"avis":98,"score":78,"mapsUrl":"https://www.google.com/maps/search/?api=1&query=Chez%20Nino%20Pizzeria%20Nantes","lat":47.20547,"lng":-1.54447},{"id":"DEMO_003","nom":"Bistrot des Halles","segment":"restaurant","typeGoogle":"Restaurant","adresse":"72 rue Crebillon, 44000 Nantes, France","ville":"Nantes","codePostal":"44000","telephone":"02 40 14 64 95","siteWeb":"https://bistrotdeshalles.business.site","vitrine":"SITE_MORT","email":"bistrotdeshalles44@gmail.com","sourceEmail":"https://bistrotdeshalles.business.site","confianceEmail":62,"note":4.3,"avis":156,"score":88,"mapsUrl":"https://www.google.com/maps/search/?api=1&query=Bistrot%20des%20Halles%20Nantes","lat":47.24032,"lng":-1.55234},{"id":"DEMO_004","nom":"La Table de Yann","segment":"restaurant","typeGoogle":"Restaurant francais","adresse":"128 rue Sainte-Catherine, 44000 Nantes, France","ville":"Nantes","codePostal":"44000","telephone":"02 40 24 90 70","siteWeb":"https://www.thefork.fr/restaurant/la-table-de-yann","vitrine":"PLATEFORME","note":4.7,"avis":302,"score":52,"mapsUrl":"https://www.google.com/maps/search/?api=1&query=La%20Table%20de%20Yann%20Nantes","lat":47.20026,"lng":-1.56562},{"id":"DEMO_005","nom":"Cantine Vietnamienne Sen","segment":"restaurant","typeGoogle":"Restaurant vietnamien","adresse":"108 place du Bouffay, 44000 Nantes, France","ville":"Nantes","codePostal":"44000","telephone":"02 40 78 86 83","vitrine":"AUCUNE","email":"sen.cantine@orange.fr","sourceEmail":"saisie manuelle","confianceEmail":58,"note":4.5,"avis":41,"score":83,"mapsUrl":"https://www.google.com/maps/search/?api=1&query=Cantine%20Vietnamienne%20Sen%20Nantes","lat":47.24845,"lng":-1.54033},{"id":"DEMO_006","nom":"Le Petit Beurre","segment":"cafe","typeGoogle":"Salon de the","adresse":"58 route de Vannes, 44000 Nantes, France","ville":"Nantes","codePostal":"44000","telephone":"02 40 18 27 64","siteWeb":"https://www.instagram.com/lepetitbeurre.nantes","vitrine":"RESEAU_SOCIAL","email":"bonjour@lepetitbeurre-nantes.fr","sourceEmail":"https://www.instagram.com/lepetitbeurre.nantes","confianceEmail":92,"note":4.8,"avis":67,"score":77,"mapsUrl":"https://www.google.com/maps/search/?api=1&query=Le%20Petit%20Beurre%20Nantes","lat":47.2245,"lng":-1.51167},{"id":"DEMO_007","nom":"Brasserie du Port","segment":"brasserie","typeGoogle":"Brasserie","adresse":"105 rue Crebillon, 44000 Nantes, France","ville":"Nantes","codePostal":"44000","telephone":"02 40 57 51 89","vitrine":"AUCUNE","note":3.9,"avis":188,"score":58,"mapsUrl":"https://www.google.com/maps/search/?api=1&query=Brasserie%20du%20Port%20Nantes","lat":47.23106,"lng":-1.5468},{"id":"DEMO_008","nom":"Boulangerie Moreau","segment":"boulangerie","typeGoogle":"Boulangerie","adresse":"68 rue Jean-Jacques Rousseau, 44000 Nantes, France","ville":"Nantes","codePostal":"44000","telephone":"02 40 89 70 95","vitrine":"AUCUNE","email":"boulangerie.moreau@wanadoo.fr","sourceEmail":"saisie manuelle","confianceEmail":55,"note":4.5,"avis":129,"score":86,"mapsUrl":"https://www.google.com/maps/search/?api=1&query=Boulangerie%20Moreau%20Nantes","lat":47.20429,"lng":-1.54227},{"id":"DEMO_009","nom":"Fournil Saint-Michel","segment":"boulangerie","typeGoogle":"Boulangerie-patisserie","adresse":"9 boulevard des Poilus, 44000 Nantes, France","ville":"Nantes","codePostal":"44000","telephone":"02 40 34 87 55","siteWeb":"https://www.facebook.com/fournilsaintmichel","vitrine":"RESEAU_SOCIAL","email":"fournilstmichel@gmail.com","sourceEmail":"https://www.facebook.com/fournilsaintmichel","confianceEmail":60,"note":4.2,"avis":74,"score":75,"mapsUrl":"https://www.google.com/maps/search/?api=1&query=Fournil%20Saint-Michel%20Nantes","lat":47.24266,"lng":-1.55605},{"id":"DEMO_011","nom":"Boucherie Lemoine","segment":"boucherie","typeGoogle":"Boucherie","adresse":"163 rue Sainte-Catherine, 44000 Nantes, France","ville":"Nantes","codePostal":"44000","telephone":"02 40 97 10 13","vitrine":"AUCUNE","note":4.7,"avis":88,"score":64,"mapsUrl":"https://www.google.com/maps/search/?api=1&query=Boucherie%20Lemoine%20Nantes","lat":47.20773,"lng":-1.55877},{"id":"DEMO_012","nom":"Salon Ludivine Coiffure","segment":"coiffeur","typeGoogle":"Salon de coiffure","adresse":"176 rue du Calvaire, 44000 Nantes, France","ville":"Nantes","codePostal":"44000","telephone":"02 40 49 67 90","siteWeb":"https://www.planity.com/salon-ludivine-nantes","vitrine":"PLATEFORME","note":4.9,"avis":176,"score":50,"mapsUrl":"https://www.google.com/maps/search/?api=1&query=Salon%20Ludivine%20Coiffure%20Nantes","lat":47.20108,"lng":-1.55244},{"id":"DEMO_013","nom":"Atelier Coiffure & Co","segment":"coiffeur","typeGoogle":"Salon de coiffure","adresse":"31 rue Jean-Jacques Rousseau, 44000 Nantes, France","ville":"Nantes","codePostal":"44000","telephone":"02 40 83 43 29","vitrine":"AUCUNE","email":"ateliercoiffureco@gmail.com","sourceEmail":"saisie manuelle","confianceEmail":61,"note":4.4,"avis":63,"score":81,"mapsUrl":"https://www.google.com/maps/search/?api=1&query=Atelier%20Coiffure%20%26%20Co%20Nantes","lat":47.24191,"lng":-1.52781},{"id":"DEMO_014","nom":"Coiffure Eclat","segment":"coiffeur","typeGoogle":"Salon de coiffure","adresse":"150 place du Bouffay, 44000 Nantes, France","ville":"Nantes","codePostal":"44000","telephone":"02 40 11 11 41","siteWeb":"https://coiffure-eclat.wixsite.com/monsite","vitrine":"SITE_MORT","email":"contact@coiffure-eclat.fr","sourceEmail":"https://coiffure-eclat.wixsite.com/monsite","confianceEmail":90,"note":4.1,"avis":39,"score":85,"mapsUrl":"https://www.google.com/maps/search/?api=1&query=Coiffure%20Eclat%20Nantes","lat":47.23186,"lng":-1.53807},{"id":"DEMO_015","nom":"Le Barbier de Nantes","segment":"barbier","typeGoogle":"Barbier","adresse":"128 rue Crebillon, 44000 Nantes, France","ville":"Nantes","codePostal":"44000","telephone":"02 40 18 80 83","siteWeb":"https://www.instagram.com/lebarbierdenantes","vitrine":"RESEAU_SOCIAL","email":"lebarbierdenantes@gmail.com","sourceEmail":"https://www.instagram.com/lebarbierdenantes","confianceEmail":63,"note":4.8,"avis":221,"score":82,"mapsUrl":"https://www.google.com/maps/search/?api=1&query=Le%20Barbier%20de%20Nantes%20Nantes","lat":47.20812,"lng":-1.56797},{"id":"DEMO_016","nom":"Barber Shop Erdre","segment":"barbier","typeGoogle":"Barbier","adresse":"23 avenue de la Liberation, 44000 Nantes, France","ville":"Nantes","codePostal":"44000","telephone":"02 40 69 93 71","vitrine":"AUCUNE","note":4.3,"avis":47,"score":59,"mapsUrl":"https://www.google.com/maps/search/?api=1&query=Barber%20Shop%20Erdre%20Nantes","lat":47.24893,"lng":-1.5658},{"id":"DEMO_017","nom":"Institut Belle Epoque","segment":"esthetique","typeGoogle":"Institut de beaute","adresse":"76 rue Jean-Jacques Rousseau, 44000 Nantes, France","ville":"Nantes","codePostal":"44000","telephone":"02 40 72 62 77","siteWeb":"https://www.treatwell.fr/salon/belle-epoque","vitrine":"PLATEFORME","email":"institut.belleepoque@orange.fr","sourceEmail":"https://www.treatwell.fr/salon/belle-epoque","confianceEmail":57,"note":4.6,"avis":112,"score":72,"mapsUrl":"https://www.google.com/maps/search/?api=1&query=Institut%20Belle%20Epoque%20Nantes","lat":47.22154,"lng":-1.56719},{"id":"DEMO_018","nom":"Nails & Co","segment":"ongles","typeGoogle":"Onglerie","adresse":"90 rue Sainte-Catherine, 44000 Nantes, France","ville":"Nantes","codePostal":"44000","telephone":"02 40 76 67 25","siteWeb":"https://www.facebook.com/nailsandco.nantes","vitrine":"RESEAU_SOCIAL","email":"nailsandco.nantes@gmail.com","sourceEmail":"https://www.facebook.com/nailsandco.nantes","confianceEmail":59,"note":4.2,"avis":58,"score":75,"mapsUrl":"https://www.google.com/maps/search/?api=1&query=Nails%20%26%20Co%20Nantes","lat":47.24387,"lng":-1.55199},{"id":"DEMO_019","nom":"Spa Zen Attitude","segment":"massage","typeGoogle":"Spa","adresse":"50 boulevard des Poilus, 44000 Nantes, France","ville":"Nantes","codePostal":"44000","telephone":"02 40 51 11 70","vitrine":"AUCUNE","email":"contact@spa-zenattitude.fr","sourceEmail":"saisie manuelle","confianceEmail":89,"note":4.7,"avis":93,"score":86,"mapsUrl":"https://www.google.com/maps/search/?api=1&query=Spa%20Zen%20Attitude%20Nantes","lat":47.23048,"lng":-1.56174},{"id":"DEMO_020","nom":"Encre Noire Tattoo","segment":"tatoueur","typeGoogle":"Salon de tatouage","adresse":"122 rue de Verdun, 44000 Nantes, France","ville":"Nantes","codePostal":"44000","telephone":"02 40 18 48 43","siteWeb":"https://www.instagram.com/encrenoire.tattoo","vitrine":"RESEAU_SOCIAL","email":"encrenoire.tattoo@gmail.com","sourceEmail":"https://www.instagram.com/encrenoire.tattoo","confianceEmail":64,"note":5,"avis":84,"score":80,"mapsUrl":"https://www.google.com/maps/search/?api=1&query=Encre%20Noire%20Tattoo%20Nantes","lat":47.2434,"lng":-1.54241},{"id":"DEMO_021","nom":"Fleurs de Loire","segment":"fleuriste","typeGoogle":"Fleuriste","adresse":"72 rue du Marechal Joffre, 44000 Nantes, France","ville":"Nantes","codePostal":"44000","telephone":"02 40 95 56 71","vitrine":"AUCUNE","email":"fleursdeloire@gmail.com","sourceEmail":"saisie manuelle","confianceEmail":59,"note":4.5,"avis":71,"score":83,"mapsUrl":"https://www.google.com/maps/search/?api=1&query=Fleurs%20de%20Loire%20Nantes","lat":47.24067,"lng":-1.51705},{"id":"DEMO_022","nom":"Garage Bertin","segment":"garage","typeGoogle":"Garage automobile","adresse":"132 rue du Calvaire, 44000 Nantes, France","ville":"Nantes","codePostal":"44000","telephone":"02 40 39 23 71","vitrine":"AUCUNE","email":"garage.bertin@wanadoo.fr","sourceEmail":"saisie manuelle","confianceEmail":56,"note":4.4,"avis":145,"score":84,"mapsUrl":"https://www.google.com/maps/search/?api=1&query=Garage%20Bertin%20Nantes","lat":47.22551,"lng":-1.54469},{"id":"DEMO_023","nom":"Auto Services Cheviré","segment":"garage","typeGoogle":"Garage automobile","adresse":"152 avenue de la Liberation, 44000 Nantes, France","ville":"Nantes","codePostal":"44000","telephone":"02 40 87 54 80","siteWeb":"https://autoservices-chevire.business.site","vitrine":"SITE_MORT","email":"contact@autoservices-chevire.fr","sourceEmail":"https://autoservices-chevire.business.site","confianceEmail":87,"note":4,"avis":62,"score":85,"mapsUrl":"https://www.google.com/maps/search/?api=1&query=Auto%20Services%20Chevir%C3%A9%20Nantes","lat":47.21932,"lng":-1.57143},{"id":"DEMO_024","nom":"Carrosserie Guerin","segment":"carrosserie","typeGoogle":"Carrossier","adresse":"50 rue Paul Bellamy, 44000 Nantes, France","ville":"Nantes","codePostal":"44000","telephone":"02 40 74 78 59","vitrine":"AUCUNE","email":"carrosserie.guerin@free.fr","sourceEmail":"saisie manuelle","confianceEmail":54,"note":4.6,"avis":37,"score":83,"mapsUrl":"https://www.google.com/maps/search/?api=1&query=Carrosserie%20Guerin%20Nantes","lat":47.23228,"lng":-1.52591},{"id":"DEMO_025","nom":"Plomberie Riviere","segment":"plombier","typeGoogle":"Plombier","adresse":"4 rue Paul Bellamy, 44000 Nantes, France","ville":"Nantes","codePostal":"44000","telephone":"02 40 56 91 98","vitrine":"AUCUNE","email":"plomberie.riviere@gmail.com","sourceEmail":"saisie manuelle","confianceEmail":60,"note":4.8,"avis":29,"score":79,"mapsUrl":"https://www.google.com/maps/search/?api=1&query=Plomberie%20Riviere%20Nantes","lat":47.24195,"lng":-1.52085},{"id":"DEMO_026","nom":"Elec Ouest","segment":"electricien","typeGoogle":"Electricien","adresse":"95 avenue de la Liberation, 44000 Nantes, France","ville":"Nantes","codePostal":"44000","telephone":"02 40 15 62 82","siteWeb":"https://www.facebook.com/elecouest44","vitrine":"RESEAU_SOCIAL","email":"elecouest44@gmail.com","sourceEmail":"https://www.facebook.com/elecouest44","confianceEmail":61,"note":4.3,"avis":24,"score":71,"mapsUrl":"https://www.google.com/maps/search/?api=1&query=Elec%20Ouest%20Nantes","lat":47.21527,"lng":-1.53194},{"id":"DEMO_027","nom":"Menuiserie Daniel & Fils","segment":"menuisier","typeGoogle":"Menuisier","adresse":"166 rue Paul Bellamy, 44000 Nantes, France","ville":"Nantes","codePostal":"44000","telephone":"02 40 98 31 33","vitrine":"AUCUNE","email":"menuiserie.daniel@orange.fr","sourceEmail":"saisie manuelle","confianceEmail":58,"note":4.9,"avis":18,"score":79,"mapsUrl":"https://www.google.com/maps/search/?api=1&query=Menuiserie%20Daniel%20%26%20Fils%20Nantes","lat":47.23225,"lng":-1.53129},{"id":"DEMO_028","nom":"Peinture Decor 44","segment":"peintre","typeGoogle":"Peintre en batiment","adresse":"84 rue Sainte-Catherine, 44000 Nantes, France","ville":"Nantes","codePostal":"44000","telephone":"02 40 64 87 17","vitrine":"AUCUNE","note":4.2,"avis":15,"score":55,"mapsUrl":"https://www.google.com/maps/search/?api=1&query=Peinture%20Decor%2044%20Nantes","lat":47.2147,"lng":-1.56879},{"id":"DEMO_029","nom":"Serrurier Express Nantes","segment":"serrurier","typeGoogle":"Serrurier","adresse":"71 rue de Verdun, 44000 Nantes, France","ville":"Nantes","codePostal":"44000","telephone":"02 40 43 94 37","siteWeb":"https://www.pagesjaunes.fr/pros/serrurier-express","vitrine":"PLATEFORME","note":3.6,"avis":41,"score":41,"mapsUrl":"https://www.google.com/maps/search/?api=1&query=Serrurier%20Express%20Nantes%20Nantes","lat":47.22108,"lng":-1.57057},{"id":"DEMO_030","nom":"Jardins de l Erdre","segment":"paysagiste","typeGoogle":"Paysagiste","adresse":"45 rue du Calvaire, 44000 Nantes, France","ville":"Nantes","codePostal":"44000","telephone":"02 40 90 12 75","vitrine":"AUCUNE","email":"jardinsdelerdre@gmail.com","sourceEmail":"saisie manuelle","confianceEmail":58,"note":4.7,"avis":33,"score":83,"mapsUrl":"https://www.google.com/maps/search/?api=1&query=Jardins%20de%20l%20Erdre%20Nantes","lat":47.24497,"lng":-1.51282},{"id":"DEMO_031","nom":"Pressing du Centre","segment":"pressing","typeGoogle":"Pressing","adresse":"34 boulevard des Poilus, 44000 Nantes, France","ville":"Nantes","codePostal":"44000","telephone":"02 40 63 44 96","vitrine":"AUCUNE","note":3.8,"avis":56,"score":55,"mapsUrl":"https://www.google.com/maps/search/?api=1&query=Pressing%20du%20Centre%20Nantes","lat":47.21809,"lng":-1.52523},{"id":"DEMO_032","nom":"Cordonnerie Talon Minute","segment":"cordonnier","typeGoogle":"Cordonnerie","adresse":"156 rue Paul Bellamy, 44000 Nantes, France","ville":"Nantes","codePostal":"44000","telephone":"02 40 53 50 14","vitrine":"AUCUNE","email":"talonminute.nantes@orange.fr","sourceEmail":"saisie manuelle","confianceEmail":55,"note":4.4,"avis":44,"score":81,"mapsUrl":"https://www.google.com/maps/search/?api=1&query=Cordonnerie%20Talon%20Minute%20Nantes","lat":47.20198,"lng":-1.55199},{"id":"DEMO_034","nom":"Bijoux Amethyste","segment":"bijouterie","typeGoogle":"Bijouterie","adresse":"152 rue du Calvaire, 44000 Nantes, France","ville":"Nantes","codePostal":"44000","telephone":"02 40 66 50 96","siteWeb":"https://www.facebook.com/bijouxamethyste","vitrine":"RESEAU_SOCIAL","email":"contact@bijoux-amethyste.fr","sourceEmail":"https://www.facebook.com/bijouxamethyste","confianceEmail":91,"note":4.5,"avis":51,"score":77,"mapsUrl":"https://www.google.com/maps/search/?api=1&query=Bijoux%20Amethyste%20Nantes","lat":47.21267,"lng":-1.57607},{"id":"DEMO_035","nom":"Dressing Vintage","segment":"pretaporter","typeGoogle":"Magasin de vetements","adresse":"80 rue du Marechal Joffre, 44000 Nantes, France","ville":"Nantes","codePostal":"44000","telephone":"02 40 51 68 86","siteWeb":"https://www.instagram.com/dressingvintage.nantes","vitrine":"RESEAU_SOCIAL","email":"dressingvintage.nantes@gmail.com","sourceEmail":"https://www.instagram.com/dressingvintage.nantes","confianceEmail":62,"note":4.7,"avis":79,"score":77,"mapsUrl":"https://www.google.com/maps/search/?api=1&query=Dressing%20Vintage%20Nantes","lat":47.24935,"lng":-1.56954},{"id":"DEMO_036","nom":"Toilettage Patte de Velours","segment":"animalerie","typeGoogle":"Toilettage","adresse":"95 avenue de la Liberation, 44000 Nantes, France","ville":"Nantes","codePostal":"44000","telephone":"02 40 30 33 70","vitrine":"AUCUNE","email":"pattedevelours.toilettage@gmail.com","sourceEmail":"saisie manuelle","confianceEmail":60,"note":4.9,"avis":66,"score":83,"mapsUrl":"https://www.google.com/maps/search/?api=1&query=Toilettage%20Patte%20de%20Velours%20Nantes","lat":47.22969,"lng":-1.5738},{"id":"DEMO_038","nom":"Cabinet Kine Beaulieu","segment":"kine","typeGoogle":"Kinesitherapeute","adresse":"64 route de Vannes, 44000 Nantes, France","ville":"Nantes","codePostal":"44000","telephone":"02 40 87 24 60","siteWeb":"https://www.doctolib.fr/kine/nantes/cabinet-beaulieu","vitrine":"PLATEFORME","note":4.8,"avis":96,"score":50,"mapsUrl":"https://www.google.com/maps/search/?api=1&query=Cabinet%20Kine%20Beaulieu%20Nantes","lat":47.22532,"lng":-1.54147},{"id":"DEMO_040","nom":"Fitness Club Beaujoire","segment":"sport","typeGoogle":"Salle de sport","adresse":"83 boulevard des Poilus, 44000 Nantes, France","ville":"Nantes","codePostal":"44000","telephone":"02 40 96 98 82","siteWeb":"https://www.facebook.com/fitnessclubbeaujoire","vitrine":"RESEAU_SOCIAL","note":4,"avis":204,"score":58,"mapsUrl":"https://www.google.com/maps/search/?api=1&query=Fitness%20Club%20Beaujoire%20Nantes","lat":47.22367,"lng":-1.53531},{"id":"DEMO_041","nom":"Auto-ecole du Rond-Point","segment":"autoecole","typeGoogle":"Auto-ecole","adresse":"60 rue Sainte-Catherine, 44000 Nantes, France","ville":"Nantes","codePostal":"44000","telephone":"02 40 23 52 31","vitrine":"AUCUNE","email":"autoecole.rondpoint@wanadoo.fr","sourceEmail":"saisie manuelle","confianceEmail":57,"note":4.3,"avis":87,"score":84,"mapsUrl":"https://www.google.com/maps/search/?api=1&query=Auto-ecole%20du%20Rond-Point%20Nantes","lat":47.21826,"lng":-1.52563},{"id":"DEMO_042","nom":"Le Relais des Voyageurs","segment":"hotel","typeGoogle":"Hotel","adresse":"174 rue de Verdun, 44000 Nantes, France","ville":"Nantes","codePostal":"44000","telephone":"02 40 93 17 29","siteWeb":"https://www.booking.com/hotel/fr/relais-voyageurs","vitrine":"PLATEFORME","note":4.2,"avis":341,"score":50,"mapsUrl":"https://www.google.com/maps/search/?api=1&query=Le%20Relais%20des%20Voyageurs%20Nantes","lat":47.21982,"lng":-1.51987}]}</script>
+
+<script>
+/* =====================================================================
+   Console de prospection — enseignes sans site web.
+   Lit les collectes produites par le collecteur Google Places, garde la
+   trace des relances et prepare les messages de premier contact.
+   ===================================================================== */
+
+const STATUTS = {
+  a_contacter: 'A contacter',
+  contacte: 'Contacte',
+  relance: 'Relance',
+  rdv: 'Rendez-vous',
+  gagne: 'Gagne',
+  perdu: 'Perdu',
+};
+
+const LIBELLES_VITRINE = {
+  AUCUNE: 'Aucune presence web',
+  SITE_MORT: 'Lien mort',
+  RESEAU_SOCIAL: 'Reseau social',
+  PLATEFORME: 'Plateforme tierce',
+  SITE: 'Site autonome',
+};
+
+/* Le constat d'ouverture change selon ce que la fiche Google montre — c'est
+   la phrase qui fait la difference entre un mailing et une prise de contact. */
+const CONSTATS = {
+  AUCUNE: "votre fiche ne renvoie vers aucun site. Quelqu'un qui cherche vos horaires, vos tarifs ou votre carte n'a nulle part ou aller apres la fiche",
+  SITE_MORT: "le lien affiche sur votre fiche pointe vers une page qui n'existe plus. Les visiteurs qui cliquent tombent sur une erreur",
+  RESEAU_SOCIAL: "votre fiche renvoie vers vos reseaux sociaux. Tres bien pour vos habitues, mais un client qui vous decouvre n'y trouve ni horaires clairs ni moyen de reserver",
+  PLATEFORME: "votre fiche renvoie vers une plateforme. La page appartient a l'intermediaire, pas a vous, et chaque client qui passe par la vous coute une commission",
+};
+
+const FAMILLES = {
+  restauration: ['restaurant', 'pizzeria', 'brasserie', 'cafe', 'boulangerie', 'traiteur', 'boucherie', 'primeur'],
+  beaute: ['coiffeur', 'barbier', 'esthetique', 'ongles', 'massage', 'tatoueur'],
+  artisan: ['plombier', 'electricien', 'menuisier', 'macon', 'peintre', 'serrurier', 'paysagiste', 'garage', 'carrosserie'],
+};
+
+const MODELES = {
+  restauration: {
+    libelle: 'Restauration',
+    objet: '{{nom}} — votre fiche Google renvoie dans le vide',
+    corps: `Bonjour,
+
+Je suis tombe sur la fiche Google de {{nom}} : {{reputation}}. Une chose m'a arrete — {{constat}}.
+
+Je realise des sites simples pour les commerces de bouche de {{ville}} : la carte, les horaires, le lien de reservation, et la fiche Google reliee au site. Une page qui s'ouvre vite sur telephone et que vous mettez a jour vous-meme en deux minutes.
+
+Si le sujet vous parle, je peux vous montrer en dix minutes a quoi ressemblerait celui de {{nom}}, sans engagement. Un simple retour a ce message suffit.
+
+Bonne journee,
+{{signature}}`,
+  },
+  beaute: {
+    libelle: 'Coiffure et beaute',
+    objet: '{{nom}} — vos futures clientes ne vous trouvent qu\'a moitie',
+    corps: `Bonjour,
+
+J'ai regarde la fiche Google de {{nom}} : {{reputation}}. Le bouche-a-oreille fonctionne, mais {{constat}}.
+
+Je monte des sites de prise de rendez-vous pour les salons de {{ville}} : prestations et tarifs, photos, reservation en ligne, et la fiche Google qui pointe enfin vers chez vous plutot que vers un intermediaire.
+
+Dites-moi si vous voulez voir une maquette de ce que ca donnerait pour {{nom}} — c'est gratuit et ca prend dix minutes.
+
+Bonne journee,
+{{signature}}`,
+  },
+  artisan: {
+    libelle: 'Artisans et services',
+    objet: '{{nom}} — vos devis se jouent avant votre premier appel',
+    corps: `Bonjour,
+
+J'ai vu la fiche Google de {{nom}} : {{reputation}}. Un particulier qui compare deux artisans regarde d'abord leur site — et {{constat}}.
+
+Je fais des sites courts et efficaces pour les artisans de {{ville}} : vos interventions, vos zones, quelques chantiers en photo, un formulaire de devis. De quoi rassurer avant meme que le telephone sonne.
+
+Si vous voulez en voir un exemple concret applique a {{nom}}, repondez-moi, je vous montre ca rapidement.
+
+Bonne journee,
+{{signature}}`,
+  },
+  generique: {
+    libelle: 'Generique',
+    objet: '{{nom}} — un detail sur votre fiche Google',
+    corps: `Bonjour,
+
+Je prospecte les commerces de {{ville}} et je suis tombe sur la fiche de {{nom}} : {{reputation}}. En regardant de plus pres, {{constat}}.
+
+Je cree des sites simples pour les independants du secteur : une page claire, rapide sur telephone, reliee a votre fiche Google, que vous pouvez modifier vous-meme.
+
+Si vous voulez voir a quoi ressemblerait celui de {{nom}}, repondez a ce message : je vous prepare une maquette, sans engagement.
+
+Bonne journee,
+{{signature}}`,
+  },
+};
+
+const MENTION_RGPD = `--
+Vous recevez ce message a l'adresse professionnelle publiee sur votre fiche Google Maps, dans le cadre d'une proposition de service entre professionnels. Repondez « STOP » et je vous retire definitivement de ma liste.`;
+
+/* ------------------------------------------------------------- outils --- */
+
+const $ = (sel) => document.querySelector(sel);
+const parId = (id) => document.getElementById(id);
+
+function html(texte) {
+  return String(texte ?? '').replace(/[&<>"']/g, (c) => (
+    { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+  ));
+}
+
+function cleDocument(brut) {
+  return String(brut || '').replace(/[^A-Za-z0-9_\-.~:@+]/g, '_').slice(0, 180) || 'inconnu';
+}
+
+let minuterieToast;
+function toast(message) {
+  const el = parId('toast');
+  el.textContent = message;
+  el.classList.add('visible');
+  clearTimeout(minuterieToast);
+  minuterieToast = setTimeout(() => el.classList.remove('visible'), 2600);
+}
+
+async function copier(texte) {
+  try {
+    await navigator.clipboard.writeText(texte);
+    return true;
+  } catch { /* le presse-papier peut etre refuse dans un cadre isole */ }
+  const zone = document.createElement('textarea');
+  zone.value = texte;
+  zone.setAttribute('readonly', '');
+  zone.style.cssText = 'position:fixed;top:-1000px;opacity:0';
+  document.body.appendChild(zone);
+  zone.select();
+  let ok = false;
+  try { ok = document.execCommand('copy'); } catch { ok = false; }
+  zone.remove();
+  return ok;
+}
+
+function nombre(n) {
+  return new Intl.NumberFormat('fr-FR').format(Number(n) || 0);
+}
+
+function familleDe(segment) {
+  for (const [famille, segments] of Object.entries(FAMILLES)) {
+    if (segments.includes(segment)) return famille;
+  }
+  return 'generique';
+}
+
+function priorite(score) {
+  if (score >= 75) return 'chaud';
+  if (score >= 55) return 'tiede';
+  return 'froid';
+}
+
+/* ------------------------------------------------------------- etat --- */
+
+const Etat = {
+  prospects: [],
+  pipeline: new Map(),
+  meta: {},
+  selection: null,
+  exemple: true,
+  filtres: { texte: '', segment: '', vitrine: '', statut: '', avecEmail: true, sansEmail: false, tri: 'score' },
+  db: null,
+  telechargements: null,
+  redacteur: null,
+};
+
+function statutDe(id) {
+  return Etat.pipeline.get(id) || { statut: 'a_contacter', notes: '', email: '', maj: '' };
+}
+</script>
+
+<script>
+/* ------------------------------------------------------- persistance --- */
+/* Deux etages : la base partagee de l'artefact quand elle est disponible,
+   le stockage du navigateur sinon. La console reste utilisable dans les deux
+   cas — seule la synchronisation entre appareils change. */
+
+const CLE_LOCALE = { dataset: 'sansite.dataset.v1', pipeline: 'sansite.pipeline.v1' };
+const TAILLE_LOT = 150;
+
+function lireLocal(cle, defaut) {
+  try {
+    const brut = localStorage.getItem(cle);
+    return brut ? JSON.parse(brut) : defaut;
+  } catch { return defaut; }
+}
+
+function ecrireLocal(cle, valeur) {
+  try { localStorage.setItem(cle, JSON.stringify(valeur)); return true; }
+  catch { return false; }
+}
+
+async function enregistrerDataset(prospects, meta) {
+  const paquet = { prospects, meta, importeLe: new Date().toISOString() };
+  ecrireLocal(CLE_LOCALE.dataset, paquet);
+  if (!Etat.db) return { ou: 'navigateur' };
+
+  const idJeu = `d${Date.now()}`;
+  const lots = [];
+  for (let i = 0; i < prospects.length; i += TAILLE_LOT) lots.push(prospects.slice(i, i + TAILLE_LOT));
+
+  for (let i = 0; i < lots.length; i += 1) {
+    await Etat.db.doc(`jeux/${idJeu}/lots/l${String(i).padStart(4, '0')}`).set({ prospects: lots[i] });
+  }
+  await Etat.db.doc(`jeux/${idJeu}`).set({
+    meta, lots: lots.length, total: prospects.length, importeLe: paquet.importeLe,
+  });
+
+  const config = Etat.db.doc('config/app');
+  const ancien = await config.get().catch(() => null);
+  await config.set({ jeuActif: idJeu, importeLe: paquet.importeLe, total: prospects.length });
+
+  // Un seul jeu vivant a la fois : la base d'un artefact plafonne a 5 000
+  // documents, et l'historique de prospection vit dans « suivi », pas ici.
+  const precedent = ancien?.exists ? ancien.data()?.jeuActif : null;
+  if (precedent && precedent !== idJeu) purgerJeu(precedent);
+  return { ou: 'base partagee' };
+}
+
+async function purgerJeu(idJeu) {
+  try {
+    const fiche = await Etat.db.doc(`jeux/${idJeu}`).get();
+    const nb = fiche.exists ? Number(fiche.data()?.lots) || 0 : 0;
+    for (let i = 0; i < nb; i += 1) {
+      await Etat.db.doc(`jeux/${idJeu}/lots/l${String(i).padStart(4, '0')}`).delete();
+    }
+    await Etat.db.doc(`jeux/${idJeu}`).delete();
+  } catch { /* la purge est du confort : son echec ne bloque rien */ }
+}
+
+async function chargerDataset() {
+  if (Etat.db) {
+    try {
+      const config = await Etat.db.doc('config/app').get();
+      const idJeu = config.exists ? config.data()?.jeuActif : null;
+      if (idJeu) {
+        const fiche = await Etat.db.doc(`jeux/${idJeu}`).get();
+        const nb = fiche.exists ? Number(fiche.data()?.lots) || 0 : 0;
+        const prospects = [];
+        for (let i = 0; i < nb; i += 1) {
+          const lot = await Etat.db.doc(`jeux/${idJeu}/lots/l${String(i).padStart(4, '0')}`).get();
+          if (lot.exists) prospects.push(...(lot.data()?.prospects || []));
+        }
+        if (prospects.length) return { prospects, meta: fiche.data()?.meta || {} };
+      }
+    } catch { /* on retombe sur le stockage du navigateur */ }
+  }
+  const local = lireLocal(CLE_LOCALE.dataset, null);
+  return local?.prospects?.length ? { prospects: local.prospects, meta: local.meta || {} } : null;
+}
+
+async function enregistrerSuivi(id, fiche) {
+  Etat.pipeline.set(id, fiche);
+  ecrireLocal(CLE_LOCALE.pipeline, Object.fromEntries(Etat.pipeline));
+  if (!Etat.db) return;
+  try {
+    await Etat.db.doc(`suivi/${cleDocument(id)}`).set({ ...fiche, prospectId: id });
+  } catch (erreur) {
+    if (erreur?.code === 'quota_exceeded') {
+      toast('Base pleine : le suivi reste enregistre dans ce navigateur.');
+    }
+  }
+}
+
+async function chargerSuivi() {
+  const local = lireLocal(CLE_LOCALE.pipeline, {});
+  for (const [id, fiche] of Object.entries(local)) Etat.pipeline.set(id, fiche);
+  if (!Etat.db) return;
+  try {
+    const lot = await Etat.db.collection('suivi').limit(1000).get();
+    for (const doc of lot.docs) {
+      const fiche = doc.data() || {};
+      Etat.pipeline.set(fiche.prospectId || doc.id, fiche);
+    }
+  } catch { /* le suivi local suffit */ }
+}
+
+/* ---------------------------------------------------------- lecture --- */
+
+/** Decoupe une ligne CSV en respectant les guillemets. */
+function decouperLigneCsv(ligne, separateur) {
+  const cellules = [];
+  let courant = '';
+  let dansGuillemets = false;
+  for (let i = 0; i < ligne.length; i += 1) {
+    const c = ligne[i];
+    if (dansGuillemets) {
+      if (c === '"' && ligne[i + 1] === '"') { courant += '"'; i += 1; }
+      else if (c === '"') dansGuillemets = false;
+      else courant += c;
+    } else if (c === '"') dansGuillemets = true;
+    else if (c === separateur) { cellules.push(courant); courant = ''; }
+    else courant += c;
+  }
+  cellules.push(courant);
+  return cellules;
+}
+
+const ENTETES_CSV = {
+  enseigne: 'nom', nom: 'nom', segment: 'segment', 'type google': 'typeGoogle',
+  vitrine: 'vitrineLibelle', 'e-mail': 'email', email: 'email',
+  'confiance e-mail': 'confianceEmail', telephone: 'telephone', 'téléphone': 'telephone',
+  adresse: 'adresse', 'code postal': 'codePostal', ville: 'ville',
+  'note google': 'note', "nombre d avis": 'avis', "nombre d'avis": 'avis', avis: 'avis',
+  'score prospect': 'score', score: 'score', priorite: 'prioriteLibelle',
+  'lien affiche': 'siteWeb', 'source e-mail': 'sourceEmail',
+  'autres e-mails': 'emailsAlternatifsTexte', 'fiche google maps': 'mapsUrl',
+  'identifiant google': 'id',
+};
+
+function lireCsv(texte) {
+  const propre = texte.replace(/^﻿/, '').trim();
+  const lignes = propre.split(/\r?\n/).filter((l) => l.trim());
+  if (!lignes.length) return [];
+  const separateur = (lignes[0].match(/;/g) || []).length >= (lignes[0].match(/,/g) || []).length ? ';' : ',';
+  const entetes = decouperLigneCsv(lignes[0], separateur)
+    .map((e) => ENTETES_CSV[e.trim().toLowerCase()] || e.trim());
+
+  return lignes.slice(1).map((ligne) => {
+    const cellules = decouperLigneCsv(ligne, separateur);
+    const p = {};
+    entetes.forEach((cle, i) => { p[cle] = (cellules[i] ?? '').trim(); });
+    return p;
+  });
+}
+
+/** Ramene une fiche importee, quelle que soit sa source, au format attendu. */
+function normaliserFiche(brut, index) {
+  const vitrine = brut.vitrine
+    || Object.keys(LIBELLES_VITRINE).find((k) => LIBELLES_VITRINE[k] === brut.vitrineLibelle)
+    || (brut.siteWeb ? 'PLATEFORME' : 'AUCUNE');
+  const alternatifs = Array.isArray(brut.emailsAlternatifs)
+    ? brut.emailsAlternatifs
+    : String(brut.emailsAlternatifsTexte || '').split('|').map((e) => e.trim()).filter(Boolean);
+
+  return {
+    id: String(brut.id || `${brut.nom || 'fiche'}-${index}`),
+    nom: String(brut.nom || '(sans nom)'),
+    segment: String(brut.segment || ''),
+    typeGoogle: String(brut.typeGoogle || ''),
+    adresse: String(brut.adresse || ''),
+    ville: String(brut.ville || ''),
+    codePostal: String(brut.codePostal || ''),
+    telephone: String(brut.telephone || ''),
+    siteWeb: String(brut.siteWeb || ''),
+    vitrine,
+    email: String(brut.email || '').toLowerCase(),
+    emailsAlternatifs: alternatifs,
+    sourceEmail: String(brut.sourceEmail || ''),
+    confianceEmail: Number(brut.confianceEmail) || 0,
+    note: brut.note === '' || brut.note == null ? null : Number(brut.note),
+    avis: Number(brut.avis) || 0,
+    score: Number(brut.score) || 0,
+    mapsUrl: String(brut.mapsUrl || ''),
+    lat: brut.lat == null || brut.lat === '' ? null : Number(brut.lat),
+    lng: brut.lng == null || brut.lng === '' ? null : Number(brut.lng),
+  };
+}
+
+function lireImport(texte) {
+  const propre = texte.trim();
+  if (!propre) throw new Error('Le contenu est vide.');
+  let fiches;
+  let meta = {};
+  if (propre.startsWith('{') || propre.startsWith('[')) {
+    const donnees = JSON.parse(propre);
+    fiches = Array.isArray(donnees) ? donnees : donnees.prospects;
+    if (!Array.isArray(fiches)) throw new Error('JSON sans tableau « prospects ».');
+    if (!Array.isArray(donnees)) {
+      meta = { lieu: donnees.lieu, genereLe: donnees.genereLe, segments: donnees.segments };
+    }
+  } else {
+    fiches = lireCsv(propre);
+  }
+  const prospects = fiches
+    .map(normaliserFiche)
+    .filter((p) => p.nom && p.nom !== '(sans nom)');
+  if (!prospects.length) throw new Error('Aucune fiche exploitable dans ce fichier.');
+  return { prospects, meta };
+}
+
+/* ---------------------------------------------------------- ecriture --- */
+
+const COLONNES_EXPORT = [
+  ['nom', 'Enseigne'], ['segment', 'Segment'], ['vitrineLibelle', 'Vitrine'],
+  ['email', 'E-mail'], ['telephone', 'Telephone'], ['adresse', 'Adresse'],
+  ['ville', 'Ville'], ['note', 'Note Google'], ['avis', 'Nombre d avis'],
+  ['score', 'Score prospect'], ['statutLibelle', 'Statut'], ['maj', 'Derniere action'],
+  ['notes', 'Notes'], ['siteWeb', 'Lien affiche'], ['mapsUrl', 'Fiche Google Maps'],
+  ['id', 'Identifiant Google'],
+];
+
+function versCsv(prospects) {
+  const echapper = (v) => {
+    const t = String(v ?? '');
+    return /[";\r\n]/.test(t) ? `"${t.replace(/"/g, '""')}"` : t;
+  };
+  const lignes = [COLONNES_EXPORT.map(([, titre]) => titre).join(';')];
+  for (const p of prospects) {
+    const suivi = statutDe(p.id);
+    const ligne = {
+      ...p,
+      vitrineLibelle: LIBELLES_VITRINE[p.vitrine] || p.vitrine,
+      email: suivi.email || p.email,
+      statutLibelle: STATUTS[suivi.statut] || STATUTS.a_contacter,
+      maj: suivi.maj ? new Date(suivi.maj).toLocaleDateString('fr-FR') : '',
+      notes: suivi.notes || '',
+    };
+    lignes.push(COLONNES_EXPORT.map(([cle]) => echapper(ligne[cle])).join(';'));
+  }
+  return `﻿${lignes.join('\r\n')}\r\n`;
+}
+</script>
+
+<script>
+/* ------------------------------------------------------------ filtre --- */
+
+function prospectsFiltres() {
+  const f = Etat.filtres;
+  const texte = f.texte.trim().toLowerCase();
+
+  const liste = Etat.prospects.filter((p) => {
+    const suivi = statutDe(p.id);
+    const email = suivi.email || p.email;
+    if (f.segment && p.segment !== f.segment) return false;
+    if (f.vitrine && p.vitrine !== f.vitrine) return false;
+    if (f.statut && suivi.statut !== f.statut) return false;
+    if (!f.avecEmail && email) return false;
+    if (!f.sansEmail && !email) return false;
+    if (texte) {
+      const meule = `${p.nom} ${p.ville} ${p.adresse} ${email} ${p.telephone} ${p.segment}`.toLowerCase();
+      if (!meule.includes(texte)) return false;
+    }
+    return true;
+  });
+
+  const tris = {
+    score: (a, b) => b.score - a.score || b.avis - a.avis,
+    avis: (a, b) => b.avis - a.avis,
+    note: (a, b) => (b.note ?? 0) - (a.note ?? 0) || b.avis - a.avis,
+    nom: (a, b) => a.nom.localeCompare(b.nom, 'fr'),
+  };
+  return liste.sort(tris[f.tri] || tris.score);
+}
+
+/* ------------------------------------------------------------ rendus --- */
+
+function rendreReleve() {
+  const total = Etat.prospects.length;
+  const avecEmail = Etat.prospects.filter((p) => statutDe(p.id).email || p.email).length;
+  const chauds = Etat.prospects.filter((p) => p.score >= 75).length;
+  const engages = Etat.prospects.filter((p) => statutDe(p.id).statut !== 'a_contacter').length;
+  const gagnes = Etat.prospects.filter((p) => statutDe(p.id).statut === 'gagne').length;
+  const part = (n) => (total ? `<small>${Math.round((n / total) * 100)} %</small>` : '');
+
+  parId('releve').innerHTML = `
+    <div class="mesure"><dt>Prospects</dt><dd>${nombre(total)}</dd></div>
+    <div class="mesure pointe"><dt>Joignables par mail</dt><dd>${nombre(avecEmail)}${part(avecEmail)}</dd></div>
+    <div class="mesure"><dt>Priorite chaude</dt><dd>${nombre(chauds)}${part(chauds)}</dd></div>
+    <div class="mesure"><dt>Contactes</dt><dd>${nombre(engages)}${part(engages)}</dd></div>
+    <div class="mesure"><dt>Signes</dt><dd>${nombre(gagnes)}</dd></div>`;
+}
+
+function ligneHtml(p) {
+  const suivi = statutDe(p.id);
+  const email = suivi.email || p.email;
+  const etoiles = p.note ? `${p.note.toFixed(1)} ★ (${nombre(p.avis)} avis)` : 'Pas encore d\'avis';
+  const contact = email
+    ? `<span class="mono">${html(email)}</span>`
+    : `<span class="sans-email">e-mail a trouver${p.telephone ? ` — <span class="mono">${html(p.telephone)}</span>` : ''}</span>`;
+
+  return `
+    <button class="ligne" type="button" data-id="${html(p.id)}" aria-current="${Etat.selection === p.id}">
+      <span class="jauge ${priorite(p.score)}"></span>
+      <span class="corps-ligne">
+        <span class="titre-ligne">${html(p.nom)}
+          <span class="etiquette vitrine-${html(p.vitrine)}">${html(LIBELLES_VITRINE[p.vitrine] || p.vitrine)}</span>
+        </span>
+        <span class="meta-ligne">
+          <span>${html(p.typeGoogle || p.segment || 'Commerce')}</span>
+          <span>·</span><span>${html(p.ville || 'Ville inconnue')}</span>
+          <span>·</span><span class="mono">${etoiles}</span>
+        </span>
+        <span class="contact-ligne">${contact}</span>
+      </span>
+      <span class="flanc-ligne">
+        <span class="pointage">${p.score}</span>
+        <span class="statut ${suivi.statut}">${html(STATUTS[suivi.statut] || STATUTS.a_contacter)}</span>
+      </span>
+    </button>`;
+}
+
+function rendreListe() {
+  const liste = prospectsFiltres();
+  parId('compteur').textContent = liste.length === Etat.prospects.length
+    ? `${nombre(liste.length)} prospects`
+    : `${nombre(liste.length)} sur ${nombre(Etat.prospects.length)}`;
+
+  // La selection se decide avant le rendu : c'est elle qui pose aria-current.
+  const perdue = !liste.some((p) => p.id === Etat.selection);
+  if (perdue) Etat.selection = liste.length ? liste[0].id : null;
+
+  parId('liste').innerHTML = liste.length
+    ? liste.map(ligneHtml).join('')
+    : `<div class="vide"><h3>Aucun prospect ne correspond</h3>
+       <p>Elargissez les filtres, ou activez « A enrichir » pour voir les fiches sans e-mail.</p></div>`;
+
+  if (perdue) rendreDossier();
+}
+
+function pistesRecherche(p) {
+  const requete = encodeURIComponent(`"${p.nom}" ${p.ville} email contact`);
+  const requeteFb = encodeURIComponent(`${p.nom} ${p.ville}`);
+  return [
+    [`https://www.google.com/search?q=${requete}`, 'Rechercher l\'adresse sur Google', 'nom + ville + « contact »'],
+    [`https://www.facebook.com/search/pages/?q=${requeteFb}`, 'Chercher la page Facebook', 'la section « Infos » affiche souvent l\'e-mail'],
+    [`https://www.pagesjaunes.fr/annuaire/chercherlespros?quoiqui=${encodeURIComponent(p.nom)}&ou=${encodeURIComponent(p.ville)}`, 'Verifier sur les Pages Jaunes', 'fiche annuaire complementaire'],
+  ];
+}
+
+function rendreDossier() {
+  const p = Etat.prospects.find((x) => x.id === Etat.selection);
+  const dossier = parId('dossier');
+  if (!p) {
+    dossier.innerHTML = `<div class="vide"><h3>Aucune fiche ouverte</h3><p>Choisissez un prospect dans la liste.</p></div>`;
+    return;
+  }
+
+  const suivi = statutDe(p.id);
+  const email = suivi.email || p.email;
+  const alternatifs = (p.emailsAlternatifs || []).filter((e) => e !== email);
+
+  const blocEmail = email
+    ? `<div class="paire"><dt>E-mail</dt><dd><span class="mono">${html(email)}</span>${
+        p.confianceEmail ? `<span class="note-email" title="Confiance estimee">${p.confianceEmail}/100</span>` : ''
+      }</dd></div>
+       ${p.sourceEmail ? `<div class="paire"><dt>Trouvee sur</dt><dd><a href="${html(p.sourceEmail)}" target="_blank" rel="noopener noreferrer">${html(p.sourceEmail.replace(/^https?:\/\//, '').slice(0, 42))}</a></dd></div>` : ''}
+       ${alternatifs.length ? `<div class="paire"><dt>Autres</dt><dd class="mono" style="font-size:12px">${html(alternatifs.join(', '))}</dd></div>` : ''}
+       <div class="rangee-boutons" style="margin-top:9px">
+         <button class="bouton mini" type="button" data-copier="${html(email)}">Copier l'adresse</button>
+         <a class="bouton mini" href="mailto:${encodeURIComponent(email)}" target="_blank" rel="noopener noreferrer">Ouvrir le mail</a>
+       </div>`
+    : `<p style="margin:0 0 10px;font-size:13.5px;color:var(--encre-douce)">
+         Google Places ne transmet jamais d'adresse e-mail. Pour cette fiche, trois pistes en dix secondes :
+       </p>
+       <div class="pistes">
+         ${pistesRecherche(p).map(([url, titre, aide]) => `
+           <a class="piste" href="${html(url)}" target="_blank" rel="noopener noreferrer">
+             <span>${html(titre)}</span><span>${html(aide)}</span></a>`).join('')}
+       </div>
+       <label style="display:block;margin-top:10px">
+         <span style="font-size:12px;color:var(--encre-faible)">Adresse trouvee</span>
+         <input class="champ" id="saisieEmail" type="email" placeholder="contact@enseigne.fr"
+                style="width:100%;margin-top:4px" value="${html(suivi.email || '')}">
+       </label>`;
+
+  dossier.innerHTML = `
+    <div class="dossier-tete">
+      <h2>${html(p.nom)}</h2>
+      <div class="meta-ligne">
+        <span class="etiquette vitrine-${html(p.vitrine)}">${html(LIBELLES_VITRINE[p.vitrine] || p.vitrine)}</span>
+        <span class="mono">score ${p.score}</span>
+        <span>·</span><span>${html(p.typeGoogle || p.segment)}</span>
+      </div>
+    </div>
+
+    <div class="bloc">
+      <h3>Suivi</h3>
+      <div class="rangee-boutons">
+        ${Object.entries(STATUTS).map(([cle, libelle]) => `
+          <button class="puce" type="button" data-statut="${cle}" aria-pressed="${suivi.statut === cle}">${html(libelle)}</button>`).join('')}
+      </div>
+      ${suivi.maj ? `<p style="margin:9px 0 0;font-size:12.5px;color:var(--encre-faible)">Derniere action le ${new Date(suivi.maj).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}</p>` : ''}
+      <textarea class="zone-texte" id="notesProspect" style="margin-top:10px;min-height:64px"
+        placeholder="Notes d'appel, objections, date de rappel…">${html(suivi.notes || '')}</textarea>
+    </div>
+
+    <div class="bloc">
+      <h3>Contact</h3>
+      ${blocEmail}
+      ${p.telephone ? `<div class="paire" style="margin-top:8px"><dt>Telephone</dt><dd><span class="mono">${html(p.telephone)}</span></dd></div>` : ''}
+      <div class="paire"><dt>Adresse</dt><dd>${html(p.adresse || '—')}</dd></div>
+    </div>
+
+    <div class="bloc">
+      <h3>Message de premier contact</h3>
+      <select class="champ" id="choixModele" style="width:100%">
+        ${Object.entries(MODELES).map(([cle, m]) => `
+          <option value="${cle}" ${familleDe(p.segment) === cle ? 'selected' : ''}>${html(m.libelle)}</option>`).join('')}
+      </select>
+      <input class="champ" id="signature" style="width:100%;margin-top:8px" placeholder="Votre nom — 06 12 34 56 78">
+      <textarea class="zone-texte" id="messageGenere" style="margin-top:8px;min-height:210px"></textarea>
+      <div class="rangee-boutons" style="margin-top:8px">
+        <button class="bouton mini" type="button" id="btnCopierMessage">Copier le message</button>
+        <button class="bouton mini" type="button" id="btnCopierObjet">Copier l'objet</button>
+        <button class="bouton mini" type="button" id="btnRediger" hidden>Rediger avec Claude</button>
+      </div>
+    </div>
+
+    <div class="bloc">
+      <h3>Fiche Google</h3>
+      <div class="paire"><dt>Note</dt><dd class="mono">${p.note ? `${p.note.toFixed(1)} / 5 · ${nombre(p.avis)} avis` : 'aucun avis'}</dd></div>
+      ${p.siteWeb ? `<div class="paire"><dt>Lien affiche</dt><dd><a href="${html(p.siteWeb)}" target="_blank" rel="noopener noreferrer">${html(p.siteWeb.replace(/^https?:\/\//, '').slice(0, 40))}</a></dd></div>` : ''}
+      ${p.lat != null ? `<div class="paire"><dt>Position</dt><dd class="mono" style="font-size:12px">${p.lat.toFixed(5)}, ${p.lng.toFixed(5)}</dd></div>` : ''}
+      ${p.mapsUrl ? `<div class="rangee-boutons" style="margin-top:9px">
+        <a class="bouton mini" href="${html(p.mapsUrl)}" target="_blank" rel="noopener noreferrer">Ouvrir dans Google Maps</a></div>` : ''}
+    </div>`;
+
+  parId('signature').value = lireLocal('sansite.signature', '') || '';
+  composerMessage();
+  if (Etat.redacteur) parId('btnRediger').hidden = false;
+}
+
+/* -------------------------------------------------------- redaction --- */
+
+function reputationDe(p) {
+  if (!p.note || !p.avis) return 'un commerce encore peu commente sur Google';
+  if (p.avis >= 100) return `${p.note.toFixed(1)}/5 sur ${nombre(p.avis)} avis, ce qui est rare`;
+  return `${p.note.toFixed(1)}/5 sur ${nombre(p.avis)} avis`;
+}
+
+function remplir(gabarit, p) {
+  return gabarit
+    .replace(/\{\{nom\}\}/g, p.nom)
+    .replace(/\{\{ville\}\}/g, p.ville || 'votre ville')
+    .replace(/\{\{segment\}\}/g, p.typeGoogle || p.segment || 'commerce')
+    .replace(/\{\{reputation\}\}/g, reputationDe(p))
+    .replace(/\{\{constat\}\}/g, CONSTATS[p.vitrine] || CONSTATS.AUCUNE)
+    .replace(/\{\{signature\}\}/g, parId('signature')?.value.trim() || '[votre nom et votre telephone]');
+}
+
+function composerMessage() {
+  const p = Etat.prospects.find((x) => x.id === Etat.selection);
+  const zone = parId('messageGenere');
+  if (!p || !zone) return;
+  const modele = MODELES[parId('choixModele').value] || MODELES.generique;
+  zone.value = `${remplir(modele.corps, p)}\n\n${MENTION_RGPD}`;
+}
+
+function objetCourant() {
+  const p = Etat.prospects.find((x) => x.id === Etat.selection);
+  const modele = MODELES[parId('choixModele')?.value] || MODELES.generique;
+  return p ? remplir(modele.objet, p) : '';
+}
+
+async function redigerAvecClaude() {
+  const p = Etat.prospects.find((x) => x.id === Etat.selection);
+  if (!p || !Etat.redacteur) return;
+  const bouton = parId('btnRediger');
+  const zone = parId('messageGenere');
+  bouton.disabled = true;
+  bouton.textContent = 'Redaction…';
+
+  const consigne = `Tu rediges un e-mail de prospection B2B en francais, envoye par un independant qui cree des sites web pour les commerces de proximite.
+
+Destinataire : ${p.nom}, ${p.typeGoogle || p.segment}, a ${p.ville}.
+Reputation Google : ${reputationDe(p)}.
+Constat : ${CONSTATS[p.vitrine] || CONSTATS.AUCUNE}.
+Signature a utiliser : ${parId('signature').value.trim() || '[votre nom]'}.
+
+Contraintes : 150 mots maximum, vouvoiement, ton direct et concret, aucune flatterie creuse, aucun jargon marketing. Ouvre sur le constat precis tire de la fiche Google. Termine par une demande simple et peu engageante. Ne mets ni objet ni formule de politesse ampoulee. Rends uniquement le corps du message.`;
+
+  try {
+    const reponse = await Etat.redacteur(consigne, {
+      modelTier: 'default',
+      onText: ({ text }) => { zone.value = text; },
+    });
+    zone.value = `${reponse.text.trim()}\n\n${MENTION_RGPD}`;
+    toast('Message redige. Relisez-le avant envoi.');
+  } catch (erreur) {
+    if (erreur?.code === 'rate_limited') toast('Trop de demandes : reessayez dans un instant.');
+    else if (erreur?.code !== 'cancelled') toast('Redaction indisponible ; le modele reste utilisable.');
+    if (!zone.value.trim()) composerMessage();
+  } finally {
+    bouton.disabled = false;
+    bouton.textContent = 'Rediger avec Claude';
+  }
+}
+</script>
+
+<script>
+/* ---------------------------------------------------------- actions --- */
+
+function selectionner(id, redessinerListe = true) {
+  Etat.selection = id;
+  if (redessinerListe) {
+    document.querySelectorAll('.ligne').forEach((l) => {
+      l.setAttribute('aria-current', String(l.dataset.id === id));
+    });
+  }
+  rendreDossier();
+}
+
+async function changerStatut(statut) {
+  if (!Etat.selection) return;
+  const actuel = statutDe(Etat.selection);
+  await enregistrerSuivi(Etat.selection, { ...actuel, statut, maj: new Date().toISOString() });
+  rendreReleve();
+  rendreListe();
+  rendreDossier();
+  toast(`Statut : ${STATUTS[statut]}`);
+}
+
+let minuterieSaisie;
+function enregistrerPlusTard(champ, valeur) {
+  clearTimeout(minuterieSaisie);
+  minuterieSaisie = setTimeout(async () => {
+    if (!Etat.selection) return;
+    const actuel = statutDe(Etat.selection);
+    await enregistrerSuivi(Etat.selection, { ...actuel, [champ]: valeur, maj: new Date().toISOString() });
+    if (champ === 'email') { rendreReleve(); rendreListe(); }
+  }, 700);
+}
+
+function majSousTitre() {
+  const meta = Etat.meta || {};
+  const lieu = meta.lieu ? `${meta.lieu}` : 'secteur non precise';
+  const quand = meta.genereLe ? ` · collecte du ${new Date(meta.genereLe).toLocaleDateString('fr-FR')}` : '';
+  parId('sousTitre').textContent = Etat.exemple
+    ? "Jeu d'exemple — 38 enseignes fictives a Nantes. Importez votre collecte pour le remplacer."
+    : `${lieu}${quand} · ${nombre(Etat.prospects.length)} enseignes retenues`;
+}
+
+function remplirSegments() {
+  const select = parId('filtreSegment');
+  const segments = [...new Set(Etat.prospects.map((p) => p.segment).filter(Boolean))].sort();
+  select.innerHTML = `<option value="">Tous les segments</option>${
+    segments.map((s) => `<option value="${html(s)}">${html(s)}</option>`).join('')}`;
+  select.value = segments.includes(Etat.filtres.segment) ? Etat.filtres.segment : '';
+  Etat.filtres.segment = select.value;
+}
+
+function toutRendre() {
+  remplirSegments();
+  majSousTitre();
+  rendreReleve();
+  rendreListe();
+  rendreDossier();
+}
+
+async function appliquerImport(texte) {
+  const avis = parId('avisImport');
+  try {
+    const { prospects, meta } = lireImport(texte);
+    Etat.prospects = prospects;
+    Etat.meta = meta;
+    Etat.exemple = false;
+    const { ou } = await enregistrerDataset(prospects, meta);
+    toutRendre();
+    parId('dlgImport').close();
+    parId('collage').value = '';
+    avis.innerHTML = '';
+    toast(`${nombre(prospects.length)} prospects importes (${ou}).`);
+  } catch (erreur) {
+    avis.innerHTML = `<div class="avis alerte">Import impossible : ${html(erreur.message)}</div>`;
+  }
+}
+
+async function ouvrirExport() {
+  const liste = prospectsFiltres();
+  const csv = versCsv(liste);
+  parId('resumeExport').textContent =
+    `${nombre(liste.length)} prospects, avec leur statut de suivi et vos notes. Separateur point-virgule, encodage UTF-8 : Excel et Google Sheets l'ouvrent directement.`;
+  parId('apercuExport').value = csv.replace(/^﻿/, '').split('\r\n').slice(0, 12).join('\n');
+  parId('btnTelechargerExport').hidden = !Etat.telechargements;
+  Etat.csvCourant = csv;
+  parId('dlgExport').showModal();
+}
+
+/* ------------------------------------------------------- evenements --- */
+
+parId('liste').addEventListener('click', (e) => {
+  const ligne = e.target.closest('.ligne');
+  if (ligne) selectionner(ligne.dataset.id);
+});
+
+parId('dossier').addEventListener('click', async (e) => {
+  const copie = e.target.closest('[data-copier]');
+  if (copie) {
+    toast(await copier(copie.dataset.copier) ? 'Adresse copiee' : 'Copie refusee par le navigateur');
+    return;
+  }
+  const statut = e.target.closest('[data-statut]');
+  if (statut) changerStatut(statut.dataset.statut);
+});
+
+parId('dossier').addEventListener('input', (e) => {
+  if (e.target.id === 'notesProspect') enregistrerPlusTard('notes', e.target.value);
+  if (e.target.id === 'saisieEmail') enregistrerPlusTard('email', e.target.value.trim().toLowerCase());
+  if (e.target.id === 'signature') {
+    ecrireLocal('sansite.signature', e.target.value);
+    composerMessage();
+  }
+});
+
+parId('dossier').addEventListener('change', (e) => {
+  if (e.target.id === 'choixModele') composerMessage();
+});
+
+parId('dossier').addEventListener('click', async (e) => {
+  if (e.target.id === 'btnCopierMessage') {
+    toast(await copier(parId('messageGenere').value) ? 'Message copie' : 'Copie refusee par le navigateur');
+  }
+  if (e.target.id === 'btnCopierObjet') {
+    toast(await copier(objetCourant()) ? 'Objet copie' : 'Copie refusee par le navigateur');
+  }
+  if (e.target.id === 'btnRediger') redigerAvecClaude();
+});
+
+const relier = (id, evenement, action) => parId(id).addEventListener(evenement, action);
+
+relier('recherche', 'input', (e) => { Etat.filtres.texte = e.target.value; rendreListe(); });
+relier('filtreSegment', 'change', (e) => { Etat.filtres.segment = e.target.value; rendreListe(); });
+relier('filtreVitrine', 'change', (e) => { Etat.filtres.vitrine = e.target.value; rendreListe(); });
+relier('filtreStatut', 'change', (e) => { Etat.filtres.statut = e.target.value; rendreListe(); });
+relier('tri', 'change', (e) => { Etat.filtres.tri = e.target.value; rendreListe(); });
+
+for (const [id, cle] of [['puceAvecEmail', 'avecEmail'], ['puceSansEmail', 'sansEmail']]) {
+  relier(id, 'click', (e) => {
+    const actif = e.currentTarget.getAttribute('aria-pressed') !== 'true';
+    // Tout decocher masquerait la liste entiere : on garde au moins un filtre.
+    if (!actif && !Etat.filtres[cle === 'avecEmail' ? 'sansEmail' : 'avecEmail']) return;
+    Etat.filtres[cle] = actif;
+    e.currentTarget.setAttribute('aria-pressed', String(actif));
+    rendreListe();
+  });
+}
+
+relier('btnImport', 'click', () => parId('dlgImport').showModal());
+relier('btnExport', 'click', ouvrirExport);
+relier('btnAide', 'click', () => parId('dlgAide').showModal());
+relier('btnParcourir', 'click', () => parId('fichier').click());
+relier('btnValiderImport', 'click', () => appliquerImport(parId('collage').value));
+
+relier('fichier', 'change', async (e) => {
+  const fichier = e.target.files?.[0];
+  if (fichier) await appliquerImport(await fichier.text());
+  e.target.value = '';
+});
+
+const depot = parId('depot');
+['dragenter', 'dragover'].forEach((ev) => depot.addEventListener(ev, (e) => {
+  e.preventDefault(); depot.classList.add('survol');
+}));
+['dragleave', 'drop'].forEach((ev) => depot.addEventListener(ev, (e) => {
+  e.preventDefault(); depot.classList.remove('survol');
+}));
+depot.addEventListener('drop', async (e) => {
+  const fichier = e.dataTransfer?.files?.[0];
+  if (fichier) await appliquerImport(await fichier.text());
+});
+
+relier('btnCopierExport', 'click', async () => {
+  toast(await copier(Etat.csvCourant || '') ? 'CSV copie dans le presse-papier' : 'Copie refusee par le navigateur');
+});
+
+relier('btnTelechargerExport', 'click', async () => {
+  if (!Etat.telechargements) return;
+  const nom = `prospects-${new Date().toISOString().slice(0, 10)}.csv`;
+  try {
+    await Etat.telechargements.save({ filename: nom, data: Etat.csvCourant || '' });
+    toast('Fichier enregistre');
+  } catch (erreur) {
+    if (erreur?.code !== 'declined') toast('Telechargement indisponible : utilisez « Copier ».');
+  }
+});
+
+document.addEventListener('click', (e) => {
+  if (e.target.matches('[data-fermer]')) e.target.closest('dialog').close();
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key !== 'j' && e.key !== 'k') return;
+  if (/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement?.tagName || '')) return;
+  const liste = prospectsFiltres();
+  const i = liste.findIndex((p) => p.id === Etat.selection);
+  const suivant = liste[Math.min(liste.length - 1, Math.max(0, i + (e.key === 'j' ? 1 : -1)))];
+  if (suivant) {
+    selectionner(suivant.id);
+    document.querySelector(`.ligne[data-id="${CSS.escape(suivant.id)}"]`)?.scrollIntoView({ block: 'nearest' });
+  }
+});
+
+parId('corpsAide').innerHTML = `
+  <p><strong>Ce que fait cette console.</strong> Elle recoit la collecte produite par le collecteur
+  Google Places, classe les enseignes selon ce qui manque a leur vitrine, et garde la trace de vos relances.</p>
+  <ol>
+    <li>Lancez la collecte : <code>node src/cli.mjs run --lieu "Nantes" --segments restaurant,coiffeur</code></li>
+    <li>Importez le <code>prospects.json</code> obtenu (bouton « Importer une collecte »).</li>
+    <li>Travaillez la liste de haut en bas : elle est triee par score de prospection.</li>
+    <li>Exportez a tout moment le CSV, statuts et notes compris.</li>
+  </ol>
+  <p><strong>Pourquoi certaines fiches n'ont pas d'e-mail.</strong> L'API Google Places ne renvoie
+  jamais d'adresse e-mail, quel que soit le champ demande. Le collecteur en trouve sur les fiches qui
+  affichent un lien (page Facebook, mini-site, plateforme). Pour les autres, la console propose trois
+  pistes de recherche manuelle : comptez une dizaine de secondes par enseigne.</p>
+  <p><strong>Le score.</strong> Il combine ce qui manque a la vitrine (un lien mort pese plus qu'une
+  page Facebook), la presence d'un canal de contact, et l'activite reelle mesuree par les avis Google.</p>
+  <p><strong>Raccourcis.</strong> <code>j</code> et <code>k</code> pour descendre et remonter dans la liste.</p>
+  <p><strong>Cadre legal.</strong> Prospecter une adresse professionnelle generique
+  (<code>contact@…</code>) est admis entre professionnels si le message concerne l'activite du
+  destinataire, indique clairement l'origine des donnees et offre un moyen simple de se desabonner.
+  Ces trois elements sont deja dans les modeles fournis.</p>`;
+
+/* --------------------------------------------------------- demarrage --- */
+
+async function demarrer() {
+  const exemple = JSON.parse(parId('jeuExemple').textContent || '{}');
+  Etat.prospects = (exemple.prospects || []).map(normaliserFiche);
+  Etat.meta = { lieu: exemple.lieu };
+  Etat.exemple = true;
+  toutRendre();
+
+  Etat.db = await window.claude?.use?.('db').catch(() => null) ?? null;
+  parId('etatStockage').textContent = Etat.db
+    ? 'Suivi synchronise dans la base de l\'artefact'
+    : 'Suivi enregistre dans ce navigateur';
+
+  await chargerSuivi();
+  const enregistre = await chargerDataset();
+  if (enregistre?.prospects?.length) {
+    Etat.prospects = enregistre.prospects.map(normaliserFiche);
+    Etat.meta = enregistre.meta || {};
+    Etat.exemple = false;
+  }
+  toutRendre();
+
+  Etat.telechargements = await window.claude?.use?.('downloads').catch(() => null) ?? null;
+  Etat.redacteur = await window.claude?.use?.('sample').catch(() => null) ?? null;
+  if (Etat.redacteur && parId('btnRediger')) parId('btnRediger').hidden = false;
+
+  if (Etat.db) {
+    try {
+      Etat.db.collection('suivi').limit(1000).onSnapshot((lot) => {
+        for (const doc of lot.docs) {
+          const fiche = doc.data() || {};
+          Etat.pipeline.set(fiche.prospectId || doc.id, fiche);
+        }
+        rendreReleve();
+        rendreListe();
+      }, () => {});
+    } catch { /* le suivi local reste en place */ }
+  }
+}
+
+demarrer();
+</script>
