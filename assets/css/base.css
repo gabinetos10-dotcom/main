@@ -177,7 +177,7 @@ em {
   font-size: 10px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--signal);
+  color: var(--focus);
   white-space: nowrap;
 }
 

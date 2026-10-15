@@ -175,18 +175,23 @@ function themeTriggers(container) {
  * Doit être appelé dans scope.add() pour être détruit avec la page.
  * Renvoie la timeline d'intro (éléments [data-intro]).
  */
-export function createReveals(container) {
+export function createReveals(container, { phase = 'all' } = {}) {
   const tl = gsap.timeline({ paused: true, defaults: { ease: EASE } });
   const opts = (el) => ({ intro: el.hasAttribute('data-intro'), tl });
+  // phase 'intro' : éléments [data-intro] (immédiat) ; 'scroll' : le reste (différé)
+  const want = (el) => phase === 'all' || (phase === 'intro') === el.hasAttribute('data-intro');
+  const each = (sel, fn) => $$(sel, container).filter(want).forEach((el) => fn(el, opts(el)));
 
-  $$('[data-split]', container).forEach((el) => lineReveal(el, opts(el)));
-  $$('[data-reveal="fade"]', container).forEach((el) => fadeReveal(el, opts(el)));
-  $$('[data-reveal="stagger"]', container).forEach((el) => staggerReveal(el, opts(el)));
-  $$('[data-reveal="image"]', container).forEach((el) => imageReveal(el, opts(el)));
-  $$('[data-reveal="line"]', container).forEach((el) => lineDraw(el, opts(el)));
-  $$('[data-parallax]', container).forEach(parallax);
-  $$('[data-counter]', container).forEach(counter);
-  themeTriggers(container);
+  each('[data-split]', lineReveal);
+  each('[data-reveal="fade"]', fadeReveal);
+  each('[data-reveal="stagger"]', staggerReveal);
+  each('[data-reveal="image"]', imageReveal);
+  each('[data-reveal="line"]', lineDraw);
+  if (phase !== 'intro') {
+    $$('[data-parallax]', container).forEach(parallax);
+    $$('[data-counter]', container).forEach(counter);
+    themeTriggers(container);
+  }
 
   return tl;
 }

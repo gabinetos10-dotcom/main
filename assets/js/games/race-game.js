@@ -11,16 +11,16 @@ import { createLoop, createCanvas, createInput, createPad, createParticles, save
 import { damp, pick, rand } from '../core/utils.js';
 
 const BAD = [
-  ['Site non responsive', 'Plus de la moitié du trafic web est mobile : un site non responsive fait fuir la majorité de vos visiteurs.'],
+  ['Site non responsive', 'Plus de la moitié du trafic web est mobile : un site non responsive fait fuir la majorité de vos visiteurs.'],
   ['Chargement 8 s', 'Au-delà de 3 secondes d’attente, plus de la moitié des visiteurs mobiles abandonnent la page avant de l’avoir vue.'],
   ['Pop-up intrusive', 'Google pénalise les interstitiels intrusifs sur mobile — et vos visiteurs, eux, ferment simplement l’onglet.'],
-  ['Keyword stuffing', 'Bourrer une page de mots-clés est sanctionné par Google : vous perdez des positions au lieu d’en gagner.'],
-  ['Pas de HTTPS', 'Sans HTTPS, le navigateur affiche « Non sécurisé » : la confiance et le référencement s’effondrent.'],
+  ['Keyword stuffing', 'Bourrer une page de mots-clés est sanctionné par Google : vous perdez des positions au lieu d’en gagner.'],
+  ['Pas de HTTPS', 'Sans HTTPS, le navigateur affiche « Non sécurisé » : la confiance et le référencement s’effondrent.'],
   ['Cookies non conformes RGPD', 'La CNIL sanctionne les bandeaux où refuser est plus difficile qu’accepter — et les amendes font mal.'],
   ['Images de 5 Mo', 'Des images non optimisées plombent le chargement, le SEO et le forfait data de vos visiteurs.'],
   ['Achat de followers', 'Les faux abonnés n’achètent rien, écrasent votre taux d’engagement et peuvent faire suspendre le compte.'],
   ['Spam emailing', 'Envoyer sans consentement, c’est finir en spam — et s’exposer à des sanctions au titre du RGPD.'],
-  ['Campagne sans tracking', 'Sans suivi des conversions, impossible de savoir quelle campagne rapporte : vous payez pour deviner.'],
+  ['Campagne sans tracking', 'Sans suivi des conversions, impossible de savoir quelle campagne rapporte : vous payez pour deviner.'],
 ];
 const GOOD = ['Core Web Vitals', 'Balises Hn', 'Alt text', 'Consentement RGPD', 'A/B test', 'Automatisation'];
 
@@ -90,15 +90,15 @@ export function create(api) {
     particles.burst(s.x, g.carY + g.carH / 2, { count: api.reduced ? 20 : 90, colors: ['#FF6B5B', '#FFFFFF', '#5B85FF'], speed: 420, size: 4, life: 1.1 });
     const final = score();
     const isRecord = saveBest('race', final, `${final} pts`);
-    api.alert(`Collision avec « ${obj.label} ».`);
+    api.alert(`Collision avec « ${obj.label} ».`);
     endTimer = setTimeout(() => {
       loop.stop();
       api.end({
         won: false,
-        title: `Collision : <em class="serif">« ${obj.label} »</em>.`,
+        title: `Collision : <em class="serif">« ${obj.label} »</em>.`,
         detail: obj.info,
         score: final,
-        scoreLabel: `Score : ${final} — ${(s.distance / 1000).toFixed(1)} km parcourus`,
+        scoreLabel: `Score : ${final} — ${(s.distance / 1000).toFixed(1)} km parcourus`,
         isRecord,
         message: 'GJS vous évite ça.',
         cta: { label: 'Demander un audit', href: 'contact.html?besoins=site&objectif=visibilite' },
@@ -144,7 +144,7 @@ export function create(api) {
         s.shield = 3;
         sound.coin();
         particles.burst(laneX(o.lane), o.y + o.h / 2, { count: 30, colors: ['#5B85FF', '#FFFFFF'], speed: 260, size: 3, life: 0.8 });
-        api.live(`Bonne pratique : ${o.label}. Plus 100 points et bouclier 3 secondes.`);
+        api.live(`Bonne pratique : ${o.label}. Plus 100 points et bouclier 3 secondes.`);
         s.objects.splice(i, 1);
       } else if (s.shield > 0) {
         s.bonus += 50;

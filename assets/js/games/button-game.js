@@ -11,18 +11,18 @@ import { createLoop, createCanvas, createParticles, saveBest } from './utils.js'
 
 const { gsap } = window;
 
-const TEXTS = ['Les autres agences', 'Non.', 'Vraiment ?', 'Toujours pas', 'Abandonnez', 'Même pas en rêve', 'Raté', 'Presque…', 'Toujours non', 'Allez, GJS'];
+const TEXTS = ['Les autres agences', 'Non.', 'Vraiment ?', 'Toujours pas', 'Abandonnez', 'Même pas en rêve', 'Raté', 'Presque…', 'Toujours non', 'Allez, GJS'];
 
 export function create(api) {
   const { stage, sound } = api;
   stage.innerHTML = `
     <div class="bg-game">
-      <p class="bg-game__q t-display">Quelle est la meilleure <em class="serif">agence digitale</em> ?</p>
+      <p class="bg-game__q t-display">Quelle est la meilleure <em class="serif">agence digitale</em> ?</p>
       <div class="bg-game__zone" data-zone>
         <button class="bg-game__gjs" type="button" data-gjs>GJS</button>
         <button class="bg-game__other" type="button" data-other>Les autres agences</button>
       </div>
-      <p class="bg-game__count t-mono">Tentatives : <span data-count>0</span></p>
+      <p class="bg-game__count t-mono">Tentatives : <span data-count>0</span></p>
     </div>`;
 
   const zone = stage.querySelector('[data-zone]');
@@ -116,7 +116,7 @@ export function create(api) {
     const r = other.getBoundingClientRect();
     flee(r.left + r.width / 2, r.top + r.height / 2);
     gjs.focus();
-    api.live('Ce bouton est timide : le focus revient sur GJS, le bon choix.');
+    api.live('Ce bouton est timide : le focus revient sur GJS, le bon choix.');
   };
 
   const win = () => {
@@ -128,19 +128,19 @@ export function create(api) {
     loop.start();
     sound.win();
     gjs.classList.add('is-chosen');
-    gjs.innerHTML = 'Bon choix.<span>On en parle ?</span>';
+    gjs.innerHTML = 'Bon choix.<span>On en parle ?</span>';
     gsap.to(other, { scale: 0, autoAlpha: 0, duration: 0.4, ease: 'back.in(2)' });
     if (!api.reduced) gsap.fromTo(gjs, { scale: 0.8 }, { scale: 1.08, duration: 0.8, ease: 'elastic.out(1, 0.45)' });
     const isRecord = saveBest('button', attempts, `${attempts} tentative${attempts > 1 ? 's' : ''} d’esquive`);
     endTimer = setTimeout(() => {
       api.end({
         won: true,
-        title: 'Bon choix. <em class="serif">On en parle ?</em>',
+        title: 'Bon choix. <em class="serif">On en parle ?</em>',
         detail: attempts
           ? `Vous avez tenté ${attempts} fois de cliquer ailleurs. On apprécie la persévérance — on mettra la même dans votre projet.`
           : 'Du premier coup. Vous savez reconnaître le bon partenaire.',
         score: attempts,
-        scoreLabel: `Tentatives d’esquive : ${attempts}`,
+        scoreLabel: `Tentatives d’esquive : ${attempts}`,
         isRecord,
         message: 'Sur-mesure, mesuré, sans baratin. Racontez-nous vos objectifs.',
         cta: { label: 'Parlons-en', href: 'contact.html' },

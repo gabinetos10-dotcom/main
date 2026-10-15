@@ -21,7 +21,7 @@ export async function startShipHunt() {
   root.className = 'hunt';
   root.setAttribute('role', 'dialog');
   root.setAttribute('aria-modal', 'true');
-  root.setAttribute('aria-label', 'Défi caché : la chasse au vaisseau');
+  root.setAttribute('aria-label', 'Défi caché : la chasse au vaisseau');
   root.innerHTML = `
     <div class="hunt__hud t-mono">
       <p class="label label--signal">[ Défi caché débloqué ]</p>
@@ -29,7 +29,7 @@ export async function startShipHunt() {
       <p class="hunt__stats"><span data-hits>0</span> / ${GOAL} — <span data-time>${TIME.toFixed(1)}</span> s</p>
       <button class="arcade__tool t-mono" type="button" data-hunt-close>Quitter [Échap]</button>
     </div>
-    <button class="hunt__ship" type="button" data-cursor="game" aria-label="Vaisseau en fuite : appuyez pour le toucher"></button>
+    <button class="hunt__ship" type="button" data-cursor="game" aria-label="Vaisseau en fuite : appuyez pour le toucher"></button>
     <div class="hunt__result" data-result hidden></div>
     <p class="sr-only" aria-live="polite" data-hunt-live></p>`;
   root.querySelector('.hunt__ship').appendChild(tpl.content.firstElementChild.cloneNode(true));
@@ -84,7 +84,7 @@ export async function startShipHunt() {
       <p class="label label--signal">${isRecord ? 'Nouveau record' : 'Défi réussi'}</p>
       <h2 class="t-display">${GOAL} / ${GOAL} en ${formatNumber(used, 1)} s. <em class="serif">Œil de lynx.</em></h2>
       <p>Vous repérez les opportunités au vol. Nous, on les transforme en clients.</p>
-      <p class="t-mono t-muted">Record : ${best ? best.label : '—'}</p>
+      <p class="t-mono t-muted">Record : ${best ? best.label : '—'}</p>
       <div class="arcade-screen__actions"><a class="btn btn--light" href="contact.html" data-hunt-cta>Transformer l’essai <span class="btn__arrow" aria-hidden="true">→</span></a><button class="btn btn--ghost" type="button" data-hunt-replay>Rejouer</button></div>` : `
       <p class="label label--signal">Temps écoulé</p>
       <h2 class="t-display">${hits} / ${GOAL}. <em class="serif">Il était plus rapide.</em></h2>
@@ -92,7 +92,7 @@ export async function startShipHunt() {
       <div class="arcade-screen__actions"><button class="btn btn--light" type="button" data-hunt-replay>Rejouer</button><button class="btn btn--ghost" type="button" data-hunt-close>Quitter</button></div>`;
     if (won) sound.win(); else sound.hit();
     if (!env.reducedMotion) gsap.from(result.children, { y: 24, autoAlpha: 0, stagger: 0.07, duration: 0.7, ease: 'expo.out' });
-    announce(won ? `Défi réussi en ${formatNumber(used, 1)} secondes.` : `Temps écoulé : ${hits} sur ${GOAL}.`, 'assertive');
+    announce(won ? `Défi réussi en ${formatNumber(used, 1)} secondes.` : `Temps écoulé : ${hits} sur ${GOAL}.`, 'assertive');
     requestAnimationFrame(() => result.querySelector('a, button')?.focus());
   };
 
@@ -110,7 +110,7 @@ export async function startShipHunt() {
     hits += 1;
     hitsEl.textContent = String(hits);
     sound.coin();
-    live.textContent = `Touché : ${hits} sur ${GOAL}.`;
+    live.textContent = `Touché : ${hits} sur ${GOAL}.`;
     // Étincelles DOM au point d'impact
     const rect = shipBtn.getBoundingClientRect();
     for (let i = 0; i < 14; i += 1) {
@@ -159,7 +159,7 @@ export async function startShipHunt() {
     if (e.target.closest('[data-hunt-cta]')) close();
   });
 
-  announce('Défi caché débloqué : touchez le vaisseau cinq fois en dix secondes.', 'assertive');
+  announce('Défi caché débloqué : touchez le vaisseau cinq fois en dix secondes.', 'assertive');
   if (!env.reducedMotion) gsap.from(root.querySelector('.hunt__hud').children, { y: -20, autoAlpha: 0, stagger: 0.06, duration: 0.6, ease: 'expo.out' });
   fly();
 }

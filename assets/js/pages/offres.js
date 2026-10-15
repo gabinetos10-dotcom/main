@@ -135,7 +135,7 @@ function initConfigurator(scope, root) {
     const { needs, horizon, goal } = read();
     let html;
     if (!needs.length) {
-      html = '<span class="is-empty">Cochez au moins une expertise : la synthèse se compose ici.</span>';
+      html = '<span class="is-empty">Cochez au moins une expertise : la synthèse se compose ici.</span>';
       submit.setAttribute('aria-disabled', 'true');
     } else {
       const what = joinFr(needs.map((n) => n.dataset.phrase));

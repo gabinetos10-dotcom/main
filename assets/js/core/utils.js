@@ -48,6 +48,12 @@ export function debounce(fn, wait = 150) {
 
 export const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 
+/** Rend la main au navigateur (découpe les tâches longues → meilleurs TBT et INP). */
+export const yieldToMain = () => new Promise((resolve) => {
+  if (window.scheduler && typeof window.scheduler.yield === 'function') window.scheduler.yield().then(resolve);
+  else setTimeout(resolve, 0);
+});
+
 /** Stockage tolérant (navigation privée, stockage bloqué…). */
 export const store = {
   get(key, fallback = null, area = 'local') {
@@ -95,16 +101,17 @@ export function focusables(root) {
 export function trapFocus(root, { extra = [], initial = null, restore = true } = {}) {
   const previous = document.activeElement;
   const list = () => [...extra.filter(Boolean), ...focusables(root)];
+  // Ordre de tabulation entièrement géré : les éléments « extra » (hors root)
+  // n'ont pas forcément root comme voisin naturel dans le DOM.
   const onKey = (e) => {
     if (e.key !== 'Tab') return;
     const items = list();
-    if (!items.length) { e.preventDefault(); return; }
-    const first = items[0];
-    const last = items[items.length - 1];
-    const active = document.activeElement;
-    const inside = items.includes(active);
-    if (e.shiftKey && (active === first || !inside)) { e.preventDefault(); last.focus(); }
-    else if (!e.shiftKey && (active === last || !inside)) { e.preventDefault(); first.focus(); }
+    e.preventDefault();
+    if (!items.length) return;
+    const index = items.indexOf(document.activeElement);
+    const step = e.shiftKey ? -1 : 1;
+    const next = index === -1 ? (e.shiftKey ? items.length - 1 : 0) : (index + step + items.length) % items.length;
+    items[next].focus();
   };
   document.addEventListener('keydown', onKey, true);
   requestAnimationFrame(() => {

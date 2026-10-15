@@ -196,8 +196,7 @@
 .expertise__title {
   position: relative;
   margin: 18px 0 24px;
-  font-size: clamp(2.8rem, 1rem + 6vw, 8.4rem);
-  max-width: 11ch;
+  font-size: clamp(2.6rem, 1rem + 4.4vw, 6.8rem);
 }
 
 .expertise__lead {

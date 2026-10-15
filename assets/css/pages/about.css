@@ -377,3 +377,9 @@
   .backstage__item--5 { grid-column: span 2; }
   .backstage__item--8 { grid-column: span 2; }
 }
+
+/* Paysage mobile / écrans très bas : les lettres se calent sur la hauteur */
+@media (max-height: 520px) and (orientation: landscape) {
+  .about-hero__letters { font-size: min(33vw, 48vh); }
+  .about-hero__title { font-size: clamp(1.8rem, 6vh + 1vw, 3.2rem); }
+}

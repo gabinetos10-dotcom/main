@@ -857,8 +857,12 @@
 }
 
 @media (max-width: 479px) {
-  .cookies { left: 8px; right: 8px; bottom: 8px; width: auto; }
-  .cookies__actions { grid-template-columns: 1fr; }
+  .cookies { left: 8px; right: 8px; bottom: 8px; width: auto; padding: 16px; }
+  .cookies > .label { display: none; }
+  .cookies__title { margin: 0 0 6px; font-size: 1.35rem; }
+  .cookies__text { font-size: 12.5px; line-height: 1.45; }
+  .cookies__actions { gap: 6px; margin-top: 12px; }
+  .cookies__actions .btn { min-height: 44px; padding: 0 4px; font-size: 10px; white-space: normal; text-align: center; line-height: 1.25; }
 }
 
 /* Interrupteur (cookies, préférences) */

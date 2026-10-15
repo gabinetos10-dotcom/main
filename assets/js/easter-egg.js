@@ -29,7 +29,7 @@ function consoleMessage() {
   /* eslint-disable no-console */
   console.log(`%c${art}`, 'color:#5B85FF;font-family:monospace;font-size:11px;line-height:1.1;text-shadow:0 0 8px rgba(91,133,255,.6)');
   console.log(
-    `%cVous lisez notre code ?%c Écrivez-nous : ${CONFIG.EMAIL}\n%c(Indice : les vieux codes de console marchent encore ici. ↑↑↓↓…)`,
+    `%cVous lisez notre code ?%c Écrivez-nous : ${CONFIG.EMAIL}\n%c(Indice : les vieux codes de console marchent encore ici. ↑↑↓↓…)`,
     'color:#fff;background:#060B1E;padding:4px 8px;font-weight:600',
     'color:#5B85FF;background:#060B1E;padding:4px 8px',
     'color:#8a93b3;font-style:italic',
@@ -43,7 +43,7 @@ function barrelRoll() {
   const logo = document.querySelector('.header__logo-inner');
   if (!logo || gsap.isTweening(logo)) return;
   document.querySelector('[data-header]')?.classList.remove('is-hidden');
-  announce('Tonneau !');
+  announce('Tonneau !');
   if (env.reducedMotion) {
     gsap.fromTo(logo, { opacity: 0.2 }, { opacity: 1, duration: 0.6 });
     return;
@@ -139,7 +139,7 @@ function secretModal() {
   dialog.innerHTML = `
     <p class="label label--signal">[ ACCÈS DÉVERROUILLÉ ] — MODE HYPERESPACE</p>
     <h2 class="egg-modal__title t-display" id="egg-title">Vous avez <em class="serif">trouvé</em> la porte dérobée.</h2>
-    <p class="egg-modal__text">-10 % sur votre premier audit. Mentionnez ce code dans votre message :</p>
+    <p class="egg-modal__text">-10 % sur votre premier audit. Mentionnez ce code dans votre message :</p>
     <p class="egg-modal__code"><code>${CONFIG.PROMO_CODE}</code></p>
     <div class="egg-modal__actions">
       <button type="button" class="btn btn--light" data-egg-copy>Copier le code</button>

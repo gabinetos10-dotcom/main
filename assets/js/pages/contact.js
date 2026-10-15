@@ -18,12 +18,12 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const PHONE_RE = /^[0-9+().\s-]{6,20}$/;
 
 const MESSAGES = {
-  besoins: () => 'Choisissez au moins un besoin (même « Autre » fait l’affaire).',
-  budget: () => 'Indiquez une fourchette de budget — « Je ne sais pas encore » est une réponse valable.',
+  besoins: () => 'Choisissez au moins un besoin (même « Autre » fait l’affaire).',
+  budget: () => 'Indiquez une fourchette de budget — « Je ne sais pas encore » est une réponse valable.',
   delai: () => 'Indiquez un délai, même approximatif.',
   nom: () => 'Indiquez votre nom (2 caractères minimum).',
-  email: (v) => (v ? 'Cette adresse semble incomplète : vérifiez le @ et le domaine (ex. nom@entreprise.fr).' : 'Indiquez votre email pour que l’on puisse vous répondre.'),
-  telephone: () => 'Ce numéro semble incorrect : chiffres, espaces, +, tirets et parenthèses uniquement.',
+  email: (v) => (v ? 'Cette adresse semble incomplète : vérifiez le @ et le domaine (ex. nom@entreprise.fr).' : 'Indiquez votre email pour que l’on puisse vous répondre.'),
+  telephone: () => 'Ce numéro semble incorrect : chiffres, espaces, +, tirets et parenthèses uniquement.',
   site: () => 'Cette adresse de site semble incorrecte (ex. https://votre-site.fr).',
   message: (v) => `Décrivez votre projet en 20 caractères minimum (encore ${Math.max(0, 20 - v.trim().length)}).`,
   consentement: () => 'Votre accord est nécessaire pour que nous puissions traiter votre demande.',
@@ -127,17 +127,17 @@ function labelOf(form, name, value) {
 
 function mailtoFallback(form, data) {
   const lines = [
-    `Besoins : ${data.besoins.map((v) => labelOf(form, 'besoins', v)).join(', ')}`,
-    data.objectif ? `Objectif : ${labelOf(form, 'objectif', data.objectif)}` : '',
-    `Budget : ${labelOf(form, 'budget', data.budget)}`,
-    `Délai : ${labelOf(form, 'delai', data.delai)}`,
+    `Besoins : ${data.besoins.map((v) => labelOf(form, 'besoins', v)).join(', ')}`,
+    data.objectif ? `Objectif : ${labelOf(form, 'objectif', data.objectif)}` : '',
+    `Budget : ${labelOf(form, 'budget', data.budget)}`,
+    `Délai : ${labelOf(form, 'delai', data.delai)}`,
     '',
-    `Nom : ${data.nom}`,
-    `Email : ${data.email}`,
-    data.entreprise ? `Entreprise : ${data.entreprise}` : '',
-    data.telephone ? `Téléphone : ${data.telephone}` : '',
-    data.site ? `Site : ${data.site}` : '',
-    data.code ? `Code : ${data.code}` : '',
+    `Nom : ${data.nom}`,
+    `Email : ${data.email}`,
+    data.entreprise ? `Entreprise : ${data.entreprise}` : '',
+    data.telephone ? `Téléphone : ${data.telephone}` : '',
+    data.site ? `Site : ${data.site}` : '',
+    data.code ? `Code : ${data.code}` : '',
     '',
     data.message,
   ].filter((l, i, arr) => l !== '' || arr[i - 1] !== '');
@@ -344,7 +344,7 @@ function initForm(scope, root) {
       showSuccess(form, success, false);
     } else {
       errors.hidden = false;
-      errors.innerHTML = `<p><strong>L’envoi n’a pas abouti.</strong> Votre connexion a peut-être coupé. Réessayez, ou écrivez-nous directement : <a href="mailto:${CONFIG.EMAIL}">${CONFIG.EMAIL}</a>. Vos réponses sont conservées.</p>`;
+      errors.innerHTML = `<p><strong>L’envoi n’a pas abouti.</strong> Votre connexion a peut-être coupé. Réessayez, ou écrivez-nous directement : <a href="mailto:${CONFIG.EMAIL}">${CONFIG.EMAIL}</a>. Vos réponses sont conservées.</p>`;
       announce('L’envoi n’a pas abouti. Réessayez ou écrivez-nous par email.', 'assertive');
       errors.setAttribute('tabindex', '-1');
       errors.focus();
@@ -361,7 +361,7 @@ function initForm(scope, root) {
 function showSuccess(form, success, viaMail) {
   if (viaMail) {
     $('[data-success-title]', success).innerHTML = 'Votre messagerie <em class="serif">prend le relais</em>.';
-    $('[data-success-text]', success).textContent = 'Votre demande est pré-remplie dans un nouvel email : il ne reste qu’à cliquer sur « Envoyer ». Rien ne s’est ouvert ? Écrivez-nous à ' + CONFIG.EMAIL + '.';
+    $('[data-success-text]', success).textContent = 'Votre demande est pré-remplie dans un nouvel email : il ne reste qu’à cliquer sur « Envoyer ». Rien ne s’est ouvert ? Écrivez-nous à ' + CONFIG.EMAIL + '.';
   }
   form.hidden = true;
   success.hidden = false;

@@ -21,20 +21,20 @@ const { gsap } = window;
 export const GAMES = {
   button: {
     num: '01',
-    title: 'Quelle est la meilleure agence digitale ?',
-    rules: ['Une question, deux réponses. Cliquez sur la bonne.', 'Indice : l’autre bouton est un peu timide.'],
+    title: 'Quelle est la meilleure agence digitale ?',
+    rules: ['Une question, deux réponses. Cliquez sur la bonne.', 'Indice : l’autre bouton est un peu timide.'],
     load: () => import('./button-game.js'),
   },
   race: {
     num: '02',
     title: 'Bad Practices Highway',
-    rules: ['← → (A / D, Q / D en AZERTY) pour changer de voie. Sur mobile : boutons ou balayage.', 'Évitez les mauvaises pratiques. Les bonnes rapportent des points et un bouclier de 3 s.'],
+    rules: ['← → (A / D, Q / D en AZERTY) pour changer de voie. Sur mobile : boutons ou balayage.', 'Évitez les mauvaises pratiques. Les bonnes rapportent des points et un bouclier de 3 s.'],
     load: () => import('./race-game.js'),
   },
   maze: {
     num: '03',
     title: 'Lead Rush',
-    rules: ['Flèches, ZQSD ou WASD. Sur mobile : balayez ou utilisez le pad.', 'Collectez les leads, survivez 60 s. Un « Agent IA » rend les ennemis capturables pendant 6 s.'],
+    rules: ['Flèches, ZQSD ou WASD. Sur mobile : balayez ou utilisez le pad.', 'Collectez les leads, survivez 60 s. Un « Agent IA » rend les ennemis capturables pendant 6 s.'],
     load: () => import('./maze-game.js'),
   },
 };
@@ -60,7 +60,7 @@ function template(id, def) {
       <p class="arcade__brand t-mono"><span class="dot-live" aria-hidden="true"></span> GJS Arcade — Jeu ${def.num}</p>
       <div class="arcade__hud t-mono" data-hud></div>
       <div class="arcade__tools">
-        <button class="arcade__tool t-mono" type="button" data-arcade-sound aria-pressed="false">Son : off</button>
+        <button class="arcade__tool t-mono" type="button" data-arcade-sound aria-pressed="false">Son : off</button>
         <button class="arcade__tool t-mono" type="button" data-arcade-pause hidden>Pause [P]</button>
         <button class="arcade__tool t-mono" type="button" data-arcade-close>Quitter [Échap]</button>
       </div>
@@ -143,11 +143,11 @@ export async function openGame(id, opener) {
   state.module = await def.load();
   showTitle(state);
   state.release = trapFocus(root, { initial: root.querySelector('[data-action="start"]') });
-  announce(`Jeu ouvert : ${def.title}.`);
+  announce(`Jeu ouvert : ${def.title}.`);
 }
 
 function syncSound(state) {
-  state.el.sound.textContent = sound.enabled ? 'Son : on' : 'Son : off';
+  state.el.sound.textContent = sound.enabled ? 'Son : on' : 'Son : off';
   state.el.sound.setAttribute('aria-pressed', String(sound.enabled));
 }
 
@@ -171,12 +171,12 @@ function showTitle(state) {
       <p class="label label--signal">Jeu ${def.num} / 03 — Insert coin</p>
       <h2 class="arcade-screen__title t-display">${def.title}</h2>
       <ol class="arcade-screen__rules">${def.rules.map((r) => `<li>${r}</li>`).join('')}</ol>
-      <p class="arcade-screen__best t-mono">Record : ${bestLabel(id)}</p>
+      <p class="arcade-screen__best t-mono">Record : ${bestLabel(id)}</p>
       <div class="arcade-screen__actions">
         <button class="btn btn--light" type="button" data-action="start">Jouer <span class="btn__arrow" aria-hidden="true">→</span></button>
         <button class="btn btn--ghost" type="button" data-action="quit">Quitter</button>
       </div>
-      <p class="arcade-screen__hint t-mono">Échap / P : pause — son désactivé par défaut</p>
+      <p class="arcade-screen__hint t-mono">Échap / P : pause — son désactivé par défaut</p>
     </div>`);
 }
 
@@ -214,7 +214,7 @@ function startCountdown(state) {
       return;
     }
     setScreen(state, `<div class="arcade-screen arcade-screen--count"><p class="arcade-count" aria-hidden="true">${steps[i]}</p></div>`);
-    state.el.live.textContent = steps[i] === 'GO' ? 'Partez !' : steps[i];
+    state.el.live.textContent = steps[i] === 'GO' ? 'Partez !' : steps[i];
     if (steps[i] === 'GO') sound.go(); else sound.count();
     if (!env.reducedMotion) gsap.fromTo(state.el.screen.querySelector('.arcade-count'), { scale: 1.6, autoAlpha: 0 }, { scale: 1, autoAlpha: 1, duration: 0.45, ease: 'expo.out' });
     state.timers.push(setTimeout(() => show(i + 1), i === steps.length - 1 ? 420 : 650));
@@ -254,10 +254,10 @@ function showEnd(state, result) {
   const cta = result.cta || { label: 'Parlons de votre projet', href: 'contact.html' };
   setScreen(state, `
     <div class="arcade-screen arcade-screen--end ${result.won ? 'is-won' : 'is-lost'}">
-      <p class="label label--signal">${result.won ? 'Mission accomplie' : 'Game over'}${result.isRecord ? ' — Nouveau record !' : ''}</p>
+      <p class="label label--signal">${result.won ? 'Mission accomplie' : 'Game over'}${result.isRecord ? ' — Nouveau record !' : ''}</p>
       <h2 class="arcade-screen__title t-display">${result.title}</h2>
       ${result.detail ? `<p class="arcade-screen__detail">${result.detail}</p>` : ''}
-      <p class="arcade-screen__score t-mono">${result.scoreLabel || `Score : ${result.score}`} — Record : ${bestLabel(state.id)}</p>
+      <p class="arcade-screen__score t-mono">${result.scoreLabel || `Score : ${result.score}`} — Record : ${bestLabel(state.id)}</p>
       <p class="arcade-screen__message">${result.message || 'GJS vous évite ça.'}</p>
       <div class="arcade-screen__actions">
         <a class="btn btn--light" href="${cta.href}" data-action="cta">${cta.label} <span class="btn__arrow" aria-hidden="true">→</span></a>

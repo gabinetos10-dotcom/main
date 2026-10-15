@@ -8,6 +8,7 @@
 import { env, $, $$, clamp, store, trapFocus } from '../core/utils.js';
 import { lockScroll, unlockScroll } from '../core/scroll.js';
 import { refreshCursor } from '../core/cursor.js';
+import { yieldToMain } from '../core/utils.js';
 
 const { gsap, ScrollTrigger, Flip } = window;
 
@@ -67,7 +68,7 @@ function initHero(scope, root) {
   if (sound) {
     scope.on(sound, 'click', () => {
       video.muted = !video.muted;
-      sound.textContent = video.muted ? 'Son : coupé' : 'Son : activé';
+      sound.textContent = video.muted ? 'Son : coupé' : 'Son : activé';
       sound.setAttribute('aria-pressed', String(!video.muted));
     });
   }
@@ -371,29 +372,29 @@ function initMethod(scope, root) {
       return { x: r.left + r.width / 2 - box.left, y: r.top + r.height / 2 - box.top };
     });
     const all = [{ x: pts[0].x + box.width * 0.08, y: 0 }, ...pts, { x: pts[pts.length - 1].x - box.width * 0.1, y: box.height }];
-    let d = `M${all[0].x.toFixed(1)},${all[0].y.toFixed(1)}`;
+    // Tracé : courbes de Bézier passant exactement par chaque point d'étape.
+    // La position de chaque étape (fraction de longueur) se déduit de la longueur
+    // du préfixe du tracé qui s'arrête sur elle : 4 mesures au lieu d'un échantillonnage.
+    const segments = [`M${all[0].x.toFixed(1)},${all[0].y.toFixed(1)}`];
     for (let i = 1; i < all.length; i += 1) {
       const a = all[i - 1];
       const b = all[i];
       const dy = (b.y - a.y) * 0.55;
-      d += ` C${a.x.toFixed(1)},${(a.y + dy).toFixed(1)} ${b.x.toFixed(1)},${(b.y - dy).toFixed(1)} ${b.x.toFixed(1)},${b.y.toFixed(1)}`;
+      segments.push(`C${a.x.toFixed(1)},${(a.y + dy).toFixed(1)} ${b.x.toFixed(1)},${(b.y - dy).toFixed(1)} ${b.x.toFixed(1)},${b.y.toFixed(1)}`);
     }
+    const d = segments.join(' ');
     path.setAttribute('d', d);
     bgPath.setAttribute('d', d);
     length = path.getTotalLength();
     path.style.strokeDasharray = `${length}`;
-    // Position (en fraction de longueur) de chaque étape sur le tracé
-    const samples = 300;
-    fractions = pts.map((p) => {
-      let best = 0;
-      let bestDist = Infinity;
-      for (let i = 0; i <= samples; i += 1) {
-        const q = path.getPointAtLength((i / samples) * length);
-        const dist = (q.x - p.x) ** 2 + (q.y - p.y) ** 2;
-        if (dist < bestDist) { bestDist = dist; best = i / samples; }
-      }
-      return best;
+    const probe = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    probe.setAttribute('visibility', 'hidden');
+    svg.appendChild(probe);
+    fractions = pts.map((_, i) => {
+      probe.setAttribute('d', segments.slice(0, i + 2).join(' '));
+      return length ? probe.getTotalLength() / length : 0;
     });
+    probe.remove();
     update(progress);
   };
 
@@ -417,7 +418,7 @@ function initMethod(scope, root) {
     onUpdate: (self) => update(self.progress),
     onRefresh: (self) => { progress = self.progress; build(); },
   });
-  build();
+  if (!length) build();
 }
 
 /* ---------- Arcade : records ---------------------------------------------- */
@@ -531,14 +532,15 @@ function initCarousel(scope, root) {
 /* ---------- Cycle de vie --------------------------------------------------- */
 
 export default {
-  init(scope, root) {
-    initHero(scope, root);
-    initManifesto(scope, root);
-    initServices(scope, root);
-    initProjects(scope, root);
-    initMethod(scope, root);
+  async init(scope, root) {
+    // Chaque bloc dans sa propre tâche (et dans le contexte GSAP de la page)
+    const steps = [initHero, initManifesto, initServices, initProjects, initMethod, initCarousel];
+    for (const step of steps) {
+      if (scope.destroyed) return;
+      scope.add(() => step(scope, root));
+      await yieldToMain();
+    }
     initArcade(root);
-    initCarousel(scope, root);
     scope.on(document, 'gjs:highscore', () => initArcade(root));
   },
   destroy() {},

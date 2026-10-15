@@ -61,9 +61,10 @@ main:focus {
   column-gap: var(--gutter);
   align-items: center;
   padding-inline: var(--margin);
-  color: var(--white);
-  mix-blend-mode: difference;
-  transition: transform 0.7s var(--ease-out-expo);
+  /* Couleur pilotée par le thème du body (contraste garanti et mesurable,
+     contrairement à mix-blend-mode que les outils d'audit ne savent pas évaluer) */
+  color: var(--fg);
+  transition: transform 0.7s var(--ease-out-expo), color 0.5s;
   pointer-events: none;
 }
 
@@ -77,6 +78,8 @@ main:focus {
 
 .header.is-menu-open {
   z-index: calc(var(--z-menu) + 1);
+  color: var(--white);
+  --focus: var(--signal);
 }
 
 .header__logo {
@@ -176,7 +179,7 @@ main:focus {
     font-size: 11px;
     letter-spacing: var(--tracking-mono);
     text-transform: uppercase;
-    opacity: 0.7;
+    color: var(--fg-2);
   }
 }
 

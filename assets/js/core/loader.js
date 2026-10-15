@@ -224,7 +224,10 @@ export function runLoader({ video = null } = {}) {
     root.classList.add('is-short');
   }
 
-  const onResize = () => stars && stars.resize();
+  // Boîte du mot « GJS » mesurée une fois (et au resize) : pas de layout forcé à chaque frame
+  let wordBox = null;
+  const measure = () => { wordBox = el.word.getBoundingClientRect(); };
+  const onResize = () => { if (stars) stars.resize(); measure(); };
   window.addEventListener('resize', onResize);
 
   // Position du vaisseau : traversée gauche → droite, ondulation sinusoïdale
@@ -264,7 +267,8 @@ export function runLoader({ video = null } = {}) {
       const tailY = pose.cy + pose.y;
       if (ship.p > 0 && ship.p < 1 && stars && !exiting) stars.emit(tailX, tailY, pose.angle);
       // Révélation de « GJS » jusqu'à la queue du vaisseau
-      const box = el.word.getBoundingClientRect();
+      if (!wordBox || !wordBox.width) measure();
+      const box = wordBox;
       const reveal = box.width ? ((tailX - box.left) / box.width) * 100 : 0;
       el.fill.style.setProperty('--reveal', `${clamp(reveal, -10, 130)}%`);
       if (stars) stars.update(dt, time);

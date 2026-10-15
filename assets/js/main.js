@@ -9,7 +9,7 @@
      destroy()                 nettoyage spécifique (le scope détruit le reste)
    ========================================================================== */
 
-import { env, $, announce } from './core/utils.js';
+import { env, $, announce, yieldToMain } from './core/utils.js';
 import { createScope } from './core/scope.js';
 import { initScroll, resetScroll, scrollTo, resizeScroll, lockScroll, unlockScroll } from './core/scroll.js';
 import { createReveals, setInitialTheme } from './core/reveal.js';
@@ -87,17 +87,24 @@ async function mountPage(container) {
   return current;
 }
 
-function introPage() {
+async function introPage() {
   if (!current) return;
   const { page, scope, container } = current;
+  // 1. Ce qui est visible tout de suite (enchaînement continu avec le loader / rideau)
   scope.add(() => {
-    const tl = createReveals(container);
+    const tl = createReveals(container, { phase: 'intro' });
     if (page.intro) page.intro(scope, container, tl);
     tl.play();
   });
+  refreshMagnetic();
+  // 2. Le reste (reveals au scroll, compteurs, thèmes) dans une tâche suivante
+  await yieldToMain();
+  if (scope.destroyed) return;
+  scope.add(() => createReveals(container, { phase: 'scroll' }));
+  await yieldToMain();
+  if (scope.destroyed) return;
   ScrollTrigger.sort();
   ScrollTrigger.refresh();
-  refreshMagnetic();
 }
 
 function unmountPage() {
@@ -147,7 +154,7 @@ function focusNewPage(container, url) {
   const main = container.querySelector('main') || container;
   main.setAttribute('tabindex', '-1');
   main.focus({ preventScroll: true });
-  announce(`Page chargée : ${document.title}`);
+  announce(`Page chargée : ${document.title}`);
   if (url && url.hash) {
     const target = document.getElementById(url.hash.replace('#', ''));
     if (target) setTimeout(() => scrollTo(target, { immediate: false }), 250);

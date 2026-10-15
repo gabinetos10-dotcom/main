@@ -189,7 +189,7 @@ export function create(api) {
         s.waves += 1;
         s.score += 500;
         resetItems();
-        api.live('Nouvelle vague de leads ! Plus 500 points.');
+        api.live('Nouvelle vague de leads ! Plus 500 points.');
       }
     }
     if (powers.delete(key)) {
@@ -203,7 +203,7 @@ export function create(api) {
           if (e.mode === 'active' && (e.dx || e.dy)) { e.tx = wrapX(e.tx + e.dx); e.ty += e.dy; e.dx = -e.dx; e.dy = -e.dy; e.t = 1 - e.t; }
         }
       });
-      api.live('Agent IA activé : les ennemis sont capturables pendant 6 secondes.');
+      api.live('Agent IA activé : les ennemis sont capturables pendant 6 secondes.');
     }
   };
 
@@ -341,7 +341,7 @@ export function create(api) {
         title: 'Vous avez tenu 60 s. <em class="serif">Nous, on tient sur la durée.</em>',
         detail: `${s.collected} leads collectés, ${s.captures} ennemi${s.captures > 1 ? 's' : ''} capturé${s.captures > 1 ? 's' : ''}, +1 000 points de survie.`,
         score: final,
-        scoreLabel: `Score : ${final}`,
+        scoreLabel: `Score : ${final}`,
         isRecord,
         message: 'Imaginez le résultat avec une vraie stratégie d’acquisition.',
         cta: { label: 'Générer de vrais leads', href: 'contact.html?besoins=ads,ia&objectif=leads' },
@@ -350,7 +350,7 @@ export function create(api) {
         title: `Mangé par <em class="serif">${enemy.name}</em>.`,
         detail: `Vous avez tenu ${time} s et collecté ${s.collected} leads.`,
         score: final,
-        scoreLabel: `Score : ${final}`,
+        scoreLabel: `Score : ${final}`,
         isRecord,
         message: 'Avec GJS, ça n’arrive pas.',
         cta: { label: 'Protéger mes leads', href: 'contact.html?besoins=ads,ia&objectif=leads' },
@@ -378,7 +378,7 @@ export function create(api) {
     const pp = posOf(player);
     for (const e of enemies) {
       if (e.mode !== 'active' && e.mode !== 'leaving') continue;
-      if (dist(pp, posOf(e)) > 0.7) continue;
+      if (dist(pp, posOf(e)) > 0.62) continue;
       if (e.frightened) {
         e.frightened = false;
         e.mode = 'eaten';
@@ -388,7 +388,7 @@ export function create(api) {
         s.captures += 1;
         sound.coin();
         particles.burst(g.ox + (pp[0] + 0.5) * g.ts, g.oy + (pp[1] + 0.5) * g.ts, { count: 30, colors: [e.color, '#5B85FF'], speed: 200, size: 3, life: 0.7 });
-        api.live(`${e.name} capturé : plus ${gain} points.`);
+        api.live(`${e.name} capturé : plus ${gain} points.`);
       } else {
         api.alert(`Mangé par ${e.name}.`);
         finish(false, e);

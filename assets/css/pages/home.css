@@ -56,8 +56,8 @@
 
 .hero__title {
   grid-column: 1 / -1;
-  font-size: clamp(3rem, 0.8rem + 7.6vw, 11.8rem);
-  max-width: 13.5ch;
+  font-size: clamp(2.9rem, 0.6rem + 6.8vw, 10.6rem);
+  max-width: 14.5ch;
   text-wrap: balance;
 }
 
