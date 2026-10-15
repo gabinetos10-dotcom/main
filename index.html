@@ -20,7 +20,7 @@
   <meta name="twitter:title" content="GJS — Agence Web">
   <meta name="twitter:description" content="Sites sur mesure, automatisations intelligentes, pipelines de données.">
   <meta name="twitter:image" content="https://gjs-studio.fr/og-image.png">
-  <meta name="theme-color" content="#0B1533">
+  <meta name="theme-color" content="#F5F8FF">
 
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230B1533'/%3E%3Cg fill='%235B82FF' transform='translate(32 32)'%3E%3Crect x='-3' y='-19' width='6' height='38' rx='3'/%3E%3Crect x='-3' y='-19' width='6' height='38' rx='3' transform='rotate(60)'/%3E%3Crect x='-3' y='-19' width='6' height='38' rx='3' transform='rotate(120)'/%3E%3C/g%3E%3C/svg%3E">
 
@@ -94,10 +94,10 @@
       <svg viewBox="0 0 100 100"><g fill="currentColor" transform="translate(50 50)"><rect x="-5" y="-42" width="10" height="84" rx="5"/><rect x="-5" y="-42" width="10" height="84" rx="5" transform="rotate(60)"/><rect x="-5" y="-42" width="10" height="84" rx="5" transform="rotate(120)"/></g></svg>
     </span>
     <nav class="mobile-menu__links" aria-label="Navigation mobile">
-      <a href="#services" class="mobile-menu__link"><span class="mobile-menu__num">01</span><span class="mobile-menu__word">SERVICES</span></a>
-      <a href="#methode" class="mobile-menu__link"><span class="mobile-menu__num">02</span><span class="mobile-menu__word">MÉTHODE</span></a>
-      <a href="#realisations" class="mobile-menu__link"><span class="mobile-menu__num">03</span><span class="mobile-menu__word">RÉALISATIONS</span></a>
-      <a href="#contact" class="mobile-menu__link"><span class="mobile-menu__num">04</span><span class="mobile-menu__word">CONTACT</span></a>
+      <a href="#services" class="mobile-menu__link"><span class="mobile-menu__num">01</span><span class="mobile-menu__word">Services</span></a>
+      <a href="#methode" class="mobile-menu__link"><span class="mobile-menu__num">02</span><span class="mobile-menu__word">Méthode</span></a>
+      <a href="#realisations" class="mobile-menu__link"><span class="mobile-menu__num">03</span><span class="mobile-menu__word">Réalisations</span></a>
+      <a href="#contact" class="mobile-menu__link"><span class="mobile-menu__num">04</span><span class="mobile-menu__word">Contact</span></a>
     </nav>
     <div class="mobile-menu__foot">
       <a href="mailto:hello@gjs-studio.fr" class="mobile-menu__mail">hello@gjs-studio.fr</a>
@@ -107,80 +107,83 @@
 
   <main id="top" tabindex="-1">
 
-    <!-- ===== HERO ===== -->
+    <!-- ===== HERO =====
+         Direction « aérienne » : fond ciel très pâle, nuages de couleur qui
+         dérivent, particules d'air qui se relient autour du pointeur, puces de
+         verre qui flottent et un badge circulaire qui tourne en signature. -->
     <section class="hero" id="hero">
-      <!-- Ciel nocturne : aurore en dégradés (zéro filtre, léger sur mobile),
-           constellation interactive en canvas, horizon en perspective. -->
       <div class="hero__sky" aria-hidden="true">
-        <span class="hero__aurora hero__aurora--1"></span>
-        <span class="hero__aurora hero__aurora--2"></span>
-        <span class="hero__aurora hero__aurora--3"></span>
+        <span class="blob blob--1"></span>
+        <span class="blob blob--2"></span>
+        <span class="blob blob--3"></span>
         <canvas class="hero__stars" id="heroStars"></canvas>
-        <div class="hero__horizon"><span class="hero__floor"></span></div>
-      </div>
-      <div class="hero__shapes" aria-hidden="true">
-        <div class="outline-circle outline-circle--1" data-mouse="0.14"></div>
       </div>
 
-      <div class="hero__mark" aria-hidden="true" data-mouse="0.05">
-        <svg viewBox="0 0 400 400">
+      <div class="hero__float" aria-hidden="true">
+        <span class="hero__chip hero__chip--1" data-mouse="0.06"><i>✳</i>Design sur mesure</span>
+        <span class="hero__chip hero__chip--2" data-mouse="-0.05"><i>↻</i>Automatisations</span>
+        <span class="hero__chip hero__chip--3" data-mouse="0.08"><i>⌁</i>Data &amp; scraping</span>
+        <span class="hero__ring" data-mouse="-0.1"></span>
+      </div>
+
+      <div class="hero__mark" aria-hidden="true" data-mouse="0.04">
+        <svg viewBox="0 0 200 200">
           <defs>
+            <path id="badgeCircle" d="M100,100 m-76,0 a76,76 0 1,1 152,0 a76,76 0 1,1 -152,0"/>
             <linearGradient id="markGrad" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0" stop-color="#FFFFFF"/>
-              <stop offset=".45" stop-color="#9DB5FF"/>
-              <stop offset="1" stop-color="#2C5BFF"/>
+              <stop offset="0" stop-color="#7B9BFF"/>
+              <stop offset="1" stop-color="#1A3BC2"/>
             </linearGradient>
           </defs>
-          <circle class="hero__mark-ring" cx="200" cy="200" r="184" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="3 12"/>
-          <circle class="hero__mark-orbit" cx="200" cy="200" r="150" fill="none" stroke="currentColor" stroke-width=".6"/>
+          <g class="hero__mark-ring">
+            <text><textPath href="#badgeCircle" textLength="474" lengthAdjust="spacing">AGENCE WEB ✳ PARIS ✳ SITES ✳ AUTOMATISATIONS ✳ DATA ✳ </textPath></text>
+          </g>
           <g class="hero__mark-star" fill="url(#markGrad)">
-            <rect x="186" y="46" width="28" height="308" rx="14"/>
-            <rect x="186" y="46" width="28" height="308" rx="14" transform="rotate(60 200 200)"/>
-            <rect x="186" y="46" width="28" height="308" rx="14" transform="rotate(120 200 200)"/>
+            <rect x="94" y="64" width="12" height="72" rx="6"/>
+            <rect x="94" y="64" width="12" height="72" rx="6" transform="rotate(60 100 100)"/>
+            <rect x="94" y="64" width="12" height="72" rx="6" transform="rotate(120 100 100)"/>
           </g>
         </svg>
       </div>
 
       <div class="hero__content container">
-        <p class="hero__label" data-intro><span class="mono-tag">AGENCE WEB — PARIS<span class="caret"></span></span></p>
+        <p class="hero__label" data-intro><span class="mono-tag"><span class="live-dot"></span>Agence web — Paris</span></p>
         <h1 class="hero__title">
-          <span class="hero__line"><span class="hero__line-inner">DES SITES</span></span>
-          <span class="hero__line"><span class="hero__line-inner">QUI <em class="accent accent--shine">MARQUENT</em></span></span>
-          <span class="hero__line"><span class="hero__line-inner">LES ESPRITS<span class="accent-dot">.</span></span></span>
+          <span class="hero__line"><span class="hero__line-inner">Des sites</span></span>
+          <span class="hero__line"><span class="hero__line-inner">qui <em class="accent accent--shine">marquent</em></span></span>
+          <span class="hero__line"><span class="hero__line-inner">les esprits<span class="accent-dot">.</span></span></span>
         </h1>
-        <div class="hero__bottom">
-          <p class="hero__sub" data-intro>GJS conçoit des sites sur mesure, des automatisations intelligentes et des pipelines de données. Avec une obsession&nbsp;: <em class="serif-i">la finition</em>.</p>
-          <a href="#services" class="hero__scroll" data-intro data-cursor="hover" aria-label="Faire défiler jusqu'aux services">
-            <span class="hero__scroll-txt">DÉFILER</span>
-            <span class="hero__scroll-line" aria-hidden="true"></span>
-          </a>
-          <div class="hero__ctas" data-intro>
-            <a href="#contact" class="btn btn--primary" data-magnetic data-cursor="hover"><span class="btn__text">Démarrer un projet</span></a>
-            <a href="#realisations" class="btn btn--ghost" data-magnetic data-cursor="hover"><span class="btn__text">Voir nos réalisations</span></a>
-          </div>
+        <p class="hero__sub" data-intro>GJS conçoit des sites sur mesure, des automatisations intelligentes et des pipelines de données. Avec une obsession&nbsp;: <em class="serif-i">la finition</em>.</p>
+        <div class="hero__ctas" data-intro>
+          <a href="#contact" class="btn btn--primary" data-magnetic data-cursor="hover"><span class="btn__text">Démarrer un projet</span></a>
+          <a href="#realisations" class="btn btn--ghost" data-magnetic data-cursor="hover"><span class="btn__text">Voir nos réalisations</span></a>
         </div>
+        <a href="#services" class="hero__scroll" data-intro data-cursor="hover" aria-label="Faire défiler jusqu'aux services">
+          <span class="hero__scroll-line" aria-hidden="true"></span>
+          <span class="hero__scroll-txt">DÉFILER</span>
+        </a>
       </div>
     </section>
 
-    <!-- ===== MARQUEE — LE SEUL MOMENT PLEIN AZUR DU SITE ===== -->
+    <!-- ===== MARQUEE — deux lignes en sens contraire : pleine, puis en contour ===== -->
     <div class="marquee-wrap" aria-hidden="true">
       <div class="marquee marquee--back">
         <div class="marquee__track">
           <div class="marquee__group">
-            <span>SITES WEB</span><span class="marquee__sep">✳</span><span>AUTOMATISATIONS</span><span class="marquee__sep">✳</span><span>SCRAPING</span><span class="marquee__sep">✳</span><span>DESIGN</span><span class="marquee__sep">✳</span>
+            <span>Sites web</span><span class="marquee__sep">✳</span><span>Automatisations</span><span class="marquee__sep">✳</span><span>Scraping</span><span class="marquee__sep">✳</span><span>Design</span><span class="marquee__sep">✳</span>
           </div>
           <div class="marquee__group">
-            <span>SITES WEB</span><span class="marquee__sep">✳</span><span>AUTOMATISATIONS</span><span class="marquee__sep">✳</span><span>SCRAPING</span><span class="marquee__sep">✳</span><span>DESIGN</span><span class="marquee__sep">✳</span>
+            <span>Sites web</span><span class="marquee__sep">✳</span><span>Automatisations</span><span class="marquee__sep">✳</span><span>Scraping</span><span class="marquee__sep">✳</span><span>Design</span><span class="marquee__sep">✳</span>
           </div>
         </div>
       </div>
       <div class="marquee marquee--front">
         <div class="marquee__track">
           <div class="marquee__group">
-            <span>SITES WEB</span><span class="marquee__sep">✳</span><span>AUTOMATISATIONS</span><span class="marquee__sep">✳</span><span>SCRAPING</span><span class="marquee__sep">✳</span><span>DESIGN</span><span class="marquee__sep">✳</span>
+            <span>Sites web</span><span class="marquee__sep">✳</span><span>Automatisations</span><span class="marquee__sep">✳</span><span>Scraping</span><span class="marquee__sep">✳</span><span>Design</span><span class="marquee__sep">✳</span>
           </div>
           <div class="marquee__group">
-            <span>SITES WEB</span><span class="marquee__sep">✳</span><span>AUTOMATISATIONS</span><span class="marquee__sep">✳</span><span>SCRAPING</span><span class="marquee__sep">✳</span><span>DESIGN</span><span class="marquee__sep">✳</span>
+            <span>Sites web</span><span class="marquee__sep">✳</span><span>Automatisations</span><span class="marquee__sep">✳</span><span>Scraping</span><span class="marquee__sep">✳</span><span>Design</span><span class="marquee__sep">✳</span>
           </div>
         </div>
       </div>
@@ -188,34 +191,35 @@
 
     <!-- ===== SERVICES ===== -->
     <section class="services section" id="services">
+      <span class="deco deco--right" data-speed="-30" aria-hidden="true"></span>
       <div class="container">
         <div class="section__head">
           <p class="section__label" data-reveal>(01) — Nos expertises</p>
           <h2 class="section__title">
-            <span class="reveal-line"><span class="reveal-line__inner">TROIS PÔLES,</span></span>
-            <span class="reveal-line"><span class="reveal-line__inner">UNE <em class="accent-outline">EXIGENCE</em>.</span></span>
+            <span class="reveal-line"><span class="reveal-line__inner">Trois pôles,</span></span>
+            <span class="reveal-line"><span class="reveal-line__inner">une <em class="accent">exigence</em>.</span></span>
           </h2>
           <span class="tape" aria-hidden="true">100% SUR MESURE</span>
         </div>
 
         <div class="services__list">
-          <article class="service" data-service="1" data-reveal>
+          <article class="service" data-service="1" data-reveal data-glow>
             <span class="service__num">/01</span>
-            <h3 class="service__title">SITES WEB</h3>
+            <h3 class="service__title">Sites web</h3>
             <p class="service__desc">Sites vitrines, e-commerce, expériences interactives. Des interfaces rapides, élégantes et pensées pour convertir.</p>
             <div class="service__tags"><span>VITRINE</span><span>E-COMMERCE</span><span>INTERACTIF</span></div>
             <span class="service__arrow" aria-hidden="true">→</span>
           </article>
-          <article class="service" data-service="2" data-reveal>
+          <article class="service" data-service="2" data-reveal data-glow>
             <span class="service__num">/02</span>
-            <h3 class="service__title">AUTOMATISATIONS</h3>
+            <h3 class="service__title">Automatisations</h3>
             <p class="service__desc">Workflows, intégrations et IA au service de votre productivité. Nous supprimons les tâches répétitives, vous gardez la valeur.</p>
             <div class="service__tags"><span>WORKFLOWS</span><span>INTÉGRATIONS</span><span>IA</span></div>
             <span class="service__arrow" aria-hidden="true">→</span>
           </article>
-          <article class="service" data-service="3" data-reveal>
+          <article class="service" data-service="3" data-reveal data-glow>
             <span class="service__num">/03</span>
-            <h3 class="service__title">SCRAPING</h3>
+            <h3 class="service__title">Scraping</h3>
             <p class="service__desc">Extraction de données, monitoring concurrentiel et pipelines sur mesure. La donnée brute devient décision.</p>
             <div class="service__tags"><span>EXTRACTION</span><span>MONITORING</span><span>PIPELINES</span></div>
             <span class="service__arrow" aria-hidden="true">→</span>
@@ -225,38 +229,39 @@
     </section>
 
     <!-- ===== MÉTHODE ===== -->
-    <section class="process section section--dark" id="methode">
+    <section class="process section" id="methode">
+      <span class="deco deco--left" data-speed="24" aria-hidden="true"></span>
       <div class="container">
         <div class="section__head">
-          <p class="section__label section__label--light" data-reveal>(02) — Notre méthode</p>
+          <p class="section__label" data-reveal>(02) — Notre méthode</p>
           <h2 class="section__title">
-            <span class="reveal-line"><span class="reveal-line__inner">UN PROCESS</span></span>
-            <span class="reveal-line"><span class="reveal-line__inner">SANS <em class="accent">FRICTION</em>.</span></span>
+            <span class="reveal-line"><span class="reveal-line__inner">Un process</span></span>
+            <span class="reveal-line"><span class="reveal-line__inner">sans <em class="accent">friction</em>.</span></span>
           </h2>
         </div>
 
         <div class="process__steps">
           <svg class="process__line" viewBox="0 0 1000 4" preserveAspectRatio="none" aria-hidden="true">
-            <path class="process__line-path" d="M0 2 H1000" stroke="#2C5BFF" stroke-width="2" fill="none"/>
+            <path class="process__line-path" d="M0 2 H1000" stroke="#2C5BFF" stroke-width="2" stroke-linecap="round" fill="none"/>
           </svg>
           <div class="process__step" data-reveal>
             <span class="process__num">01</span>
-            <h3 class="process__name">DÉCOUVERTE</h3>
+            <h3 class="process__name">Découverte</h3>
             <p class="process__text">On écoute, on questionne, on cadre. Vos objectifs deviennent une feuille de route claire.</p>
           </div>
           <div class="process__step" data-reveal>
             <span class="process__num">02</span>
-            <h3 class="process__name">DESIGN</h3>
+            <h3 class="process__name">Design</h3>
             <p class="process__text">Maquettes, prototypes, micro-interactions. Chaque écran est défendu et affiné.</p>
           </div>
           <div class="process__step" data-reveal>
             <span class="process__num">03</span>
-            <h3 class="process__name">DÉVELOPPEMENT</h3>
+            <h3 class="process__name">Développement</h3>
             <p class="process__text">Code propre, performant, accessible. Testé sur tous les écrans, sans compromis.</p>
           </div>
           <div class="process__step" data-reveal>
             <span class="process__num">04</span>
-            <h3 class="process__name">DÉPLOIEMENT</h3>
+            <h3 class="process__name">Déploiement</h3>
             <p class="process__text">Mise en ligne, suivi, itérations. Nous restons à vos côtés après le lancement.</p>
           </div>
         </div>
@@ -278,8 +283,8 @@
         <div class="section__head">
           <p class="section__label" data-reveal>(03) — Réalisations</p>
           <h2 class="section__title">
-            <span class="reveal-line"><span class="reveal-line__inner">SÉLECTION</span></span>
-            <span class="reveal-line"><span class="reveal-line__inner">DE <em class="accent">PROJETS</em>.</span></span>
+            <span class="reveal-line"><span class="reveal-line__inner">Sélection</span></span>
+            <span class="reveal-line"><span class="reveal-line__inner">de <em class="accent">projets</em>.</span></span>
           </h2>
         </div>
 
@@ -299,7 +304,7 @@
               <span class="work__open" aria-hidden="true">VOIR LE PROJET <i>→</i></span>
             </div>
             <div class="work__meta">
-              <h3 class="work__name"><span>MAISON LUBERON</span></h3>
+              <h3 class="work__name"><span>Maison Luberon</span></h3>
               <p class="work__year">2025</p>
               <p class="work__role">E-commerce · Design + développement</p>
               <ul class="work__tags"><li>DIRECTION ARTISTIQUE</li><li>E-COMMERCE</li><li>MOTION</li></ul>
@@ -320,7 +325,7 @@
               <span class="work__open" aria-hidden="true">VOIR LE PROJET <i>→</i></span>
             </div>
             <div class="work__meta">
-              <h3 class="work__name"><span>NEXA DATA</span></h3>
+              <h3 class="work__name"><span>Nexa Data</span></h3>
               <p class="work__year">2025</p>
               <p class="work__role">Plateforme SaaS · Pipelines de données</p>
               <ul class="work__tags"><li>PRODUIT</li><li>DATA</li><li>DASHBOARD</li></ul>
@@ -341,7 +346,7 @@
               <span class="work__open" aria-hidden="true">VOIR LE PROJET <i>→</i></span>
             </div>
             <div class="work__meta">
-              <h3 class="work__name"><span>ATELIER 47</span></h3>
+              <h3 class="work__name"><span>Atelier 47</span></h3>
               <p class="work__year">2024</p>
               <p class="work__role">Site vitrine · Identité + intégration</p>
               <ul class="work__tags"><li>IDENTITÉ</li><li>VITRINE</li><li>INTÉGRATION</li></ul>
@@ -355,6 +360,8 @@
 
     <!-- ===== MANIFESTE ===== -->
     <section class="manifesto section" id="manifeste">
+      <span class="deco deco--left" data-speed="-20" aria-hidden="true"></span>
+      <span class="deco deco--right" data-speed="30" aria-hidden="true"></span>
       <div class="container">
         <p class="section__label section__label--solo" data-reveal>(04) — Manifeste</p>
         <p class="manifesto__text" id="manifestoText">Un site n'est pas une vitrine. C'est une <em>machine à convaincre</em>, une signature, une preuve. Nous refusons le template, le tiède, le déjà-vu. Chaque pixel compte. <em>Chaque milliseconde aussi.</em></p>
@@ -367,8 +374,8 @@
         <div class="section__head">
           <p class="section__label" data-reveal>(05) — Qui sommes-nous&nbsp;?</p>
           <h2 class="section__title">
-            <span class="reveal-line"><span class="reveal-line__inner">TROIS FONDATEURS,</span></span>
-            <span class="reveal-line"><span class="reveal-line__inner">UNE <em class="accent">PASSION</em>.</span></span>
+            <span class="reveal-line"><span class="reveal-line__inner">Trois fondateurs,</span></span>
+            <span class="reveal-line"><span class="reveal-line__inner">une <em class="accent">passion</em>.</span></span>
           </h2>
           <p class="about__sub" data-reveal>GJS, ce sont trois jeunes entrepreneurs, diplômés d'un <em class="serif-i">double diplôme</em>, et passionnés par le web, le digital et l'IA. Nous avons créé l'agence pour travailler autrement&nbsp;: moins de réunions, plus de craft.</p>
         </div>
@@ -376,21 +383,21 @@
           <article class="about__card about__card--1">
             <p class="about__card-head">GJS — MEMBRE 01</p>
             <span class="about__initial">G</span>
-            <p class="about__role">TECH &amp; DATA</p>
+            <p class="about__role">Tech &amp; data</p>
             <p class="about__desc">Pipelines, scraping et architecture. Il parle couramment aux API.</p>
             <span class="about__barcode" aria-hidden="true"></span>
           </article>
           <article class="about__card about__card--2">
             <p class="about__card-head">GJS — MEMBRE 02</p>
             <span class="about__initial">J</span>
-            <p class="about__role">DESIGN &amp; WEB</p>
+            <p class="about__role">Design &amp; web</p>
             <p class="about__desc">Interfaces, motion et détails qui font la différence.</p>
             <span class="about__barcode" aria-hidden="true"></span>
           </article>
           <article class="about__card about__card--3">
             <p class="about__card-head">GJS — MEMBRE 03</p>
             <span class="about__initial">S</span>
-            <p class="about__role">IA &amp; PRODUIT</p>
+            <p class="about__role">IA &amp; produit</p>
             <p class="about__desc">Automatisations intelligentes et stratégie produit.</p>
             <span class="about__barcode" aria-hidden="true"></span>
           </article>
@@ -407,23 +414,24 @@
          clients satisfaits…) décrédibilisaient tout le reste : remplacées par des
          engagements vérifiables. Ne les mets ici que si tu peux les tenir.
     -->
-    <section class="stats section section--dark">
+    <section class="stats section">
+      <span class="deco deco--right" data-speed="-24" aria-hidden="true"></span>
       <div class="container">
-        <p class="section__label section__label--light section__label--solo" data-reveal>Nos engagements</p>
+        <p class="section__label section__label--solo" data-reveal>Nos engagements</p>
         <div class="stats__grid">
-          <div class="stat" data-reveal>
+          <div class="stat" data-reveal data-glow>
             <p class="stat__number"><span data-count="100">0</span><sup>%</sup></p>
             <p class="stat__label">CODE SUR MESURE — AUCUN TEMPLATE</p>
           </div>
-          <div class="stat" data-reveal>
+          <div class="stat" data-reveal data-glow>
             <p class="stat__number"><span data-count="24">0</span><sup>H</sup></p>
             <p class="stat__label">DÉLAI DE RÉPONSE MAXIMUM</p>
           </div>
-          <div class="stat" data-reveal>
+          <div class="stat" data-reveal data-glow>
             <p class="stat__number"><span data-count="5">0</span><sup>J</sup></p>
             <p class="stat__label">POUR LA PREMIÈRE MAQUETTE</p>
           </div>
-          <div class="stat" data-reveal>
+          <div class="stat" data-reveal data-glow>
             <p class="stat__number"><span data-count="3">0</span><sup></sup></p>
             <p class="stat__label">PÔLES D'EXPERTISE, UN SEUL INTERLOCUTEUR</p>
           </div>
@@ -437,8 +445,8 @@
         <div class="section__head">
           <p class="section__label" data-reveal>(06) — L'atelier</p>
           <h2 class="section__title">
-            <span class="reveal-line"><span class="reveal-line__inner">À VOUS</span></span>
-            <span class="reveal-line"><span class="reveal-line__inner">DE <em class="accent">JOUER</em>.</span></span>
+            <span class="reveal-line"><span class="reveal-line__inner">À vous</span></span>
+            <span class="reveal-line"><span class="reveal-line__inner">de <em class="accent">jouer</em>.</span></span>
           </h2>
           <p class="game__sub" data-reveal>Un bon site, c'est un tri permanent. Cassez les briques&nbsp;: les bonnes pratiques élargissent la raquette, les mauvaises la font rétrécir. À la souris, au doigt ou aux flèches du clavier.</p>
         </div>
@@ -446,7 +454,7 @@
           <div class="game__frame" data-reveal>
             <canvas id="gameCanvas"></canvas>
             <div class="game__overlay" id="gameOverlay">
-              <p class="game__overlay-title" id="gameOverlayTitle">PRÊT ?</p>
+              <p class="game__overlay-title" id="gameOverlayTitle">Prêt&nbsp;?</p>
               <p class="game__overlay-text" id="gameOverlayText">Triez le bon grain de l'ivraie.</p>
               <button class="btn btn--primary" id="gameBtn" data-magnetic data-cursor="hover"><span class="btn__text">Lancer la partie</span></button>
             </div>
@@ -471,14 +479,16 @@
     <!-- ===== CTA FINAL ===== -->
     <section class="cta section section--dark" id="contact">
       <div class="cta__shapes" aria-hidden="true">
+        <span class="cta__blob cta__blob--1"></span>
+        <span class="cta__blob cta__blob--2"></span>
         <div class="outline-circle outline-circle--2" data-speed="-14"></div>
       </div>
       <div class="container cta__inner">
         <div class="section__head">
           <p class="section__label section__label--light" data-reveal>(07) — Contact</p>
           <h2 class="section__title cta__title">
-            <span class="reveal-line"><span class="reveal-line__inner">PARLONS DE</span></span>
-            <span class="reveal-line"><span class="reveal-line__inner">VOTRE <em class="accent">PROJET</em>.</span></span>
+            <span class="reveal-line"><span class="reveal-line__inner">Parlons de</span></span>
+            <span class="reveal-line"><span class="reveal-line__inner">votre <em class="accent">projet</em>.</span></span>
           </h2>
           <p class="cta__sub" data-reveal>Un site, une automatisation, un flux de données&nbsp;? <em class="serif-i">Racontez-nous.</em> Réponse sous 24&nbsp;h, promis.</p>
         </div>
@@ -506,7 +516,7 @@
               <div class="pills">
                 <label class="pill"><input type="radio" name="type" value="Site web" checked><span>SITE WEB</span></label>
                 <label class="pill"><input type="radio" name="type" value="Automatisation"><span>AUTOMATISATION</span></label>
-                <label class="pill"><input type="radio" name="type" value="Scraping / Data"><span>SCRAPING</span></label>
+                <label class="pill"><input type="radio" name="type" value="Scraping / Data"><span>Scraping</span></label>
                 <label class="pill"><input type="radio" name="type" value="Autre"><span>AUTRE</span></label>
               </div>
             </div>
@@ -516,7 +526,7 @@
             </div>
             <button type="submit" class="btn-liquid contact-form__submit" id="liquidBtn" data-magnetic data-cursor="hover">
               <span class="btn-liquid__fill"></span>
-              <span class="btn-liquid__text">ENVOYER LE MESSAGE</span>
+              <span class="btn-liquid__text">Envoyer le message</span>
             </button>
             <p class="contact-form__status" id="formStatus" role="status" aria-live="polite"></p>
             <p class="contact-form__note">À l'envoi, votre application mail s'ouvre avec le message pré-rempli — zéro donnée stockée.</p>
@@ -571,7 +581,7 @@
     <div class="legal__backdrop" data-legal-close></div>
     <div class="legal__panel">
       <button class="legal__close" data-legal-close data-cursor="hover">FERMER ✕</button>
-      <h3 class="legal__title" id="legalTitle">MENTIONS LÉGALES</h3>
+      <h3 class="legal__title" id="legalTitle">Mentions légales</h3>
       <div class="legal__body" id="legalBody"></div>
     </div>
   </div>

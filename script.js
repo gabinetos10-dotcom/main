@@ -76,7 +76,12 @@
     introTl
       .to('.hero__line-inner', { yPercent: 0, duration: 1.35, stagger: 0.13 }, 0)
       .to('[data-intro]', { opacity: 1, y: 0, duration: 1.1, stagger: 0.09 }, 0.35)
-      .from('.hero__mark', { opacity: 0, scale: 0.82, rotation: -25, duration: 1.7, ease: 'power3.out' }, 0.2);
+      .from('.hero__mark', { opacity: 0, scale: 0.6, rotation: -60, duration: 1.7, ease: 'power3.out' }, 0.3);
+    if (document.querySelector('.hero__chip')) {
+      introTl.from('.hero__chip, .hero__ring', {
+        opacity: 0, scale: 0.7, duration: 1.1, stagger: 0.12, ease: 'back.out(1.7)'
+      }, 0.55);
+    }
   }
 
   /* ============================================================
@@ -130,8 +135,8 @@
       // Signature finale : la ligne horizontale se trace au centre…
       .to('.preloader__bar-fill', { scaleX: 1, duration: 0.38, ease: 'power3.out' }, '-=0.05')
       // …et la couture verticale s'allume en même temps…
-      .to('.preloader__panel--l', { borderRightColor: 'rgba(44, 91, 255, .8)', boxShadow: '34px 0 80px rgba(7, 14, 36, .45)', duration: 0.38, ease: 'power2.out' }, '<')
-      .to('.preloader__panel--r', { borderLeftColor: 'rgba(44, 91, 255, .8)', boxShadow: '-34px 0 80px rgba(7, 14, 36, .45)', duration: 0.38, ease: 'power2.out' }, '<')
+      .to('.preloader__panel--l', { borderRightColor: 'rgba(44, 91, 255, .8)', boxShadow: '34px 0 80px rgba(30, 60, 160, .22)', duration: 0.38, ease: 'power2.out' }, '<')
+      .to('.preloader__panel--r', { borderLeftColor: 'rgba(44, 91, 255, .8)', boxShadow: '-34px 0 80px rgba(30, 60, 160, .22)', duration: 0.38, ease: 'power2.out' }, '<')
       // …puis les panneaux s'ouvrent en rideau pendant que la ligne se dissout…
       .to('.preloader__panel--l', { xPercent: -101, duration: 1.15, ease: 'expo.inOut' }, '+=0.12')
       .to('.preloader__panel--r', { xPercent: 101, duration: 1.15, ease: 'expo.inOut' }, '<0.07')
@@ -350,6 +355,17 @@
       scrollTrigger: { start: 0, end: 'max', scrub: 0.5 }
     });
 
+    // Le hero s'éloigne quand on descend : le contenu monte et s'efface,
+    // le ciel descend plus lentement — deux vitesses, de la profondeur.
+    gsap.to('.hero__content', {
+      yPercent: -14, opacity: 0.15, ease: 'none',
+      scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true }
+    });
+    gsap.to('.hero__sky', {
+      yPercent: 18, ease: 'none',
+      scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true }
+    });
+
     // Dérive horizontale des grands titres de sections
     gsap.utils.toArray('.section__title').forEach(function (title, i) {
       var dir = i % 2 === 0 ? 1 : -1;
@@ -384,9 +400,10 @@
      9. NAVIGATION — TRANSFORMATION + MASQUAGE AU SCROLL
      ============================================================ */
   if (hasGsap && window.ScrollTrigger) {
+    // La nav devient une pilule flottante ; le burger s'y cale
     ScrollTrigger.create({
       start: 60, end: 'max',
-      toggleClass: { targets: nav, className: 'is-scrolled' }
+      toggleClass: { targets: '#nav, #burger', className: 'is-scrolled' }
     });
     // La nav se masque en scrollant vers le bas, réapparaît vers le haut
     ScrollTrigger.create({
@@ -413,7 +430,7 @@
 
     var menuTl = null;
     if (hasGsap && !REDUCED) {
-      // Cascade couleur : azur → camel → nuit
+      // Cascade couleur : azur → bleu ciel → blanc
       menuTl = gsap.timeline({ paused: true })
         .to('.mm-panel', { yPercent: 0, duration: 0.55, stagger: 0.09, ease: 'expo.inOut' }, 0)
         .fromTo('.mobile-menu__mark', { opacity: 0, scale: .82, rotation: -50 },
@@ -604,11 +621,11 @@
         '\nType de projet : ' + type +
         '\n\nMessage :\n' + msg.value.trim();
 
-      submitText.textContent = 'OUVERTURE DU MAIL…';
+      submitText.textContent = 'Ouverture du mail…';
       say('Votre application mail s’ouvre avec le message pré-rempli. Il ne reste qu’à l’envoyer.', 'ok');
       window.location.href = 'mailto:hello@gjs-studio.fr?subject=' +
         encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
-      setTimeout(function () { submitText.textContent = 'ENVOYER LE MESSAGE'; }, 2600);
+      setTimeout(function () { submitText.textContent = 'Envoyer le message'; }, 2600);
     });
   })();
 
@@ -666,7 +683,7 @@
 
     var CONTENT = {
       mentions: {
-        title: 'MENTIONS LÉGALES',
+        title: 'Mentions légales',
         html: '<h4>ÉDITEUR</h4>' +
           '<p>GJS — Agence web indépendante, Paris, France.<br>Contact : hello@gjs-studio.fr</p>' +
           '<h4>DIRECTEUR DE LA PUBLICATION</h4>' +
@@ -677,7 +694,7 @@
           '<p>L’ensemble des contenus (textes, visuels, code) est la propriété de GJS © 2026. Toute reproduction sans autorisation préalable est interdite.</p>'
       },
       privacy: {
-        title: 'POLITIQUE DE CONFIDENTIALITÉ',
+        title: 'Politique de confidentialité',
         html: '<h4>RESPONSABLE DE TRAITEMENT</h4>' +
           '<p>GJS, Paris — hello@gjs-studio.fr</p>' +
           '<h4>DONNÉES COLLECTÉES</h4>' +
@@ -842,7 +859,7 @@
 
     function endGame(win) {
       running = false;
-      overlayTitle.textContent = win ? 'VOUS AVEZ L\u2019\u0152IL.' : 'SITE CASSÉ.';
+      overlayTitle.textContent = win ? 'Vous avez l\u2019\u0153il.' : 'Site cassé.';
       overlayText.textContent = win
         ? 'Toutes les fondations d\u2019un bon site sont réunies.'
         : 'Trop de mauvaises pratiques accumulées.';
@@ -963,7 +980,7 @@
       ctx.clearRect(0, 0, LW, LH);
 
       // Grille de points discrète
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.05)';
+      ctx.fillStyle = 'rgba(44, 91, 255, 0.1)';
       for (var gx = 40; gx < LW; gx += 46) {
         for (var gy = 30; gy < LH; gy += 46) {
           ctx.fillRect(gx, gy, 2, 2);
@@ -973,13 +990,13 @@
       // Briques
       bricks.forEach(function (b) {
         if (!b.alive) { return; }
-        roundRect(b.x, b.y, b.w, b.h, 9);
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.05)';
+        roundRect(b.x, b.y, b.w, b.h, 12);
+        ctx.fillStyle = '#FFFFFF';
         ctx.fill();
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.22)';
+        ctx.strokeStyle = 'rgba(11, 21, 51, 0.12)';
         ctx.lineWidth = 1;
         ctx.stroke();
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.82)';
+        ctx.fillStyle = 'rgba(11, 21, 51, 0.78)';
         ctx.font = (b.label.length > 11 ? brickFontSm : brickFont) + 'px "DM Mono", monospace';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
@@ -988,30 +1005,30 @@
 
       // Flashs d'impact
       flashes.forEach(function (f) {
-        roundRect(f.x, f.y, f.w, f.h, 9);
+        roundRect(f.x, f.y, f.w, f.h, 12);
         ctx.fillStyle = f.good
-          ? 'rgba(91, 130, 255, ' + (f.life * 0.9) + ')'
-          : 'rgba(70,84,130,' + (f.life * 0.9) + ')';
+          ? 'rgba(44, 91, 255, ' + (f.life * 0.85) + ')'
+          : 'rgba(11, 21, 51, ' + (f.life * 0.5) + ')';
         ctx.fill();
       });
 
       // Raquette
       roundRect(paddle.x, paddle.y, paddle.w, paddle.h, 7);
-      ctx.fillStyle = '#FFFFFF';
+      ctx.fillStyle = '#0B1533';
       ctx.fill();
 
       // Balle
       ctx.beginPath();
       ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI * 2);
-      ctx.fillStyle = '#6F92FF';
-      ctx.shadowColor = 'rgba(111, 146, 255, 0.85)';
+      ctx.fillStyle = '#2C5BFF';
+      ctx.shadowColor = 'rgba(44, 91, 255, 0.55)';
       ctx.shadowBlur = 16;
       ctx.fill();
       ctx.shadowBlur = 0;
 
       // Textes flottants
       floats.forEach(function (f) {
-        ctx.fillStyle = (f.good ? 'rgba(123, 155, 255, ' : 'rgba(169,185,230,') + f.life + ')';
+        ctx.fillStyle = (f.good ? 'rgba(44, 91, 255, ' : 'rgba(11, 21, 51, ') + f.life + ')';
         ctx.font = '700 15px "DM Mono", monospace';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
@@ -1164,23 +1181,22 @@
   })();
 
   /* ============================================================
-     20. CIEL NOCTURNE DU HERO
-     Étoiles qui scintillent, constellation qui se trace autour du
-     pointeur (souris ou doigt), étoile filante de temps en temps.
+     20. PARTICULES D'AIR DU HERO
+     Des bulles légères montent lentement en ondulant ; autour du
+     pointeur (souris ou doigt) elles se relient en constellation.
      Canvas 2D léger : densité adaptée à la surface, DPR plafonné,
      boucle coupée dès que le hero sort de l'écran.
      ============================================================ */
-  (function initSky() {
+  (function initAir() {
     var canvas = document.getElementById('heroStars');
     var hero = document.getElementById('hero');
     if (!canvas || !hero || !canvas.getContext) { return; }
     var ctx = canvas.getContext('2d');
     var W = 0, H = 0, dpr = 1;
-    var stars = [];
+    var dots = [];
     var pointer = { x: -9999, y: -9999, on: false };
-    var shooting = null, nextShoot = 0;
-    var running = false, visible = true, raf = null;
-    var LINK = 130;
+    var running = false, visible = true, raf = null, last = 0;
+    var LINK = 140;
 
     function build() {
       var rect = hero.getBoundingClientRect();
@@ -1190,104 +1206,74 @@
       canvas.width = Math.round(newW * dpr);
       canvas.height = Math.round(H * dpr);
       // La barre d'adresse mobile change la hauteur en continu : on ne
-      // régénère le ciel que si la largeur change (rotation, redimension).
+      // régénère les particules que si la largeur change.
       if (newW !== W) {
         W = newW;
-        var n = Math.max(55, Math.min(190, Math.round(W * H / 7800)));
-        stars = [];
+        var n = Math.max(34, Math.min(110, Math.round(W * H / 14000)));
+        dots = [];
         for (var i = 0; i < n; i++) {
-          var big = Math.random() < 0.08;
-          stars.push({
-            x: Math.random(), y: Math.random() * 0.82,
-            r: big ? 1.1 + Math.random() * 0.9 : 0.35 + Math.random() * 0.8,
-            a: 0.25 + Math.random() * 0.6,
-            tw: Math.random() * Math.PI * 2,
-            ts: 0.6 + Math.random() * 1.8,
-            d: 0.2 + Math.random() * 0.8,
-            blue: Math.random() < 0.35
+          var big = Math.random() < 0.12;
+          dots.push({
+            x: Math.random(), y: Math.random(),
+            r: big ? 2.2 + Math.random() * 2.4 : 0.8 + Math.random() * 1.4,
+            a: big ? 0.18 + Math.random() * 0.2 : 0.25 + Math.random() * 0.4,
+            v: 0.00006 + Math.random() * 0.00016,    // vitesse de montée
+            sw: Math.random() * Math.PI * 2,          // phase d'ondulation
+            ss: 0.4 + Math.random() * 0.8,
+            blue: Math.random() < 0.6
           });
         }
       }
-      if (!running) { draw(performance.now()); }
+      if (!running) { draw(performance.now(), 0); }
     }
 
-    function draw(t) {
+    function draw(t, dt) {
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.clearRect(0, 0, W, H);
       var time = t / 1000;
       var near = [];
-      // Légère dérive horizontale : le ciel tourne, très lentement
-      var drift = REDUCED ? 0 : (time * 0.004) % 1;
 
-      for (var i = 0; i < stars.length; i++) {
-        var s = stars[i];
-        var x = ((s.x + drift * s.d) % 1) * W;
-        var y = s.y * H;
-        var tw = REDUCED ? 1 : 0.55 + 0.45 * Math.sin(time * s.ts + s.tw);
-        var alpha = s.a * tw;
+      for (var i = 0; i < dots.length; i++) {
+        var d = dots[i];
+        if (!REDUCED) {
+          d.y -= d.v * dt;
+          if (d.y < -0.05) { d.y = 1.05; d.x = Math.random(); }
+        }
+        var x = d.x * W + (REDUCED ? 0 : Math.sin(time * d.ss + d.sw) * 14);
+        var y = d.y * H;
+        var alpha = d.a;
         if (pointer.on) {
           var dx = x - pointer.x, dy = y - pointer.y;
           var dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < LINK * 1.6) {
-            alpha = Math.min(1, alpha + (1 - dist / (LINK * 1.6)) * 0.8);
+          if (dist < LINK * 1.5) {
+            alpha = Math.min(0.9, alpha + (1 - dist / (LINK * 1.5)) * 0.5);
             near.push({ x: x, y: y, d: dist });
           }
         }
         ctx.beginPath();
-        ctx.arc(x, y, s.r, 0, Math.PI * 2);
-        ctx.fillStyle = s.blue
-          ? 'rgba(157, 181, 255, ' + alpha + ')'
-          : 'rgba(255, 255, 255, ' + alpha + ')';
+        ctx.arc(x, y, d.r, 0, Math.PI * 2);
+        ctx.fillStyle = d.blue
+          ? 'rgba(44, 91, 255, ' + alpha + ')'
+          : 'rgba(11, 21, 51, ' + (alpha * 0.5) + ')';
         ctx.fill();
-        if (s.r > 1.1 && alpha > 0.5) {
-          ctx.beginPath();
-          ctx.arc(x, y, s.r * 3.2, 0, Math.PI * 2);
-          ctx.fillStyle = 'rgba(123, 155, 255, ' + (alpha * 0.12) + ')';
-          ctx.fill();
-        }
       }
 
-      // Constellation : chaque étoile proche du pointeur se relie au
-      // pointeur et à ses voisines — le dessin suit la main.
+      // Constellation : le dessin suit la main
       if (near.length) {
-        ctx.lineWidth = 0.7;
+        ctx.lineWidth = 0.8;
         for (var a = 0; a < near.length; a++) {
           var p = near[a];
           if (p.d < LINK) {
-            ctx.strokeStyle = 'rgba(123, 155, 255, ' + (0.5 * (1 - p.d / LINK)) + ')';
+            ctx.strokeStyle = 'rgba(44, 91, 255, ' + (0.35 * (1 - p.d / LINK)) + ')';
             ctx.beginPath(); ctx.moveTo(pointer.x, pointer.y); ctx.lineTo(p.x, p.y); ctx.stroke();
           }
           for (var b = a + 1; b < near.length; b++) {
             var q = near[b];
             var dd = Math.hypot(p.x - q.x, p.y - q.y);
-            if (dd < LINK * 0.75) {
-              ctx.strokeStyle = 'rgba(157, 181, 255, ' + (0.32 * (1 - dd / (LINK * 0.75))) + ')';
+            if (dd < LINK * 0.8) {
+              ctx.strokeStyle = 'rgba(91, 130, 255, ' + (0.25 * (1 - dd / (LINK * 0.8))) + ')';
               ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); ctx.stroke();
             }
-          }
-        }
-      }
-
-      // Étoile filante
-      if (!REDUCED) {
-        if (!shooting && t > nextShoot) {
-          shooting = {
-            x: W * (0.15 + Math.random() * 0.7), y: H * Math.random() * 0.35,
-            vx: -(5 + Math.random() * 4), vy: 2.2 + Math.random() * 2, life: 1
-          };
-        }
-        if (shooting) {
-          var sh = shooting;
-          var grad = ctx.createLinearGradient(sh.x, sh.y, sh.x - sh.vx * 14, sh.y - sh.vy * 14);
-          grad.addColorStop(0, 'rgba(255, 255, 255, ' + sh.life + ')');
-          grad.addColorStop(1, 'rgba(123, 155, 255, 0)');
-          ctx.strokeStyle = grad; ctx.lineWidth = 1.4;
-          ctx.beginPath(); ctx.moveTo(sh.x, sh.y);
-          ctx.lineTo(sh.x - sh.vx * 14, sh.y - sh.vy * 14); ctx.stroke();
-          sh.x += sh.vx; sh.y += sh.vy; sh.life -= 0.016;
-          if (sh.life <= 0 || sh.x < -50 || sh.y > H) {
-            shooting = null;
-            nextShoot = t + 3500 + Math.random() * 6000;
           }
         }
       }
@@ -1295,11 +1281,13 @@
 
     function loop(t) {
       raf = requestAnimationFrame(loop);
-      draw(t);
+      var dt = last ? Math.min(t - last, 50) : 16;
+      last = t;
+      draw(t, dt);
     }
     function play() {
       if (running || REDUCED) { return; }
-      running = true; raf = requestAnimationFrame(loop);
+      running = true; last = 0; raf = requestAnimationFrame(loop);
     }
     function pause() {
       running = false;
@@ -1335,27 +1323,27 @@
       resizeT = setTimeout(build, 120);
     });
 
-    nextShoot = performance.now() + 2500;
     build();
     play();
   })();
 
   /* ============================================================
-     21. PROJECTEUR DES SECTIONS NUIT
-     Une lueur azur suit la souris sur les fonds nuit (pointeur fin).
+     21. HALOS AU POINTEUR
+     Une lueur azur suit la souris sur la section nuit et sur les
+     cartes marquées data-glow (pointeur fin uniquement).
      ============================================================ */
   (function initSpotlight() {
     if (!FINE_POINTER || REDUCED) { return; }
-    document.querySelectorAll('.section--dark').forEach(function (sec) {
+    document.querySelectorAll('.section--dark, [data-glow]').forEach(function (el) {
       var pending = false, ex = 0, ey = 0;
-      sec.addEventListener('pointermove', function (e) {
+      el.addEventListener('pointermove', function (e) {
         ex = e.clientX; ey = e.clientY;
         if (pending) { return; }
         pending = true;
         requestAnimationFrame(function () {
-          var r = sec.getBoundingClientRect();
-          sec.style.setProperty('--sx', (ex - r.left) + 'px');
-          sec.style.setProperty('--sy', (ey - r.top) + 'px');
+          var r = el.getBoundingClientRect();
+          el.style.setProperty('--sx', (ex - r.left) + 'px');
+          el.style.setProperty('--sy', (ey - r.top) + 'px');
           pending = false;
         });
       }, { passive: true });
