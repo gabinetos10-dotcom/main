@@ -23,7 +23,7 @@ Prérequis : [Node.js](https://nodejs.org) (version LTS) installé une fois pour
 | macOS | `lancer-le-site.command` | La 1re fois, macOS bloque un fichier téléchargé : clic droit › **Ouvrir** (macOS 15 et + : Réglages système › Confidentialité et sécurité › **Ouvrir quand même**). Si le fichier n'est pas exécutable après dézippage : `chmod +x lancer-le-site.command` dans un terminal. |
 | Linux | `./lancer-le-site.command` | Dans un terminal, depuis le dossier du site. |
 
-Sans Node.js, les lanceurs utilisent Python s'il est présent (http://localhost:8000).
+Sans Node.js, les lanceurs utilisent Python s'il est présent (http://localhost:8000). Le navigateur s'ouvre tout seul dès que le serveur répond (au premier lancement, le téléchargement de `serve` peut prendre jusqu'à une minute). Le serveur n'écoute que sur cet ordinateur ; si le pare-feu Windows pose une question, « Annuler » suffit.
 
 ### B. En ligne de commande
 
@@ -32,7 +32,8 @@ Ouvrez un terminal **dans le dossier du site** (celui qui contient `index.html`)
 ```bash
 npx serve .            # puis http://localhost:3000
 # ou, avec Python :
-python3 -m http.server 8000      # puis http://localhost:8000
+python3 -m http.server 8000      # macOS / Linux, puis http://localhost:8000
+py -m http.server 8000           # Windows (Python de python.org)
 ```
 
 Le fichier `serve.json` désactive les « clean URLs » de `serve` pour que les liens `offres.html`, `contact.html`… restent identiques en local et en production.
@@ -48,7 +49,7 @@ Installez l'extension **Live Server**, ouvrez le dossier du site, clic droit sur
 
 ### Toujours peu d'animations ?
 
-- **Réglage « réduire les animations » du système** (Windows : Paramètres › Accessibilité › Effets visuels › Effets d'animation désactivés ; macOS : Réglages › Accessibilité › Affichage › Réduire les animations). Le site le respecte volontairement : scroll natif, fondus simples, loader court, vidéo en pause. Réactivez les animations du système pour voir la version complète.
+- **Réglage « réduire les animations » du système** (Windows 11 : Paramètres › Accessibilité › Effets visuels › Effets d'animation ; Windows 10 : Paramètres › Options d'ergonomie › Affichage › Afficher les animations dans Windows ; macOS : Réglages › Accessibilité › Affichage › Réduire les animations). Le site le respecte volontairement : scroll natif, fondus simples, loader court, vidéo en pause. Réactivez les animations du système pour voir la version complète.
 - **Réseau filtré ou bloqueur de contenu** empêchant jsDelivr : le site bascule alors aussitôt en version statique (message dans la console). Testez sur une autre connexion ou auto-hébergez les librairies (§9).
 - **Sur un écran tactile**, le curseur custom et les distorsions au survol sont désactivés (c'est voulu).
 

@@ -40,11 +40,13 @@
         n.className = 'file-notice';
         n.setAttribute('role', 'alert');
         n.innerHTML = '<p class="file-notice__title">Animations désactivées : le site est ouvert comme un simple fichier.</p>'
-          + '<p>Les navigateurs bloquent le JavaScript des pages ouvertes par double-clic (adresse <code>file://</code>). '
-          + 'Pour voir le site complet (loader, transitions, jeux) : double-cliquez sur <strong>lancer-le-site</strong> dans le dossier du site, '
-          + 'ou tapez <code>npx serve .</code> dans un terminal ouvert dans ce dossier, puis allez sur <strong>http://localhost:3000</strong>.</p>'
+          + '<p>Les navigateurs bloquent le JavaScript des pages ouvertes par double-clic (adresse <code>file://</code>). Pour voir le site complet (loader, transitions, jeux) :</p>'
+          + '<ol><li>dézippez l’archive (clic droit › <strong>Extraire tout</strong>) ;</li>'
+          + '<li>installez <strong>Node.js</strong> (nodejs.org, version LTS) si ce n’est pas déjà fait ;</li>'
+          + '<li>dans le dossier extrait, double-cliquez sur <strong>lancer-le-site.bat</strong> (Windows) ou <strong>lancer-le-site.command</strong> (Mac).</li></ol>'
+          + '<p>Ou, dans un terminal ouvert dans ce dossier : <code>npx serve .</code> puis <strong>http://localhost:3000</strong>.</p>'
           + '<button type="button" class="file-notice__close">Compris</button>';
-        d.body.insertBefore(n, d.body.firstChild);
+        d.body.appendChild(n);
         n.querySelector('button').addEventListener('click', function () { n.remove(); });
       });
     })(document, location);
