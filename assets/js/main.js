@@ -29,11 +29,28 @@ import { initEasterEggs } from './easter-egg.js';
 
 const { gsap, ScrollTrigger, SplitText, Flip, CustomEase, barba } = window;
 
-gsap.registerPlugin(ScrollTrigger, SplitText, Flip, CustomEase);
-CustomEase.create('gjs', 'M0,0 C0.08,0.62 0.18,0.92 0.42,0.98 0.66,1.01 0.8,1 1,1');
-CustomEase.create('gjs-inout', '0.76,0,0.24,1');
-ScrollTrigger.config({ ignoreMobileResize: true });
-gsap.config({ nullTargetWarn: false });
+// GSAP et ses plugins sont indispensables (Lenis et Barba sont optionnels :
+// scroll natif et navigation classique prennent le relais). S'ils manquent
+// (CDN filtré, bloqueur, hors ligne), on affiche aussitôt la version statique
+// au lieu de laisser le loader figé.
+const LIBS_READY = Boolean(gsap && ScrollTrigger && SplitText && Flip && CustomEase);
+
+if (LIBS_READY) {
+  gsap.registerPlugin(ScrollTrigger, SplitText, Flip, CustomEase);
+  CustomEase.create('gjs', 'M0,0 C0.08,0.62 0.18,0.92 0.42,0.98 0.66,1.01 0.8,1 1,1');
+  CustomEase.create('gjs-inout', '0.76,0,0.24,1');
+  ScrollTrigger.config({ ignoreMobileResize: true });
+  gsap.config({ nullTargetWarn: false });
+}
+
+function degrade() {
+  const root = document.documentElement;
+  root.classList.remove('js', 'is-scroll-locked');
+  root.classList.add('no-js', 'is-degraded');
+  document.getElementById('loader')?.remove();
+  // eslint-disable-next-line no-console
+  console.warn('GJS : librairies d’animation indisponibles, affichage de la version statique.');
+}
 
 document.documentElement.classList.toggle('is-reduced-motion', env.reducedMotion);
 document.documentElement.classList.toggle('is-touch', !env.finePointer);
@@ -242,9 +259,17 @@ async function boot() {
   initBarba();
 }
 
-boot().catch((err) => {
-  // En cas d'échec, on libère toujours l'interface
-  document.getElementById('loader')?.remove();
-  document.documentElement.classList.remove('is-scroll-locked');
-  throw err;
-});
+// Ouvert en file:// : le <head> a déjà basculé en version statique et affiché
+// l'aide (« lancer-le-site ») ; rien à démarrer ici.
+if (window.location.protocol === 'file:') {
+  // version statique
+} else if (LIBS_READY) {
+  boot().catch((err) => {
+    // En cas d'échec, on libère toujours l'interface
+    document.getElementById('loader')?.remove();
+    document.documentElement.classList.remove('is-scroll-locked');
+    throw err;
+  });
+} else {
+  degrade();
+}

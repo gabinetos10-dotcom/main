@@ -379,3 +379,50 @@ html.is-scroll-locked body {
     scroll-behavior: auto !important;
   }
 }
+
+/* ---- Site ouvert en file:// (double-clic) : message d'aide ----------- */
+
+.file-notice {
+  position: fixed;
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
+  z-index: var(--z-cookies);
+  display: grid;
+  gap: 10px;
+  max-width: 760px;
+  margin-inline: auto;
+  padding: 20px 22px;
+  background: var(--night-950);
+  color: var(--white);
+  border: 1px solid var(--signal);
+  box-shadow: 0 0 60px rgba(91, 133, 255, 0.25);
+  font-size: var(--fs-small);
+  line-height: 1.5;
+}
+
+.file-notice__title {
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono);
+  letter-spacing: var(--tracking-mono);
+  text-transform: uppercase;
+  color: var(--signal);
+}
+
+.file-notice code {
+  font-family: var(--font-mono);
+  padding: 1px 6px;
+  background: var(--night-800);
+}
+
+.file-notice__close {
+  justify-self: start;
+  min-height: 44px;
+  padding: 0 18px;
+  background: var(--white);
+  color: var(--night-950);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: var(--tracking-mono);
+  text-transform: uppercase;
+}

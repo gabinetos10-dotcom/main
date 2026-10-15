@@ -7,16 +7,52 @@ Librairies épinglées via CDN (avec empreintes SRI) : **GSAP 3.13.0** (ScrollTr
 
 ---
 
-## 1. Lancer en local
+## 1. Voir le site (important : pas de double-clic sur `index.html`)
+
+Ouvert par double-clic, le site s'affiche avec une adresse `file://…` : les navigateurs bloquent alors les modules JavaScript (sécurité CORS). On obtient une **version statique, sans loader, transitions ni jeux** (un message l'explique en bas de l'écran). Il faut passer par un petit serveur local, ou mettre le site en ligne.
+
+**Récupérer le bon dossier** : le site est sur la branche `claude/eager-gauss-qymcxp` (la branche `main` ne contient pas le site). Archive ZIP de la branche : https://github.com/gabinetos10-dotcom/main/archive/refs/heads/claude/eager-gauss-qymcxp.zip — dézippez-la avant de lancer quoi que ce soit.
+
+### A. Double-clic sur un lanceur (le plus simple)
+
+Prérequis : [Node.js](https://nodejs.org) (version LTS) installé une fois pour toutes.
+
+| Système | Fichier | Remarque |
+|---|---|---|
+| Windows | `lancer-le-site.bat` | Une fenêtre noire s'ouvre (le serveur), puis le navigateur sur http://localhost:3000. Fermez la fenêtre pour arrêter. Si Windows affiche « Windows a protégé votre ordinateur » : **Informations complémentaires › Exécuter quand même**. |
+| macOS | `lancer-le-site.command` | La 1re fois, macOS bloque un fichier téléchargé : clic droit › **Ouvrir** (macOS 15 et + : Réglages système › Confidentialité et sécurité › **Ouvrir quand même**). Si le fichier n'est pas exécutable après dézippage : `chmod +x lancer-le-site.command` dans un terminal. |
+| Linux | `./lancer-le-site.command` | Dans un terminal, depuis le dossier du site. |
+
+Sans Node.js, les lanceurs utilisent Python s'il est présent (http://localhost:8000).
+
+### B. En ligne de commande
+
+Ouvrez un terminal **dans le dossier du site** (celui qui contient `index.html`), puis :
 
 ```bash
 npx serve .            # puis http://localhost:3000
-# ou
-python3 -m http.server 8000
+# ou, avec Python :
+python3 -m http.server 8000      # puis http://localhost:8000
 ```
 
 Le fichier `serve.json` désactive les « clean URLs » de `serve` pour que les liens `offres.html`, `contact.html`… restent identiques en local et en production.
-Une connexion internet est nécessaire (librairies jsDelivr et polices Fontshare) — voir §7 pour tout auto-héberger.
+
+### C. Avec VS Code
+
+Installez l'extension **Live Server**, ouvrez le dossier du site, clic droit sur `index.html` › « Open with Live Server ».
+
+### D. En ligne, sans rien installer
+
+- **Netlify Drop** : glissez le dossier du site sur https://app.netlify.com/drop → une URL publique est générée en quelques secondes.
+- **GitHub Pages** (dépôt public, ou offre payante pour un dépôt privé) : dans le dépôt, Settings › Pages › Source « Deploy from a branch », branche `claude/eager-gauss-qymcxp`, dossier `/ (root)`. Le site sera servi sous `https://<compte>.github.io/main/` : tout fonctionne, sauf la page 404 personnalisée qui attend la racine d'un domaine (voir ci-dessous).
+
+### Toujours peu d'animations ?
+
+- **Réglage « réduire les animations » du système** (Windows : Paramètres › Accessibilité › Effets visuels › Effets d'animation désactivés ; macOS : Réglages › Accessibilité › Affichage › Réduire les animations). Le site le respecte volontairement : scroll natif, fondus simples, loader court, vidéo en pause. Réactivez les animations du système pour voir la version complète.
+- **Réseau filtré ou bloqueur de contenu** empêchant jsDelivr : le site bascule alors aussitôt en version statique (message dans la console). Testez sur une autre connexion ou auto-hébergez les librairies (§9).
+- **Sur un écran tactile**, le curseur custom et les distorsions au survol sont désactivés (c'est voulu).
+
+Une connexion internet est nécessaire (librairies jsDelivr et polices Fontshare) — voir §9 pour tout auto-héberger.
 
 La page `404.html` utilise des chemins absolus (`/assets/…`) : elle doit être servie à la racine du domaine (comportement par défaut de Netlify, Vercel, `serve`, Apache avec `ErrorDocument 404 /404.html`, etc.).
 
@@ -43,6 +79,7 @@ La page `404.html` utilise des chemins absolus (`/assets/…`) : elle doit être
 /index.html  /offres.html  /a-propos.html  /contact.html
 /mentions-legales.html  /politique-confidentialite.html  /404.html
 /robots.txt  /sitemap.xml  /site.webmanifest  /favicon.svg  /serve.json
+/lancer-le-site.bat (Windows)  /lancer-le-site.command (macOS / Linux)
 /assets/css/   tokens.css · base.css · layout.css · components.css · games.css (chargé à la demande)
                pages/ home.css · offres.css · about.css · contact.css · legal.css · error.css
 /assets/js/    main.js (bootstrap, Barba, cycle de vie) · config.js (CONFIG central) · easter-egg.js

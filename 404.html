@@ -28,7 +28,27 @@
   <link rel="icon" href="/assets/img/icons/icon-192.png" sizes="192x192" type="image/png">
   <link rel="apple-touch-icon" href="/assets/img/icons/apple-touch-icon.png">
   <link rel="manifest" href="/site.webmanifest">
-  <script>document.documentElement.classList.replace('no-js', 'js');</script>
+  <script>
+    /* Ouvert par double-clic (file://) : les navigateurs bloquent les modules JS.
+       On garde la version statique lisible et on explique comment lancer le site. */
+    (function (d, l) {
+      var r = d.documentElement;
+      if (l.protocol !== 'file:') { r.classList.replace('no-js', 'js'); return; }
+      r.classList.add('is-file');
+      d.addEventListener('DOMContentLoaded', function () {
+        var n = d.createElement('div');
+        n.className = 'file-notice';
+        n.setAttribute('role', 'alert');
+        n.innerHTML = '<p class="file-notice__title">Animations désactivées : le site est ouvert comme un simple fichier.</p>'
+          + '<p>Les navigateurs bloquent le JavaScript des pages ouvertes par double-clic (adresse <code>file://</code>). '
+          + 'Pour voir le site complet (loader, transitions, jeux) : double-cliquez sur <strong>lancer-le-site</strong> dans le dossier du site, '
+          + 'ou tapez <code>npx serve .</code> dans un terminal ouvert dans ce dossier, puis allez sur <strong>http://localhost:3000</strong>.</p>'
+          + '<button type="button" class="file-notice__close">Compris</button>';
+        d.body.insertBefore(n, d.body.firstChild);
+        n.querySelector('button').addEventListener('click', function () { n.remove(); });
+      });
+    })(document, location);
+  </script>
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <link rel="preconnect" href="https://api.fontshare.com" crossorigin>
   <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
