@@ -2,11 +2,11 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>404 — Page introuvable | GJS</title>
   <meta name="robots" content="noindex">
-  <meta name="theme-color" content="#1C1611">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231C1611'/%3E%3Cg fill='%23E8612A' transform='translate(32 32)'%3E%3Crect x='-3' y='-19' width='6' height='38' rx='3'/%3E%3Crect x='-3' y='-19' width='6' height='38' rx='3' transform='rotate(60)'/%3E%3Crect x='-3' y='-19' width='6' height='38' rx='3' transform='rotate(120)'/%3E%3C/g%3E%3C/svg%3E">
+  <meta name="theme-color" content="#0B1533">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230B1533'/%3E%3Cg fill='%235B82FF' transform='translate(32 32)'%3E%3Crect x='-3' y='-19' width='6' height='38' rx='3'/%3E%3Crect x='-3' y='-19' width='6' height='38' rx='3' transform='rotate(60)'/%3E%3Crect x='-3' y='-19' width='6' height='38' rx='3' transform='rotate(120)'/%3E%3C/g%3E%3C/svg%3E">
   <link rel="preconnect" href="https://api.fontshare.com">
   <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
   <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f%5B%5D=clash-display@600&f%5B%5D=satoshi@400&display=swap">
@@ -15,13 +15,13 @@
   <style>
     .e404 {
       min-height: 100svh; display: grid; align-content: center;
-      background: var(--espresso); color: var(--cream-txt);
+      background: var(--night); color: var(--white-txt);
       position: relative; overflow: hidden;
     }
     .e404__mark {
       position: absolute; top: 50%; right: -12vw;
       width: min(66vw, 640px); aspect-ratio: 1;
-      transform: translateY(-50%); color: var(--terracotta);
+      transform: translateY(-50%); color: var(--azure);
       opacity: .16; pointer-events: none;
     }
     .e404__mark g { transform-origin: 200px 200px; animation: markSpin 52s linear infinite; }
@@ -29,26 +29,32 @@
     .e404__code {
       font-family: var(--font-display); font-weight: 600;
       font-size: clamp(5rem, 22vw, 18rem); line-height: .82;
-      letter-spacing: var(--track-hero); color: var(--terracotta);
+      letter-spacing: var(--track-hero);
+      background: var(--grad-text); background-size: 220% 100%;
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+      animation: shine 6.5s linear infinite;
     }
+    .e404 .accent { color: var(--azure-soft); }
+    .e404 .serif-i { color: var(--azure-soft); }
+    .e404 { background: radial-gradient(70% 60% at 80% 50%, rgba(44, 91, 255, .28), transparent 70%), var(--night); }
     .e404__title {
       font-family: var(--font-display); font-weight: 600;
       font-size: clamp(1.6rem, 5vw, 3.4rem); text-transform: uppercase;
       letter-spacing: var(--track-h); line-height: 1; margin-top: 1.4rem;
     }
-    .e404__sub { color: var(--cream-soft); max-width: 42ch; margin-top: 1.2rem; }
+    .e404__sub { color: var(--white-soft); max-width: 42ch; margin-top: 1.2rem; }
     .e404__label {
       font-family: var(--font-mono); font-size: var(--t-mono);
       letter-spacing: var(--track-mono); text-transform: uppercase;
-      color: var(--cream-faint); margin-bottom: 2rem;
+      color: var(--white-faint); margin-bottom: 2rem;
     }
     .e404__actions { display: flex; gap: .9rem; flex-wrap: wrap; margin-top: 2.6rem; }
-    .e404 .btn--ghost { border-color: var(--cream-txt); color: var(--cream-txt); }
-    /* Bouton terracotta sur fond espresso : le remplissage de survol doit
-       inverser vers le crème, sinon le survol ne se voit pas. */
-    .e404 .btn--primary { background: var(--terracotta); color: var(--cream-txt); }
-    .e404 .btn--primary::before { background: var(--cream); }
-    .e404 .btn--primary:hover { color: var(--espresso); }
+    .e404 .btn--ghost { border-color: var(--white-txt); color: var(--white-txt); }
+    /* Bouton azur sur fond nuit : le remplissage de survol doit
+       inverser vers le blanc, sinon le survol ne se voit pas. */
+    .e404 .btn--primary { background: var(--azure); color: var(--white-txt); }
+    .e404 .btn--primary::before { background: var(--paper); }
+    .e404 .btn--primary:hover { color: var(--night); }
   </style>
 </head>
 <body>

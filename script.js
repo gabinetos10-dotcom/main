@@ -130,8 +130,8 @@
       // Signature finale : la ligne horizontale se trace au centre…
       .to('.preloader__bar-fill', { scaleX: 1, duration: 0.38, ease: 'power3.out' }, '-=0.05')
       // …et la couture verticale s'allume en même temps…
-      .to('.preloader__panel--l', { borderRightColor: 'rgba(232, 97, 42, .8)', boxShadow: '34px 0 80px rgba(28, 22, 17, .45)', duration: 0.38, ease: 'power2.out' }, '<')
-      .to('.preloader__panel--r', { borderLeftColor: 'rgba(232, 97, 42, .8)', boxShadow: '-34px 0 80px rgba(28, 22, 17, .45)', duration: 0.38, ease: 'power2.out' }, '<')
+      .to('.preloader__panel--l', { borderRightColor: 'rgba(44, 91, 255, .8)', boxShadow: '34px 0 80px rgba(7, 14, 36, .45)', duration: 0.38, ease: 'power2.out' }, '<')
+      .to('.preloader__panel--r', { borderLeftColor: 'rgba(44, 91, 255, .8)', boxShadow: '-34px 0 80px rgba(7, 14, 36, .45)', duration: 0.38, ease: 'power2.out' }, '<')
       // …puis les panneaux s'ouvrent en rideau pendant que la ligne se dissout…
       .to('.preloader__panel--l', { xPercent: -101, duration: 1.15, ease: 'expo.inOut' }, '+=0.12')
       .to('.preloader__panel--r', { xPercent: 101, duration: 1.15, ease: 'expo.inOut' }, '<0.07')
@@ -413,7 +413,7 @@
 
     var menuTl = null;
     if (hasGsap && !REDUCED) {
-      // Cascade couleur : terracotta → camel → espresso
+      // Cascade couleur : azur → camel → nuit
       menuTl = gsap.timeline({ paused: true })
         .to('.mm-panel', { yPercent: 0, duration: 0.55, stagger: 0.09, ease: 'expo.inOut' }, 0)
         .fromTo('.mobile-menu__mark', { opacity: 0, scale: .82, rotation: -50 },
@@ -591,7 +591,7 @@
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.value.trim())) { fail(email); }
       if (!msg.value.trim()) { fail(msg); }
       if (first) {
-        say('Il manque quelques informations — les champs en orange sont à compléter.', 'error');
+        say('Il manque quelques informations — les champs en surbrillance sont à compléter.', 'error');
         first.focus();
         return;
       }
@@ -620,14 +620,17 @@
     var cards = gsap.utils.toArray('.about__card');
     if (!cards.length) { return; }
 
-    // Les cartes se déploient en éventail au scroll
-    cards.forEach(function (card, i) {
-      gsap.fromTo(card,
-        { y: 130 + i * 45, rotation: (i - 1) * 6 },
-        {
-          y: 0, rotation: (i - 1) * 1.5, ease: 'none',
-          scrollTrigger: { trigger: '#aboutDeck', start: 'top 92%', end: 'top 35%', scrub: 1 }
-        });
+    // Les cartes se déploient en éventail au scroll — desktop seulement :
+    // sous 900 px, le deck devient un carrousel qu'on fait glisser au doigt.
+    gsap.matchMedia().add('(min-width: 901px)', function () {
+      cards.forEach(function (card, i) {
+        gsap.fromTo(card,
+          { y: 130 + i * 45, rotation: (i - 1) * 6 },
+          {
+            y: 0, rotation: (i - 1) * 1.5, ease: 'none',
+            scrollTrigger: { trigger: '#aboutDeck', start: 'top 92%', end: 'top 35%', scrub: 1 }
+          });
+      });
     });
 
     // Tilt 3D suivant le curseur (desktop uniquement)
@@ -960,7 +963,7 @@
       ctx.clearRect(0, 0, LW, LH);
 
       // Grille de points discrète
-      ctx.fillStyle = 'rgba(244,239,232,0.05)';
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.05)';
       for (var gx = 40; gx < LW; gx += 46) {
         for (var gy = 30; gy < LH; gy += 46) {
           ctx.fillRect(gx, gy, 2, 2);
@@ -971,13 +974,13 @@
       bricks.forEach(function (b) {
         if (!b.alive) { return; }
         roundRect(b.x, b.y, b.w, b.h, 9);
-        ctx.fillStyle = 'rgba(244,239,232,0.05)';
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.05)';
         ctx.fill();
-        ctx.strokeStyle = 'rgba(244,239,232,0.22)';
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.22)';
         ctx.lineWidth = 1;
         ctx.stroke();
-        ctx.fillStyle = 'rgba(244,239,232,0.82)';
-        ctx.font = (b.label.length > 11 ? brickFontSm : brickFont) + 'px "Space Mono", monospace';
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.82)';
+        ctx.font = (b.label.length > 11 ? brickFontSm : brickFont) + 'px "DM Mono", monospace';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText(b.label, b.x + b.w / 2, b.y + b.h / 2);
@@ -987,29 +990,29 @@
       flashes.forEach(function (f) {
         roundRect(f.x, f.y, f.w, f.h, 9);
         ctx.fillStyle = f.good
-          ? 'rgba(232,97,42,' + (f.life * 0.9) + ')'
-          : 'rgba(138,59,30,' + (f.life * 0.9) + ')';
+          ? 'rgba(91, 130, 255, ' + (f.life * 0.9) + ')'
+          : 'rgba(70,84,130,' + (f.life * 0.9) + ')';
         ctx.fill();
       });
 
       // Raquette
       roundRect(paddle.x, paddle.y, paddle.w, paddle.h, 7);
-      ctx.fillStyle = '#F4EFE8';
+      ctx.fillStyle = '#FFFFFF';
       ctx.fill();
 
       // Balle
       ctx.beginPath();
       ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI * 2);
-      ctx.fillStyle = '#E8612A';
-      ctx.shadowColor = 'rgba(232,97,42,0.7)';
+      ctx.fillStyle = '#6F92FF';
+      ctx.shadowColor = 'rgba(111, 146, 255, 0.85)';
       ctx.shadowBlur = 16;
       ctx.fill();
       ctx.shadowBlur = 0;
 
       // Textes flottants
       floats.forEach(function (f) {
-        ctx.fillStyle = (f.good ? 'rgba(232,97,42,' : 'rgba(200,155,109,') + f.life + ')';
-        ctx.font = '700 15px "Space Mono", monospace';
+        ctx.fillStyle = (f.good ? 'rgba(123, 155, 255, ' : 'rgba(169,185,230,') + f.life + ')';
+        ctx.font = '700 15px "DM Mono", monospace';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText(f.txt, f.x, f.y);
@@ -1158,6 +1161,205 @@
         });
       }, 180);
     }, { passive: true });
+  })();
+
+  /* ============================================================
+     20. CIEL NOCTURNE DU HERO
+     Étoiles qui scintillent, constellation qui se trace autour du
+     pointeur (souris ou doigt), étoile filante de temps en temps.
+     Canvas 2D léger : densité adaptée à la surface, DPR plafonné,
+     boucle coupée dès que le hero sort de l'écran.
+     ============================================================ */
+  (function initSky() {
+    var canvas = document.getElementById('heroStars');
+    var hero = document.getElementById('hero');
+    if (!canvas || !hero || !canvas.getContext) { return; }
+    var ctx = canvas.getContext('2d');
+    var W = 0, H = 0, dpr = 1;
+    var stars = [];
+    var pointer = { x: -9999, y: -9999, on: false };
+    var shooting = null, nextShoot = 0;
+    var running = false, visible = true, raf = null;
+    var LINK = 130;
+
+    function build() {
+      var rect = hero.getBoundingClientRect();
+      var newW = Math.round(rect.width);
+      H = Math.round(rect.height);
+      dpr = Math.min(window.devicePixelRatio || 1, newW < 768 ? 1.5 : 2);
+      canvas.width = Math.round(newW * dpr);
+      canvas.height = Math.round(H * dpr);
+      // La barre d'adresse mobile change la hauteur en continu : on ne
+      // régénère le ciel que si la largeur change (rotation, redimension).
+      if (newW !== W) {
+        W = newW;
+        var n = Math.max(55, Math.min(190, Math.round(W * H / 7800)));
+        stars = [];
+        for (var i = 0; i < n; i++) {
+          var big = Math.random() < 0.08;
+          stars.push({
+            x: Math.random(), y: Math.random() * 0.82,
+            r: big ? 1.1 + Math.random() * 0.9 : 0.35 + Math.random() * 0.8,
+            a: 0.25 + Math.random() * 0.6,
+            tw: Math.random() * Math.PI * 2,
+            ts: 0.6 + Math.random() * 1.8,
+            d: 0.2 + Math.random() * 0.8,
+            blue: Math.random() < 0.35
+          });
+        }
+      }
+      if (!running) { draw(performance.now()); }
+    }
+
+    function draw(t) {
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, W, H);
+      var time = t / 1000;
+      var near = [];
+      // Légère dérive horizontale : le ciel tourne, très lentement
+      var drift = REDUCED ? 0 : (time * 0.004) % 1;
+
+      for (var i = 0; i < stars.length; i++) {
+        var s = stars[i];
+        var x = ((s.x + drift * s.d) % 1) * W;
+        var y = s.y * H;
+        var tw = REDUCED ? 1 : 0.55 + 0.45 * Math.sin(time * s.ts + s.tw);
+        var alpha = s.a * tw;
+        if (pointer.on) {
+          var dx = x - pointer.x, dy = y - pointer.y;
+          var dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < LINK * 1.6) {
+            alpha = Math.min(1, alpha + (1 - dist / (LINK * 1.6)) * 0.8);
+            near.push({ x: x, y: y, d: dist });
+          }
+        }
+        ctx.beginPath();
+        ctx.arc(x, y, s.r, 0, Math.PI * 2);
+        ctx.fillStyle = s.blue
+          ? 'rgba(157, 181, 255, ' + alpha + ')'
+          : 'rgba(255, 255, 255, ' + alpha + ')';
+        ctx.fill();
+        if (s.r > 1.1 && alpha > 0.5) {
+          ctx.beginPath();
+          ctx.arc(x, y, s.r * 3.2, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(123, 155, 255, ' + (alpha * 0.12) + ')';
+          ctx.fill();
+        }
+      }
+
+      // Constellation : chaque étoile proche du pointeur se relie au
+      // pointeur et à ses voisines — le dessin suit la main.
+      if (near.length) {
+        ctx.lineWidth = 0.7;
+        for (var a = 0; a < near.length; a++) {
+          var p = near[a];
+          if (p.d < LINK) {
+            ctx.strokeStyle = 'rgba(123, 155, 255, ' + (0.5 * (1 - p.d / LINK)) + ')';
+            ctx.beginPath(); ctx.moveTo(pointer.x, pointer.y); ctx.lineTo(p.x, p.y); ctx.stroke();
+          }
+          for (var b = a + 1; b < near.length; b++) {
+            var q = near[b];
+            var dd = Math.hypot(p.x - q.x, p.y - q.y);
+            if (dd < LINK * 0.75) {
+              ctx.strokeStyle = 'rgba(157, 181, 255, ' + (0.32 * (1 - dd / (LINK * 0.75))) + ')';
+              ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); ctx.stroke();
+            }
+          }
+        }
+      }
+
+      // Étoile filante
+      if (!REDUCED) {
+        if (!shooting && t > nextShoot) {
+          shooting = {
+            x: W * (0.15 + Math.random() * 0.7), y: H * Math.random() * 0.35,
+            vx: -(5 + Math.random() * 4), vy: 2.2 + Math.random() * 2, life: 1
+          };
+        }
+        if (shooting) {
+          var sh = shooting;
+          var grad = ctx.createLinearGradient(sh.x, sh.y, sh.x - sh.vx * 14, sh.y - sh.vy * 14);
+          grad.addColorStop(0, 'rgba(255, 255, 255, ' + sh.life + ')');
+          grad.addColorStop(1, 'rgba(123, 155, 255, 0)');
+          ctx.strokeStyle = grad; ctx.lineWidth = 1.4;
+          ctx.beginPath(); ctx.moveTo(sh.x, sh.y);
+          ctx.lineTo(sh.x - sh.vx * 14, sh.y - sh.vy * 14); ctx.stroke();
+          sh.x += sh.vx; sh.y += sh.vy; sh.life -= 0.016;
+          if (sh.life <= 0 || sh.x < -50 || sh.y > H) {
+            shooting = null;
+            nextShoot = t + 3500 + Math.random() * 6000;
+          }
+        }
+      }
+    }
+
+    function loop(t) {
+      raf = requestAnimationFrame(loop);
+      draw(t);
+    }
+    function play() {
+      if (running || REDUCED) { return; }
+      running = true; raf = requestAnimationFrame(loop);
+    }
+    function pause() {
+      running = false;
+      if (raf) { cancelAnimationFrame(raf); raf = null; }
+    }
+
+    function setPointer(e) {
+      var r = hero.getBoundingClientRect();
+      pointer.x = e.clientX - r.left;
+      pointer.y = e.clientY - r.top;
+      pointer.on = true;
+    }
+    hero.addEventListener('pointermove', setPointer, { passive: true });
+    hero.addEventListener('pointerdown', setPointer, { passive: true });
+    hero.addEventListener('pointerleave', function () { pointer.on = false; });
+    hero.addEventListener('pointercancel', function () { pointer.on = false; });
+    hero.addEventListener('pointerup', function (e) {
+      if (e.pointerType !== 'mouse') { pointer.on = false; }
+    });
+
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (entries) {
+        visible = entries[0].isIntersecting;
+        visible && !document.hidden ? play() : pause();
+      }).observe(hero);
+    }
+    document.addEventListener('visibilitychange', function () {
+      document.hidden || !visible ? pause() : play();
+    });
+    var resizeT;
+    window.addEventListener('resize', function () {
+      clearTimeout(resizeT);
+      resizeT = setTimeout(build, 120);
+    });
+
+    nextShoot = performance.now() + 2500;
+    build();
+    play();
+  })();
+
+  /* ============================================================
+     21. PROJECTEUR DES SECTIONS NUIT
+     Une lueur azur suit la souris sur les fonds nuit (pointeur fin).
+     ============================================================ */
+  (function initSpotlight() {
+    if (!FINE_POINTER || REDUCED) { return; }
+    document.querySelectorAll('.section--dark').forEach(function (sec) {
+      var pending = false, ex = 0, ey = 0;
+      sec.addEventListener('pointermove', function (e) {
+        ex = e.clientX; ey = e.clientY;
+        if (pending) { return; }
+        pending = true;
+        requestAnimationFrame(function () {
+          var r = sec.getBoundingClientRect();
+          sec.style.setProperty('--sx', (ex - r.left) + 'px');
+          sec.style.setProperty('--sy', (ey - r.top) + 'px');
+          pending = false;
+        });
+      }, { passive: true });
+    });
   })();
 
 })();
