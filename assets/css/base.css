@@ -198,13 +198,14 @@ em {
   display: inline-block;
   padding: 1px 6px;
   border-radius: 4px;
-  background: rgba(147, 68, 26, 0.1);
+  /* Fond plein : lisible quel que soit le fond (6,7:1) */
+  background: var(--rust);
   font-family: var(--font-text);
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--accent);
+  color: var(--white);
   white-space: nowrap;
   vertical-align: middle;
 }
@@ -374,6 +375,7 @@ html.is-scroll-locked body {
 
 .no-js .loader,
 .no-js .page-transition,
+.is-degraded [data-cookie-manage],
 .no-js [data-menu-toggle],
 .no-js [data-launch-game],
 .no-js [data-cookie-manage],

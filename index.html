@@ -174,443 +174,481 @@
     <div data-barba="container" data-barba-namespace="home">
       <main id="main" tabindex="-1">
 
-        <section class="hero" data-theme="night" aria-labelledby="hero-title">
-          <div class="hero__sticky">
-            <div class="hero__media" data-hero-media data-cursor="play" data-cursor-label="Pause">
-              <!-- Vidéo hero — specs recommandées : 1920×1080, 10-15 s en boucle, H.264 CRF 26 (MP4) + VP9 (WebM), < 4 Mo, sans audio. -->
-              <video class="hero__video" data-hero-video autoplay muted loop playsinline preload="auto" poster="assets/video/hero-poster.jpg" width="1920" height="1080" aria-hidden="true" tabindex="-1">
-                <source src="assets/video/hero.webm" type="video/webm">
-                <source src="assets/video/hero.mp4" type="video/mp4">
-              </video>
-              <div class="hero__overlay" aria-hidden="true"></div>
-            </div>
-            <div class="hero__content grid">
-              <p class="hero__kicker label" data-reveal="fade" data-intro data-delay="0.55">[00] — Agence marketing digital &amp; communication</p>
+        <section class="hero starfield" data-theme="space" aria-labelledby="hero-title">
+          <div class="hero__media" aria-hidden="true">
+            <!-- Vidéo hero — specs recommandées : 1920×1080, 10-15 s en boucle, H.264 CRF 26 (MP4) + VP9 (WebM), < 4 Mo, sans audio. -->
+            <video class="hero__video" data-hero-video autoplay muted loop playsinline preload="auto" poster="assets/video/hero-poster.jpg" width="1920" height="1080" aria-hidden="true" tabindex="-1">
+              <source src="assets/video/hero.webm" type="video/webm">
+              <source src="assets/video/hero.mp4" type="video/mp4">
+            </video>
+            <div class="hero__veil"></div>
+          </div>
+          <div class="hero__inner container">
+            <div class="hero__content">
+              <p class="label" data-reveal="fade" data-intro data-delay="0.35">Agence digitale à Paris</p>
               <!-- [À REMPLACER] accroche principale -->
-              <h1 class="hero__title t-display" id="hero-title" data-split="lines" data-intro data-delay="0.1">On ne fait pas des sites. On construit des <em class="serif">machines</em> à&nbsp;clients.</h1>
-            </div>
-            <ul class="hero__corners t-mono" aria-label="Informations">
-              <li class="hero__corner hero__corner--tl" data-reveal="fade" data-intro data-delay="0.7">© <span data-year>2026</span> — Studio GJS</li>
-              <li class="hero__corner hero__corner--tr" data-reveal="fade" data-intro data-delay="0.75"><span class="dot-live" aria-hidden="true"></span> <span data-config="availability">Disponible pour nouveaux projets</span></li>
-              <li class="hero__corner hero__corner--bl" data-reveal="fade" data-intro data-delay="0.8">Paris — 48.8566° N, 2.3522° E</li>
-              <li class="hero__corner hero__corner--br" data-reveal="fade" data-intro data-delay="0.85"><a href="#manifeste" class="hero__scroll">Scroll <span aria-hidden="true">↓</span></a></li>
-            </ul>
-            <div class="hero__controls" data-reveal="fade" data-intro data-delay="0.9">
-              <button class="hero__control t-mono" type="button" data-video-toggle aria-pressed="false">Pause vidéo</button>
-              <button class="hero__control t-mono" type="button" data-video-sound aria-pressed="false">Son&nbsp;: coupé</button>
-            </div>
-          </div>
-        </section>
-
-        <section class="manifesto section" id="manifeste" data-theme="night" aria-labelledby="manifesto-title">
-          <div class="grid">
-            <div class="manifesto__head">
-              <p class="label">[01] — Manifeste</p>
-              <p class="label">Lecture&nbsp;: 20 s</p>
-            </div>
-            <h2 class="sr-only" id="manifesto-title">Notre manifeste</h2>
-            <p class="manifesto__text t-display" data-manifesto>Le digital déborde de sites jolis qui ne vendent rien, de campagnes qui brûlent des budgets <span class="manifesto__img" aria-hidden="true"><picture><source type="image/avif" srcset="assets/img/manifeste-01.avif 480w" sizes="20vw"><img src="assets/img/manifeste-01.webp" srcset="assets/img/manifeste-01.webp 480w" sizes="20vw" width="480" height="480" alt="" loading="lazy" decoding="async"></picture></span> et d’outils que personne n’utilise. Nous, on conçoit des systèmes&nbsp;: un site rapide qui se classe, des pubs qui se rentabilisent <span class="manifesto__img" aria-hidden="true"><picture><source type="image/avif" srcset="assets/img/manifeste-02.avif 480w" sizes="20vw"><img src="assets/img/manifeste-02.webp" srcset="assets/img/manifeste-02.webp 480w" sizes="20vw" width="480" height="480" alt="" loading="lazy" decoding="async"></picture></span>, des automatisations qui rendent des heures, des agents IA qui qualifient vos leads pendant que vous dormez <span class="manifesto__img" aria-hidden="true"><picture><source type="image/avif" srcset="assets/img/manifeste-03.avif 480w" sizes="20vw"><img src="assets/img/manifeste-03.webp" srcset="assets/img/manifeste-03.webp 480w" sizes="20vw" width="480" height="480" alt="" loading="lazy" decoding="async"></picture></span>. Sur-mesure. Mesuré. <em class="serif">Sans baratin.</em></p>
-            <a class="manifesto__link arrow-link" href="a-propos.html" data-reveal="fade">Qui est derrière GJS</a>
-          </div>
-        </section>
-
-        <section class="services" data-theme="black" aria-labelledby="services-title">
-          <div class="services__pin">
-            <div class="services__head grid">
-              <div class="services__label">
-                <p class="label">[02] — Expertises</p>
-                <p class="label">05 leviers</p>
+              <h1 class="hero__title t-display" id="hero-title" data-split="lines" data-intro data-delay="0.1">On ne fait pas des sites. On construit des <span class="accent">machines à&nbsp;clients</span>.</h1>
+              <p class="hero__lead t-lead" data-reveal="fade" data-intro data-delay="0.5">Sites, publicité, automatisations, agents IA&nbsp;: on assemble ce qui vous ramène des clients. Chiffres à l’appui.</p>
+              <div class="hero__actions" data-reveal="fade" data-intro data-delay="0.6">
+                <a class="btn btn--primary" href="contact.html" data-magnetic="0.25">Démarrer un projet <span class="btn__arrow" aria-hidden="true">→</span></a>
+                <a class="btn btn--secondary" href="offres.html">Voir nos offres</a>
+                <p class="hero__status"><span class="dot-live" aria-hidden="true"></span><span data-config="availability">Disponible pour nouveaux projets</span></p>
               </div>
-              <h2 class="services__title t-display" id="services-title" data-split="lines">Cinq leviers. <em class="serif">Un seul</em> cap&nbsp;: vos résultats.</h2>
             </div>
-            <div class="services__viewport">
-              <div class="services__track">
-              <article class="service" id="service-site" aria-labelledby="service-site-title">
-                <p class="service__num t-outline" aria-hidden="true">01</p>
-                <div class="service__body">
-                  <p class="label">[01] — Service / SEO technique</p>
-                  <h3 class="service__title t-display" id="service-site-title">Création de sites web</h3>
-                  <p class="service__text">Des sites qui chargent en moins d’une seconde, se hissent sur Google et transforment vos visiteurs en rendez-vous.</p>
-                  <ul class="service__tags" aria-label="Mots-clés"><li class="chip">SEO technique</li><li class="chip">UX / UI</li><li class="chip">RGPD</li></ul>
+            <div class="hero__visual" data-hero-visual data-reveal="fade" data-intro data-delay="0.4">
+              <div class="hero__planet" data-hero-planet aria-hidden="true"><div class="planet planet--ring"></div></div>
+              <div class="hero__robot" data-hero-robot>
+                <div class="robot-talk hero__talk" data-robot-talk data-messages="Bip&nbsp;! Je suis le robot GJS. Cliquez encore, j’ai de la conversation.|Un site qui charge en moins d’une seconde&nbsp;? Chez nous, c’est le minimum.|Je ne dors jamais. Vos automatisations non plus.|Premier échange offert&nbsp;: 30 minutes, sans engagement. Et c’est un humain qui répond."><button class="robot-talk__btn" type="button" aria-label="Faire parler le robot GJS"><svg class="robot" data-robot viewBox="0 0 160 206" aria-hidden="true" focusable="false"><path class="robot__flame" d="M66 184 L80 205 L94 184 Z"/><rect class="robot__arm" x="20" y="126" width="22" height="46" rx="11"/><rect class="robot__arm robot__arm--wave" x="118" y="86" width="22" height="46" rx="11"/><rect class="robot__body" x="36" y="118" width="88" height="66" rx="24"/><circle class="robot__chest" cx="80" cy="150" r="12"/><circle class="robot__bolt" cx="54" cy="133" r="3.5"/><circle class="robot__bolt" cx="106" cy="133" r="3.5"/><rect class="robot__neck" x="66" y="108" width="28" height="14" rx="5"/><path class="robot__antenna" d="M80 36 V17"/><circle class="robot__light" cx="80" cy="12" r="7.5"/><rect class="robot__ear" x="14" y="58" width="18" height="32" rx="7"/><rect class="robot__ear" x="128" y="58" width="18" height="32" rx="7"/><rect class="robot__head" x="26" y="34" width="108" height="80" rx="28"/><rect class="robot__visor" x="39" y="47" width="82" height="46" rx="21"/><g class="robot__eyes"><g class="robot__pupils"><circle class="robot__eye" cx="63" cy="70" r="9.5"/><circle class="robot__eye" cx="97" cy="70" r="9.5"/></g></g><path class="robot__mouth" d="M68 102 Q80 109 92 102"/></svg></button><p class="robot-talk__bubble" role="status" aria-live="polite"></p></div>
+              </div>
+            </div>
+            <div class="hero__controls" data-reveal="fade" data-intro data-delay="0.8">
+              <button class="hero__pause" type="button" data-video-toggle><span class="hero__pause-icon" aria-hidden="true"></span><span data-video-label>Pause</span><span class="sr-only"> de la vidéo de fond</span></button>
+            </div>
+          </div>
+        </section>
+
+        <section class="ticker" data-theme="gold" aria-label="Nos expertises">
+          <div class="marquee" data-marquee data-speed="55" data-direction="-1">
+            <div class="marquee__track"><div class="marquee__group"><span class="marquee__item">Sites web</span><span class="marquee__item marquee__item--star" aria-hidden="true">✦</span><span class="marquee__item">SEO</span><span class="marquee__item marquee__item--star" aria-hidden="true">✦</span><span class="marquee__item">UX / UI</span><span class="marquee__item marquee__item--star" aria-hidden="true">✦</span><span class="marquee__item">Automatisations</span><span class="marquee__item marquee__item--star" aria-hidden="true">✦</span><span class="marquee__item">Publicité</span><span class="marquee__item marquee__item--star" aria-hidden="true">✦</span><span class="marquee__item">Agents IA</span><span class="marquee__item marquee__item--star" aria-hidden="true">✦</span><span class="marquee__item">Réseaux sociaux</span><span class="marquee__item marquee__item--star" aria-hidden="true">✦</span><span class="marquee__item">Tracking</span><span class="marquee__item marquee__item--star" aria-hidden="true">✦</span></div></div>
+          </div>
+        </section>
+
+        <section class="section manifesto" id="manifeste" data-theme="cream" aria-labelledby="manifesto-title">
+          <div class="container">
+            <div class="section-head section-head--split">
+              <p class="label">Manifeste</p>
+              <h2 class="section-head__title t-display" id="manifesto-title" data-split="lines">Des systèmes qui vendent, <span class="accent">pas</span> des vitrines.</h2>
+              <div class="section-head__side" data-reveal="fade">
+                <p class="section-head__lead">Le digital déborde de sites jolis qui ne vendent rien et de campagnes qui brûlent des budgets. Nous, on conçoit des systèmes qui travaillent pour vous.</p>
+                <a class="arrow-link" href="a-propos.html">Qui est derrière GJS</a>
+              </div>
+            </div>
+            <ul class="pillars" data-reveal="stagger">
+              <li class="pillars__item">
+                <div class="pillar card card--interactive">
+                  <span class="card__icon pillar__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M4 20l3.6-.9L19 7.7 16.3 5 4.9 16.4z"/><path d="M14.2 7.1l2.7 2.7"/><path d="M13 20h7"/></svg></span>
+                  <h3 class="card__title pillar__title">Sur-mesure</h3>
+                  <p class="card__text">Pas de pack, pas de template. On part de votre marché, de vos outils et de vos chiffres.</p>
+                </div>
+              </li>
+              <li class="pillars__item">
+                <div class="pillar card card--interactive">
+                  <span class="card__icon pillar__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M3 20h18"/><path d="M6 20v-5"/><path d="M11 20v-9"/><path d="M16 20V7"/><path d="M14 6l2-2 2 2"/></svg></span>
+                  <h3 class="card__title pillar__title">Mesuré</h3>
+                  <p class="card__text">Chaque action a son indicateur. Chaque mois, vous voyez ce que ça rapporte, au centime.</p>
+                </div>
+              </li>
+              <li class="pillars__item">
+                <div class="pillar card card--interactive">
+                  <span class="card__icon pillar__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M4 5h16v11H10l-4.5 3.5V16H4z"/><path d="M8.5 10.5l2.3 2.3 4.7-4.7"/></svg></span>
+                  <h3 class="card__title pillar__title">Sans baratin</h3>
+                  <p class="card__text">Un plan clair, des délais tenus, un interlocuteur qui répond. Le jargon reste chez nous.</p>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="section expertise" id="expertises" data-theme="grey" aria-labelledby="expertise-title">
+          <div class="container">
+            <div class="section-head">
+              <p class="label">Expertises</p>
+              <h2 class="section-head__title t-display" id="expertise-title" data-split="lines">Cinq leviers. <span class="accent">Un seul</span> cap&nbsp;: vos résultats.</h2>
+              <p class="section-head__lead">Choisissez un levier&nbsp;: on vous montre ce qu’on en fait, concrètement.</p>
+            </div>
+            <div class="expertise__tabs" data-tabs data-expertise>
+              <div class="tabs__list expertise__list" role="tablist" aria-label="Nos expertises" data-reveal="fade">
+                <button class="tabs__tab expertise__tab" type="button" role="tab" id="tab-site" aria-controls="panel-site" aria-selected="true"><span class="expertise__tab-num" aria-hidden="true">01</span><span class="expertise__tab-text">Sites web & SEO</span></button>
+                <button class="tabs__tab expertise__tab" type="button" role="tab" id="tab-automatisation" aria-controls="panel-automatisation" aria-selected="false" tabindex="-1"><span class="expertise__tab-num" aria-hidden="true">02</span><span class="expertise__tab-text">Automatisations</span></button>
+                <button class="tabs__tab expertise__tab" type="button" role="tab" id="tab-ads" aria-controls="panel-ads" aria-selected="false" tabindex="-1"><span class="expertise__tab-num" aria-hidden="true">03</span><span class="expertise__tab-text">Publicité</span></button>
+                <button class="tabs__tab expertise__tab" type="button" role="tab" id="tab-ia" aria-controls="panel-ia" aria-selected="false" tabindex="-1"><span class="expertise__tab-num" aria-hidden="true">04</span><span class="expertise__tab-text">Agents IA</span></button>
+                <button class="tabs__tab expertise__tab" type="button" role="tab" id="tab-social" aria-controls="panel-social" aria-selected="false" tabindex="-1"><span class="expertise__tab-num" aria-hidden="true">05</span><span class="expertise__tab-text">Réseaux sociaux</span></button>
+              </div>
+              <div class="expertise__panels" data-reveal="fade">
+              <div class="tabs__panel expertise__panel" role="tabpanel" id="panel-site" aria-labelledby="tab-site" tabindex="0">
+                <div class="expertise__media media" data-expertise-media>
+                  <picture><source type="image/avif" srcset="assets/img/service-site-600.avif 600w, assets/img/service-site-1200.avif 1200w" sizes="(min-width: 1024px) 34vw, 92vw"><img src="assets/img/service-site-1200.webp" srcset="assets/img/service-site-600.webp 600w, assets/img/service-site-1200.webp 1200w" sizes="(min-width: 1024px) 34vw, 92vw" width="1200" height="1500" alt="Maquettes d’un site web responsive affichées sur ordinateur et mobile" loading="lazy" decoding="async"></picture>
+                </div>
+                <div class="expertise__body" data-expertise-body>
+                  <h3 class="expertise__title t-display">Création de sites web</h3>
+                  <p class="expertise__text">Des sites qui chargent en moins d’une seconde, se hissent sur Google et transforment vos visiteurs en rendez-vous.</p>
+                  <ul class="expertise__points"><li>SEO technique dès la première ligne de code</li><li>UX / UI sur-mesure, pensée mobile d’abord</li><li>RGPD et accessibilité inclus, pas en option</li></ul>
                   <a class="arrow-link" href="offres.html#site">Le détail de l’offre<span class="sr-only"> Création de sites web</span></a>
                 </div>
-                <figure class="service__media media" data-service-media data-cursor="view">
-                  <picture><source type="image/avif" srcset="assets/img/service-site-600.avif 600w, assets/img/service-site-1200.avif 1200w" sizes="(min-width: 1024px) 34vw, 90vw"><img src="assets/img/service-site-1200.webp" srcset="assets/img/service-site-600.webp 600w, assets/img/service-site-1200.webp 1200w" sizes="(min-width: 1024px) 34vw, 90vw" width="1200" height="1500" alt="Maquettes d’un site web responsive affichées sur ordinateur et mobile" loading="lazy" decoding="async"></picture>
-                </figure>
-              </article>
-              <article class="service" id="service-automatisation" aria-labelledby="service-automatisation-title">
-                <p class="service__num t-outline" aria-hidden="true">02</p>
-                <div class="service__body">
-                  <p class="label">[02] — Service / CRM</p>
-                  <h3 class="service__title t-display" id="service-automatisation-title">Automatisations</h3>
-                  <p class="service__text">On branche vos outils entre eux et on supprime les tâches répétitives. Vos équipes récupèrent des heures, chaque semaine.</p>
-                  <ul class="service__tags" aria-label="Mots-clés"><li class="chip">CRM</li><li class="chip">Emailing</li><li class="chip">Reporting</li></ul>
+              </div>
+              <div class="tabs__panel expertise__panel" role="tabpanel" id="panel-automatisation" aria-labelledby="tab-automatisation" tabindex="0" hidden>
+                <div class="expertise__media media" data-expertise-media>
+                  <picture><source type="image/avif" srcset="assets/img/service-automatisation-600.avif 600w, assets/img/service-automatisation-1200.avif 1200w" sizes="(min-width: 1024px) 34vw, 92vw"><img src="assets/img/service-automatisation-1200.webp" srcset="assets/img/service-automatisation-600.webp 600w, assets/img/service-automatisation-1200.webp 1200w" sizes="(min-width: 1024px) 34vw, 92vw" width="1200" height="1500" alt="Schéma de workflow reliant un CRM, une boîte mail et un tableau de bord" loading="lazy" decoding="async"></picture>
+                </div>
+                <div class="expertise__body" data-expertise-body>
+                  <h3 class="expertise__title t-display">Automatisations</h3>
+                  <p class="expertise__text">On branche vos outils entre eux et on supprime les tâches répétitives. Vos équipes récupèrent des heures, chaque semaine.</p>
+                  <ul class="expertise__points"><li>CRM, emailing et facturation synchronisés</li><li>Relances et reporting qui partent tout seuls</li><li>Des scénarios documentés, que vous maîtrisez</li></ul>
                   <a class="arrow-link" href="offres.html#automatisation">Le détail de l’offre<span class="sr-only"> Automatisations</span></a>
                 </div>
-                <figure class="service__media media" data-service-media data-cursor="view">
-                  <picture><source type="image/avif" srcset="assets/img/service-automatisation-600.avif 600w, assets/img/service-automatisation-1200.avif 1200w" sizes="(min-width: 1024px) 34vw, 90vw"><img src="assets/img/service-automatisation-1200.webp" srcset="assets/img/service-automatisation-600.webp 600w, assets/img/service-automatisation-1200.webp 1200w" sizes="(min-width: 1024px) 34vw, 90vw" width="1200" height="1500" alt="Schéma de workflow reliant un CRM, une boîte mail et un tableau de bord" loading="lazy" decoding="async"></picture>
-                </figure>
-              </article>
-              <article class="service" id="service-ads" aria-labelledby="service-ads-title">
-                <p class="service__num t-outline" aria-hidden="true">03</p>
-                <div class="service__body">
-                  <p class="label">[03] — Service / SEA</p>
-                  <h3 class="service__title t-display" id="service-ads-title">Campagnes publicitaires</h3>
-                  <p class="service__text">Google Ads, Meta, LinkedIn, TikTok&nbsp;: des campagnes trackées au centime et optimisées au ROAS, pas au feeling.</p>
-                  <ul class="service__tags" aria-label="Mots-clés"><li class="chip">SEA</li><li class="chip">Social Ads</li><li class="chip">Tracking</li></ul>
+              </div>
+              <div class="tabs__panel expertise__panel" role="tabpanel" id="panel-ads" aria-labelledby="tab-ads" tabindex="0" hidden>
+                <div class="expertise__media media" data-expertise-media>
+                  <picture><source type="image/avif" srcset="assets/img/service-ads-600.avif 600w, assets/img/service-ads-1200.avif 1200w" sizes="(min-width: 1024px) 34vw, 92vw"><img src="assets/img/service-ads-1200.webp" srcset="assets/img/service-ads-600.webp 600w, assets/img/service-ads-1200.webp 1200w" sizes="(min-width: 1024px) 34vw, 92vw" width="1200" height="1500" alt="Tableau de bord de performances publicitaires en hausse" loading="lazy" decoding="async"></picture>
+                </div>
+                <div class="expertise__body" data-expertise-body>
+                  <h3 class="expertise__title t-display">Campagnes publicitaires</h3>
+                  <p class="expertise__text">Google Ads, Meta, LinkedIn, TikTok&nbsp;: des campagnes trackées au centime et optimisées au ROAS, pas au feeling.</p>
+                  <ul class="expertise__points"><li>Tracking serveur fiable avant le premier euro</li><li>Créas testées en continu, perdantes coupées</li><li>Un tableau de bord lisible, chaque semaine</li></ul>
                   <a class="arrow-link" href="offres.html#ads">Le détail de l’offre<span class="sr-only"> Campagnes publicitaires</span></a>
                 </div>
-                <figure class="service__media media" data-service-media data-cursor="view">
-                  <picture><source type="image/avif" srcset="assets/img/service-ads-600.avif 600w, assets/img/service-ads-1200.avif 1200w" sizes="(min-width: 1024px) 34vw, 90vw"><img src="assets/img/service-ads-1200.webp" srcset="assets/img/service-ads-600.webp 600w, assets/img/service-ads-1200.webp 1200w" sizes="(min-width: 1024px) 34vw, 90vw" width="1200" height="1500" alt="Tableau de bord de performances publicitaires en hausse" loading="lazy" decoding="async"></picture>
-                </figure>
-              </article>
-              <article class="service" id="service-ia" aria-labelledby="service-ia-title">
-                <p class="service__num t-outline" aria-hidden="true">04</p>
-                <div class="service__body">
-                  <p class="label">[04] — Service / Chatbots</p>
-                  <h3 class="service__title t-display" id="service-ia-title">Agents IA</h3>
-                  <p class="service__text">Chatbots, assistants internes, agents qui qualifient vos leads et parlent à vos outils métier. Utiles, pas gadgets.</p>
-                  <ul class="service__tags" aria-label="Mots-clés"><li class="chip">Chatbots</li><li class="chip">Qualification</li><li class="chip">Intégrations</li></ul>
+              </div>
+              <div class="tabs__panel expertise__panel" role="tabpanel" id="panel-ia" aria-labelledby="tab-ia" tabindex="0" hidden>
+                <div class="expertise__media media" data-expertise-media>
+                  <picture><source type="image/avif" srcset="assets/img/service-ia-600.avif 600w, assets/img/service-ia-1200.avif 1200w" sizes="(min-width: 1024px) 34vw, 92vw"><img src="assets/img/service-ia-1200.webp" srcset="assets/img/service-ia-600.webp 600w, assets/img/service-ia-1200.webp 1200w" sizes="(min-width: 1024px) 34vw, 92vw" width="1200" height="1500" alt="Interface d’un agent conversationnel qui qualifie une demande client" loading="lazy" decoding="async"></picture>
+                </div>
+                <div class="expertise__body" data-expertise-body>
+                  <h3 class="expertise__title t-display">Agents IA</h3>
+                  <p class="expertise__text">Chatbots, assistants internes, agents qui qualifient vos leads et parlent à vos outils métier. Utiles, pas gadgets.</p>
+                  <ul class="expertise__points"><li>Qualification des leads, de jour comme de nuit</li><li>Branchés sur vos données et vos outils</li><li>Garde-fous, journalisation et RGPD</li></ul>
                   <a class="arrow-link" href="offres.html#ia">Le détail de l’offre<span class="sr-only"> Agents IA</span></a>
                 </div>
-                <figure class="service__media media" data-service-media data-cursor="view">
-                  <picture><source type="image/avif" srcset="assets/img/service-ia-600.avif 600w, assets/img/service-ia-1200.avif 1200w" sizes="(min-width: 1024px) 34vw, 90vw"><img src="assets/img/service-ia-1200.webp" srcset="assets/img/service-ia-600.webp 600w, assets/img/service-ia-1200.webp 1200w" sizes="(min-width: 1024px) 34vw, 90vw" width="1200" height="1500" alt="Interface d’un agent conversationnel qui qualifie une demande client" loading="lazy" decoding="async"></picture>
-                </figure>
-              </article>
-              <article class="service" id="service-social" aria-labelledby="service-social-title">
-                <p class="service__num t-outline" aria-hidden="true">05</p>
-                <div class="service__body">
-                  <p class="label">[05] — Service / Stratégie</p>
-                  <h3 class="service__title t-display" id="service-social-title">Réseaux sociaux</h3>
-                  <p class="service__text">Stratégie éditoriale, contenus, community management, reporting. Une présence qui ressemble à votre marque, pas à un template.</p>
-                  <ul class="service__tags" aria-label="Mots-clés"><li class="chip">Stratégie</li><li class="chip">Contenus</li><li class="chip">Community</li></ul>
+              </div>
+              <div class="tabs__panel expertise__panel" role="tabpanel" id="panel-social" aria-labelledby="tab-social" tabindex="0" hidden>
+                <div class="expertise__media media" data-expertise-media>
+                  <picture><source type="image/avif" srcset="assets/img/service-social-600.avif 600w, assets/img/service-social-1200.avif 1200w" sizes="(min-width: 1024px) 34vw, 92vw"><img src="assets/img/service-social-1200.webp" srcset="assets/img/service-social-600.webp 600w, assets/img/service-social-1200.webp 1200w" sizes="(min-width: 1024px) 34vw, 92vw" width="1200" height="1500" alt="Grille de publications Instagram d’une marque" loading="lazy" decoding="async"></picture>
+                </div>
+                <div class="expertise__body" data-expertise-body>
+                  <h3 class="expertise__title t-display">Réseaux sociaux</h3>
+                  <p class="expertise__text">Stratégie éditoriale, contenus, community management. Une présence qui ressemble à votre marque, pas à un template.</p>
+                  <ul class="expertise__points"><li>Ligne éditoriale et calendrier tenus</li><li>Formats vidéo courts produits en interne</li><li>Community management et reporting mensuel</li></ul>
                   <a class="arrow-link" href="offres.html#social">Le détail de l’offre<span class="sr-only"> Réseaux sociaux</span></a>
                 </div>
-                <figure class="service__media media" data-service-media data-cursor="view">
-                  <picture><source type="image/avif" srcset="assets/img/service-social-600.avif 600w, assets/img/service-social-1200.avif 1200w" sizes="(min-width: 1024px) 34vw, 90vw"><img src="assets/img/service-social-1200.webp" srcset="assets/img/service-social-600.webp 600w, assets/img/service-social-1200.webp 1200w" sizes="(min-width: 1024px) 34vw, 90vw" width="1200" height="1500" alt="Grille de publications Instagram d’une marque" loading="lazy" decoding="async"></picture>
-                </figure>
-              </article>
+              </div>
               </div>
             </div>
-            <div class="services__progress" aria-hidden="true"><span class="services__bar"></span><span class="services__count t-mono"><span data-services-current>01</span> / 05</span></div>
           </div>
         </section>
 
-        <section class="marquees" data-theme="black" aria-label="Nos domaines d’expertise">
-          <div class="marquee" data-marquee data-speed="70" data-direction="-1">
-            <div class="marquee__track"><div class="marquee__group">
-              <span class="marquee__item">SEO</span><span class="marquee__item marquee__item--serif">—</span><span class="marquee__item">UX</span><span class="marquee__item marquee__item--serif">—</span><span class="marquee__item">RGPD</span><span class="marquee__item marquee__item--serif">—</span><span class="marquee__item">ADS</span><span class="marquee__item marquee__item--serif">—</span><span class="marquee__item">AUTOMATISATION</span><span class="marquee__item marquee__item--serif">—</span><span class="marquee__item">AGENTS IA</span><span class="marquee__item marquee__item--serif">—</span><span class="marquee__item">SOCIAL</span><span class="marquee__item marquee__item--serif">—</span>
-            </div></div>
-          </div>
-          <div class="marquee marquee--reverse" data-marquee data-speed="55" data-direction="1" aria-hidden="true">
-            <div class="marquee__track"><div class="marquee__group">
-              <span class="marquee__item marquee__item--outline">SEO</span><span class="marquee__item marquee__item--serif">sur-mesure</span><span class="marquee__item marquee__item--outline">UX</span><span class="marquee__item marquee__item--serif">mesuré</span><span class="marquee__item marquee__item--outline">RGPD</span><span class="marquee__item marquee__item--serif">rentable</span><span class="marquee__item marquee__item--outline">ADS</span><span class="marquee__item marquee__item--serif">rapide</span><span class="marquee__item marquee__item--outline">AUTOMATISATION</span><span class="marquee__item marquee__item--serif">utile</span><span class="marquee__item marquee__item--outline">AGENTS IA</span><span class="marquee__item marquee__item--serif">vivant</span><span class="marquee__item marquee__item--outline">SOCIAL</span><span class="marquee__item marquee__item--serif">—</span>
-            </div></div>
-          </div>
-        </section>
-
-        <section class="projects section" data-theme="paper" aria-labelledby="projects-title">
-          <div class="projects__head grid">
-            <div class="projects__label">
-              <p class="label">[03] — Projets sélectionnés</p>
-              <p class="label"><span class="placeholder-tag">[À REMPLACER]</span></p>
+        <section class="section projects" id="projets" data-theme="cream" aria-labelledby="projects-title">
+          <div class="container">
+            <div class="section-head section-head--split">
+              <p class="label">Projets</p>
+              <h2 class="section-head__title t-display" id="projects-title" data-split="lines">Des preuves, <span class="accent">pas</span> des promesses.</h2>
+              <div class="section-head__side" data-reveal="fade">
+                <p class="section-head__lead">Six missions, six problèmes, zéro pack. Ouvrez un projet pour voir ce qu’on a changé. <span class="placeholder-tag">[À REMPLACER]</span></p>
+                <div class="projects__filters" role="group" aria-label="Filtrer les projets par expertise" data-filters><button class="filter" type="button" data-filter="all" aria-pressed="true">Tous <span class="filter__count" aria-hidden="true">6</span><span class="sr-only"> (6 projets)</span></button><button class="filter" type="button" data-filter="sites" aria-pressed="false">Sites <span class="filter__count" aria-hidden="true">2</span><span class="sr-only"> (2 projets)</span></button><button class="filter" type="button" data-filter="automatisation" aria-pressed="false">Automatisation <span class="filter__count" aria-hidden="true">2</span><span class="sr-only"> (2 projets)</span></button><button class="filter" type="button" data-filter="publicite" aria-pressed="false">Publicité <span class="filter__count" aria-hidden="true">1</span><span class="sr-only"> (1 projet)</span></button><button class="filter" type="button" data-filter="ia" aria-pressed="false">IA <span class="filter__count" aria-hidden="true">1</span><span class="sr-only"> (1 projet)</span></button><button class="filter" type="button" data-filter="social" aria-pressed="false">Social <span class="filter__count" aria-hidden="true">1</span><span class="sr-only"> (1 projet)</span></button></div>
+              </div>
             </div>
-            <h2 class="projects__title t-display" id="projects-title" data-split="lines">Des preuves, <em class="serif">pas</em> des promesses.</h2>
-            <p class="projects__intro" data-reveal="fade">Six missions, six problèmes différents, zéro pack. Cliquez sur un projet pour voir ce qu’on a changé — et ce que ça a rapporté.</p>
-          </div>
-          <div class="projects__grid grid">
-            <article class="project project--01" data-project="0">
-              <button class="project__trigger" type="button" aria-haspopup="dialog" aria-controls="project-panel" data-cursor="view">
-                <span class="project__media media">
-                  <picture><source type="image/avif" srcset="assets/img/projet-01-800.avif 800w, assets/img/projet-01-1600.avif 1600w" sizes="(min-width: 1024px) 45vw, 92vw"><img class="project__img" src="assets/img/projet-01-1600.webp" srcset="assets/img/projet-01-800.webp 800w, assets/img/projet-01-1600.webp 1600w" sizes="(min-width: 1024px) 45vw, 92vw" width="1600" height="2000" alt="Page d’accueil du site e-commerce du projet Atlas" loading="lazy" decoding="async"></picture>
-                </span>
-                <span class="project__meta">
-                  <span class="project__index t-mono">01 / 06</span>
-                  <span class="project__name t-display">Projet Atlas</span>
-                  <span class="project__info t-mono">E-commerce mode — Site · SEO — 2025</span>
-                </span>
-              </button>
-              <div class="project__detail" hidden>
-                <p class="label">[01] — E-commerce mode — 2025 <span class="placeholder-tag">[À REMPLACER]</span></p>
-                <h3 class="project-panel__title t-display">Projet Atlas</h3>
-                <p class="project-panel__kpi"><strong class="t-display">+212 %</strong> <span>de trafic organique en 6 mois</span></p>
-                <dl class="project-panel__facts">
-                  <div><dt class="label">Le problème</dt><dd>Un catalogue de 1 400 références invisible sur Google et un tunnel d’achat qui perdait 7 visiteurs sur 10 au panier.</dd></div>
-                  <div><dt class="label">Ce qu’on a fait</dt><dd>Refonte headless, architecture SEO par intention de recherche, fiches produits réécrites et tunnel d’achat en 3 étapes.</dd></div>
-                  <div><dt class="label">Expertises</dt><dd>Site, SEO</dd></div>
-                </dl>
-              </div>
-            </article>
-            <article class="project project--02" data-project="1">
-              <button class="project__trigger" type="button" aria-haspopup="dialog" aria-controls="project-panel" data-cursor="view">
-                <span class="project__media media">
-                  <picture><source type="image/avif" srcset="assets/img/projet-02-800.avif 800w, assets/img/projet-02-1600.avif 1600w" sizes="(min-width: 1024px) 45vw, 92vw"><img class="project__img" src="assets/img/projet-02-1600.webp" srcset="assets/img/projet-02-800.webp 800w, assets/img/projet-02-1600.webp 1600w" sizes="(min-width: 1024px) 45vw, 92vw" width="1600" height="1067" alt="Tableau de bord logistique automatisé du projet Borealis" loading="lazy" decoding="async"></picture>
-                </span>
-                <span class="project__meta">
-                  <span class="project__index t-mono">02 / 06</span>
-                  <span class="project__name t-display">Projet Borealis</span>
-                  <span class="project__info t-mono">Logistique B2B — Automatisation · CRM — 2025</span>
-                </span>
-              </button>
-              <div class="project__detail" hidden>
-                <p class="label">[02] — Logistique B2B — 2025 <span class="placeholder-tag">[À REMPLACER]</span></p>
-                <h3 class="project-panel__title t-display">Projet Borealis</h3>
-                <p class="project-panel__kpi"><strong class="t-display">-14 h</strong> <span>de saisie manuelle par semaine</span></p>
-                <dl class="project-panel__facts">
-                  <div><dt class="label">Le problème</dt><dd>Des devis ressaisis à la main entre trois outils, des relances oubliées et un reporting du lundi qui prenait une matinée.</dd></div>
-                  <div><dt class="label">Ce qu’on a fait</dt><dd>Synchronisation CRM ↔ ERP, relances automatiques, reporting généré et envoyé chaque lundi à 7 h.</dd></div>
-                  <div><dt class="label">Expertises</dt><dd>Automatisation, CRM</dd></div>
-                </dl>
-              </div>
-            </article>
-            <article class="project project--03" data-project="2">
-              <button class="project__trigger" type="button" aria-haspopup="dialog" aria-controls="project-panel" data-cursor="view">
-                <span class="project__media media">
-                  <picture><source type="image/avif" srcset="assets/img/projet-03-800.avif 800w, assets/img/projet-03-1200.avif 1200w" sizes="(min-width: 1024px) 45vw, 92vw"><img class="project__img" src="assets/img/projet-03-1200.webp" srcset="assets/img/projet-03-800.webp 800w, assets/img/projet-03-1200.webp 1200w" sizes="(min-width: 1024px) 45vw, 92vw" width="1200" height="1500" alt="Visuels publicitaires de la campagne Cassiopée" loading="lazy" decoding="async"></picture>
-                </span>
-                <span class="project__meta">
-                  <span class="project__index t-mono">03 / 06</span>
-                  <span class="project__name t-display">Projet Cassiopée</span>
-                  <span class="project__info t-mono">Marque DTC — Ads · Tracking — 2024</span>
-                </span>
-              </button>
-              <div class="project__detail" hidden>
-                <p class="label">[03] — Marque DTC — 2024 <span class="placeholder-tag">[À REMPLACER]</span></p>
-                <h3 class="project-panel__title t-display">Projet Cassiopée</h3>
-                <p class="project-panel__kpi"><strong class="t-display">×4,1</strong> <span>de ROAS sur Meta et Google</span></p>
-                <dl class="project-panel__facts">
-                  <div><dt class="label">Le problème</dt><dd>Un budget publicitaire en hausse et des ventes à plat, faute de tracking fiable.</dd></div>
-                  <div><dt class="label">Ce qu’on a fait</dt><dd>Tracking serveur, refonte des audiences, 40 créas testées en A/B et coupe des campagnes non rentables.</dd></div>
-                  <div><dt class="label">Expertises</dt><dd>Ads, Tracking</dd></div>
-                </dl>
-              </div>
-            </article>
-            <article class="project project--04" data-project="3">
-              <button class="project__trigger" type="button" aria-haspopup="dialog" aria-controls="project-panel" data-cursor="view">
-                <span class="project__media media">
-                  <picture><source type="image/avif" srcset="assets/img/projet-04-800.avif 800w, assets/img/projet-04-1600.avif 1600w" sizes="(min-width: 1024px) 45vw, 92vw"><img class="project__img" src="assets/img/projet-04-1600.webp" srcset="assets/img/projet-04-800.webp 800w, assets/img/projet-04-1600.webp 1600w" sizes="(min-width: 1024px) 45vw, 92vw" width="1600" height="1200" alt="Grille de contenus social media du projet Draco" loading="lazy" decoding="async"></picture>
-                </span>
-                <span class="project__meta">
-                  <span class="project__index t-mono">04 / 06</span>
-                  <span class="project__name t-display">Projet Draco</span>
-                  <span class="project__info t-mono">Cosmétique — Social · Contenus — 2024</span>
-                </span>
-              </button>
-              <div class="project__detail" hidden>
-                <p class="label">[04] — Cosmétique — 2024 <span class="placeholder-tag">[À REMPLACER]</span></p>
-                <h3 class="project-panel__title t-display">Projet Draco</h3>
-                <p class="project-panel__kpi"><strong class="t-display">+38 k</strong> <span>abonnés qualifiés en 9 mois</span></p>
-                <dl class="project-panel__facts">
-                  <div><dt class="label">Le problème</dt><dd>Une marque premium qui publiait sans ligne éditoriale et dont l’engagement s’effondrait.</dd></div>
-                  <div><dt class="label">Ce qu’on a fait</dt><dd>Plateforme éditoriale, formats vidéo courts, calendrier tenu, community management quotidien.</dd></div>
-                  <div><dt class="label">Expertises</dt><dd>Social, Contenus</dd></div>
-                </dl>
-              </div>
-            </article>
-            <article class="project project--05" data-project="4">
-              <button class="project__trigger" type="button" aria-haspopup="dialog" aria-controls="project-panel" data-cursor="view">
-                <span class="project__media media">
-                  <picture><source type="image/avif" srcset="assets/img/projet-05-800.avif 800w, assets/img/projet-05-1600.avif 1600w" sizes="(min-width: 1024px) 45vw, 92vw"><img class="project__img" src="assets/img/projet-05-1600.webp" srcset="assets/img/projet-05-800.webp 800w, assets/img/projet-05-1600.webp 1600w" sizes="(min-width: 1024px) 45vw, 92vw" width="1600" height="1067" alt="Agent IA de qualification de leads du projet Eridan" loading="lazy" decoding="async"></picture>
-                </span>
-                <span class="project__meta">
-                  <span class="project__index t-mono">05 / 06</span>
-                  <span class="project__name t-display">Projet Eridan</span>
-                  <span class="project__info t-mono">Cabinet de conseil — Agent IA · Intégration — 2025</span>
-                </span>
-              </button>
-              <div class="project__detail" hidden>
-                <p class="label">[05] — Cabinet de conseil — 2025 <span class="placeholder-tag">[À REMPLACER]</span></p>
-                <h3 class="project-panel__title t-display">Projet Eridan</h3>
-                <p class="project-panel__kpi"><strong class="t-display">62 %</strong> <span>des leads qualifiés sans intervention</span></p>
-                <dl class="project-panel__facts">
-                  <div><dt class="label">Le problème</dt><dd>Des dizaines de demandes entrantes non qualifiées qui saturaient l’agenda des associés.</dd></div>
-                  <div><dt class="label">Ce qu’on a fait</dt><dd>Agent IA connecté au CRM&nbsp;: il qualifie, score et propose un créneau aux meilleurs prospects.</dd></div>
-                  <div><dt class="label">Expertises</dt><dd>Agent IA, Intégration</dd></div>
-                </dl>
-              </div>
-            </article>
-            <article class="project project--06" data-project="5">
-              <button class="project__trigger" type="button" aria-haspopup="dialog" aria-controls="project-panel" data-cursor="view">
-                <span class="project__media media">
-                  <picture><source type="image/avif" srcset="assets/img/projet-06-800.avif 800w, assets/img/projet-06-1200.avif 1200w" sizes="(min-width: 1024px) 45vw, 92vw"><img class="project__img" src="assets/img/projet-06-1200.webp" srcset="assets/img/projet-06-800.webp 800w, assets/img/projet-06-1200.webp 1200w" sizes="(min-width: 1024px) 45vw, 92vw" width="1200" height="1600" alt="Site vitrine animé du projet Fornax" loading="lazy" decoding="async"></picture>
-                </span>
-                <span class="project__meta">
-                  <span class="project__index t-mono">06 / 06</span>
-                  <span class="project__name t-display">Projet Fornax</span>
-                  <span class="project__info t-mono">Studio d’architecture — Site · Motion — 2026</span>
-                </span>
-              </button>
-              <div class="project__detail" hidden>
-                <p class="label">[06] — Studio d’architecture — 2026 <span class="placeholder-tag">[À REMPLACER]</span></p>
-                <h3 class="project-panel__title t-display">Projet Fornax</h3>
-                <p class="project-panel__kpi"><strong class="t-display">0,9 s</strong> <span>de LCP sur mobile</span></p>
-                <dl class="project-panel__facts">
-                  <div><dt class="label">Le problème</dt><dd>Un portfolio magnifique mais si lourd que les visiteurs partaient avant le premier projet.</dd></div>
-                  <div><dt class="label">Ce qu’on a fait</dt><dd>Direction artistique motion, médias optimisés AVIF, chargement progressif et 98/100 sur Lighthouse.</dd></div>
-                  <div><dt class="label">Expertises</dt><dd>Site, Motion</dd></div>
-                </dl>
-              </div>
-            </article>
+            <ul class="projects__grid" data-projects data-reveal="stagger">
+              <li class="project" data-project="0" data-cats="sites">
+                <div class="project__card card card--interactive">
+                  <div class="project__media media">
+                    <picture><source type="image/avif" srcset="assets/img/projet-01-800.avif 800w, assets/img/projet-01-1600.avif 1600w" sizes="(min-width: 1024px) 30vw, (min-width: 768px) 46vw, 92vw"><img class="project__img" src="assets/img/projet-01-1600.webp" srcset="assets/img/projet-01-800.webp 800w, assets/img/projet-01-1600.webp 1600w" sizes="(min-width: 1024px) 30vw, (min-width: 768px) 46vw, 92vw" width="1600" height="2000" alt="Page d’accueil du site e-commerce du projet Atlas" loading="lazy" decoding="async"></picture>
+                  </div>
+                  <div class="project__body">
+                    <h3 class="project__name t-display"><button class="project__trigger card__link" type="button" aria-haspopup="dialog" aria-controls="project-panel">Projet Atlas<span class="sr-only"> : voir le détail du projet</span></button></h3>
+                    <p class="project__meta">E-commerce mode · 2025</p>
+                    <p class="project__kpi"><span class="chip chip--accent">+212 %</span><span class="project__kpi-label">de trafic organique en 6 mois</span></p>
+                  </div>
+                </div>
+                <div class="project__detail" hidden>
+                  <p class="label">E-commerce mode · 2025</p>
+                  <h2 class="project-panel__title t-display">Projet Atlas</h2>
+                  <p class="project-panel__kpi"><strong class="t-display">+212 %</strong><span>de trafic organique en 6 mois</span></p>
+                  <dl class="project-panel__facts">
+                    <div><dt>Le problème</dt><dd>Un catalogue de 1 400 références invisible sur Google et un tunnel d’achat qui perdait 7 visiteurs sur 10 au panier.</dd></div>
+                    <div><dt>Ce qu’on a fait</dt><dd>Refonte headless, architecture SEO par intention de recherche, fiches produits réécrites et tunnel d’achat en 3 étapes.</dd></div>
+                    <div><dt>Expertises</dt><dd><ul class="project-panel__tags"><li class="chip">Site</li><li class="chip">SEO</li></ul></dd></div>
+                  </dl>
+                  <p class="project-panel__note"><span class="placeholder-tag">[À REMPLACER]</span> Projet fictif, à remplacer par une étude de cas réelle.</p>
+                </div>
+              </li>
+              <li class="project" data-project="1" data-cats="automatisation">
+                <div class="project__card card card--interactive">
+                  <div class="project__media media">
+                    <picture><source type="image/avif" srcset="assets/img/projet-02-800.avif 800w, assets/img/projet-02-1600.avif 1600w" sizes="(min-width: 1024px) 30vw, (min-width: 768px) 46vw, 92vw"><img class="project__img" src="assets/img/projet-02-1600.webp" srcset="assets/img/projet-02-800.webp 800w, assets/img/projet-02-1600.webp 1600w" sizes="(min-width: 1024px) 30vw, (min-width: 768px) 46vw, 92vw" width="1600" height="1067" alt="Tableau de bord logistique automatisé du projet Borealis" loading="lazy" decoding="async"></picture>
+                  </div>
+                  <div class="project__body">
+                    <h3 class="project__name t-display"><button class="project__trigger card__link" type="button" aria-haspopup="dialog" aria-controls="project-panel">Projet Borealis<span class="sr-only"> : voir le détail du projet</span></button></h3>
+                    <p class="project__meta">Logistique B2B · 2025</p>
+                    <p class="project__kpi"><span class="chip chip--accent">-14 h</span><span class="project__kpi-label">de saisie manuelle par semaine</span></p>
+                  </div>
+                </div>
+                <div class="project__detail" hidden>
+                  <p class="label">Logistique B2B · 2025</p>
+                  <h2 class="project-panel__title t-display">Projet Borealis</h2>
+                  <p class="project-panel__kpi"><strong class="t-display">-14 h</strong><span>de saisie manuelle par semaine</span></p>
+                  <dl class="project-panel__facts">
+                    <div><dt>Le problème</dt><dd>Des devis ressaisis à la main entre trois outils, des relances oubliées et un reporting du lundi qui prenait une matinée.</dd></div>
+                    <div><dt>Ce qu’on a fait</dt><dd>Synchronisation CRM ↔ ERP, relances automatiques, reporting généré et envoyé chaque lundi à 7 h.</dd></div>
+                    <div><dt>Expertises</dt><dd><ul class="project-panel__tags"><li class="chip">Automatisation</li><li class="chip">CRM</li></ul></dd></div>
+                  </dl>
+                  <p class="project-panel__note"><span class="placeholder-tag">[À REMPLACER]</span> Projet fictif, à remplacer par une étude de cas réelle.</p>
+                </div>
+              </li>
+              <li class="project" data-project="2" data-cats="publicite">
+                <div class="project__card card card--interactive">
+                  <div class="project__media media">
+                    <picture><source type="image/avif" srcset="assets/img/projet-03-800.avif 800w, assets/img/projet-03-1200.avif 1200w" sizes="(min-width: 1024px) 30vw, (min-width: 768px) 46vw, 92vw"><img class="project__img" src="assets/img/projet-03-1200.webp" srcset="assets/img/projet-03-800.webp 800w, assets/img/projet-03-1200.webp 1200w" sizes="(min-width: 1024px) 30vw, (min-width: 768px) 46vw, 92vw" width="1200" height="1500" alt="Visuels publicitaires de la campagne Cassiopée" loading="lazy" decoding="async"></picture>
+                  </div>
+                  <div class="project__body">
+                    <h3 class="project__name t-display"><button class="project__trigger card__link" type="button" aria-haspopup="dialog" aria-controls="project-panel">Projet Cassiopée<span class="sr-only"> : voir le détail du projet</span></button></h3>
+                    <p class="project__meta">Marque DTC · 2024</p>
+                    <p class="project__kpi"><span class="chip chip--accent">×4,1</span><span class="project__kpi-label">de ROAS sur Meta et Google</span></p>
+                  </div>
+                </div>
+                <div class="project__detail" hidden>
+                  <p class="label">Marque DTC · 2024</p>
+                  <h2 class="project-panel__title t-display">Projet Cassiopée</h2>
+                  <p class="project-panel__kpi"><strong class="t-display">×4,1</strong><span>de ROAS sur Meta et Google</span></p>
+                  <dl class="project-panel__facts">
+                    <div><dt>Le problème</dt><dd>Un budget publicitaire en hausse et des ventes à plat, faute de tracking fiable.</dd></div>
+                    <div><dt>Ce qu’on a fait</dt><dd>Tracking serveur, refonte des audiences, 40 créas testées en A/B et coupe des campagnes non rentables.</dd></div>
+                    <div><dt>Expertises</dt><dd><ul class="project-panel__tags"><li class="chip">Publicité</li><li class="chip">Tracking</li></ul></dd></div>
+                  </dl>
+                  <p class="project-panel__note"><span class="placeholder-tag">[À REMPLACER]</span> Projet fictif, à remplacer par une étude de cas réelle.</p>
+                </div>
+              </li>
+              <li class="project" data-project="3" data-cats="social">
+                <div class="project__card card card--interactive">
+                  <div class="project__media media">
+                    <picture><source type="image/avif" srcset="assets/img/projet-04-800.avif 800w, assets/img/projet-04-1600.avif 1600w" sizes="(min-width: 1024px) 30vw, (min-width: 768px) 46vw, 92vw"><img class="project__img" src="assets/img/projet-04-1600.webp" srcset="assets/img/projet-04-800.webp 800w, assets/img/projet-04-1600.webp 1600w" sizes="(min-width: 1024px) 30vw, (min-width: 768px) 46vw, 92vw" width="1600" height="1200" alt="Grille de contenus social media du projet Draco" loading="lazy" decoding="async"></picture>
+                  </div>
+                  <div class="project__body">
+                    <h3 class="project__name t-display"><button class="project__trigger card__link" type="button" aria-haspopup="dialog" aria-controls="project-panel">Projet Draco<span class="sr-only"> : voir le détail du projet</span></button></h3>
+                    <p class="project__meta">Cosmétique · 2024</p>
+                    <p class="project__kpi"><span class="chip chip--accent">+38 k</span><span class="project__kpi-label">abonnés qualifiés en 9 mois</span></p>
+                  </div>
+                </div>
+                <div class="project__detail" hidden>
+                  <p class="label">Cosmétique · 2024</p>
+                  <h2 class="project-panel__title t-display">Projet Draco</h2>
+                  <p class="project-panel__kpi"><strong class="t-display">+38 k</strong><span>abonnés qualifiés en 9 mois</span></p>
+                  <dl class="project-panel__facts">
+                    <div><dt>Le problème</dt><dd>Une marque premium qui publiait sans ligne éditoriale et dont l’engagement s’effondrait.</dd></div>
+                    <div><dt>Ce qu’on a fait</dt><dd>Plateforme éditoriale, formats vidéo courts, calendrier tenu, community management quotidien.</dd></div>
+                    <div><dt>Expertises</dt><dd><ul class="project-panel__tags"><li class="chip">Social</li><li class="chip">Contenus</li></ul></dd></div>
+                  </dl>
+                  <p class="project-panel__note"><span class="placeholder-tag">[À REMPLACER]</span> Projet fictif, à remplacer par une étude de cas réelle.</p>
+                </div>
+              </li>
+              <li class="project" data-project="4" data-cats="ia automatisation">
+                <div class="project__card card card--interactive">
+                  <div class="project__media media">
+                    <picture><source type="image/avif" srcset="assets/img/projet-05-800.avif 800w, assets/img/projet-05-1600.avif 1600w" sizes="(min-width: 1024px) 30vw, (min-width: 768px) 46vw, 92vw"><img class="project__img" src="assets/img/projet-05-1600.webp" srcset="assets/img/projet-05-800.webp 800w, assets/img/projet-05-1600.webp 1600w" sizes="(min-width: 1024px) 30vw, (min-width: 768px) 46vw, 92vw" width="1600" height="1067" alt="Agent IA de qualification de leads du projet Eridan" loading="lazy" decoding="async"></picture>
+                  </div>
+                  <div class="project__body">
+                    <h3 class="project__name t-display"><button class="project__trigger card__link" type="button" aria-haspopup="dialog" aria-controls="project-panel">Projet Eridan<span class="sr-only"> : voir le détail du projet</span></button></h3>
+                    <p class="project__meta">Cabinet de conseil · 2025</p>
+                    <p class="project__kpi"><span class="chip chip--accent">62 %</span><span class="project__kpi-label">des leads qualifiés sans intervention</span></p>
+                  </div>
+                </div>
+                <div class="project__detail" hidden>
+                  <p class="label">Cabinet de conseil · 2025</p>
+                  <h2 class="project-panel__title t-display">Projet Eridan</h2>
+                  <p class="project-panel__kpi"><strong class="t-display">62 %</strong><span>des leads qualifiés sans intervention</span></p>
+                  <dl class="project-panel__facts">
+                    <div><dt>Le problème</dt><dd>Des dizaines de demandes entrantes non qualifiées qui saturaient l’agenda des associés.</dd></div>
+                    <div><dt>Ce qu’on a fait</dt><dd>Agent IA connecté au CRM&nbsp;: il qualifie, score et propose un créneau aux meilleurs prospects.</dd></div>
+                    <div><dt>Expertises</dt><dd><ul class="project-panel__tags"><li class="chip">Agent IA</li><li class="chip">Intégration CRM</li></ul></dd></div>
+                  </dl>
+                  <p class="project-panel__note"><span class="placeholder-tag">[À REMPLACER]</span> Projet fictif, à remplacer par une étude de cas réelle.</p>
+                </div>
+              </li>
+              <li class="project" data-project="5" data-cats="sites">
+                <div class="project__card card card--interactive">
+                  <div class="project__media media">
+                    <picture><source type="image/avif" srcset="assets/img/projet-06-800.avif 800w, assets/img/projet-06-1200.avif 1200w" sizes="(min-width: 1024px) 30vw, (min-width: 768px) 46vw, 92vw"><img class="project__img" src="assets/img/projet-06-1200.webp" srcset="assets/img/projet-06-800.webp 800w, assets/img/projet-06-1200.webp 1200w" sizes="(min-width: 1024px) 30vw, (min-width: 768px) 46vw, 92vw" width="1200" height="1600" alt="Site vitrine animé du projet Fornax" loading="lazy" decoding="async"></picture>
+                  </div>
+                  <div class="project__body">
+                    <h3 class="project__name t-display"><button class="project__trigger card__link" type="button" aria-haspopup="dialog" aria-controls="project-panel">Projet Fornax<span class="sr-only"> : voir le détail du projet</span></button></h3>
+                    <p class="project__meta">Studio d’architecture · 2026</p>
+                    <p class="project__kpi"><span class="chip chip--accent">0,9 s</span><span class="project__kpi-label">de LCP sur mobile</span></p>
+                  </div>
+                </div>
+                <div class="project__detail" hidden>
+                  <p class="label">Studio d’architecture · 2026</p>
+                  <h2 class="project-panel__title t-display">Projet Fornax</h2>
+                  <p class="project-panel__kpi"><strong class="t-display">0,9 s</strong><span>de LCP sur mobile</span></p>
+                  <dl class="project-panel__facts">
+                    <div><dt>Le problème</dt><dd>Un portfolio magnifique mais si lourd que les visiteurs partaient avant le premier projet.</dd></div>
+                    <div><dt>Ce qu’on a fait</dt><dd>Direction artistique motion, médias optimisés AVIF, chargement progressif et 98/100 sur Lighthouse.</dd></div>
+                    <div><dt>Expertises</dt><dd><ul class="project-panel__tags"><li class="chip">Site</li><li class="chip">Motion</li></ul></dd></div>
+                  </dl>
+                  <p class="project-panel__note"><span class="placeholder-tag">[À REMPLACER]</span> Projet fictif, à remplacer par une étude de cas réelle.</p>
+                </div>
+              </li>
+            </ul>
           </div>
         </section>
 
         <dialog class="panel project-panel" id="project-panel" aria-labelledby="project-panel-title" data-project-panel>
-          <div class="panel__close"><button type="button" class="t-mono" data-panel-close data-cursor="close">Fermer [Échap]</button></div>
-          <div class="project-panel__inner grid">
+          <div class="panel__close"><button type="button" data-panel-close>Fermer <span class="project-panel__esc" aria-hidden="true">Échap</span></button></div>
+          <div class="project-panel__inner container">
             <div class="project-panel__media media" data-panel-media></div>
             <div class="project-panel__content" data-panel-content></div>
             <div class="project-panel__nav">
               <button type="button" class="arrow-link" data-panel-next>Projet suivant</button>
-              <a class="btn btn--light" href="contact.html">Un projet similaire&nbsp;? <span class="btn__arrow" aria-hidden="true">→</span></a>
+              <a class="btn btn--primary" href="contact.html">Un projet similaire&nbsp;? <span class="btn__arrow" aria-hidden="true">→</span></a>
             </div>
           </div>
         </dialog>
 
-        <section class="stats section" data-theme="paper" aria-labelledby="stats-title">
-          <div class="grid">
-            <div class="stats__label">
-              <p class="label">[04] — Résultats moyens clients</p>
-              <p class="label"><span class="placeholder-tag">[À REMPLACER — chiffres réels]</span></p>
+        <section class="section stats starfield" data-theme="space" aria-labelledby="stats-title">
+          <div class="container">
+            <div class="section-head">
+              <p class="label">Résultats</p>
+              <h2 class="section-head__title t-display" id="stats-title" data-split="lines">Des chiffres, <span class="accent">pas</span> des adjectifs.</h2>
+              <p class="section-head__lead">Moyennes constatées chez nos clients accompagnés depuis plus de six mois. <span class="placeholder-tag">[À REMPLACER — chiffres réels]</span></p>
             </div>
-            <h2 class="sr-only" id="stats-title">Nos résultats en chiffres</h2>
-            <div class="stat stat--1">
-              <p class="stat__value t-display" data-counter="140" data-prefix="+" data-suffix="&nbsp;%">+140&nbsp;%</p>
-              <p class="stat__label">de trafic organique moyen, six mois après une refonte.</p>
+            <ul class="stats__grid" data-reveal="stagger">
+              <li class="stat">
+                <p class="stat__value t-display" data-counter="140" data-prefix="+" data-suffix="&nbsp;%">+140&nbsp;%</p>
+                <p class="stat__label">de trafic organique, six mois après une refonte</p>
+              </li>
+              <li class="stat">
+                <p class="stat__value t-display" data-counter="3.2" data-prefix="×" data-decimals="1">×3,2</p>
+                <p class="stat__label">de ROAS moyen sur les campagnes pilotées</p>
+              </li>
+              <li class="stat">
+                <p class="stat__value t-display" data-counter="12" data-suffix="&nbsp;h">12&nbsp;h</p>
+                <p class="stat__label">gagnées par semaine grâce aux automatisations</p>
+              </li>
+              <li class="stat">
+                <p class="stat__value t-display" data-counter="0.9" data-suffix="&nbsp;s" data-decimals="1">0,9&nbsp;s</p>
+                <p class="stat__label">de chargement moyen (LCP) des sites livrés</p>
+              </li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="section method" data-theme="cream" aria-labelledby="method-title" data-method>
+          <div class="container">
+            <div class="section-head">
+              <p class="label">Méthode</p>
+              <h2 class="section-head__title t-display" id="method-title" data-split="lines">Une trajectoire, <span class="accent">pas</span> un tunnel.</h2>
+              <p class="section-head__lead">Quatre étapes, un seul interlocuteur. Vous savez toujours où en est votre projet.</p>
             </div>
-            <div class="stat stat--2">
-              <p class="stat__value t-display" data-counter="3.2" data-decimals="1" data-prefix="×">×3,2</p>
-              <p class="stat__label">de ROAS moyen sur les campagnes que l’on pilote.</p>
-            </div>
-            <div class="stat stat--3">
-              <p class="stat__value t-display" data-counter="12" data-suffix="&nbsp;h">12&nbsp;h</p>
-              <p class="stat__label">gagnées chaque semaine grâce aux automatisations.</p>
-            </div>
-            <div class="stat stat--4">
-              <p class="stat__value t-display" data-counter="0.9" data-decimals="1" data-suffix="&nbsp;s">0,9&nbsp;s</p>
-              <p class="stat__label">de temps de chargement moyen (LCP) des sites livrés.</p>
+            <div class="method__track" data-method-track>
+              <div class="method__rail" aria-hidden="true" data-method-rail>
+                <span class="method__fill" data-method-fill></span>
+                <span class="method__ship" data-method-ship><svg class="ship" viewBox="0 0 200 80" aria-hidden="true" focusable="false"><path class="ship__flame" d="M36 31 L0 40 L36 49 Z" filter="url(#gjs-glow)"/><path class="ship__fin" d="M74 29 L54 5 L68 5 L106 29 Z"/><path class="ship__fin" d="M74 51 L54 75 L68 75 L106 51 Z"/><path class="ship__hull" d="M32 29 L122 24 C160 27 186 33 199 40 C186 47 160 53 122 56 L32 51 Z"/><path class="ship__glass" d="M132 32.5 C151 33.5 166 36.5 175 40 C166 43.5 151 46.5 132 47.5 Z"/><path class="ship__line" d="M46 40 H122 M58 33 V47 M84 32 V48"/><rect class="ship__engine" x="27" y="32" width="8" height="16"/><circle class="ship__light" cx="114" cy="40" r="2.2"/></svg></span>
+              </div>
+              <ol class="method__steps">
+              <li class="method__step">
+                <span class="method__dot" aria-hidden="true"></span>
+                <p class="method__num">Étape 01</p>
+                <h3 class="method__title t-display">Diagnostic</h3>
+                <p class="method__text">On audite l’existant&nbsp;: site, données, tunnel, outils, concurrence. Sans complaisance.</p>
+              </li>
+              <li class="method__step">
+                <span class="method__dot" aria-hidden="true"></span>
+                <p class="method__num">Étape 02</p>
+                <h3 class="method__title t-display">Stratégie</h3>
+                <p class="method__text">On priorise ce qui rapporte. Un plan d’action chiffré, pas un deck de 80 slides.</p>
+              </li>
+              <li class="method__step">
+                <span class="method__dot" aria-hidden="true"></span>
+                <p class="method__num">Étape 03</p>
+                <h3 class="method__title t-display">Production</h3>
+                <p class="method__text">Design, développement, campagnes, automatisations&nbsp;: on construit vite, on teste, on livre.</p>
+              </li>
+              <li class="method__step">
+                <span class="method__dot" aria-hidden="true"></span>
+                <p class="method__num">Étape 04</p>
+                <h3 class="method__title t-display">Pilotage</h3>
+                <p class="method__text">On mesure, on optimise, on vous rend des comptes. Chaque mois, chiffres à l’appui.</p>
+              </li>
+              </ol>
             </div>
           </div>
         </section>
 
-        <section class="method section" data-theme="night" aria-labelledby="method-title" data-method>
-          <div class="grid">
-            <div class="method__head">
-              <p class="label">[05] — Méthode</p>
-              <h2 class="method__heading t-display" id="method-title" data-split="lines">Une trajectoire, <em class="serif">pas</em> un tunnel.</h2>
+        <section class="section arcade starfield" id="arcade" data-theme="space" aria-labelledby="arcade-title">
+          <div class="container">
+            <div class="section-head section-head--center">
+              <p class="label">GJS Arcade</p>
+              <h2 class="section-head__title t-display" id="arcade-title" data-split="lines">Prouvez-le. <span class="accent">Jouez.</span></h2>
+              <p class="section-head__lead">Trois mini-jeux maison pour comprendre, en deux minutes, ce qu’on fait pour vous. Et surtout ce qu’on vous évite.</p>
             </div>
-          </div>
-          <div class="method__track">
-            <svg class="method__svg" aria-hidden="true" focusable="false"><path class="method__path-bg" d=""/><path class="method__path" d=""/></svg>
-            <div class="method__ship" aria-hidden="true"><svg class="ship" viewBox="0 0 200 80" aria-hidden="true" focusable="false"><path class="ship__flame" d="M36 31 L0 40 L36 49 Z" filter="url(#gjs-glow)"/><path class="ship__fin" d="M74 29 L54 5 L68 5 L106 29 Z"/><path class="ship__fin" d="M74 51 L54 75 L68 75 L106 51 Z"/><path class="ship__hull" d="M32 29 L122 24 C160 27 186 33 199 40 C186 47 160 53 122 56 L32 51 Z"/><path class="ship__glass" d="M132 32.5 C151 33.5 166 36.5 175 40 C166 43.5 151 46.5 132 47.5 Z"/><path class="ship__line" d="M46 40 H122 M58 33 V47 M84 32 V48"/><rect class="ship__engine" x="27" y="32" width="8" height="16"/><circle class="ship__light" cx="114" cy="40" r="2.2"/></svg></div>
-            <ol class="method__steps grid">
-            <li class="method__step method__step--1">
-              <span class="method__dot" aria-hidden="true"></span>
-              <p class="method__num t-mono">Étape 01</p>
-              <h3 class="method__title t-display">Diagnostic</h3>
-              <p class="method__text">On audite l’existant&nbsp;: site, données, tunnel, outils, concurrence. Sans complaisance.</p>
-            </li>
-            <li class="method__step method__step--2">
-              <span class="method__dot" aria-hidden="true"></span>
-              <p class="method__num t-mono">Étape 02</p>
-              <h3 class="method__title t-display">Stratégie</h3>
-              <p class="method__text">On priorise ce qui rapporte. Un plan d’action chiffré, pas un deck de 80 slides.</p>
-            </li>
-            <li class="method__step method__step--3">
-              <span class="method__dot" aria-hidden="true"></span>
-              <p class="method__num t-mono">Étape 03</p>
-              <h3 class="method__title t-display">Production</h3>
-              <p class="method__text">Design, développement, campagnes, automatisations&nbsp;: on construit vite, on teste, on livre.</p>
-            </li>
-            <li class="method__step method__step--4">
-              <span class="method__dot" aria-hidden="true"></span>
-              <p class="method__num t-mono">Étape 04</p>
-              <h3 class="method__title t-display">Pilotage</h3>
-              <p class="method__text">On mesure, on optimise, on vous rend des comptes. Chaque mois, chiffres à l’appui.</p>
-            </li>
-            </ol>
+            <ul class="arcade__grid" data-reveal="stagger">
+              <li class="arcade__item">
+                <article class="cabinet" aria-labelledby="game-button-title">
+                  <p class="cabinet__top" aria-hidden="true"><span>Jeu 01</span><span class="cabinet__led"></span></p>
+                  <div class="cabinet__screen" aria-hidden="true"><span class="screen-btn"><span class="screen-btn__q">Meilleure agence&nbsp;?</span><span class="screen-btn__yes">GJS</span><span class="screen-btn__no">Les autres</span></span></div>
+                  <div class="cabinet__body">
+                    <h3 class="cabinet__title t-display" id="game-button-title">La meilleure agence&nbsp;?</h3>
+                    <p class="cabinet__rules">Une question, deux réponses, un seul bon choix. Bonne chance pour cliquer sur l’autre.</p>
+                    <p class="cabinet__score">Record&nbsp;: <span data-highscore="button">aucun</span></p>
+                    <button class="btn btn--primary btn--block cabinet__play" type="button" data-launch-game="button">Jouer<span class="sr-only"> à La meilleure agence&nbsp;?</span> <span class="btn__arrow" aria-hidden="true">→</span></button>
+                  </div>
+                </article>
+              </li>
+              <li class="arcade__item">
+                <article class="cabinet" aria-labelledby="game-race-title">
+                  <p class="cabinet__top" aria-hidden="true"><span>Jeu 02</span><span class="cabinet__led"></span></p>
+                  <div class="cabinet__screen" aria-hidden="true"><span class="screen-race"><span class="screen-race__road"></span><span class="screen-race__car"></span><span class="screen-race__obs screen-race__obs--1">8 s</span><span class="screen-race__obs screen-race__obs--2">HTTP</span></span></div>
+                  <div class="cabinet__body">
+                    <h3 class="cabinet__title t-display" id="game-race-title">Bad Practices Highway</h3>
+                    <p class="cabinet__rules">Évitez les mauvaises pratiques du web, ramassez les bonnes. La route accélère.</p>
+                    <p class="cabinet__score">Record&nbsp;: <span data-highscore="race">aucun</span></p>
+                    <button class="btn btn--primary btn--block cabinet__play" type="button" data-launch-game="race">Jouer<span class="sr-only"> à Bad Practices Highway</span> <span class="btn__arrow" aria-hidden="true">→</span></button>
+                  </div>
+                </article>
+              </li>
+              <li class="arcade__item">
+                <article class="cabinet" aria-labelledby="game-maze-title">
+                  <p class="cabinet__top" aria-hidden="true"><span>Jeu 03</span><span class="cabinet__led"></span></p>
+                  <div class="cabinet__screen" aria-hidden="true"><span class="screen-maze"><span class="screen-maze__walls"></span><span class="screen-maze__player"></span><span class="screen-maze__enemy"></span></span></div>
+                  <div class="cabinet__body">
+                    <h3 class="cabinet__title t-display" id="game-maze-title">Lead Rush</h3>
+                    <p class="cabinet__rules">Collectez un maximum de leads et survivez 60 secondes aux ennemis du marketing.</p>
+                    <p class="cabinet__score">Record&nbsp;: <span data-highscore="maze">aucun</span></p>
+                    <button class="btn btn--primary btn--block cabinet__play" type="button" data-launch-game="maze">Jouer<span class="sr-only"> à Lead Rush</span> <span class="btn__arrow" aria-hidden="true">→</span></button>
+                  </div>
+                </article>
+              </li>
+            </ul>
+            <p class="arcade__hint">Au clavier ou au doigt. Vos records restent sur votre appareil.</p>
           </div>
         </section>
 
-        <section class="arcade-teaser section" id="arcade" data-theme="black" aria-labelledby="arcade-title">
-          <div class="arcade-teaser__head grid">
-            <div class="arcade-teaser__label">
-              <p class="label">[06] — GJS Arcade</p>
-              <p class="label">03 jeux — clavier &amp; tactile</p>
+        <section class="section testimonials" data-theme="grey" aria-labelledby="testimonials-title">
+          <div class="container">
+            <div class="section-head">
+              <p class="label">Témoignages</p>
+              <h2 class="section-head__title t-display" id="testimonials-title" data-split="lines">Ce qu’ils <span class="accent">disent</span> de nous.</h2>
+              <p class="section-head__lead">Des dirigeants qui ont confié leur croissance à GJS. <span class="placeholder-tag">[À REMPLACER]</span></p>
             </div>
-            <h2 class="arcade-teaser__title t-display" id="arcade-title" data-split="chars">Prouvez-le. <em class="serif">Jouez.</em></h2>
-            <p class="arcade-teaser__intro" data-reveal="fade">Trois mini-jeux maison pour comprendre, en deux minutes, ce que l’on fait pour vous — et surtout ce que l’on vous évite.</p>
-          </div>
-          <div class="arcade-teaser__cabinets grid">
-            <article class="cabinet" style="--tilt: -2deg" aria-labelledby="game-button-title">
-              <p class="cabinet__marquee t-mono">GJS Arcade — Jeu 01</p>
-              <div class="cabinet__screen" aria-hidden="true"><span class="screen-btn"><span class="screen-btn__q">Meilleure agence&nbsp;?</span><span class="screen-btn__yes">GJS</span><span class="screen-btn__no">Les autres</span></span></div>
-              <div class="cabinet__panel">
-                <h3 class="cabinet__title t-display" id="game-button-title">La meilleure agence&nbsp;?</h3>
-                <p class="cabinet__rules">Une question, deux réponses. Un seul bon choix. Bonne chance pour cliquer sur l’autre.</p>
-                <p class="cabinet__score t-mono">Record&nbsp;: <span data-highscore="button">—</span></p>
-                <button class="btn btn--light cabinet__play" type="button" data-launch-game="button" data-cursor="play" data-cursor-label="Jouer">Insérer une pièce <span class="btn__arrow" aria-hidden="true">→</span><span class="sr-only"> et lancer La meilleure agence&nbsp;?</span></button>
+            <div class="carousel" role="region" data-carousel aria-roledescription="carrousel" aria-label="Témoignages clients">
+              <div class="carousel__viewport">
+                <div class="carousel__track" data-carousel-track>
+                <figure class="quote" role="group" aria-roledescription="témoignage" aria-label="1 sur 4">
+                  <span class="quote__mark" aria-hidden="true">“</span>
+                  <blockquote class="quote__text"><p>Ils ont refait notre site en six semaines. Le trimestre suivant, nos demandes de devis avaient doublé.</p></blockquote>
+                  <figcaption class="quote__author"><span class="quote__avatar" aria-hidden="true">P</span><span class="quote__who"><span class="quote__name">Prénom N.</span><span class="quote__role">Directrice marketing, [Entreprise]</span></span></figcaption>
+                </figure>
+                <figure class="quote" role="group" aria-roledescription="témoignage" aria-label="2 sur 4">
+                  <span class="quote__mark" aria-hidden="true">“</span>
+                  <blockquote class="quote__text"><p>L’automatisation de notre reporting nous rend une journée par semaine. Littéralement.</p></blockquote>
+                  <figcaption class="quote__author"><span class="quote__avatar" aria-hidden="true">P</span><span class="quote__who"><span class="quote__name">Prénom N.</span><span class="quote__role">Directeur des opérations, [Entreprise]</span></span></figcaption>
+                </figure>
+                <figure class="quote" role="group" aria-roledescription="témoignage" aria-label="3 sur 4">
+                  <span class="quote__mark" aria-hidden="true">“</span>
+                  <blockquote class="quote__text"><p>Enfin une agence qui parle ROAS avant de parler créa. Et qui tient ses chiffres.</p></blockquote>
+                  <figcaption class="quote__author"><span class="quote__avatar" aria-hidden="true">P</span><span class="quote__who"><span class="quote__name">Prénom N.</span><span class="quote__role">Fondateur, [Entreprise]</span></span></figcaption>
+                </figure>
+                <figure class="quote" role="group" aria-roledescription="témoignage" aria-label="4 sur 4">
+                  <span class="quote__mark" aria-hidden="true">“</span>
+                  <blockquote class="quote__text"><p>Notre agent IA qualifie les leads la nuit. Le lundi, l’équipe commerciale n’a plus qu’à appeler.</p></blockquote>
+                  <figcaption class="quote__author"><span class="quote__avatar" aria-hidden="true">P</span><span class="quote__who"><span class="quote__name">Prénom N.</span><span class="quote__role">Head of Sales, [Entreprise]</span></span></figcaption>
+                </figure>
+                </div>
               </div>
-            </article>
-            <article class="cabinet" style="--tilt: 1.5deg" aria-labelledby="game-race-title">
-              <p class="cabinet__marquee t-mono">GJS Arcade — Jeu 02</p>
-              <div class="cabinet__screen" aria-hidden="true"><span class="screen-race"><span class="screen-race__road"></span><span class="screen-race__car"></span><span class="screen-race__obs screen-race__obs--1">8 s</span><span class="screen-race__obs screen-race__obs--2">HTTP</span></span></div>
-              <div class="cabinet__panel">
-                <h3 class="cabinet__title t-display" id="game-race-title">Bad Practices Highway</h3>
-                <p class="cabinet__rules">Évitez les mauvaises pratiques du web, ramassez les bonnes. La route accélère.</p>
-                <p class="cabinet__score t-mono">Record&nbsp;: <span data-highscore="race">—</span></p>
-                <button class="btn btn--light cabinet__play" type="button" data-launch-game="race" data-cursor="play" data-cursor-label="Jouer">Insérer une pièce <span class="btn__arrow" aria-hidden="true">→</span><span class="sr-only"> et lancer Bad Practices Highway</span></button>
+              <div class="carousel__controls">
+                <div class="carousel__progress" aria-hidden="true"><span class="carousel__bar" data-carousel-bar></span></div>
+                <p class="carousel__status" aria-live="polite"><span class="sr-only">Témoignage </span><span data-carousel-current>01</span> / 04</p>
+                <div class="carousel__buttons">
+                  <button class="carousel__btn" type="button" data-carousel-prev aria-label="Témoignage précédent"><span aria-hidden="true">←</span></button>
+                  <button class="carousel__btn" type="button" data-carousel-next aria-label="Témoignage suivant"><span aria-hidden="true">→</span></button>
+                </div>
               </div>
-            </article>
-            <article class="cabinet" style="--tilt: -1deg" aria-labelledby="game-maze-title">
-              <p class="cabinet__marquee t-mono">GJS Arcade — Jeu 03</p>
-              <div class="cabinet__screen" aria-hidden="true"><span class="screen-maze"><span class="screen-maze__walls"></span><span class="screen-maze__player"></span><span class="screen-maze__enemy"></span></span></div>
-              <div class="cabinet__panel">
-                <h3 class="cabinet__title t-display" id="game-maze-title">Lead Rush</h3>
-                <p class="cabinet__rules">Collectez un maximum de leads et survivez 60 secondes aux ennemis du marketing.</p>
-                <p class="cabinet__score t-mono">Record&nbsp;: <span data-highscore="maze">—</span></p>
-                <button class="btn btn--light cabinet__play" type="button" data-launch-game="maze" data-cursor="play" data-cursor-label="Jouer">Insérer une pièce <span class="btn__arrow" aria-hidden="true">→</span><span class="sr-only"> et lancer Lead Rush</span></button>
-              </div>
-            </article>
-          </div>
-        </section>
-
-        <section class="testimonials section" data-theme="paper" aria-labelledby="testimonials-title">
-          <div class="grid">
-            <div class="testimonials__label">
-              <p class="label">[07] — Ils en parlent</p>
-              <p class="label"><span class="placeholder-tag">[À REMPLACER]</span></p>
-            </div>
-            <h2 class="testimonials__title t-display" id="testimonials-title" data-split="lines">Ce qu’ils <em class="serif">disent</em> de nous.</h2>
-          </div>
-          <div class="carousel" data-carousel aria-roledescription="carrousel" aria-label="Témoignages clients">
-            <div class="carousel__viewport" data-cursor="drag">
-              <div class="carousel__track" data-carousel-track>
-              <figure class="quote" role="group" aria-roledescription="témoignage" aria-label="1 sur 4">
-                <p class="quote__index t-mono">01 / 04</p>
-                <blockquote class="quote__text"><p>«&nbsp;Ils ont refait notre site en six semaines. Le trimestre suivant, nos demandes de devis avaient doublé.&nbsp;»</p></blockquote>
-                <figcaption class="quote__author"><span class="quote__name">Prénom N.</span><span class="t-mono t-muted">Directrice marketing — [Entreprise]</span></figcaption>
-              </figure>
-              <figure class="quote" role="group" aria-roledescription="témoignage" aria-label="2 sur 4">
-                <p class="quote__index t-mono">02 / 04</p>
-                <blockquote class="quote__text"><p>«&nbsp;L’automatisation de notre reporting nous rend une journée par semaine. Littéralement.&nbsp;»</p></blockquote>
-                <figcaption class="quote__author"><span class="quote__name">Prénom N.</span><span class="t-mono t-muted">Directeur des opérations — [Entreprise]</span></figcaption>
-              </figure>
-              <figure class="quote" role="group" aria-roledescription="témoignage" aria-label="3 sur 4">
-                <p class="quote__index t-mono">03 / 04</p>
-                <blockquote class="quote__text"><p>«&nbsp;Enfin une agence qui parle ROAS avant de parler créa. Et qui tient ses chiffres.&nbsp;»</p></blockquote>
-                <figcaption class="quote__author"><span class="quote__name">Prénom N.</span><span class="t-mono t-muted">Fondateur — [Entreprise]</span></figcaption>
-              </figure>
-              <figure class="quote" role="group" aria-roledescription="témoignage" aria-label="4 sur 4">
-                <p class="quote__index t-mono">04 / 04</p>
-                <blockquote class="quote__text"><p>«&nbsp;Notre agent IA qualifie les leads la nuit. Le lundi, l’équipe commerciale n’a plus qu’à appeler.&nbsp;»</p></blockquote>
-                <figcaption class="quote__author"><span class="quote__name">Prénom N.</span><span class="t-mono t-muted">Head of Sales — [Entreprise]</span></figcaption>
-              </figure>
-              </div>
-            </div>
-            <div class="carousel__controls wrap">
-              <button class="carousel__btn t-mono" type="button" data-carousel-prev aria-label="Témoignage précédent">← Préc.</button>
-              <p class="carousel__status t-mono" aria-live="polite"><span data-carousel-current>01</span> / 04</p>
-              <button class="carousel__btn t-mono" type="button" data-carousel-next aria-label="Témoignage suivant">Suiv. →</button>
             </div>
           </div>
         </section>

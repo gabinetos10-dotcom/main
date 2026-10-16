@@ -3,7 +3,7 @@
 Site statique complet, sans build : HTML5 sémantique, CSS (custom properties, aucun framework), JavaScript en modules ES natifs.
 Librairies épinglées via CDN (avec empreintes SRI) : **GSAP 3.13.0** (ScrollTrigger, SplitText, Flip, CustomEase), **Lenis 1.3.26**, **Barba.js 2.10.3**. Mini-jeux en **Canvas 2D** natif.
 
-> Les seuls contenus provisoires sont les **médias** (images, vidéo) et les **textes signalés `[À REMPLACER]`** (étiquette visible en bleu dans les pages). Rien d'autre n'est un placeholder.
+> Les seuls contenus provisoires sont les **médias** (images, vidéo) et les **textes signalés `[À REMPLACER]`** (étiquette rouille bien visible dans les pages). Rien d'autre n'est un placeholder.
 
 ---
 
@@ -51,83 +51,71 @@ Installez l'extension **Live Server**, ouvrez le dossier du site, clic droit sur
 
 - **Réglage « réduire les animations » du système** (Windows 11 : Paramètres › Accessibilité › Effets visuels › Effets d'animation ; Windows 10 : Paramètres › Options d'ergonomie › Affichage › Afficher les animations dans Windows ; macOS : Réglages › Accessibilité › Affichage › Réduire les animations). Le site le respecte volontairement : scroll natif, fondus simples, loader court, vidéo en pause. Réactivez les animations du système pour voir la version complète.
 - **Réseau filtré ou bloqueur de contenu** empêchant jsDelivr : le site bascule alors aussitôt en version statique (message dans la console). Testez sur une autre connexion ou auto-hébergez les librairies (§9).
-- **Sur un écran tactile**, le curseur custom et les distorsions au survol sont désactivés (c'est voulu).
-
-Une connexion internet est nécessaire (librairies jsDelivr et polices Fontshare) — voir §9 pour tout auto-héberger.
+Une connexion internet est nécessaire pour les librairies d'animation (jsDelivr) — les polices, images et vidéos sont hébergées avec le site. Voir §9 pour auto-héberger aussi les librairies.
 
 La page `404.html` utilise des chemins absolus (`/assets/…`) : elle doit être servie à la racine du domaine (comportement par défaut de Netlify, Vercel, `serve`, Apache avec `ErrorDocument 404 /404.html`, etc.).
 
 ---
 
-## 2. Direction artistique (moodboard)
+## 2. Direction artistique (v2 « orbite chaude »)
 
-1. Nuit profonde : bleu nuit `#060B1E` → noir → blanc cassé `#F2F1EC`, le `body` change de teinte au scroll.
-2. Un seul signal lumineux, `#5B85FF`, réservé aux glows, focus et états actifs (< 5 % de la surface).
-3. Typographie éditoriale massive (Clash Display, jusqu'à 22vw) contre micro-labels techniques en JetBrains Mono.
-4. Un ou deux mots par titre en Instrument Serif italique : la tension sans / serif.
-5. Grilles asymétriques, éléments qui débordent, rotations de 2-4°, numérotation `[01] — …`.
-6. Le vaisseau GJS comme fil rouge : loader, transitions, trajectoire de la méthode, succès du formulaire, 404, easter eggs.
-7. Matière : grain SVG à 8 fps sur tout le site, scanlines CRT dans l'Arcade.
-8. Motion à easing expo, reveals masqués ligne par ligne, images révélées par clip-path, parallaxe à 3 profondeurs.
-9. Le jeu comme preuve : chaque mini-jeu se termine sur un message de conversion.
-10. Zéro template : pas de cartes ombrées en grille de 3, pas de gradient « IA », pas d'icônes décoratives.
+1. **Palette de marque** : gris lunaire `#E5E7E6`, crème sable `#EEE6D8`, or `#DAAB3A`, cuivre `#B67332`, rouille `#93441A`. Deux teintes dérivées pour le texte et les sections « espace » : encre brune `#1F1812` et nuit chaude `#16100C`.
+2. **Règles de contraste mesurées (WCAG AA)** : sur fond clair, texte encre (14:1), texte secondaire `#5D564D` (5,8:1), accent texte rouille (5,5:1) ; le cuivre est réservé aux grands titres (3,1:1) et l'or n'est jamais utilisé en texte sur fond clair (1,7:1) — il sert aux boutons (texte encre 8,2:1), étoiles, pastilles et états actifs. Sur la nuit chaude : crème (15:1), or (8,9:1), cuivre (4,9:1).
+3. **Typographie** : titres en **League Spartan** (700-800, grande hauteur d'x), texte en **Archivo Narrow** (17-19 px, interlignage 1,6), un seul sur-titre par section, un ou deux mots d'accent en cuivre par titre.
+4. **Un seul conteneur** (1 280 px utiles, marges latérales 20 → 64 px) : tous les blocs, le logo du header et le footer partagent exactement le même bord gauche et droit.
+5. **Sections à fond propre** (`data-theme="cream|grey|space|gold"`) qui alternent pour séparer les blocs d'information ; respiration verticale 80 → 144 px.
+6. **Univers espace & robots** : mascotte robot SVG (logo, footer, bandeau cookies, 404…) dont les yeux suivent le pointeur et qui répond quand on clique dessus ; planètes cuivrées à anneau, ciels étoilés chauds, vaisseau GJS (loader, transitions, méthode, jeux).
+7. **Interactions** : survol et focus clavier identiques sur tout ce qui est cliquable (cartes qui se soulèvent avec bord or, liens fléchés dont la pastille se remplit), onglets, filtres animés, sommaire de lecture, compteurs, mini-jeux. Plus de curseur personnalisé : le pointeur reste celui du système.
+8. **Motion** à easing expo, reveals ligne par ligne, rien qui gêne la lecture ; `prefers-reduced-motion` respecté partout.
 
 ---
 
 ## 3. Arborescence
 
 ```
-/index.html  /offres.html  /a-propos.html  /contact.html
-/mentions-legales.html  /politique-confidentialite.html  /404.html
+/index.html  /offres.html  /a-propos.html  /contact.html  /404.html
+/mentions-legales.html  /politique-confidentialite.html  /politique-cookies.html  /exercer-vos-droits.html
 /robots.txt  /sitemap.xml  /site.webmanifest  /favicon.svg  /serve.json
 /lancer-le-site.bat (Windows)  /lancer-le-site.command (macOS / Linux)
 /assets/css/   tokens.css · base.css · layout.css · components.css · games.css (chargé à la demande)
                pages/ home.css · offres.css · about.css · contact.css · legal.css · error.css
 /assets/js/    main.js (bootstrap, Barba, cycle de vie) · config.js (CONFIG central) · easter-egg.js
-               core/  loader · cursor · transitions · scroll · splitText · magnetic · marquee · menu · cookies
-                      reveal (reveals & thèmes) · scope (anti-fuite) · head (sync <head>) · footer · cta
-                      accordion · grid (touche G) · utils
+               core/  loader · transitions · scroll · splitText · magnetic · marquee · menu (header + menu mobile)
+                      cookies · reveal · scope (anti-fuite) · head (sync <head>) · footer · accordion · tabs
+                      robot (mascotte) · grid (touche G) · utils
                pages/ home · offres · about · contact · legal · error   (chargés à la demande)
                games/ arcade (coque) · button-game · race-game · maze-game · ship-hunt · utils
 /assets/img/   placeholders AVIF + WebP (srcset), og-image.jpg, icons/
 /assets/video/ hero.mp4 · hero.webm · hero-poster.jpg
-/assets/fonts/ Instrument Serif Italic + JetBrains Mono (OFL, auto-hébergées)
+/assets/fonts/ League Spartan + Archivo Narrow (variables, OFL, auto-hébergées)
 ```
 
 ### Cycle de vie des pages
 
 Chaque module de `pages/` exporte `{ init(scope, container), intro(scope, container, tl), destroy() }`.
-`main.js` crée un **scope** par page (`core/scope.js`) qui regroupe un `gsap.context`, un `gsap.matchMedia`, les écouteurs, observers, intervalles et boucles : tout est détruit d'un appel à la sortie de page (hook Barba `afterLeave`). Vérifié : après 10 navigations Barba, le nombre de ScrollTriggers et de tweens actifs revient exactement à la même valeur pour chaque page.
+`main.js` crée un **scope** par page (`core/scope.js`) qui regroupe un `gsap.context`, un `gsap.matchMedia`, les écouteurs, observers, intervalles et boucles : tout est détruit d'un appel à la sortie de page (hook Barba `afterLeave`).
 
-### Attributs pilotant les animations (sans JS spécifique)
+### Composants et attributs (sans JS spécifique)
 
-| Attribut | Effet |
+| Attribut / composant | Effet |
 |---|---|
 | `data-split="lines\|chars"` | Reveal de texte masqué (SplitText, lisible par les lecteurs d'écran) |
 | `data-reveal="fade\|stagger\|image\|line"` | Fondu, cascade d'enfants, image par clip-path + scale, trait |
 | `data-intro` + `data-delay` | Joué à l'entrée de page (après loader / rideau) au lieu du scroll |
 | `data-parallax="0.15"` | Parallaxe (profondeur, négatif = sens inverse) |
 | `data-counter="140"` (+ `data-prefix`, `data-suffix`, `data-decimals`) | Compteur animé |
-| `data-theme="night\|black\|paper\|deep"` | Couleur du body quand la section passe au centre |
-| `data-magnetic="0.35"` (+ `data-magnetic-radius`, `[data-magnetic-inner]`) | Élément magnétique |
-| `data-marquee` (+ `data-speed`, `data-direction`) | Marquee réactif à la vélocité du scroll |
-| `data-cursor="view\|play\|drag\|game"` (+ `data-cursor-label`) | État du curseur custom |
+| `data-theme="cream\|grey\|space\|gold"` | Fond et palette de la section |
+| `[data-tabs]` + `role="tab"` / `role="tabpanel"` | Onglets accessibles (flèches, Début, Fin) ; sans JS tous les panneaux restent visibles |
+| `svg[data-robot]`, `[data-robot-talk]` (+ `data-messages="…\|…"`) | Robot dont les yeux suivent le pointeur ; bulle de répliques au clic, annoncée aux lecteurs d'écran |
+| `data-magnetic="0.35"` | Bouton légèrement magnétique (utilisé avec parcimonie) |
+| `data-marquee` (+ `data-speed`, `data-direction`) | Bande défilante réactive à la vélocité du scroll |
 | `data-launch-game="button\|race\|maze"` | Ouvre un jeu de l'Arcade |
 | `data-config="email\|phone\|booking\|availability"`, `data-social="LinkedIn"` | Synchronisé avec `CONFIG` |
+| `data-cookie-manage` | Rouvre le choix des cookies |
 
 ---
 
-## 4. Plan de build suivi
-
-1. **Fondations** — tokens, typos, grille 12/6/4, grain, Lenis + ticker GSAP, Barba avec init/destroy.
-2. **Loader + hero** — champ d'étoiles canvas, vaisseau SVG, « GJS » révélé dans le sillage, compteur calé sur le chargement réel, hyperespace, flash, volets ; vidéo hero qui se rétrécit en carte.
-3. **Navigation** — header masqué/réaffiché au scroll, menu plein écran avec aperçu, curseur, transition rideau + vaisseau.
-4. **Accueil** — manifeste au scrub, services horizontaux épinglés (empilés sur mobile), marquees, mosaïque projets + panneau Flip, chiffres, trajectoire de méthode, Arcade, carrousel draggable, CTA, footer.
-5. **Offres** (pile sticky, timeline épinglée, configurateur), **À propos** (G·J·S, équipe, valeurs, timeline, coulisses Flip), **Contact** (formulaire 4 étapes).
-6. **Arcade** — 3 jeux.
-7. **Easter eggs**.
-8. **Passe qualité** — responsive, accessibilité (axe-core), RGPD, SEO, performance (Lighthouse).
-9. **Recette** — voir §10.
+@@PLAN@@
 
 ---
 
@@ -279,7 +267,7 @@ Données envoyées :
 
 Sans endpoint configuré, l'envoi ouvre le client mail du visiteur avec la demande pré-remplie (vers `CONFIG.EMAIL`). Sans JavaScript, le formulaire reste visible en entier et part en `mailto:`.
 
-Protection anti-spam : champ piège `website` (honeypot) — s'il est rempli, rien n'est envoyé. Le consentement RGPD est obligatoire et jamais pré-coché.
+Protection anti-spam : champ piège `website` (honeypot) — s'il est rempli, rien n'est envoyé. La case d'information RGPD est obligatoire et jamais pré-cochée (ce n'est pas un consentement : le traitement repose sur les mesures précontractuelles, voir la politique de confidentialité).
 
 **Pré-remplissage** : le configurateur de « Nos offres » renvoie vers `contact.html?besoins=site,ia&horizon=urgent&objectif=leads` ; le mode Hyperespace vers `contact.html?code=HYPERGJS`. Les paramètres reconnus sont `besoins` (liste ou répétés), `objectif`, `horizon` / `delai`, `code`.
 
@@ -287,16 +275,31 @@ Protection anti-spam : champ piège `website` (honeypot) — s'il est rempli, ri
 
 ## 9. Polices, librairies et RGPD
 
-- **Instrument Serif** (italique) et **JetBrains Mono** sont auto-hébergées (licence OFL incluse dans `assets/fonts/`) et préchargées.
-- **Clash Display** et **General Sans** sont chargées depuis Fontshare (CSS asynchrone, `font-display: swap`). Pour un site 100 % sans transfert vers des tiers, téléchargez-les sur fontshare.com (licence ITF Free Font License), placez `ClashDisplay-Variable.woff2` et `GeneralSans-Variable.woff2` dans `assets/fonts/`, supprimez les deux balises Fontshare (et les `preconnect`) des pages, puis ajoutez dans `tokens.css` :
+### Polices
 
-```css
-@font-face { font-family: "Clash Display"; src: url("../fonts/ClashDisplay-Variable.woff2") format("woff2"); font-weight: 200 700; font-display: swap; }
-@font-face { font-family: "General Sans"; src: url("../fonts/GeneralSans-Variable.woff2") format("woff2"); font-weight: 200 700; font-display: swap; }
-```
+- **League Spartan** (titres) et **Archivo Narrow** (texte), versions variables, sont **auto-hébergées** dans `assets/fonts/` (sous-ensembles latin et latin étendu, licence SIL OFL 1.1 incluse) et préchargées. Aucune police n'est chargée depuis un service tiers.
+- Polices de repli (`GJS Display Fallback`, `GJS Text Fallback` dans `tokens.css`) calées sur des mesures réelles pour limiter le décalage pendant le chargement.
 
-- Les librairies JS viennent de jsDelivr avec intégrité SRI. Pour les auto-héberger, copiez les fichiers `dist/` des paquets npm `gsap@3.13.0`, `lenis@1.3.26`, `@barba/core@2.10.3` et remplacez les URL (les empreintes SRI restent valides, les fichiers sont identiques).
-- **Bandeau cookies** sur-mesure : « Tout refuser », « Personnaliser » et « Tout accepter » ont le même poids visuel ; aucun script de mesure avant consentement ; choix conservé 6 mois ; lien « Gérer les cookies » dans le footer et sur la page Confidentialité. Les seuls stockages actifs par défaut sont fonctionnels (`gjs-consent`, `gjs-visited`, `gjs-arcade-*`) et listés dans la politique de confidentialité.
+### Librairies
+
+Les librairies JS viennent de jsDelivr avec intégrité SRI. L'adresse IP des visiteurs est donc transmise à ce réseau (c'est indiqué dans la politique de confidentialité et la politique cookies). Pour supprimer ce transfert, copiez les fichiers `dist/` des paquets npm `gsap@3.13.0`, `lenis@1.3.26`, `@barba/core@2.10.3` dans `assets/vendor/`, remplacez les URL dans les pages (les empreintes SRI restent valides, les fichiers sont identiques) **et mettez à jour les passages jsDelivr des pages légales**.
+
+### Pages RGPD (toutes reliées dans le footer, colonne « Légal & RGPD »)
+
+| Page | Contenu |
+|---|---|
+| `mentions-legales.html` | Éditeur, directeur de la publication, hébergeur (art. 1-1 et 19 LCEN), propriété intellectuelle, liens, crédits, médiation (si clientèle de particuliers) |
+| `politique-confidentialite.html` | Toutes les informations de l'article 13 du RGPD : responsable, finalités et bases légales, champs obligatoires, destinataires et sous-traitants, transferts hors UE, durées de conservation, droits, sécurité |
+| `politique-cookies.html` | Tableau exact des stockages du site, catégories du bandeau, comment accepter / refuser / changer d'avis, réglages des navigateurs, services externes |
+| `exercer-vos-droits.html` | Chaque droit expliqué, délais, vérification d'identité, recours CNIL, et un **formulaire qui prépare l'email** de demande (aperçu en direct, rien n'est envoyé par le site ; sans JavaScript il part en `mailto:`) |
+
+Ces textes ont été rédigés puis relus point par point par un contradicteur juridique (RGPD, recommandations CNIL, LCEN) et révisés. Ils restent une base : **faites-les valider par un professionnel avant la mise en ligne** et complétez chaque `[À REMPLACER]` (liste au §6).
+
+Points à vérifier côté client, relevés pendant la relecture : coordonnées complètes de la société et de l'hébergeur, désignation (ou non) d'un DPO, prestataires réels (messagerie, réception du formulaire, prise de rendez-vous, facturation, expert-comptable) et leurs garanties de transfert hors UE, certification Data Privacy Framework de Cloudflare et Fastly (jsDelivr), mesures de sécurité concrètes, crédits des visuels, section médiation à garder ou supprimer, numéro de téléphone réel, liens d'aide des navigateurs (Safari, licence GSAP) à contrôler.
+
+### Bandeau cookies
+
+« Tout refuser », « Personnaliser » et « Tout accepter » ont exactement le même style ; aucun script de mesure avant consentement ; choix conservé 6 mois puis effacé et redemandé (ou dès que `CONSENT_VERSION` change) ; bouton « Gérer les cookies » dans le footer de chaque page et sur la politique cookies. Les seuls stockages actifs par défaut sont fonctionnels (`gjs-consent`, `gjs-visited`, `gjs-arcade-*`) et détaillés dans la politique cookies.
 
 ---
 

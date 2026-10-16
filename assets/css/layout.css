@@ -197,7 +197,7 @@ main:focus {
   width: min(calc(100% - 2 * (var(--pad) - var(--cap-pad))), calc(var(--container) + 2 * var(--cap-pad)));
   min-height: 64px;
   margin-inline: auto;
-  padding: 8px var(--cap-pad);
+  padding: 8px calc(var(--cap-pad) - 1px); /* - 1 px de bordure */
   border-radius: 999px;
   background: rgba(22, 16, 12, 0.88);
   border: 1px solid rgba(218, 171, 58, 0.24);
