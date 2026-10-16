@@ -36,7 +36,7 @@ export function initScroll() {
       autoRaf: false,
       anchors: false,
       autoResize: true,
-      prevent: (node) => Boolean(node.closest && node.closest('[data-lenis-prevent], .arcade, .menu, dialog')),
+      prevent: (node) => Boolean(node.closest && node.closest('[data-lenis-prevent], .arcade-modal, .menu, dialog')),
     });
     lenis.on('scroll', () => {
       ScrollTrigger.update();

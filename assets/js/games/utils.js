@@ -1,10 +1,67 @@
 /* ==========================================================================
    GJS ARCADE — UTILITAIRES DE JEU
    Boucle rAF à delta borné, canvas HiDPI, entrées clavier / swipe / pad
-   virtuel, sons synthétisés (Web Audio), particules, records.
+   virtuel, sons synthétisés (Web Audio), particules, records, palette.
    ========================================================================== */
 
 import { store } from '../core/utils.js';
+
+/* ---------- Palette et polices (identité v2 « orbite chaude ») ---------- */
+
+/** Couleurs de marque lues dans tokens.css (repli sur les valeurs de référence). */
+const TOKENS = {
+  space: ['--space', '#16100C'],
+  space2: ['--space-2', '#231912'],
+  space3: ['--space-3', '#3A2A1D'],
+  cream: ['--cream', '#EEE6D8'],
+  cream2: ['--cream-2', '#A9A297'],
+  gold: ['--gold', '#DAAB3A'],
+  copper: ['--copper', '#B67332'],
+  rust: ['--rust', '#93441A'],
+  ink: ['--ink', '#1F1812'],
+  danger: ['--danger-dark', '#FF9A80'],
+};
+
+export function palette() {
+  const cs = getComputedStyle(document.documentElement);
+  const out = {};
+  Object.entries(TOKENS).forEach(([key, [name, fallback]]) => {
+    const value = cs.getPropertyValue(name).trim();
+    out[key] = /^#[0-9a-f]{6}$/i.test(value) ? value : fallback;
+  });
+  return out;
+}
+
+const rgb = (hex) => {
+  const n = parseInt(hex.slice(1), 16);
+  return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+};
+
+/** #RRGGBB → rgba(r,g,b,a) pour le canvas. */
+export function alpha(hex, a) {
+  const [r, g, b] = rgb(hex);
+  return `rgba(${r},${g},${b},${a})`;
+}
+
+/** Mélange opaque de deux couleurs (t = part de b). */
+export function mix(a, b, t) {
+  const ca = rgb(a);
+  const cb = rgb(b);
+  return `#${ca.map((v, i) => Math.round(v + (cb[i] - v) * t).toString(16).padStart(2, '0')).join('')}`;
+}
+
+/** Familles des textes dessinés dans les canvas (polices auto-hébergées du site). */
+export const FONTS = {
+  display: '"League Spartan", "Arial Black", sans-serif',
+  text: '"Archivo Narrow", "Arial Narrow", sans-serif',
+};
+
+/** S'assure que les polices des canvas sont prêtes (au plus 800 ms d'attente). */
+export function loadGameFonts() {
+  if (!document.fonts || !document.fonts.load) return Promise.resolve();
+  const loads = ['700 32px "League Spartan"', '800 32px "League Spartan"', '600 16px "Archivo Narrow"'].map((f) => document.fonts.load(f).catch(() => null));
+  return Promise.race([Promise.all(loads), new Promise((r) => setTimeout(r, 800))]);
+}
 
 /* ---------- Boucle de jeu ------------------------------------------------- */
 
@@ -196,7 +253,8 @@ export const sound = {
 export function createParticles() {
   const list = [];
   return {
-    burst(x, y, { count = 40, colors = ['#FFFFFF', '#5B85FF'], speed = 320, size = 3, life = 1 } = {}) {
+    burst(x, y, { count = 40, colors = null, speed = 320, size = 3, life = 1 } = {}) {
+      if (!colors) { const p = palette(); colors = [p.cream, p.gold]; }
       for (let i = 0; i < count; i += 1) {
         const a = Math.random() * Math.PI * 2;
         const v = speed * (0.3 + Math.random() * 0.7);
@@ -218,7 +276,9 @@ export function createParticles() {
       for (const p of list) {
         ctx.globalAlpha = Math.max(0, p.life / p.max);
         ctx.fillStyle = p.color;
-        ctx.fillRect(p.x - p.size / 2, p.y - p.size / 2, p.size, p.size);
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size / 2, 0, Math.PI * 2);
+        ctx.fill();
       }
       ctx.globalAlpha = 1;
     },

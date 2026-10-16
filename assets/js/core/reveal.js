@@ -67,7 +67,7 @@ function fadeReveal(el, { intro, tl }) {
   const delay = parseFloat(el.dataset.delay || 0);
   const vars = env.reducedMotion
     ? { opacity: 0, duration: 0.6 }
-    : { opacity: 0, y: 28, duration: 1, ease: 'power3.out' };
+    : { opacity: 0, y: 28, duration: 1, ease: 'power3.out', clearProps: 'transform,translate' };
   if (intro) tl.from(el, vars, delay);
   else gsap.from(el, { ...vars, scrollTrigger: { trigger: el, start: 'top 90%', once: true } });
 }
@@ -77,7 +77,7 @@ function staggerReveal(el, { intro, tl }) {
   const items = Array.from(el.children);
   const vars = env.reducedMotion
     ? { opacity: 0, duration: 0.5, stagger: 0.04 }
-    : { opacity: 0, y: 32, duration: 0.9, ease: 'power3.out', stagger: 0.07 };
+    : { opacity: 0, y: 32, duration: 0.9, ease: 'power3.out', stagger: 0.07, clearProps: 'transform,translate' };
   if (intro) tl.from(items, vars, delay);
   else gsap.from(items, { ...vars, scrollTrigger: { trigger: el, start: 'top 88%', once: true } });
 }

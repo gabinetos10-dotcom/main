@@ -1,6 +1,7 @@
 /* ==========================================================================
    GJS — MINI-DÉFI CACHÉ (easter egg n° 4, 7 clics sur le « GJS » du footer)
    Cliquez le vaisseau qui traverse l'écran 5 fois en 10 secondes.
+   La barre du défi prend la place exacte du header (même capsule).
    ========================================================================== */
 
 import { ensureStyles } from './arcade.js';
@@ -13,8 +14,9 @@ const GOAL = 5;
 const TIME = 10;
 
 export async function startShipHunt() {
-  if (document.querySelector('.hunt, .arcade')) return;
+  if (document.querySelector('.hunt, .arcade-modal')) return;
   await ensureStyles();
+  if (document.querySelector('.hunt, .arcade-modal')) return;
   const tpl = document.getElementById('tpl-ship');
 
   const root = document.createElement('div');
@@ -23,13 +25,13 @@ export async function startShipHunt() {
   root.setAttribute('aria-modal', 'true');
   root.setAttribute('aria-label', 'Défi caché : la chasse au vaisseau');
   root.innerHTML = `
-    <div class="hunt__hud t-mono">
-      <p class="label label--signal">[ Défi caché débloqué ]</p>
+    <div class="hunt__hud">
+      <p class="label hunt__label">Défi caché</p>
       <p class="hunt__goal">Touchez le vaisseau ${GOAL} fois en ${TIME} s</p>
-      <p class="hunt__stats"><span data-hits>0</span> / ${GOAL} — <span data-time>${TIME.toFixed(1)}</span> s</p>
-      <button class="arcade__tool t-mono" type="button" data-hunt-close>Quitter [Échap]</button>
+      <p class="hunt__stats"><span class="hunt__stat"><strong data-hits>0</strong> / ${GOAL}</span><span class="hunt__stat"><strong data-time>${formatNumber(TIME, 1)}</strong> s</span></p>
+      <button class="btn btn--secondary btn--sm hunt__close" type="button" data-hunt-close aria-keyshortcuts="Escape">Quitter <kbd aria-hidden="true">Échap</kbd></button>
     </div>
-    <button class="hunt__ship" type="button" data-cursor="game" aria-label="Vaisseau en fuite : appuyez pour le toucher"></button>
+    <button class="hunt__ship" type="button" aria-label="Vaisseau en fuite : appuyez pour le toucher"></button>
     <div class="hunt__result" data-result hidden></div>
     <p class="sr-only" aria-live="polite" data-hunt-live></p>`;
   root.querySelector('.hunt__ship').appendChild(tpl.content.firstElementChild.cloneNode(true));
@@ -79,19 +81,21 @@ export async function startShipHunt() {
     let isRecord = false;
     if (won) isRecord = saveBest('hunt', used, `${formatNumber(used, 1)} s`, (a, b) => a < b);
     const best = getBest('hunt');
+    root.classList.add('is-over');
     result.hidden = false;
     result.innerHTML = won ? `
-      <p class="label label--signal">${isRecord ? 'Nouveau record' : 'Défi réussi'}</p>
-      <h2 class="t-display">${GOAL} / ${GOAL} en ${formatNumber(used, 1)} s. <em class="serif">Œil de lynx.</em></h2>
-      <p>Vous repérez les opportunités au vol. Nous, on les transforme en clients.</p>
-      <p class="t-mono t-muted">Record : ${best ? best.label : '—'}</p>
-      <div class="arcade-screen__actions"><a class="btn btn--light" href="contact.html" data-hunt-cta>Transformer l’essai <span class="btn__arrow" aria-hidden="true">→</span></a><button class="btn btn--ghost" type="button" data-hunt-replay>Rejouer</button></div>` : `
-      <p class="label label--signal">Temps écoulé</p>
-      <h2 class="t-display">${hits} / ${GOAL}. <em class="serif">Il était plus rapide.</em></h2>
-      <p>Les opportunités passent vite. Mieux vaut avoir les bons outils pour les capter.</p>
-      <div class="arcade-screen__actions"><button class="btn btn--light" type="button" data-hunt-replay>Rejouer</button><button class="btn btn--ghost" type="button" data-hunt-close>Quitter</button></div>`;
+      <p class="label">${isRecord ? 'Nouveau record' : 'Défi réussi'}</p>
+      <h2 class="hunt__title t-display">${GOAL} / ${GOAL} en ${formatNumber(used, 1)} s. <span class="accent">Œil de lynx.</span></h2>
+      <p class="hunt__text">Vous repérez les opportunités au vol. Nous, on les transforme en clients.</p>
+      <p class="hunt__best"><span>Record</span> ${best ? best.label : '—'}</p>
+      <div class="hunt__actions"><a class="btn btn--primary" href="contact.html" data-hunt-cta>Transformer l’essai <span class="btn__arrow" aria-hidden="true">→</span></a><button class="btn btn--secondary" type="button" data-hunt-replay>Rejouer</button></div>` : `
+      <p class="label">Temps écoulé</p>
+      <h2 class="hunt__title t-display">${hits} / ${GOAL}. <span class="accent">Il était plus rapide.</span></h2>
+      <p class="hunt__text">Les opportunités passent vite. Mieux vaut avoir les bons outils pour les capter.</p>
+      <div class="hunt__actions"><button class="btn btn--primary" type="button" data-hunt-replay>Rejouer</button><button class="btn btn--secondary" type="button" data-hunt-close>Quitter</button></div>`;
     if (won) sound.win(); else sound.hit();
-    if (!env.reducedMotion) gsap.from(result.children, { y: 24, autoAlpha: 0, stagger: 0.07, duration: 0.7, ease: 'expo.out' });
+    // Opacité seulement : le bouton focalisé juste après doit rester focalisable
+    if (!env.reducedMotion) gsap.from(result.children, { y: 24, opacity: 0, stagger: 0.07, duration: 0.7, ease: 'expo.out', clearProps: 'transform,opacity' });
     announce(won ? `Défi réussi en ${formatNumber(used, 1)} secondes.` : `Temps écoulé : ${hits} sur ${GOAL}.`, 'assertive');
     requestAnimationFrame(() => result.querySelector('a, button')?.focus());
   };
@@ -99,7 +103,7 @@ export async function startShipHunt() {
   const tick = (t, deltaMs) => {
     if (!running) return;
     left = Math.max(0, left - deltaMs / 1000);
-    timeEl.textContent = left.toFixed(1);
+    timeEl.textContent = formatNumber(left, 1);
     if (left <= 0) end(false);
   };
   gsap.ticker.add(tick);
@@ -142,10 +146,13 @@ export async function startShipHunt() {
     left = TIME;
     running = true;
     hitsEl.textContent = '0';
+    timeEl.textContent = formatNumber(TIME, 1);
+    root.classList.remove('is-over');
     result.hidden = true;
     result.innerHTML = '';
-    shipBtn.focus();
-    fly();
+    gsap.killTweensOf(shipBtn); // fondu de sortie éventuellement en cours
+    fly(); // rend le vaisseau visible (autoAlpha) avant de lui donner le focus
+    shipBtn.focus({ preventScroll: true });
   };
 
   const onKey = (e) => { if (e.key === 'Escape') { e.preventDefault(); close(); } };
@@ -160,6 +167,6 @@ export async function startShipHunt() {
   });
 
   announce('Défi caché débloqué : touchez le vaisseau cinq fois en dix secondes.', 'assertive');
-  if (!env.reducedMotion) gsap.from(root.querySelector('.hunt__hud').children, { y: -20, autoAlpha: 0, stagger: 0.06, duration: 0.6, ease: 'expo.out' });
+  if (!env.reducedMotion) gsap.from(root.querySelector('.hunt__hud').children, { y: -20, opacity: 0, stagger: 0.06, duration: 0.6, ease: 'expo.out', clearProps: 'transform,opacity' });
   fly();
 }

@@ -115,7 +115,24 @@ Chaque module de `pages/` exporte `{ init(scope, container), intro(scope, contai
 
 ---
 
-@@PLAN@@
+## 4. Historique
+
+**v1** — site complet selon le brief : loader vaisseau, hero vidéo, menu plein écran, transitions Barba, 3 pages + 2 pages légales + 404, Arcade (3 jeux), 4 easter eggs, bandeau cookies, SEO, accessibilité, performance.
+
+**v2 (refonte demandée par le client)** — chaque demande et sa réponse :
+
+| Demande | Réponse |
+|---|---|
+| Information moins brouillon, site plus aéré et clair | Un seul sur-titre par section (fini les « [01] — … »), en-têtes de section normalisés, sections à fond propre qui alternent, respiration verticale 80 → 144 px, textes resserrés, tailles de titres raisonnables |
+| Éléments pas à la même marge | Un seul conteneur pour tout le site : titres, textes, cartes, images, header et footer partagent le même bord (écart mesuré ≤ 1 px de 360 à 2 560 px, voir §10) ; plus de décalages en escalier ni de rotations |
+| Renforcer l'interaction | Onglets (expertises, offres), filtres animés des projets, panneau projet, sommaire collant avec repérage, comparatif interactif, configurateur avec synthèse animée, frises qui se remplissent, cartes qui réagissent au survol et au clavier, robot qui parle, formulaire avec progression, visionneuse photo, Arcade |
+| Identité plus marquante, couleurs imposées, univers espace / robots | Palette `#E5E7E6` `#EEE6D8` `#DAAB3A` `#B67332` `#93441A` (+ encre et nuit chaude dérivées), mascotte robot, planètes, ciels étoilés, vaisseau ; médias régénérés dans cette palette |
+| Enlever l'effet sur le curseur | Curseur personnalisé supprimé (module, styles, attributs) : pointeur du système partout |
+| Typographies League Spartan / Archivo Narrow | Auto-hébergées, préchargées, fallbacks calés |
+| Header plus marqué et visuel | Capsule sombre toujours lisible, logo robot, navigation visible dès 1 024 px avec page courante, bouton or « Démarrer un projet », menu plein écran en mobile |
+| Footer moins gros, plus compréhensible, GJS présent | Bande d'appel à l'action avec robot, « GJS » en taille maîtrisée avec orbite, 4 colonnes claires (Navigation, Expertises, Légal & RGPD, Contact), barre de bas de page |
+| Pages RGPD intégrées au footer | Mentions légales, Confidentialité, Cookies, Exercer vos droits (avec formulaire), bouton « Gérer les cookies » — colonne « Légal & RGPD » du footer et onglets entre les 4 pages |
+
 
 ---
 
@@ -139,7 +156,7 @@ ffmpeg -i source.mov -t 12 -vf "scale=1920:-2" -an -c:v libvpx-vp9 -b:v 0 -crf 3
 ffmpeg -i assets/video/hero.mp4 -frames:v 1 -q:v 3 assets/video/hero-poster.jpg
 ```
 
-Le bouton « Son » bascule `muted` : il n'a d'effet que si votre vidéo contient une piste audio.
+La vidéo actuelle est un placeholder génératif (ciel étoilé chaud, planète cuivrée à anneau), volontairement sans libellé incrusté. Le bouton « Pause » du hero est obligatoire (WCAG 2.2.2) ; la vidéo est aussi mise en pause hors écran, en économie de données et en mouvement réduit.
 
 ### Images
 
@@ -156,30 +173,18 @@ Le bouton « Son » bascule `muted` : il n'a d'effet que si votre vidéo contien
 | `projet-04` | 1600×1200 | 800 / 1600 | ≤ 180 Ko (WebP 1600 px) | Grille de contenus social media du projet Draco |
 | `projet-05` | 1600×1067 | 800 / 1600 | ≤ 180 Ko (WebP 1600 px) | Agent IA de qualification de leads du projet Eridan |
 | `projet-06` | 1200×1600 | 800 / 1200 | ≤ 140 Ko | Site vitrine animé du projet Fornax |
-| `manifeste-01` | 480×480 | 480 | ≤ 60 Ko |  |
-| `manifeste-02` | 480×480 | 480 | ≤ 60 Ko |  |
-| `manifeste-03` | 480×480 | 480 | ≤ 60 Ko |  |
-| `offres-surmesure` | 1200×1500 | 600 / 1200 | ≤ 140 Ko | Atelier de cadrage : post-its, schémas et maquettes sur une table |
-| `equipe-01` | 900×1200 | 450 / 900 | ≤ 90 Ko | Portrait de Prénom Nom, Fondateur — Stratégie & SEO |
-| `equipe-02` | 900×1200 | 450 / 900 | ≤ 90 Ko | Portrait de Prénom Nom, Lead développeuse — Web & IA |
-| `equipe-03` | 900×1200 | 450 / 900 | ≤ 90 Ko | Portrait de Prénom Nom, Head of Ads — Acquisition |
-| `equipe-04` | 900×1200 | 450 / 900 | ≤ 90 Ko | Portrait de Prénom Nom, Directrice de création — Social |
-| `coulisses-01` | 1000×1250 | 500 / 1000 | ≤ 90 Ko | Atelier de stratégie autour d’un grand mur de post-its |
+| `equipe-01` | 900×1200 | 450 / 900 | ≤ 90 Ko | Portrait de Prénom Nom, Fondateur, Stratégie & SEO |
+| `equipe-02` | 900×1200 | 450 / 900 | ≤ 90 Ko | Portrait de Prénom Nom, Lead développeuse, Web & IA |
+| `equipe-03` | 900×1200 | 450 / 900 | ≤ 90 Ko | Portrait de Prénom Nom, Head of Ads, Acquisition |
+| `equipe-04` | 900×1200 | 450 / 900 | ≤ 90 Ko | Portrait de Prénom Nom, Directrice de création, Social |
+| `coulisses-01` | 1000×1250 | 500 / 1000 | ≤ 140 Ko | Atelier de stratégie autour d’un grand mur de post-its |
 | `coulisses-02` | 1200×800 | 600 / 1200 | ≤ 140 Ko | Écrans de développement avec du code et un prototype |
-| `coulisses-03` | 1000×1250 | 500 / 1000 | ≤ 90 Ko | Séance photo produit pour un client |
+| `coulisses-03` | 1000×1250 | 500 / 1000 | ≤ 140 Ko | Séance photo produit pour un client |
 | `coulisses-04` | 1200×800 | 600 / 1200 | ≤ 140 Ko | Réunion d’équipe autour d’un tableau de bord |
 | `coulisses-05` | 1200×800 | 600 / 1200 | ≤ 140 Ko | Tournage d’une vidéo courte pour les réseaux sociaux |
-| `coulisses-06` | 1000×1250 | 500 / 1000 | ≤ 90 Ko | Détail d’un carnet de croquis UX |
-| `coulisses-07` | 1000×1250 | 500 / 1000 | ≤ 90 Ko | Plan de travail avec maquettes imprimées |
+| `coulisses-06` | 1000×1250 | 500 / 1000 | ≤ 140 Ko | Détail d’un carnet de croquis UX |
+| `coulisses-07` | 1000×1250 | 500 / 1000 | ≤ 140 Ko | Plan de travail avec maquettes imprimées |
 | `coulisses-08` | 1200×800 | 600 / 1200 | ≤ 140 Ko | L’équipe GJS dans les locaux à Paris |
-| `about-01` | 900×1200 | 450 / 900 | ≤ 90 Ko |  |
-| `about-02` | 900×1200 | 450 / 900 | ≤ 90 Ko |  |
-| `menu-accueil` | 640×800 | 640 | ≤ 60 Ko | Aperçu menu — accueil |
-| `menu-offres` | 640×800 | 640 | ≤ 60 Ko | Aperçu menu — offres |
-| `menu-a-propos` | 640×800 | 640 | ≤ 60 Ko | Aperçu menu — a-propos |
-| `menu-contact` | 640×800 | 640 | ≤ 60 Ko | Aperçu menu — contact |
-| `menu-arcade` | 640×800 | 640 | ≤ 60 Ko | Aperçu menu — arcade |
-Commande type pour produire les deux formats aux bonnes largeurs (exemple avec [sharp-cli](https://www.npmjs.com/package/sharp-cli)) :
 
 ```bash
 npx sharp-cli -i projet-01.jpg -o assets/img/projet-01-1600.avif resize 1600 -f avif -q 50
@@ -201,7 +206,7 @@ npx sharp-cli -i projet-01.jpg -o assets/img/projet-01-1600.webp resize 1600 -f 
 
 ## 6. Textes à remplacer
 
-Recherchez `[À REMPLACER]` dans les fichiers HTML : chaque bloc concerné porte une étiquette visible.
+Recherchez `[À REMPLACER]` dans les fichiers HTML : chaque bloc concerné porte une étiquette rouille bien visible.
 
 | Où | Quoi |
 |---|---|
@@ -209,13 +214,14 @@ Recherchez `[À REMPLACER]` dans les fichiers HTML : chaque bloc concerné porte
 | Accueil — Chiffres | 4 statistiques (+140 %, ×3,2, 12 h, 0,9 s) — **à remplacer par des chiffres réels et vérifiables** |
 | Accueil — Témoignages | 4 citations, noms et fonctions |
 | Offres — Mini-cas | 1 chiffre + contexte par expertise |
-| À propos | Équipe (4 portraits), trajectoire 2021-2026, coulisses, « Paris, depuis 2022 » |
-| Contact | Lien de prise de rendez-vous (`CONFIG.BOOKING_URL`) |
-| Mentions légales | Raison sociale, forme, capital, adresse, RCS, SIRET, TVA, directeur de publication, hébergeur, crédits photo |
-| Confidentialité | Coordonnées du responsable, DPO, sous-traitants (hébergeur, formulaire, mesure d'audience), date de mise à jour |
-| Accroche hero | Commentaire `<!-- [À REMPLACER] accroche principale -->` (texte du brief) |
+| À propos | Équipe (4 portraits, noms, rôles, « en mission sur… », liens LinkedIn), trajectoire 2021-2026, 8 photos des coulisses |
+| Contact | Lien de prise de rendez-vous (`CONFIG.BOOKING_URL`), téléphone réel |
+| Mentions légales | Dénomination exacte, forme, capital, siège, RCS, SIRET, TVA, directeur de la publication, hébergeur (nom, raison sociale, adresse, téléphone), crédits des visuels, section médiation à garder seulement si vous avez des clients particuliers |
+| Confidentialité | DPO (ou « non désigné »), prestataires réels et pays (messagerie, réception du formulaire, rendez-vous, facturation, expert-comptable), garanties de transfert hors UE, durée exacte des journaux de l'hébergeur, mesures de sécurité concrètes |
+| Cookies | Outil de mesure d'audience s'il est activé (nom, éditeur, traceurs, durées) |
+| Accroche hero | Commentaire `<!-- [À REMPLACER] accroche principale -->` |
 
-Les textes juridiques sont une base structurée conforme au RGPD et aux recommandations CNIL ; faites-les valider avant mise en ligne.
+Les textes juridiques ont été relus par un contradicteur juridique puis révisés ; faites-les tout de même valider par un professionnel avant la mise en ligne (voir §9).
 
 ---
 
@@ -303,27 +309,25 @@ Points à vérifier côté client, relevés pendant la relecture : coordonnées 
 
 ---
 
-## 10. Recette — résultats mesurés
+## 10. Recette — résultats mesurés (v2)
 
-Tests automatisés (Playwright + Chromium) exécutés pendant le développement, librairies servies depuis des copies locales identiques aux fichiers CDN épinglés :
+Tests automatisés (Playwright + Chromium) exécutés pendant la refonte, librairies servies depuis des copies locales identiques aux fichiers CDN épinglés :
 
 | Contrôle | Résultat |
 |---|---|
-| Erreurs console sur les 7 pages (chargement direct + défilement complet) | **0** |
-| Loader complet (1re visite) / court (visites suivantes) / réduit | OK, « Passer l'intro » au clavier, annonce `aria-live`, scroll bloqué |
-| Transitions Barba, titre et focus mis à jour, CSS de page chargée à la volée | OK |
-| 10 navigations Barba consécutives | ScrollTriggers et tweens actifs identiques à chaque retour sur une page (pas de fuite) |
-| Configurateur → Contact pré-rempli ; validation, erreurs accessibles, succès | OK |
-| Arcade : 3 jeux jouables (clavier + pad tactile / balayage), pause, fin, record, CTA | OK |
-| Easter eggs : Konami, « gjs », console, 7 clics footer | OK |
-| `prefers-reduced-motion` | Lenis, parallaxe, distorsions coupés ; vidéo en pause ; loader ≈ 1 s ; fondus simples |
-| Clavier : skip link, ordre de tabulation, focus piégé (menu, modales, jeux), Échap | OK |
-| axe-core (WCAG 2.2 A/AA + bonnes pratiques) | 0 violation sur 6 pages ; sur l'accueil, seuls les mots du manifeste à 15 % d'opacité avant leur révélation au scroll (effet demandé, désactivé en mouvement réduit) |
-| Lighthouse desktop (Accueil, Offres, À propos, Contact, Mentions) | **100 / 100 / 100 / 100** — LCP 0,5-0,6 s, CLS 0, TBT 0 ms |
-| Lighthouse mobile (Accueil, CPU ×4, 4G lente) | 98 / 100 / 100 / 100 — LCP 2,3 s, CLS 0 |
-| Rendu 360 → 2560 px, paysage mobile | Captures à 360, 390, 768, 1024, 1440, 2560 px et 844×390 (paysage) : aucun débordement horizontal, aucune erreur ; grilles 12/6/4, typographie géante conservée |
+| 9 pages × 5 largeurs (360, 768, 1024, 1440, 1920 px), chargement direct + défilement complet | **0** erreur console, **0** réponse HTTP en erreur, **0** image cassée, **0** débordement horizontal |
+| Alignement : bord gauche et droit de chaque titre, texte, carte, image et bloc du footer comparés à ceux du header | **0** élément hors des marges sur les 45 combinaisons (écart mesuré ≤ 1 px, de 360 à 2 560 px dans les recettes de page) |
+| axe-core (WCAG 2.2 A/AA + bonnes pratiques), 9 pages à 360 / 390 / 1440 px, mouvement normal et réduit | **0** violation |
+| `prefers-reduced-motion` | Textes d'intro visibles sur toutes les pages, pas de parallaxe ni de défilement doux, vidéo en pause, frises remplies, jeux jouables |
+| Navigation Barba : 2 tours complets des 9 pages (desktop et mobile, menu mobile inclus) + ouverture/fermeture d'un jeu | Compteurs de ScrollTriggers et de tweens identiques d'un tour à l'autre (pas de fuite), 1 seule feuille de style de page chargée, aucune modale ni verrou de défilement restant, 0 erreur |
+| Ancres entre pages (ex. footer → `offres.html#ads`) | Arrivée sur le bloc visé, sous le header |
+| Formulaires : contact (79 vérifications : champs requis, erreurs, mailto, POST JSON, échec réseau, pré-remplissage, piège anti-spam) et « Exercer vos droits » | OK |
+| Arcade et easter eggs : 3 jeux au clavier et au tactile, pause, fin, record, focus ; Konami, « gjs », console, 7 clics | OK |
+| Sans JavaScript / ouverture en `file://` | Page lisible, navigation visible, panneaux d'onglets dépliés, formulaires en `mailto:` ; message d'aide en `file://` |
+| Lighthouse desktop (Accueil, Offres, À propos, Contact, Confidentialité) | **99-100 / 100 / 100 / 100** — LCP 0,6-0,8 s, TBT 0-50 ms |
+| Lighthouse mobile (CPU ×4, 4G lente) | Accueil **95** / 100 / 100 / 100 (LCP 2,8 s, CLS 0,055 pendant l'écran de chargement), Offres **97** / 100 / 100 / 100 (LCP 2,5 s) |
 
-Limites connues de ces mesures : les polices Fontshare n'étaient pas joignables dans l'environnement de test (rendu avec la police de repli) et Lighthouse a été lancé en local ; refaites une mesure sur l'hébergement final avec les vrais médias.
+Limites connues : Lighthouse a été lancé en local avec les médias de substitution ; refaites une mesure sur l'hébergement final avec les vrais médias.
 
 ---
 
@@ -332,5 +336,5 @@ Limites connues de ces mesures : les polices Fontshare n'étaient pas joignables
 1. **Code Konami** ↑ ↑ ↓ ↓ ← → ← → B A : mode Hyperespace (warp 5 s, vaisseau, typos qui tremblent) puis modale secrète avec le code `HYPERGJS`.
 2. Taper **« gjs »** hors d'un champ : le logo du header fait un tonneau avec traînée.
 3. **Console** : logo ASCII et invitation à écrire.
-4. **7 clics** sur le « GJS » géant du footer : défi caché — toucher le vaisseau 5 fois en 10 s.
+4. **7 clics** sur le « GJS » du footer : défi caché — toucher le vaisseau 5 fois en 10 s.
 5. Bonus studio : touche **G** (desktop) pour afficher la grille.

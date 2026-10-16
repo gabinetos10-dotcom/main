@@ -255,6 +255,13 @@ em {
   border-radius: 4px;
 }
 
+/* Conteneurs qui reçoivent le focus par programme (main, scène de jeu,
+   bloc ciblé par une ancre) : pas d'anneau de focus sur toute leur surface */
+[tabindex="-1"]:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
 /* Le texte splitté reste lisible par les lecteurs d'écran (copie .sr-only) */
 .split-target {
   display: block;
@@ -369,6 +376,12 @@ html.lenis body {
 html.is-scroll-locked,
 html.is-scroll-locked body {
   overflow: hidden;
+}
+
+/* Les calques plein écran (menu, jeux, modales, rideau) sont sombres : la
+   gouttière réservée à la barre de défilement prend la même couleur. */
+html.is-scroll-locked {
+  background: var(--space);
 }
 
 /* ---- Sans JS : on garde un site lisible -------------------------------- */

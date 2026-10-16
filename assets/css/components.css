@@ -993,11 +993,9 @@
 }
 
 /* Logo : traînée du tonneau (easter egg) */
+/* Position calculée par easter-egg.js à partir du texte « GJS » mesuré */
 .header__logo-ghost {
   position: absolute;
-  top: 50%;
-  left: 52px;
-  translate: 0 -46%;
   pointer-events: none;
   color: var(--gold);
 }

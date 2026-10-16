@@ -131,17 +131,17 @@ function labelOf(form, name, value) {
 
 function mailtoFallback(form, data) {
   const lines = [
-    `Besoins : ${data.besoins.map((v) => labelOf(form, 'besoins', v)).join(', ')}`,
-    data.objectif ? `Objectif : ${labelOf(form, 'objectif', data.objectif)}` : '',
-    `Budget : ${labelOf(form, 'budget', data.budget)}`,
-    `Délai : ${labelOf(form, 'delai', data.delai)}`,
+    `Besoins : ${data.besoins.map((v) => labelOf(form, 'besoins', v)).join(', ')}`,
+    data.objectif ? `Objectif : ${labelOf(form, 'objectif', data.objectif)}` : '',
+    `Budget : ${labelOf(form, 'budget', data.budget)}`,
+    `Délai : ${labelOf(form, 'delai', data.delai)}`,
     '',
-    `Nom : ${data.nom}`,
-    `Email : ${data.email}`,
-    data.entreprise ? `Entreprise : ${data.entreprise}` : '',
-    data.telephone ? `Téléphone : ${data.telephone}` : '',
-    data.site ? `Site : ${data.site}` : '',
-    data.code ? `Code : ${data.code}` : '',
+    `Nom : ${data.nom}`,
+    `Email : ${data.email}`,
+    data.entreprise ? `Entreprise : ${data.entreprise}` : '',
+    data.telephone ? `Téléphone : ${data.telephone}` : '',
+    data.site ? `Site : ${data.site}` : '',
+    data.code ? `Code : ${data.code}` : '',
     '',
     data.message,
   ].filter((l, i, arr) => l !== '' || arr[i - 1] !== '');

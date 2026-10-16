@@ -727,7 +727,16 @@ html:has(.header.is-hidden) .contact-form__hud {
   border-radius: var(--radius);
   background: var(--surface);
   border: 1px solid var(--line);
-  transition: transform 0.5s var(--ease-out-expo), box-shadow 0.5s var(--ease-out-expo), border-color 0.3s;
+  /* Pas de transition sur transform : l'apparition au défilement (GSAP,
+     data-reveal="stagger") pilote transform ; le soulèvement passe par translate. */
+  transition: translate 0.5s var(--ease-out-expo), box-shadow 0.5s var(--ease-out-expo), border-color 0.3s;
+}
+
+.contact-card.card--interactive:hover,
+.contact-card.card--interactive:focus-within {
+  transform: none;
+  /* !important : GSAP écrit « translate: none » en style en ligne après l'apparition */
+  translate: 0 -4px !important;
 }
 
 .contact-card--email {
@@ -947,6 +956,6 @@ html:has(.header.is-hidden) .contact-form__hud {
 
   .contact-card.card--interactive:hover,
   .contact-card.card--interactive:focus-within {
-    transform: none;
+    translate: none !important;
   }
 }
