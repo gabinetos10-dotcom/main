@@ -68,7 +68,8 @@
 }
 
 .hero__title {
-  font-size: var(--fs-display);
+  /* Plafonné par la hauteur d'écran : 4 lignes + le reste tiennent dans 100svh (1366×768…) */
+  font-size: min(var(--fs-display), max(2.5rem, (100svh - 420px) / 4));
   max-width: 13ch;
 }
 
@@ -86,7 +87,6 @@
 
 .hero__status {
   display: inline-flex;
-  margin-left: 8px;
   align-items: center;
   gap: 12px;
   min-height: 36px;
@@ -221,6 +221,8 @@
     grid-template-columns: minmax(0, 8fr) minmax(0, 4fr);
     column-gap: var(--gutter);
     align-items: center;
+    /* Le bouton pause est à droite, sous le visuel : il ne croise pas le texte */
+    padding-bottom: clamp(40px, 6svh, 72px);
   }
 
   .hero__visual {
@@ -229,7 +231,7 @@
     justify-self: end;
   }
 
-  .hero__robot { width: 50%; }
+  .hero__robot { width: 56%; }
 
   .hero__talk .robot-talk__bubble {
     left: 50%;
@@ -243,13 +245,18 @@
   }
 }
 
+/* Petit desktop : colonne de texte étroite, titre sur 4 lignes au plus */
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .hero__title { font-size: min(6.8vw, max(2.5rem, (100svh - 420px) / 4)); }
+}
+
 @media (max-width: 1023px) {
   .hero__inner { align-content: start; }
 }
 
-/* Petits écrans : la pastille passe à la ligne, alignée sur le bord */
+/* Petits écrans : visuel plus compact sous le texte */
 @media (max-width: 767px) {
-  .hero__status { margin-left: 0; }
+  .hero__visual { width: min(100%, 260px); }
 }
 
 /* Paysage mobile : hauteur réduite */
@@ -313,30 +320,31 @@
 
 /* ---- 4. Expertises (onglets) -------------------------------------------- */
 
-.expertise__tabs {
+.levers__tabs {
   display: grid;
   gap: clamp(28px, 3vw, 40px);
 }
 
-.expertise__list {
+.levers__list {
   position: relative;
   flex-wrap: nowrap;
   overflow-x: auto;
   padding-block: 6px;
   scrollbar-width: none;
   scroll-snap-type: x proximity;
-  -webkit-mask-image: linear-gradient(90deg, black calc(100% - 48px), transparent);
-  mask-image: linear-gradient(90deg, black calc(100% - 48px), transparent);
+  /* Fondus de bord : à droite tant qu'il reste des onglets, à gauche dès qu'on a défilé */
+  --fade-l: 0px;
+  --fade-r: 48px;
+  -webkit-mask-image: linear-gradient(90deg, transparent, black var(--fade-l), black calc(100% - var(--fade-r)), transparent);
+  mask-image: linear-gradient(90deg, transparent, black var(--fade-l), black calc(100% - var(--fade-r)), transparent);
 }
 
-.expertise__list::-webkit-scrollbar { display: none; }
+.levers__list::-webkit-scrollbar { display: none; }
 
-.expertise__list.is-end {
-  -webkit-mask-image: none;
-  mask-image: none;
-}
+.levers__list.is-scrolled { --fade-l: 48px; }
+.levers__list.is-end { --fade-r: 0px; }
 
-.expertise__tab {
+.levers__tab {
   flex-shrink: 0;
   gap: 12px;
   white-space: nowrap;
@@ -345,7 +353,7 @@
   border-color: var(--line);
 }
 
-.expertise__tab-num {
+.levers__tab-num {
   font-size: var(--fs-label);
   font-weight: 700;
   letter-spacing: var(--tracking-mono);
@@ -354,61 +362,61 @@
   transition: color 0.3s;
 }
 
-.expertise__tab[aria-selected="true"] .expertise__tab-num {
+.levers__tab[aria-selected="true"] .levers__tab-num {
   color: var(--gold);
 }
 
 /* Anneau de focus à l'intérieur (la liste défile et rognerait l'anneau) */
-.expertise__tab:focus-visible {
+.levers__tab:focus-visible {
   outline-offset: -5px;
   box-shadow: none;
   border-radius: 999px;
 }
 
-.expertise__panels {
+.levers__panels {
   min-width: 0;
 }
 
-.expertise__panel {
+.levers__panel {
   display: grid;
   gap: clamp(24px, 3vw, 40px);
   align-items: center;
   border-radius: var(--radius);
 }
 
-.expertise__panel:focus-visible {
+.levers__panel:focus-visible {
   outline-offset: 8px;
   box-shadow: none;
 }
 
-.expertise__media {
+.levers__media {
   aspect-ratio: 4 / 3;
   box-shadow: var(--shadow-1);
 }
 
-.expertise__body {
+.levers__body {
   display: grid;
   justify-items: start;
   gap: 18px;
 }
 
-.expertise__title {
+.levers__title {
   font-size: var(--fs-h3);
 }
 
-.expertise__text {
+.levers__text {
   color: var(--fg-2);
   max-width: 48ch;
 }
 
-.expertise__points {
+.levers__points {
   display: grid;
   gap: 10px;
   width: 100%;
   padding-block: 4px;
 }
 
-.expertise__points li {
+.levers__points li {
   display: flex;
   align-items: baseline;
   gap: 12px;
@@ -417,7 +425,7 @@
   font-weight: 600;
 }
 
-.expertise__points li::before {
+.levers__points li::before {
   content: "";
   flex-shrink: 0;
   width: 0.7em;
@@ -428,25 +436,25 @@
 }
 
 /* Sans JS : panneaux empilés */
-.no-js .expertise__panel + .expertise__panel {
+.no-js .levers__panel + .levers__panel {
   margin-top: var(--stack);
 }
 
 @media (min-width: 768px) {
-  .expertise__panel {
+  .levers__panel {
     grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
     align-items: start;
   }
 }
 
 @media (min-width: 1024px) {
-  .expertise__tabs {
+  .levers__tabs {
     grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
     column-gap: var(--gutter);
     align-items: start;
   }
 
-  .expertise__list {
+  .levers__list {
     position: sticky;
     top: calc(var(--header-h) + 24px);
     flex-direction: column;
@@ -457,7 +465,7 @@
     mask-image: none;
   }
 
-  .expertise__tab {
+  .levers__tab {
     width: 100%;
     min-height: 60px;
     padding: 0 22px;
@@ -465,7 +473,7 @@
     transition: background-color 0.3s, color 0.3s, border-color 0.3s, padding 0.5s var(--ease-out-expo);
   }
 
-  .expertise__tab::after {
+  .levers__tab::after {
     content: "→";
     margin-left: auto;
     opacity: 0;
@@ -473,17 +481,17 @@
     transition: opacity 0.3s, transform 0.45s var(--ease-out-expo);
   }
 
-  .expertise__tab:hover {
+  .levers__tab:hover {
     padding-left: 28px;
   }
 
-  .expertise__tab:hover::after,
-  .expertise__tab[aria-selected="true"]::after {
+  .levers__tab:hover::after,
+  .levers__tab[aria-selected="true"]::after {
     opacity: 1;
     transform: none;
   }
 
-  .expertise__tab:focus-visible {
+  .levers__tab:focus-visible {
     outline-offset: 3px;
     box-shadow: 0 0 0 6px var(--gold-soft);
   }
@@ -740,12 +748,15 @@
   }
 
   .project-panel__media {
+    grid-column: 1;
     grid-row: 1 / span 2;
     position: sticky;
     top: 84px;
   }
 
-  .project-panel__nav { grid-column: 2; }
+  /* Placement explicite : rien ne bouge si le média sort du flux */
+  .project-panel__content { grid-column: 2; grid-row: 1; }
+  .project-panel__nav { grid-column: 2; grid-row: 2; }
 }
 
 /* ---- 6. Chiffres --------------------------------------------------------- */
@@ -845,6 +856,7 @@
 .method__step {
   position: relative;
   display: grid;
+  align-content: start;
   justify-items: start;
   gap: 10px;
   padding-right: calc(var(--dot) + 26px);
@@ -928,13 +940,13 @@
 
 /* ---- 8. Arcade ---------------------------------------------------------- */
 
-.arcade__grid {
+.arcade-teaser__grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: var(--gutter);
 }
 
-.arcade__item {
+.arcade-teaser__item {
   display: flex;
 }
 
@@ -1049,7 +1061,7 @@
   margin-bottom: 8px;
 }
 
-.arcade__hint {
+.arcade-teaser__hint {
   margin-top: var(--stack);
   font-size: var(--fs-small);
   color: var(--fg-2);
@@ -1057,11 +1069,11 @@
 }
 
 @media (min-width: 768px) {
-  .arcade__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .arcade-teaser__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 
 /* Aperçus d'écran animés : en pause hors écran */
-.arcade:not(.is-inview) .cabinet__screen * {
+.arcade-teaser:not(.is-inview) .cabinet__screen * {
   animation-play-state: paused;
 }
 
@@ -1241,7 +1253,14 @@
   border-radius: var(--radius-l);
   background: var(--surface);
   border: 1px solid var(--line);
-  transition: opacity 0.5s, border-color 0.4s, box-shadow 0.5s var(--ease-out-expo);
+  transition: background-color 0.5s, border-color 0.4s, box-shadow 0.5s var(--ease-out-expo);
+}
+
+.quote__figure {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(20px, 2.4vw, 28px);
 }
 
 .quote.is-active {
@@ -1249,13 +1268,21 @@
   box-shadow: var(--shadow-1);
 }
 
+/* Cartes voisines : « fantômes » (contour seul), texte au contraste plein */
 .quote:not(.is-active) {
-  opacity: 0.45;
+  background: transparent;
+  border-color: color-mix(in srgb, var(--fg) 26%, transparent);
   cursor: pointer;
 }
 
 .quote:not(.is-active):hover {
-  opacity: 0.7;
+  background: color-mix(in srgb, var(--surface) 55%, transparent);
+  border-color: var(--line-strong);
+}
+
+.quote:not(.is-active) .quote__avatar {
+  background: transparent;
+  border: 1.5px solid var(--line-strong);
 }
 
 .quote__mark {
@@ -1386,6 +1413,40 @@
 
 @media (min-width: 1024px) {
   .quote { width: calc((100cqw - var(--gutter)) * 0.62); }
+}
+
+/* ---- Sans JS (ou librairies indisponibles) ------------------------------- */
+
+/* Filtres et carrousel n'ont pas de sens sans script : liste complète,
+   témoignages défilables à la main, frise déjà remplie. */
+.no-js .projects__filters,
+.no-js .carousel__controls,
+.no-js .method__ship {
+  display: none;
+}
+
+.no-js .levers__tabs {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+/* base.css affiche les panneaux masqués en « block » : on garde la grille */
+.no-js .levers__panel[hidden] {
+  display: grid !important;
+}
+
+.no-js .carousel__viewport {
+  overflow-x: auto;
+  cursor: auto;
+}
+
+.no-js .quote:not(.is-active) {
+  background: var(--surface);
+  border-color: var(--line);
+  cursor: auto;
+}
+
+.no-js .method__fill {
+  transform: none;
 }
 
 /* ---- Mouvement réduit ---------------------------------------------------- */

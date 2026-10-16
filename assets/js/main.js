@@ -173,8 +173,10 @@ function focusNewPage(container, url) {
   main.setAttribute('tabindex', '-1');
   main.focus({ preventScroll: true });
   announce(`Page chargée : ${document.title}`);
-  if (url && url.hash) {
-    const target = document.getElementById(url.hash.replace('#', ''));
+  // Barba ne transmet pas toujours l'ancre dans data.next.url : on lit aussi l'adresse
+  const hash = ((url && url.hash) || window.location.hash || '').replace('#', '');
+  if (hash) {
+    const target = document.getElementById(decodeURIComponent(hash));
     if (target) setTimeout(() => scrollTo(target, { immediate: false }), 250);
   }
 }

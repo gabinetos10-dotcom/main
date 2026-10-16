@@ -419,7 +419,9 @@ html.is-scroll-locked body {
   *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+    /* 0s et non 0,01 ms : une transition, même infime, fausse les valeurs de
+       départ lues par GSAP (les intros restaient à opacité 0). */
+    transition-duration: 0s !important;
     scroll-behavior: auto !important;
   }
 }

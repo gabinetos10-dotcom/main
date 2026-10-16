@@ -172,196 +172,295 @@
     <div data-barba="container" data-barba-namespace="about">
       <main id="main" tabindex="-1">
 
-        <section class="about-hero" data-theme="black" aria-labelledby="about-title" data-about-hero>
-          <div class="about-hero__pin">
-            <div class="about-hero__letters" aria-hidden="true">
-              <span class="about-hero__letter" data-letter>G</span>
-              <span class="about-hero__gap" data-gap><picture><source type="image/avif" srcset="assets/img/about-01-450.avif 450w, assets/img/about-01-900.avif 900w" sizes="30vw"><img src="assets/img/about-01-900.webp" srcset="assets/img/about-01-450.webp 450w, assets/img/about-01-900.webp 900w" sizes="30vw" width="900" height="1200" alt="" decoding="async"></picture></span>
-              <span class="about-hero__letter" data-letter>J</span>
-              <span class="about-hero__gap" data-gap><picture><source type="image/avif" srcset="assets/img/about-02-450.avif 450w, assets/img/about-02-900.avif 900w" sizes="30vw"><img src="assets/img/about-02-900.webp" srcset="assets/img/about-02-450.webp 450w, assets/img/about-02-900.webp 900w" sizes="30vw" width="900" height="1200" alt="" decoding="async"></picture></span>
-              <span class="about-hero__letter" data-letter>S</span>
+        <section class="section about-hero starfield" data-theme="space" aria-labelledby="about-title" data-about-hero>
+          <div class="grid about-hero__grid">
+            <div class="about-hero__content">
+              <p class="label" data-reveal="fade" data-intro data-delay="0.05">Qui sommes-nous</p>
+              <h1 class="about-hero__title t-display" id="about-title" data-split="lines" data-intro data-delay="0.1">GJS. Trois lettres, <span class="accent">zéro compromis.</span></h1>
+              <p class="about-hero__lead t-lead" data-reveal="fade" data-intro data-delay="0.4">Une agence marketing digital née à Paris en 2022. Quatre spécialistes, cinq expertises et une seule règle&nbsp;: du sur-mesure, jugé sur vos résultats.</p>
+              <a class="arrow-link about-hero__link" href="#equipe" data-reveal="fade" data-intro data-delay="0.55">Rencontrer l’équipage</a>
             </div>
-            <div class="about-hero__foot grid">
-              <p class="label" data-reveal="fade" data-intro data-delay="0.5">[À propos] — Paris, depuis 2022</p>
-              <h1 class="about-hero__title t-display" id="about-title" data-split="lines" data-intro data-delay="0.2">GJS. Trois lettres, <em class="serif">zéro</em> compromis.</h1>
-              <p class="about-hero__scroll t-mono" data-reveal="fade" data-intro data-delay="0.8" aria-hidden="true">Scroll ↓ — les lettres s’écartent</p>
-            </div>
-          </div>
-        </section>
-
-        <section class="vision section" data-theme="night" aria-labelledby="vision-title">
-          <div class="grid">
-            <p class="vision__label label">[01] — Vision</p>
-            <h2 class="sr-only" id="vision-title">Notre vision</h2>
-            <p class="vision__text t-display" data-split="lines">On a créé GJS parce qu’on en avait assez de voir des entreprises payer des agences pour des <em class="serif">livrables</em>, et pas pour des résultats.</p>
-            <div class="vision__cols">
-              <p data-reveal="fade">Un site primé qui ne génère aucun contact, une campagne «&nbsp;créative&nbsp;» sans tracking, un chatbot gadget que personne n’utilise&nbsp;: on a tous vu ces projets. Ils ont un point commun&nbsp;: on a vendu au client une solution avant de comprendre son problème.</p>
-              <p data-reveal="fade">Chez GJS, c’est l’inverse. On commence par vos chiffres, on finit par vos chiffres. Entre les deux, on met tout notre savoir-faire — technique, créatif, stratégique — au service d’une seule question&nbsp;: qu’est-ce qui va vraiment faire avancer votre business&nbsp;?</p>
+            <div class="about-hero__visual" data-reveal="fade" data-intro data-delay="0.3">
+              <div class="about-hero__stage" data-hero-stage>
+                <span class="about-hero__planet planet planet--ring" data-hero-planet aria-hidden="true"></span>
+                <div class="about-hero__robot" data-hero-robot>
+                  <div class="robot-talk about-hero__talk" data-robot-talk data-messages="Bip&nbsp;! Bienvenue à bord. L’équipage est juste en dessous.|G, J, S&nbsp;: trois lettres. Et moi, je surveille le décollage.|Je ne bois pas de café, mais je relis tous les rapports."><button class="robot-talk__btn" type="button" aria-label="Faire parler le robot GJS"><svg class="robot" data-robot viewBox="0 0 160 206" aria-hidden="true" focusable="false"><path class="robot__flame" d="M66 184 L80 205 L94 184 Z"/><rect class="robot__arm" x="20" y="126" width="22" height="46" rx="11"/><rect class="robot__arm" x="118" y="126" width="22" height="46" rx="11"/><rect class="robot__body" x="36" y="118" width="88" height="66" rx="24"/><circle class="robot__chest" cx="80" cy="150" r="12"/><circle class="robot__bolt" cx="54" cy="133" r="3.5"/><circle class="robot__bolt" cx="106" cy="133" r="3.5"/><rect class="robot__neck" x="66" y="108" width="28" height="14" rx="5"/><path class="robot__antenna" d="M80 36 V17"/><circle class="robot__light" cx="80" cy="12" r="7.5"/><rect class="robot__ear" x="14" y="58" width="18" height="32" rx="7"/><rect class="robot__ear" x="128" y="58" width="18" height="32" rx="7"/><rect class="robot__head" x="26" y="34" width="108" height="80" rx="28"/><rect class="robot__visor" x="39" y="47" width="82" height="46" rx="21"/><g class="robot__eyes"><g class="robot__pupils"><circle class="robot__eye" cx="63" cy="70" r="9.5"/><circle class="robot__eye" cx="97" cy="70" r="9.5"/></g></g><path class="robot__mouth" d="M68 102 Q80 109 92 102"/></svg></button><p class="robot-talk__bubble" role="status" aria-live="polite"></p></div>
+                </div>
+                <span class="about-hero__ground" aria-hidden="true"></span>
+                <p class="about-hero__letters" aria-hidden="true"><span class="about-hero__letter" data-letter>G</span><span class="about-hero__dot" data-dot>·</span><span class="about-hero__letter" data-letter>J</span><span class="about-hero__dot" data-dot>·</span><span class="about-hero__letter" data-letter>S</span></p>
+              </div>
             </div>
           </div>
         </section>
 
-        <section class="team section" data-theme="paper" aria-labelledby="team-title">
-          <div class="grid">
-            <div class="team__head">
-              <p class="label">[02] — L’équipe <span class="placeholder-tag">[À REMPLACER]</span></p>
-              <h2 class="team__title t-display" id="team-title" data-split="lines">Des têtes, <em class="serif">pas</em> des ressources.</h2>
+        <section class="section vision" data-theme="cream" aria-labelledby="vision-title">
+          <div class="container">
+            <div class="section-head section-head--split vision__head">
+              <p class="label">Vision</p>
+              <h2 class="section-head__title t-display" id="vision-title" data-split="lines">Vos chiffres d’abord. <span class="accent">Le reste</span> suit.</h2>
+              <div class="section-head__side vision__side" data-reveal="fade">
+                <p>On a créé GJS parce qu’on en avait assez de voir des entreprises payer pour des livrables, pas pour des résultats. Un site primé sans aucun contact, une campagne sans suivi, un chatbot que personne n’utilise&nbsp;: à chaque fois, on avait vendu une solution avant de comprendre le problème.</p>
+                <p>Chez nous, c’est l’inverse. On part de vos chiffres, on revient à vos chiffres. Entre les deux, technique, création et stratégie servent une seule question&nbsp;: qu’est-ce qui fait vraiment avancer votre entreprise&nbsp;?</p>
+                <a class="arrow-link" href="offres.html">Voir comment on travaille</a>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section team" id="equipe" data-theme="grey" aria-labelledby="team-title">
+          <div class="container">
+            <div class="section-head">
+              <p class="label">L’équipage</p>
+              <h2 class="section-head__title t-display" id="team-title" data-split="lines">Des têtes, <span class="accent">pas</span> des ressources.</h2>
+              <p class="section-head__lead">Quatre spécialistes, un seul interlocuteur par projet, et chacun sa mission du moment. <span class="placeholder-tag">[À REMPLACER]</span></p>
             </div>
             <ul class="team__list">
-            <li class="member" data-member>
-              <figure class="member__media media" data-cursor="view" data-cursor-label="Hello">
-                <picture><source type="image/avif" srcset="assets/img/equipe-01-450.avif 450w, assets/img/equipe-01-900.avif 900w" sizes="(min-width: 1024px) 22vw, 45vw"><img class="member__img" src="assets/img/equipe-01-900.webp" srcset="assets/img/equipe-01-450.webp 450w, assets/img/equipe-01-900.webp 900w" sizes="(min-width: 1024px) 22vw, 45vw" width="900" height="1200" alt="Portrait de Prénom Nom, Fondateur — Stratégie & SEO" loading="lazy" decoding="async"></picture>
-              </figure>
-              <p class="member__name">Prénom Nom <span class="placeholder-tag">[À REMPLACER]</span></p>
-              <p class="member__role t-mono">Fondateur — Stratégie & SEO</p>
-            </li>
-            <li class="member" data-member>
-              <figure class="member__media media" data-cursor="view" data-cursor-label="Hello">
-                <picture><source type="image/avif" srcset="assets/img/equipe-02-450.avif 450w, assets/img/equipe-02-900.avif 900w" sizes="(min-width: 1024px) 22vw, 45vw"><img class="member__img" src="assets/img/equipe-02-900.webp" srcset="assets/img/equipe-02-450.webp 450w, assets/img/equipe-02-900.webp 900w" sizes="(min-width: 1024px) 22vw, 45vw" width="900" height="1200" alt="Portrait de Prénom Nom, Lead développeuse — Web & IA" loading="lazy" decoding="async"></picture>
-              </figure>
-              <p class="member__name">Prénom Nom <span class="placeholder-tag">[À REMPLACER]</span></p>
-              <p class="member__role t-mono">Lead développeuse — Web & IA</p>
-            </li>
-            <li class="member" data-member>
-              <figure class="member__media media" data-cursor="view" data-cursor-label="Hello">
-                <picture><source type="image/avif" srcset="assets/img/equipe-03-450.avif 450w, assets/img/equipe-03-900.avif 900w" sizes="(min-width: 1024px) 22vw, 45vw"><img class="member__img" src="assets/img/equipe-03-900.webp" srcset="assets/img/equipe-03-450.webp 450w, assets/img/equipe-03-900.webp 900w" sizes="(min-width: 1024px) 22vw, 45vw" width="900" height="1200" alt="Portrait de Prénom Nom, Head of Ads — Acquisition" loading="lazy" decoding="async"></picture>
-              </figure>
-              <p class="member__name">Prénom Nom <span class="placeholder-tag">[À REMPLACER]</span></p>
-              <p class="member__role t-mono">Head of Ads — Acquisition</p>
-            </li>
-            <li class="member" data-member>
-              <figure class="member__media media" data-cursor="view" data-cursor-label="Hello">
-                <picture><source type="image/avif" srcset="assets/img/equipe-04-450.avif 450w, assets/img/equipe-04-900.avif 900w" sizes="(min-width: 1024px) 22vw, 45vw"><img class="member__img" src="assets/img/equipe-04-900.webp" srcset="assets/img/equipe-04-450.webp 450w, assets/img/equipe-04-900.webp 900w" sizes="(min-width: 1024px) 22vw, 45vw" width="900" height="1200" alt="Portrait de Prénom Nom, Directrice de création — Social" loading="lazy" decoding="async"></picture>
-              </figure>
-              <p class="member__name">Prénom Nom <span class="placeholder-tag">[À REMPLACER]</span></p>
-              <p class="member__role t-mono">Directrice de création — Social</p>
-            </li>
+              <li class="member card card--interactive">
+                <div class="member__media media">
+                  <picture><source type="image/avif" srcset="assets/img/equipe-01-450.avif 450w, assets/img/equipe-01-900.avif 900w" sizes="(min-width: 1440px) 300px, (min-width: 1024px) 22vw, (min-width: 600px) 46vw, 92vw"><img class="member__img" src="assets/img/equipe-01-900.webp" srcset="assets/img/equipe-01-450.webp 450w, assets/img/equipe-01-900.webp 900w" sizes="(min-width: 1440px) 300px, (min-width: 1024px) 22vw, (min-width: 600px) 46vw, 92vw" width="900" height="1200" alt="Portrait de Prénom Nom, Fondateur, Stratégie & SEO" loading="lazy" decoding="async"></picture>
+                </div>
+                <div class="member__body">
+                  <h3 class="member__name"><a class="member__link card__link" href="https://www.linkedin.com/" target="_blank" rel="noopener">Prénom Nom<span class="sr-only">, profil LinkedIn (nouvel onglet)</span></a> <span class="placeholder-tag">[À REMPLACER]</span></h3>
+                  <p class="member__role">Fondateur · Stratégie & SEO</p>
+                </div>
+                <p class="member__mission"><span class="member__mission-label t-mono">En mission sur</span> l’audit SEO d’un e-commerce de 4 000 références.</p>
+              </li>
+              <li class="member card card--interactive">
+                <div class="member__media media">
+                  <picture><source type="image/avif" srcset="assets/img/equipe-02-450.avif 450w, assets/img/equipe-02-900.avif 900w" sizes="(min-width: 1440px) 300px, (min-width: 1024px) 22vw, (min-width: 600px) 46vw, 92vw"><img class="member__img" src="assets/img/equipe-02-900.webp" srcset="assets/img/equipe-02-450.webp 450w, assets/img/equipe-02-900.webp 900w" sizes="(min-width: 1440px) 300px, (min-width: 1024px) 22vw, (min-width: 600px) 46vw, 92vw" width="900" height="1200" alt="Portrait de Prénom Nom, Lead développeuse, Web & IA" loading="lazy" decoding="async"></picture>
+                </div>
+                <div class="member__body">
+                  <h3 class="member__name"><a class="member__link card__link" href="https://www.linkedin.com/" target="_blank" rel="noopener">Prénom Nom<span class="sr-only">, profil LinkedIn (nouvel onglet)</span></a> <span class="placeholder-tag">[À REMPLACER]</span></h3>
+                  <p class="member__role">Lead développeuse · Web & IA</p>
+                </div>
+                <p class="member__mission"><span class="member__mission-label t-mono">En mission sur</span> un agent IA qui trie les demandes de devis pendant la nuit.</p>
+              </li>
+              <li class="member card card--interactive">
+                <div class="member__media media">
+                  <picture><source type="image/avif" srcset="assets/img/equipe-03-450.avif 450w, assets/img/equipe-03-900.avif 900w" sizes="(min-width: 1440px) 300px, (min-width: 1024px) 22vw, (min-width: 600px) 46vw, 92vw"><img class="member__img" src="assets/img/equipe-03-900.webp" srcset="assets/img/equipe-03-450.webp 450w, assets/img/equipe-03-900.webp 900w" sizes="(min-width: 1440px) 300px, (min-width: 1024px) 22vw, (min-width: 600px) 46vw, 92vw" width="900" height="1200" alt="Portrait de Prénom Nom, Head of Ads, Acquisition" loading="lazy" decoding="async"></picture>
+                </div>
+                <div class="member__body">
+                  <h3 class="member__name"><a class="member__link card__link" href="https://www.linkedin.com/" target="_blank" rel="noopener">Prénom Nom<span class="sr-only">, profil LinkedIn (nouvel onglet)</span></a> <span class="placeholder-tag">[À REMPLACER]</span></h3>
+                  <p class="member__role">Head of Ads · Acquisition</p>
+                </div>
+                <p class="member__mission"><span class="member__mission-label t-mono">En mission sur</span> le lancement d’une campagne locale pour un réseau de franchises.</p>
+              </li>
+              <li class="member card card--interactive">
+                <div class="member__media media">
+                  <picture><source type="image/avif" srcset="assets/img/equipe-04-450.avif 450w, assets/img/equipe-04-900.avif 900w" sizes="(min-width: 1440px) 300px, (min-width: 1024px) 22vw, (min-width: 600px) 46vw, 92vw"><img class="member__img" src="assets/img/equipe-04-900.webp" srcset="assets/img/equipe-04-450.webp 450w, assets/img/equipe-04-900.webp 900w" sizes="(min-width: 1440px) 300px, (min-width: 1024px) 22vw, (min-width: 600px) 46vw, 92vw" width="900" height="1200" alt="Portrait de Prénom Nom, Directrice de création, Social" loading="lazy" decoding="async"></picture>
+                </div>
+                <div class="member__body">
+                  <h3 class="member__name"><a class="member__link card__link" href="https://www.linkedin.com/" target="_blank" rel="noopener">Prénom Nom<span class="sr-only">, profil LinkedIn (nouvel onglet)</span></a> <span class="placeholder-tag">[À REMPLACER]</span></h3>
+                  <p class="member__role">Directrice de création · Social</p>
+                </div>
+                <p class="member__mission"><span class="member__mission-label t-mono">En mission sur</span> trente vidéos courtes pour un lancement de produit.</p>
+              </li>
             </ul>
           </div>
         </section>
 
-        <section class="values" data-theme="black" aria-labelledby="values-title" data-values>
-          <div class="values__pin">
-            <div class="values__head grid">
-              <p class="label">[03] — Valeurs</p>
-              <h2 class="values__title t-display" id="values-title" data-split="lines">Quatre mots. <em class="serif">On s’y tient.</em></h2>
+        <section class="section values starfield" data-theme="space" aria-labelledby="values-title">
+          <div class="container">
+            <div class="section-head">
+              <p class="label">Valeurs</p>
+              <h2 class="section-head__title t-display" id="values-title" data-split="lines">Quatre mots. <span class="accent">On s’y tient.</span></h2>
+              <p class="section-head__lead">Pas de grandes déclarations&nbsp;: quatre règles qu’on applique à chaque mission.</p>
             </div>
-            <div class="values__deck">
-            <article class="value value--1" data-value>
-              <p class="value__index t-mono">01 / 04</p>
-              <h3 class="value__word t-display">Franchise</h3>
-              <p class="value__text">On vous dit ce qui ne marche pas. Même quand ça ne nous arrange pas commercialement.</p>
-            </article>
-            <article class="value value--2" data-value>
-              <p class="value__index t-mono">02 / 04</p>
-              <h3 class="value__word t-display">Précision</h3>
-              <p class="value__text">Chaque décision s’appuie sur la donnée. Les intuitions, on les teste avant de les facturer.</p>
-            </article>
-            <article class="value value--3" data-value>
-              <p class="value__index t-mono">03 / 04</p>
-              <h3 class="value__word t-display">Vitesse</h3>
-              <p class="value__text">Des livrables en semaines, pas en trimestres. Le marché n’attend pas vos validations.</p>
-            </article>
-            <article class="value value--4" data-value>
-              <p class="value__index t-mono">04 / 04</p>
-              <h3 class="value__word t-display">Obsession</h3>
-              <p class="value__text">Du détail, du chiffre, du résultat. On ne lâche un projet que quand il performe.</p>
-            </article>
-            </div>
+            <ul class="values__list">
+              <li class="value-item">
+                <article class="value card card--interactive" tabindex="0" aria-labelledby="value-franchise">
+                  <span class="value__icon card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><g class="value__glyph"><path d="M5 4.5h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-8l-4.5 3.5v-3.5H5a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2z"/><path d="M12 8v3.4"/><path d="M12 14.1v.1"/></g></svg></span>
+                  <h3 class="value__word t-display" id="value-franchise">Franchise</h3>
+                  <p class="value__text card__text">On vous dit ce qui ne marche pas. Même quand ça ne nous arrange pas.</p>
+                </article>
+              </li>
+              <li class="value-item">
+                <article class="value card card--interactive" tabindex="0" aria-labelledby="value-precision">
+                  <span class="value__icon card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="8"/><circle class="value__glyph" cx="12" cy="12" r="3.6"/><path d="M12 1.8v3.4M12 18.8v3.4M1.8 12h3.4M18.8 12h3.4"/></svg></span>
+                  <h3 class="value__word t-display" id="value-precision">Précision</h3>
+                  <p class="value__text card__text">Chaque décision s’appuie sur la donnée. Les intuitions, on les teste avant de les facturer.</p>
+                </article>
+              </li>
+              <li class="value-item">
+                <article class="value card card--interactive" tabindex="0" aria-labelledby="value-vitesse">
+                  <span class="value__icon card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><g class="value__glyph"><path d="M14.6 4.4c2.9-1.3 5.1-1.1 5.1-1.1s.2 2.2-1.1 5.1l-6.4 6.4-4-4z"/><path d="M8.2 10.8 4.8 10.4 3.4 12.6l3.4 1.2M13.2 15.8l.4 3.4-2.2 1.4-1.2-3.4"/><circle cx="15.6" cy="8.4" r="1.3"/></g><path class="value__trail" d="M7.4 16.6 4 20"/></svg></span>
+                  <h3 class="value__word t-display" id="value-vitesse">Vitesse</h3>
+                  <p class="value__text card__text">Des livrables en semaines, pas en trimestres. Le marché n’attend pas.</p>
+                </article>
+              </li>
+              <li class="value-item">
+                <article class="value card card--interactive" tabindex="0" aria-labelledby="value-obsession">
+                  <span class="value__icon card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="3.8"/><circle cx="12" cy="12" r="8.6" stroke-dasharray="2.2 2.6" opacity=".7"/><g class="value__glyph"><circle cx="20.6" cy="12" r="1.6" fill="currentColor"/></g></svg></span>
+                  <h3 class="value__word t-display" id="value-obsession">Obsession</h3>
+                  <p class="value__text card__text">Du détail, du chiffre, du résultat. On ne lâche un projet que lorsqu’il performe.</p>
+                </article>
+              </li>
+            </ul>
           </div>
         </section>
 
-        <section class="timeline section" data-theme="night" aria-labelledby="timeline-title">
-          <div class="grid">
-            <div class="timeline__head">
-              <p class="label">[04] — Trajectoire <span class="placeholder-tag">[À REMPLACER]</span></p>
-              <h2 class="timeline__heading t-display" id="timeline-title" data-split="lines">D’où l’on <em class="serif">vient</em>.</h2>
+        <section class="section trajectory" data-theme="cream" aria-labelledby="timeline-title">
+          <div class="container">
+            <div class="section-head">
+              <p class="label">Trajectoire</p>
+              <h2 class="section-head__title t-display" id="timeline-title" data-split="lines">D’où l’on <span class="accent">vient</span>.</h2>
+              <p class="section-head__lead">Cinq ans de missions, une règle qui n’a pas bougé&nbsp;: que du sur-mesure. <span class="placeholder-tag">[À REMPLACER]</span></p>
             </div>
-            <div class="timeline__wrap" data-timeline>
-              <span class="timeline__rail" aria-hidden="true"><span class="timeline__rail-fill"></span></span>
+            <div class="timeline" data-timeline>
+              <span class="timeline__rail" aria-hidden="true"><span class="timeline__fill" data-rail-fill></span></span>
               <ol class="timeline__list">
-              <li class="timeline__item">
-                <p class="timeline__year t-display">2021</p>
-                <div class="timeline__body">
-                  <h3 class="timeline__title">Les premières missions</h3>
-                  <p class="timeline__text">Trois freelances, trois expertises, un constat&nbsp;: les clients veulent des résultats, pas des prestataires.</p>
-                </div>
-              </li>
-              <li class="timeline__item">
-                <p class="timeline__year t-display">2022</p>
-                <div class="timeline__body">
-                  <h3 class="timeline__title">Naissance de GJS</h3>
-                  <p class="timeline__text">Création de l’agence à Paris. Une règle dès le premier jour&nbsp;: aucun pack, uniquement du sur-mesure.</p>
-                </div>
-              </li>
-              <li class="timeline__item">
-                <p class="timeline__year t-display">2023</p>
-                <div class="timeline__body">
-                  <h3 class="timeline__title">Les premiers agents IA</h3>
-                  <p class="timeline__text">Mise en production de nos premiers agents de qualification de leads chez des clients B2B.</p>
-                </div>
-              </li>
-              <li class="timeline__item">
-                <p class="timeline__year t-display">2024</p>
-                <div class="timeline__body">
-                  <h3 class="timeline__title">50 projets livrés</h3>
-                  <p class="timeline__text">Sites, campagnes, automatisations&nbsp;: un cap symbolique et des clients qui reviennent.</p>
-                </div>
-              </li>
-              <li class="timeline__item">
-                <p class="timeline__year t-display">2025</p>
-                <div class="timeline__body">
-                  <h3 class="timeline__title">L’équipe s’agrandit</h3>
-                  <p class="timeline__text">Arrivée d’un pôle Ads et d’une direction de création social media.</p>
-                </div>
-              </li>
-              <li class="timeline__item">
-                <p class="timeline__year t-display">2026</p>
-                <div class="timeline__body">
-                  <h3 class="timeline__title">La suite&nbsp;?</h3>
-                  <p class="timeline__text">Elle s’écrit peut-être avec vous.</p>
-                </div>
-              </li>
+                <li class="timeline__step" data-step>
+                  <p class="timeline__year t-display">2021</p>
+                  <span class="timeline__dot" aria-hidden="true" data-dot></span>
+                  <div class="timeline__body">
+                    <h3 class="timeline__title">Les premières missions</h3>
+                    <p class="timeline__text">Trois freelances, trois expertises, un constat&nbsp;: les clients veulent des résultats, pas des prestataires.</p>
+                  </div>
+                </li>
+                <li class="timeline__step" data-step>
+                  <p class="timeline__year t-display">2022</p>
+                  <span class="timeline__dot" aria-hidden="true" data-dot></span>
+                  <div class="timeline__body">
+                    <h3 class="timeline__title">Naissance de GJS</h3>
+                    <p class="timeline__text">L’agence ouvre à Paris. Une règle dès le premier jour&nbsp;: aucun pack, que du sur-mesure.</p>
+                  </div>
+                </li>
+                <li class="timeline__step" data-step>
+                  <p class="timeline__year t-display">2023</p>
+                  <span class="timeline__dot" aria-hidden="true" data-dot></span>
+                  <div class="timeline__body">
+                    <h3 class="timeline__title">Les premiers agents IA</h3>
+                    <p class="timeline__text">Nos premiers agents de qualification de leads passent en production chez des clients B2B.</p>
+                  </div>
+                </li>
+                <li class="timeline__step" data-step>
+                  <p class="timeline__year t-display">2024</p>
+                  <span class="timeline__dot" aria-hidden="true" data-dot></span>
+                  <div class="timeline__body">
+                    <h3 class="timeline__title">50 projets livrés</h3>
+                    <p class="timeline__text">Sites, campagnes, automatisations&nbsp;: un cap symbolique, et des clients qui reviennent.</p>
+                  </div>
+                </li>
+                <li class="timeline__step" data-step>
+                  <p class="timeline__year t-display">2025</p>
+                  <span class="timeline__dot" aria-hidden="true" data-dot></span>
+                  <div class="timeline__body">
+                    <h3 class="timeline__title">L’équipe s’agrandit</h3>
+                    <p class="timeline__text">Arrivée d’un pôle Ads et d’une direction de création social media.</p>
+                  </div>
+                </li>
+                <li class="timeline__step" data-step>
+                  <p class="timeline__year t-display">2026</p>
+                  <span class="timeline__dot" aria-hidden="true" data-dot></span>
+                  <div class="timeline__body">
+                    <h3 class="timeline__title">La suite&nbsp;?</h3>
+                    <p class="timeline__text">Elle s’écrit peut-être avec vous.</p>
+                    <a class="arrow-link timeline__link" href="contact.html">Écrire la suite ensemble</a>
+                  </div>
+                </li>
               </ol>
             </div>
           </div>
         </section>
 
-        <section class="backstage section" data-theme="paper" aria-labelledby="backstage-title" data-backstage>
-          <div class="grid">
-            <div class="backstage__head">
-              <p class="label">[05] — Coulisses <span class="placeholder-tag">[À REMPLACER]</span></p>
-              <h2 class="backstage__title t-display" id="backstage-title" data-split="lines">Le désordre <em class="serif">avant</em> l’ordre.</h2>
+        <section class="section backstage" data-theme="grey" aria-labelledby="backstage-title" data-backstage>
+          <div class="container">
+            <div class="section-head">
+              <p class="label">Coulisses</p>
+              <h2 class="section-head__title t-display" id="backstage-title" data-split="lines">Le désordre <span class="accent">avant</span> l’ordre.</h2>
+              <p class="section-head__lead">Ateliers, tournages, post-its et prototypes&nbsp;: une mission avant sa mise en ligne. Ouvrez une photo pour l’agrandir. <span class="placeholder-tag">[À REMPLACER]</span></p>
             </div>
+            <ul class="backstage__grid" data-backstage-grid>
+              <li class="shot" data-shot>
+                <figure class="shot__figure">
+                  <a class="shot__link" href="assets/img/coulisses-01-1000.webp" data-shot-open="0" aria-haspopup="dialog">
+                    <span class="shot__media media"><picture><source type="image/avif" srcset="assets/img/coulisses-01-500.avif 500w, assets/img/coulisses-01-1000.avif 1000w" sizes="(min-width: 1440px) 300px, (min-width: 1024px) 22vw, 46vw"><img class="shot__img" src="assets/img/coulisses-01-1000.webp" srcset="assets/img/coulisses-01-500.webp 500w, assets/img/coulisses-01-1000.webp 1000w" sizes="(min-width: 1440px) 300px, (min-width: 1024px) 22vw, 46vw" width="1000" height="1250" alt="Atelier de stratégie autour d’un grand mur de post-its" loading="lazy" decoding="async"></picture></span>
+                    <span class="sr-only"> (agrandir la photo)</span>
+                  </a>
+                  <figcaption class="shot__caption">Atelier stratégie</figcaption>
+                </figure>
+              </li>
+              <li class="shot" data-shot>
+                <figure class="shot__figure">
+                  <a class="shot__link" href="assets/img/coulisses-02-1200.webp" data-shot-open="1" aria-haspopup="dialog">
+                    <span class="shot__media media"><picture><source type="image/avif" srcset="assets/img/coulisses-02-600.avif 600w, assets/img/coulisses-02-1200.avif 1200w" sizes="(min-width: 1440px) 300px, (min-width: 1024px) 22vw, 46vw"><img class="shot__img" src="assets/img/coulisses-02-1200.webp" srcset="assets/img/coulisses-02-600.webp 600w, assets/img/coulisses-02-1200.webp 1200w" sizes="(min-width: 1440px) 300px, (min-width: 1024px) 22vw, 46vw" width="1200" height="800" alt="Écrans de développement avec du code et un prototype" loading="lazy" decoding="async"></picture></span>
+                    <span class="sr-only"> (agrandir la photo)</span>
+                  </a>
+                  <figcaption class="shot__caption">Prototype en cours</figcaption>
+                </figure>
+              </li>
+              <li class="shot" data-shot>
+                <figure class="shot__figure">
+                  <a class="shot__link" href="assets/img/coulisses-03-1000.webp" data-shot-open="2" aria-haspopup="dialog">
+                    <span class="shot__media media"><picture><source type="image/avif" srcset="assets/img/coulisses-03-500.avif 500w, assets/img/coulisses-03-1000.avif 1000w" sizes="(min-width: 1440px) 300px, (min-width: 1024px) 22vw, 46vw"><img class="shot__img" src="assets/img/coulisses-03-1000.webp" srcset="assets/img/coulisses-03-500.webp 500w, assets/img/coulisses-03-1000.webp 1000w" sizes="(min-width: 1440px) 300px, (min-width: 1024px) 22vw, 46vw" width="1000" height="1250" alt="Séance photo produit pour un client" loading="lazy" decoding="async"></picture></span>
+                    <span class="sr-only"> (agrandir la photo)</span>
+                  </a>
+                  <figcaption class="shot__caption">Shooting produit</figcaption>
+                </figure>
+              </li>
+              <li class="shot" data-shot>
+                <figure class="shot__figure">
+                  <a class="shot__link" href="assets/img/coulisses-04-1200.webp" data-shot-open="3" aria-haspopup="dialog">
+                    <span class="shot__media media"><picture><source type="image/avif" srcset="assets/img/coulisses-04-600.avif 600w, assets/img/coulisses-04-1200.avif 1200w" sizes="(min-width: 1440px) 300px, (min-width: 1024px) 22vw, 46vw"><img class="shot__img" src="assets/img/coulisses-04-1200.webp" srcset="assets/img/coulisses-04-600.webp 600w, assets/img/coulisses-04-1200.webp 1200w" sizes="(min-width: 1440px) 300px, (min-width: 1024px) 22vw, 46vw" width="1200" height="800" alt="Réunion d’équipe autour d’un tableau de bord" loading="lazy" decoding="async"></picture></span>
+                    <span class="sr-only"> (agrandir la photo)</span>
+                  </a>
+                  <figcaption class="shot__caption">Point d’équipe</figcaption>
+                </figure>
+              </li>
+              <li class="shot" data-shot>
+                <figure class="shot__figure">
+                  <a class="shot__link" href="assets/img/coulisses-05-1200.webp" data-shot-open="4" aria-haspopup="dialog">
+                    <span class="shot__media media"><picture><source type="image/avif" srcset="assets/img/coulisses-05-600.avif 600w, assets/img/coulisses-05-1200.avif 1200w" sizes="(min-width: 1440px) 300px, (min-width: 1024px) 22vw, 46vw"><img class="shot__img" src="assets/img/coulisses-05-1200.webp" srcset="assets/img/coulisses-05-600.webp 600w, assets/img/coulisses-05-1200.webp 1200w" sizes="(min-width: 1440px) 300px, (min-width: 1024px) 22vw, 46vw" width="1200" height="800" alt="Tournage d’une vidéo courte pour les réseaux sociaux" loading="lazy" decoding="async"></picture></span>
+                    <span class="sr-only"> (agrandir la photo)</span>
+                  </a>
+                  <figcaption class="shot__caption">Tournage social</figcaption>
+                </figure>
+              </li>
+              <li class="shot" data-shot>
+                <figure class="shot__figure">
+                  <a class="shot__link" href="assets/img/coulisses-06-1000.webp" data-shot-open="5" aria-haspopup="dialog">
+                    <span class="shot__media media"><picture><source type="image/avif" srcset="assets/img/coulisses-06-500.avif 500w, assets/img/coulisses-06-1000.avif 1000w" sizes="(min-width: 1440px) 300px, (min-width: 1024px) 22vw, 46vw"><img class="shot__img" src="assets/img/coulisses-06-1000.webp" srcset="assets/img/coulisses-06-500.webp 500w, assets/img/coulisses-06-1000.webp 1000w" sizes="(min-width: 1440px) 300px, (min-width: 1024px) 22vw, 46vw" width="1000" height="1250" alt="Détail d’un carnet de croquis UX" loading="lazy" decoding="async"></picture></span>
+                    <span class="sr-only"> (agrandir la photo)</span>
+                  </a>
+                  <figcaption class="shot__caption">Carnet UX</figcaption>
+                </figure>
+              </li>
+              <li class="shot" data-shot>
+                <figure class="shot__figure">
+                  <a class="shot__link" href="assets/img/coulisses-07-1000.webp" data-shot-open="6" aria-haspopup="dialog">
+                    <span class="shot__media media"><picture><source type="image/avif" srcset="assets/img/coulisses-07-500.avif 500w, assets/img/coulisses-07-1000.avif 1000w" sizes="(min-width: 1440px) 300px, (min-width: 1024px) 22vw, 46vw"><img class="shot__img" src="assets/img/coulisses-07-1000.webp" srcset="assets/img/coulisses-07-500.webp 500w, assets/img/coulisses-07-1000.webp 1000w" sizes="(min-width: 1440px) 300px, (min-width: 1024px) 22vw, 46vw" width="1000" height="1250" alt="Plan de travail avec maquettes imprimées" loading="lazy" decoding="async"></picture></span>
+                    <span class="sr-only"> (agrandir la photo)</span>
+                  </a>
+                  <figcaption class="shot__caption">Maquettes</figcaption>
+                </figure>
+              </li>
+              <li class="shot" data-shot>
+                <figure class="shot__figure">
+                  <a class="shot__link" href="assets/img/coulisses-08-1200.webp" data-shot-open="7" aria-haspopup="dialog">
+                    <span class="shot__media media"><picture><source type="image/avif" srcset="assets/img/coulisses-08-600.avif 600w, assets/img/coulisses-08-1200.avif 1200w" sizes="(min-width: 1440px) 300px, (min-width: 1024px) 22vw, 46vw"><img class="shot__img" src="assets/img/coulisses-08-1200.webp" srcset="assets/img/coulisses-08-600.webp 600w, assets/img/coulisses-08-1200.webp 1200w" sizes="(min-width: 1440px) 300px, (min-width: 1024px) 22vw, 46vw" width="1200" height="800" alt="L’équipe GJS dans les locaux à Paris" loading="lazy" decoding="async"></picture></span>
+                    <span class="sr-only"> (agrandir la photo)</span>
+                  </a>
+                  <figcaption class="shot__caption">L’équipe à Paris</figcaption>
+                </figure>
+              </li>
+            </ul>
           </div>
-          <div class="backstage__stage">
-            <div class="backstage__grid is-ordered" data-backstage-grid>
-              <figure class="backstage__item backstage__item--1 media" data-flip-item>
-                <picture><source type="image/avif" srcset="assets/img/coulisses-01-500.avif 500w, assets/img/coulisses-01-1000.avif 1000w" sizes="(min-width: 1024px) 25vw, 50vw"><img src="assets/img/coulisses-01-1000.webp" srcset="assets/img/coulisses-01-500.webp 500w, assets/img/coulisses-01-1000.webp 1000w" sizes="(min-width: 1024px) 25vw, 50vw" width="1000" height="1250" alt="Atelier de stratégie autour d’un grand mur de post-its" loading="lazy" decoding="async"></picture>
+          <dialog class="lightbox" data-theme="space" aria-label="Visionneuse des coulisses" data-lightbox>
+            <div class="lightbox__inner">
+              <div class="lightbox__bar">
+                <p class="lightbox__count t-mono"><span data-lightbox-index>1</span> / 8</p>
+                <button class="lightbox__close btn btn--secondary btn--sm" type="button" data-lightbox-close>Fermer <span aria-hidden="true">✕</span></button>
+              </div>
+              <figure class="lightbox__figure">
+                <div class="lightbox__media" data-lightbox-media></div>
+                <figcaption class="lightbox__caption" aria-live="polite" data-lightbox-caption></figcaption>
               </figure>
-              <figure class="backstage__item backstage__item--2 media" data-flip-item>
-                <picture><source type="image/avif" srcset="assets/img/coulisses-02-600.avif 600w, assets/img/coulisses-02-1200.avif 1200w" sizes="(min-width: 1024px) 25vw, 50vw"><img src="assets/img/coulisses-02-1200.webp" srcset="assets/img/coulisses-02-600.webp 600w, assets/img/coulisses-02-1200.webp 1200w" sizes="(min-width: 1024px) 25vw, 50vw" width="1200" height="800" alt="Écrans de développement avec du code et un prototype" loading="lazy" decoding="async"></picture>
-              </figure>
-              <figure class="backstage__item backstage__item--3 media" data-flip-item>
-                <picture><source type="image/avif" srcset="assets/img/coulisses-03-500.avif 500w, assets/img/coulisses-03-1000.avif 1000w" sizes="(min-width: 1024px) 25vw, 50vw"><img src="assets/img/coulisses-03-1000.webp" srcset="assets/img/coulisses-03-500.webp 500w, assets/img/coulisses-03-1000.webp 1000w" sizes="(min-width: 1024px) 25vw, 50vw" width="1000" height="1250" alt="Séance photo produit pour un client" loading="lazy" decoding="async"></picture>
-              </figure>
-              <figure class="backstage__item backstage__item--4 media" data-flip-item>
-                <picture><source type="image/avif" srcset="assets/img/coulisses-04-600.avif 600w, assets/img/coulisses-04-1200.avif 1200w" sizes="(min-width: 1024px) 25vw, 50vw"><img src="assets/img/coulisses-04-1200.webp" srcset="assets/img/coulisses-04-600.webp 600w, assets/img/coulisses-04-1200.webp 1200w" sizes="(min-width: 1024px) 25vw, 50vw" width="1200" height="800" alt="Réunion d’équipe autour d’un tableau de bord" loading="lazy" decoding="async"></picture>
-              </figure>
-              <figure class="backstage__item backstage__item--5 media" data-flip-item>
-                <picture><source type="image/avif" srcset="assets/img/coulisses-05-600.avif 600w, assets/img/coulisses-05-1200.avif 1200w" sizes="(min-width: 1024px) 25vw, 50vw"><img src="assets/img/coulisses-05-1200.webp" srcset="assets/img/coulisses-05-600.webp 600w, assets/img/coulisses-05-1200.webp 1200w" sizes="(min-width: 1024px) 25vw, 50vw" width="1200" height="800" alt="Tournage d’une vidéo courte pour les réseaux sociaux" loading="lazy" decoding="async"></picture>
-              </figure>
-              <figure class="backstage__item backstage__item--6 media" data-flip-item>
-                <picture><source type="image/avif" srcset="assets/img/coulisses-06-500.avif 500w, assets/img/coulisses-06-1000.avif 1000w" sizes="(min-width: 1024px) 25vw, 50vw"><img src="assets/img/coulisses-06-1000.webp" srcset="assets/img/coulisses-06-500.webp 500w, assets/img/coulisses-06-1000.webp 1000w" sizes="(min-width: 1024px) 25vw, 50vw" width="1000" height="1250" alt="Détail d’un carnet de croquis UX" loading="lazy" decoding="async"></picture>
-              </figure>
-              <figure class="backstage__item backstage__item--7 media" data-flip-item>
-                <picture><source type="image/avif" srcset="assets/img/coulisses-07-500.avif 500w, assets/img/coulisses-07-1000.avif 1000w" sizes="(min-width: 1024px) 25vw, 50vw"><img src="assets/img/coulisses-07-1000.webp" srcset="assets/img/coulisses-07-500.webp 500w, assets/img/coulisses-07-1000.webp 1000w" sizes="(min-width: 1024px) 25vw, 50vw" width="1000" height="1250" alt="Plan de travail avec maquettes imprimées" loading="lazy" decoding="async"></picture>
-              </figure>
-              <figure class="backstage__item backstage__item--8 media" data-flip-item>
-                <picture><source type="image/avif" srcset="assets/img/coulisses-08-600.avif 600w, assets/img/coulisses-08-1200.avif 1200w" sizes="(min-width: 1024px) 25vw, 50vw"><img src="assets/img/coulisses-08-1200.webp" srcset="assets/img/coulisses-08-600.webp 600w, assets/img/coulisses-08-1200.webp 1200w" sizes="(min-width: 1024px) 25vw, 50vw" width="1200" height="800" alt="L’équipe GJS dans les locaux à Paris" loading="lazy" decoding="async"></picture>
-              </figure>
+              <div class="lightbox__nav">
+                <button class="lightbox__arrow" type="button" data-lightbox-prev aria-label="Photo précédente"><span aria-hidden="true">←</span></button>
+                <button class="lightbox__arrow" type="button" data-lightbox-next aria-label="Photo suivante"><span aria-hidden="true">→</span></button>
+              </div>
             </div>
-          </div>
+          </dialog>
         </section>
 
       </main>
@@ -369,10 +468,10 @@
     <footer class="footer" data-theme="space">
       <div class="footer__cta starfield">
         <div class="container footer__cta-inner">
-          <div class="footer__cta-robot"><div class="robot-talk" data-robot-talk data-messages="Bip&nbsp;! Un projet en tête ?|Je réponds sous 24 h ouvrées. Enfin, l’équipe répond.|Premier échange offert&nbsp;: 30 minutes, sans engagement."><button class="robot-talk__btn" type="button" aria-label="Faire parler le robot GJS"><svg class="robot" data-robot viewBox="0 0 160 206" aria-hidden="true" focusable="false"><path class="robot__flame" d="M66 184 L80 205 L94 184 Z"/><rect class="robot__arm" x="20" y="126" width="22" height="46" rx="11"/><rect class="robot__arm" x="118" y="126" width="22" height="46" rx="11"/><rect class="robot__body" x="36" y="118" width="88" height="66" rx="24"/><circle class="robot__chest" cx="80" cy="150" r="12"/><circle class="robot__bolt" cx="54" cy="133" r="3.5"/><circle class="robot__bolt" cx="106" cy="133" r="3.5"/><rect class="robot__neck" x="66" y="108" width="28" height="14" rx="5"/><path class="robot__antenna" d="M80 36 V17"/><circle class="robot__light" cx="80" cy="12" r="7.5"/><rect class="robot__ear" x="14" y="58" width="18" height="32" rx="7"/><rect class="robot__ear" x="128" y="58" width="18" height="32" rx="7"/><rect class="robot__head" x="26" y="34" width="108" height="80" rx="28"/><rect class="robot__visor" x="39" y="47" width="82" height="46" rx="21"/><g class="robot__eyes"><g class="robot__pupils"><circle class="robot__eye" cx="63" cy="70" r="9.5"/><circle class="robot__eye" cx="97" cy="70" r="9.5"/></g></g><path class="robot__mouth" d="M68 102 Q80 109 92 102"/></svg></button><p class="robot-talk__bubble" role="status" aria-live="polite"></p></div></div>
+          <div class="footer__cta-robot"><div class="robot-talk" data-robot-talk data-messages="Bip&nbsp;! Un projet en tête ?|Je réponds sous 24 h ouvrées. Enfin, l’équipe répond.|Premier échange offert&nbsp;: 30 minutes, sans engagement."><button class="robot-talk__btn" type="button" aria-label="Faire parler le robot GJS"><svg class="robot" data-robot viewBox="0 0 160 206" aria-hidden="true" focusable="false"><path class="robot__flame" d="M66 184 L80 205 L94 184 Z"/><rect class="robot__arm" x="20" y="126" width="22" height="46" rx="11"/><rect class="robot__arm" x="118" y="126" width="22" height="46" rx="11"/><rect class="robot__body" x="36" y="118" width="88" height="66" rx="24"/><circle class="robot__chest" cx="80" cy="150" r="12"/><circle class="robot__bolt" cx="54" cy="133" r="3.5"/><circle class="robot__bolt" cx="106" cy="133" r="3.5"/><rect class="robot__neck" x="66" y="108" width="28" height="14" rx="5"/><path class="robot__antenna" d="M80 36 V17"/><circle class="robot__light" cx="80" cy="12" r="7.5"/><rect class="robot__ear" x="14" y="58" width="18" height="32" rx="7"/><rect class="robot__ear" x="128" y="58" width="18" height="32" rx="7"/><rect class="robot__head" x="26" y="34" width="108" height="80" rx="28"/><rect class="robot__visor" x="39" y="47" width="82" height="46" rx="21"/><g class="robot__eyes"><g class="robot__pupils"><circle class="robot__eye" cx="63" cy="70" r="9.5"/><circle class="robot__eye" cx="97" cy="70" r="9.5"/></g></g><path class="robot__mouth" d="M68 102 Q80 109 92 102"/></svg></button><p class="robot-talk__bubble" role="status" aria-live="polite"></p></div></div>
           <div class="footer__cta-text">
             <h2 class="footer__cta-title t-display">Un projet en tête&nbsp;? <span class="accent">On décolle.</span></h2>
-            <p class="footer__cta-note">Premier échange de 30 minutes, sans engagement. Réponse sous 24 h ouvrées.</p>
+            <p class="footer__cta-note">Premier échange de 30 minutes, sans engagement. Réponse sous 24 h ouvrées.</p>
           </div>
           <div class="footer__cta-actions">
             <a class="btn btn--primary" href="contact.html">Démarrer un projet <span class="btn__arrow" aria-hidden="true">→</span></a>

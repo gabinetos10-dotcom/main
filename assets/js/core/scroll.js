@@ -119,7 +119,8 @@ export function scrollTo(target, { offset = 0, immediate = false, duration = 1.4
   else {
     const el = typeof target === 'string' ? document.querySelector(target) : target;
     if (!el) return;
-    y = el.getBoundingClientRect().top + window.scrollY;
+    // Comme Lenis, on respecte scroll-margin-top (la cible ne passe pas sous le header)
+    y = el.getBoundingClientRect().top + window.scrollY - (parseFloat(getComputedStyle(el).scrollMarginTop) || 0);
   }
   window.scrollTo({ top: y + offset, behavior: immediate || env.reducedMotion ? 'auto' : 'smooth' });
 }

@@ -8,7 +8,7 @@
    ========================================================================== */
 
 import { env, $, $$, clamp, store, trapFocus, announce, yieldToMain } from '../core/utils.js';
-import { lockScroll, unlockScroll } from '../core/scroll.js';
+import { lockScroll, unlockScroll, scrollTo } from '../core/scroll.js';
 
 const { gsap, ScrollTrigger, Flip } = window;
 
@@ -100,7 +100,7 @@ function initHero(scope, root) {
 /* ---------- 4. Expertises : onglets -------------------------------------- */
 
 function initExpertise(scope, root) {
-  const group = $('[data-expertise]', root);
+  const group = $('[data-levers]', root);
   if (!group) return;
   const list = $('[role="tablist"]', group);
 
@@ -111,7 +111,10 @@ function initExpertise(scope, root) {
   scope.on(mq, 'change', orient);
 
   // Liste défilante (mobile) : on masque le dégradé de bord quand on est au bout
-  const edge = () => list.classList.toggle('is-end', list.scrollLeft + list.clientWidth >= list.scrollWidth - 4);
+  const edge = () => {
+    list.classList.toggle('is-scrolled', list.scrollLeft > 4);
+    list.classList.toggle('is-end', list.scrollLeft + list.clientWidth >= list.scrollWidth - 4);
+  };
   scope.on(list, 'scroll', edge, { passive: true });
   scope.resize(list, edge);
 
@@ -129,9 +132,9 @@ function initExpertise(scope, root) {
         gsap.fromTo(panel, { opacity: 0 }, { opacity: 1, duration: 0.35, overwrite: true });
         return;
       }
-      const media = $('[data-expertise-media]', panel);
+      const media = $('[data-levers-media]', panel);
       const img = media && $('img', media);
-      const body = $('[data-expertise-body]', panel);
+      const body = $('[data-levers-body]', panel);
       if (media) {
         gsap.fromTo(media, { clipPath: 'inset(0% 0% 0% 42% round 18px)' }, { clipPath: 'inset(0% 0% 0% 0% round 18px)', duration: 0.9, ease: 'expo.out', overwrite: true, clearProps: 'clipPath' });
       }
@@ -225,27 +228,34 @@ function initPanel(scope, root) {
     const cardMedia = $('.project__media', projects[index]);
     fill(index);
     lockScroll('project');
+    // Même identifiant Flip pour la vignette et le média du panneau, posé AVANT
+    // la capture : sinon Flip attribue un identifiant automatique et n'anime rien.
+    projects.forEach((p) => { delete $('.project__media', p).dataset.flipId; });
+    cardMedia.dataset.flipId = 'project-media';
+    panelMedia.dataset.flipId = 'project-media';
     const state = !env.reducedMotion && Flip ? Flip.getState(cardMedia) : null;
     dialog.showModal();
     dialog.scrollTop = 0;
-    release = trapFocus(dialog, { restore: false });
+    // Le focus va sur « Fermer » ; aucune animation n'utilise visibility sur un
+    // élément focalisable (le navigateur lui retirerait le focus).
+    release = trapFocus(dialog, { restore: false, initial: $('[data-panel-close]', dialog) });
     scope.add(() => {
       if (!state) {
-        gsap.fromTo(dialog, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.3, onComplete: () => { busy = false; } });
+        gsap.fromTo(dialog, { opacity: 0 }, { opacity: 1, duration: 0.3, onComplete: () => { busy = false; } });
         return;
       }
       gsap.fromTo(dialog, { '--panel-alpha': 0 }, { '--panel-alpha': 1, duration: 0.6, ease: 'power2.out' });
-      panelMedia.dataset.flipId = 'project-media';
-      cardMedia.dataset.flipId = 'project-media';
       Flip.from(state, {
         targets: panelMedia,
         duration: 1,
         ease: 'expo.inOut',
-        absolute: true,
+        // Transformations seules (même ratio 4/3) : le média reste dans la grille,
+        // le texte ne saute pas de colonne pendant l'animation.
+        scale: true,
         onComplete: () => { busy = false; gsap.set(panelMedia, { clearProps: 'all' }); },
       });
       gsap.from(panelContent.children, { y: 36, autoAlpha: 0, stagger: 0.06, duration: 0.85, ease: 'expo.out', delay: 0.4 });
-      gsap.from($$('.project-panel__nav, .panel__close', dialog), { autoAlpha: 0, duration: 0.5, delay: 0.6 });
+      gsap.from($$('.project-panel__nav, .panel__close', dialog), { opacity: 0, duration: 0.5, delay: 0.6 });
     });
   };
 
@@ -255,7 +265,13 @@ function initPanel(scope, root) {
     gsap.set([dialog, panelMedia], { clearProps: 'all' });
     unlockScroll('project');
     if (release) { release(); release = null; }
-    if (trigger && document.contains(trigger)) trigger.focus({ preventScroll: true });
+    if (trigger && document.contains(trigger)) {
+      trigger.focus({ preventScroll: true });
+      // « Projet suivant » a pu changer de carte : on la ramène à l'écran
+      const card = trigger.closest('.project');
+      const r = card && card.getBoundingClientRect();
+      if (r && (r.bottom < 0 || r.top > window.innerHeight)) scrollTo(card, { offset: -120, immediate: env.reducedMotion });
+    }
     busy = false;
   };
 
@@ -264,13 +280,13 @@ function initPanel(scope, root) {
     busy = true;
     scope.add(() => {
       if (env.reducedMotion || !Flip) {
-        gsap.to(dialog, { autoAlpha: 0, duration: 0.25, onComplete: finish });
+        gsap.to(dialog, { opacity: 0, duration: 0.25, onComplete: finish });
         return;
       }
       const cardMedia = $('.project__media', projects[current]);
       gsap.to(panelContent.children, { autoAlpha: 0, y: -16, duration: 0.3, stagger: 0.02 });
       gsap.to(dialog, { '--panel-alpha': 0, duration: 0.7, delay: 0.2 });
-      Flip.fit(panelMedia, cardMedia, { duration: 0.8, ease: 'expo.inOut', absolute: true, onComplete: finish });
+      Flip.fit(panelMedia, cardMedia, { duration: 0.8, ease: 'expo.inOut', scale: true, onComplete: finish });
     });
   };
 

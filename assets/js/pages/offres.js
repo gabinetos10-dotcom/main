@@ -89,6 +89,39 @@ function initJumps(scope, root) {
   });
 }
 
+/* Arrivée par Barba sur offres.html#ancre (footer, accueil) : Barba ne transmet
+   pas le hash dans data.next.url, donc main.js ne défile pas jusqu'à la cible.
+   On se place nous-mêmes sur la cible avant la levée du rideau (au chargement
+   direct, le navigateur s'en charge déjà). Le focus passe sur la cible dès que
+   main.js a fini de placer le sien sur <main>. */
+function initArrival(scope, root) {
+  if (!document.documentElement.classList.contains('is-transitioning')) return;
+  const id = decodeURIComponent(window.location.hash.slice(1));
+  const target = id ? document.getElementById(id) : null;
+  if (!target || !root.contains(target)) return;
+  const place = () => {
+    const margin = parseFloat(getComputedStyle(target).scrollMarginTop) || 0;
+    scrollTo(Math.max(0, target.getBoundingClientRect().top + window.scrollY - margin), { immediate: true });
+  };
+  place();
+  // La mise en page peut encore bouger juste après (polices, styles, titres
+  // découpés) : on suit la cible tant que le visiteur n'a pas repris la main.
+  let follow = true;
+  const stop = () => { follow = false; };
+  ['wheel', 'touchstart', 'pointerdown', 'keydown'].forEach((type) => scope.on(window, type, stop, { passive: true, once: true }));
+  scope.resize(root, () => { if (follow) place(); });
+  scope.timeout(stop, 2500);
+  const main = $('main', root);
+  if (!main) return;
+  const moveFocus = () => {
+    if (!document.documentElement.classList.contains('is-transitioning') && document.activeElement === main) {
+      if (!target.hasAttribute('tabindex')) target.setAttribute('tabindex', '-1');
+      target.focus({ preventScroll: true });
+    }
+  };
+  scope.on(main, 'focus', () => scope.timeout(moveFocus, 0), { once: true });
+}
+
 /* ---------- Expertises : scrollspy + onglets ------------------------------ */
 
 function initSpy(scope, root) {
@@ -229,7 +262,7 @@ function initConfigurator(scope, root) {
     progress.forEach((li) => li.classList.toggle('is-done', done[li.dataset.progress]));
     let html;
     if (!needs.length) {
-      html = '<span class="is-empty">Cochez au moins une expertise : la synthèse se compose ici.</span>';
+      html = '<span class="is-empty">Cochez au moins une expertise : la synthèse se compose ici.</span>';
       submit.setAttribute('aria-disabled', 'true');
     } else {
       const what = joinFr(needs.map((n) => n.dataset.phrase));
@@ -245,10 +278,12 @@ function initConfigurator(scope, root) {
     sentence.innerHTML = html;
     if (!animate) return;
     const parts = sentence.querySelectorAll('.accent, .is-empty');
+    gsap.killTweensOf([sentence, ...parts]);
     if (env.reducedMotion) {
       gsap.fromTo(parts, { opacity: 0 }, { opacity: 1, duration: 0.3 });
     } else {
-      gsap.fromTo(parts, { yPercent: 40, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.6, stagger: 0.05, ease: 'expo.out' });
+      gsap.fromTo(sentence, { y: 12 }, { y: 0, duration: 0.6, ease: 'expo.out', clearProps: 'transform' });
+      gsap.fromTo(parts, { opacity: 0 }, { opacity: 1, duration: 0.45, stagger: 0.06, ease: 'power2.out' });
     }
     celebrate();
   };
@@ -280,6 +315,7 @@ function initConfigurator(scope, root) {
 
 export default {
   init(scope, root) {
+    initArrival(scope, root);
     initJumps(scope, root);
     initHeroDepth(scope, root);
     initSpy(scope, root);
