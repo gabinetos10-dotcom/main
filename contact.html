@@ -7,8 +7,8 @@
   <meta name="description" content="Un site, des campagnes, une automatisation ou un agent IA&nbsp;? Décrivez votre projet en 4 étapes&nbsp;: GJS vous répond sous 24 h ouvrées avec une première recommandation.">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://www.gjs-agence.fr/contact.html">
-  <meta name="theme-color" content="#060B1E">
-  <meta name="color-scheme" content="dark light">
+  <meta name="theme-color" content="#EEE6D8">
+  <meta name="color-scheme" content="light">
   <meta name="author" content="GJS">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="fr_FR">
@@ -52,12 +52,8 @@
     })(document, location);
   </script>
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-  <link rel="preconnect" href="https://api.fontshare.com" crossorigin>
-  <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
-  <link rel="preload" href="assets/fonts/JetBrainsMono-Variable.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="assets/fonts/InstrumentSerif-Italic.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=clash-display@500,600,700&amp;f[]=general-sans@400,500&amp;display=swap" media="print" onload="this.media='all'">
-  <noscript><link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=clash-display@500,600,700&amp;f[]=general-sans@400,500&amp;display=swap"></noscript>
+  <link rel="preload" href="assets/fonts/LeagueSpartan-Variable-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/ArchivoNarrow-Variable-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="assets/css/tokens.css">
   <link rel="stylesheet" href="assets/css/base.css">
   <link rel="stylesheet" href="assets/css/layout.css">
@@ -70,22 +66,24 @@
   <a class="skip-link" href="#main">Aller au contenu</a>
 
   <section class="cookies" id="cookies" aria-labelledby="cookies-title" hidden data-lenis-prevent>
-    <p class="label">[ Cookies ] — Votre choix</p>
-    <h2 class="cookies__title" id="cookies-title">On mesure, <em class="serif">si</em> vous voulez.</h2>
-    <p class="cookies__text">Aucun traceur n'est déposé sans votre accord. Seuls les stockages indispensables au site (vos préférences, vos records d'arcade) sont actifs. <a href="politique-confidentialite.html#cookies">En savoir plus</a></p>
+    <div class="cookies__head">
+      <span class="cookies__robot header__logo-mark" aria-hidden="true"><svg class="robot robot--mark" data-robot viewBox="0 0 100 100" aria-hidden="true" focusable="false"><path class="robot__antenna" d="M50 25 V13"/><circle class="robot__light" cx="50" cy="10" r="6"/><rect class="robot__ear" x="7" y="43" width="12" height="22" rx="5"/><rect class="robot__ear" x="81" y="43" width="12" height="22" rx="5"/><rect class="robot__head" x="15" y="25" width="70" height="60" rx="22"/><g class="robot__eyes"><g class="robot__pupils"><circle class="robot__eye" cx="38" cy="53" r="8"/><circle class="robot__eye" cx="62" cy="53" r="8"/></g></g><path class="robot__mouth" d="M42 71 Q50 76 58 71"/></svg></span>
+      <h2 class="cookies__title" id="cookies-title">Des cookies&nbsp;? <span class="accent">Seulement si vous voulez.</span></h2>
+    </div>
+    <p class="cookies__text">Aucun traceur n’est déposé sans votre accord. Seuls les stockages indispensables au site (vos choix, vos records d’arcade) sont actifs. <a href="politique-cookies.html">Notre politique cookies</a></p>
     <div class="cookies__actions">
-      <button class="btn btn--ghost" type="button" data-consent="reject">Tout refuser</button>
-      <button class="btn btn--ghost" type="button" data-consent="customize" aria-expanded="false" aria-controls="cookies-prefs">Personnaliser</button>
-      <button class="btn btn--ghost" type="button" data-consent="accept">Tout accepter</button>
+      <button class="btn btn--secondary" type="button" data-consent="reject">Tout refuser</button>
+      <button class="btn btn--secondary" type="button" data-consent="customize" aria-expanded="false" aria-controls="cookies-prefs">Personnaliser</button>
+      <button class="btn btn--secondary" type="button" data-consent="accept">Tout accepter</button>
     </div>
     <form class="cookies__prefs" id="cookies-prefs" hidden>
       <fieldset>
         <legend class="label">Catégories</legend>
-        <label class="toggle"><span class="toggle__name">Indispensables</span><span class="toggle__desc">Préférences, session, records d'arcade. Toujours actifs.</span><input type="checkbox" checked disabled></label>
-        <label class="toggle"><span class="toggle__name">Mesure d'audience</span><span class="toggle__desc">Statistiques anonymisées de fréquentation.</span><input type="checkbox" name="analytics"></label>
-        <label class="toggle"><span class="toggle__name">Marketing</span><span class="toggle__desc">Pixels publicitaires (Meta, LinkedIn, Google Ads).</span><input type="checkbox" name="marketing"></label>
+        <label class="toggle"><span class="toggle__name">Indispensables</span><span class="toggle__desc">Vos choix, la session, vos records d’arcade. Toujours actifs.</span><input type="checkbox" checked disabled></label>
+        <label class="toggle"><span class="toggle__name">Mesure d’audience</span><span class="toggle__desc">Statistiques de fréquentation. Aucune n’est activée à ce jour.</span><input type="checkbox" name="analytics"></label>
+        <label class="toggle"><span class="toggle__name">Marketing</span><span class="toggle__desc">Pixels publicitaires. Aucun n’est utilisé à ce jour.</span><input type="checkbox" name="marketing"></label>
       </fieldset>
-      <button class="btn btn--light" type="submit">Enregistrer mes choix</button>
+      <button class="btn btn--primary" type="submit">Enregistrer mes choix</button>
     </form>
   </section>
 
@@ -99,7 +97,7 @@
       <div class="loader__hud">
         <p class="loader__meta t-mono" aria-hidden="true">GJS — Système v26.10</p>
         <p class="loader__coords t-mono" aria-hidden="true">48.8566° N — 2.3522° E</p>
-        <button class="loader__skip t-mono" type="button" data-loader-skip>Passer l'intro →</button>
+        <button class="loader__skip t-mono" type="button" data-loader-skip>Passer l’intro →</button>
         <p class="loader__label t-mono" data-loader-label aria-hidden="true">Initialisation du système GJS…</p>
         <p class="loader__count" aria-hidden="true"><span data-loader-count>000</span></p>
       </div>
@@ -109,43 +107,45 @@
   </div>
 
   <header class="header" data-header>
-    <a class="header__logo" href="index.html" aria-label="GJS, retour à l'accueil" data-magnetic="0.3"><span class="header__logo-inner">GJS<span class="header__logo-dot" aria-hidden="true"></span></span></a>
-    <p class="header__meta" aria-hidden="true">Agence marketing digital &amp; communication — Paris</p>
-    <div class="header__actions">
-      <button class="header__btn" type="button" data-menu-toggle aria-expanded="false" aria-controls="menu" aria-label="Ouvrir le menu" data-magnetic="0.35"><span class="header__btn-dot" aria-hidden="true"></span><span class="header__btn-text" aria-hidden="true"><span>Menu</span><span>Fermer</span></span></button>
-      <a class="header__btn" href="contact.html" data-magnetic="0.35"><span>Contact</span><span aria-hidden="true">→</span></a>
+    <div class="header__bar">
+      <a class="header__logo" href="index.html" aria-label="GJS, retour à l’accueil"><span class="header__logo-mark" aria-hidden="true"><svg class="robot robot--mark" data-robot viewBox="0 0 100 100" aria-hidden="true" focusable="false"><path class="robot__antenna" d="M50 25 V13"/><circle class="robot__light" cx="50" cy="10" r="6"/><rect class="robot__ear" x="7" y="43" width="12" height="22" rx="5"/><rect class="robot__ear" x="81" y="43" width="12" height="22" rx="5"/><rect class="robot__head" x="15" y="25" width="70" height="60" rx="22"/><g class="robot__eyes"><g class="robot__pupils"><circle class="robot__eye" cx="38" cy="53" r="8"/><circle class="robot__eye" cx="62" cy="53" r="8"/></g></g><path class="robot__mouth" d="M42 71 Q50 76 58 71"/></svg></span><span class="header__logo-inner">GJS</span></a>
+      <nav class="header__nav" aria-label="Navigation principale">
+        <ul class="header__list"><li><a class="header__link" href="offres.html" data-page="offres">Nos offres</a></li><li><a class="header__link" href="a-propos.html" data-page="about">Qui sommes-nous</a></li><li><a class="header__link" href="index.html#projets" data-page="projects">Projets</a></li><li><a class="header__link" href="index.html#arcade" data-page="arcade">Arcade</a></li></ul>
+      </nav>
+      <div class="header__actions">
+        <a class="btn btn--primary btn--sm header__cta" href="contact.html" data-page="contact"><span class="header__cta-long">Démarrer un projet</span><span class="header__cta-short">Contact</span></a>
+        <button class="header__burger" type="button" data-menu-toggle aria-expanded="false" aria-controls="menu" aria-label="Ouvrir le menu"><span class="header__burger-icon" aria-hidden="true"><span></span><span></span></span><span class="header__burger-text" aria-hidden="true"><span>Menu</span><span>Fermer</span></span></button>
+      </div>
     </div>
   </header>
 
   <div class="menu" id="menu" role="dialog" aria-modal="true" aria-label="Menu principal" hidden data-lenis-prevent>
-    <div class="menu__bg"></div>
-    <div class="menu__inner grid">
-      <p class="menu__label label">[ Navigation ] — 05 destinations</p>
-      <nav class="menu__nav" aria-label="Navigation principale">
+    <div class="menu__bg starfield"></div>
+    <div class="menu__inner container">
+      <nav class="menu__nav" aria-label="Navigation du menu">
         <ol class="menu__list">
-          <li class="menu__item"><a class="menu__link" href="index.html" data-page="home" data-preview="assets/img/menu-accueil.webp"><span class="menu__num t-mono">01</span><span class="menu__text"><span>Accueil</span></span></a></li>
-          <li class="menu__item"><a class="menu__link" href="offres.html" data-page="offres" data-preview="assets/img/menu-offres.webp"><span class="menu__num t-mono">02</span><span class="menu__text"><span>Nos offres</span></span></a></li>
-          <li class="menu__item"><a class="menu__link" href="a-propos.html" data-page="about" data-preview="assets/img/menu-a-propos.webp"><span class="menu__num t-mono">03</span><span class="menu__text"><span>Qui sommes-nous</span></span></a></li>
-          <li class="menu__item"><a class="menu__link" href="contact.html" data-page="contact" data-preview="assets/img/menu-contact.webp"><span class="menu__num t-mono">04</span><span class="menu__text"><span>Contact</span></span></a></li>
-          <li class="menu__item"><a class="menu__link" href="index.html#arcade" data-page="arcade" data-preview="assets/img/menu-arcade.webp"><span class="menu__num t-mono">05</span><span class="menu__text"><span>Arcade</span></span></a></li>
+          <li class="menu__item"><a class="menu__link" href="index.html" data-page="home"><span class="menu__num t-mono">01</span><span class="menu__text"><span>Accueil</span></span><span class="menu__arrow" aria-hidden="true">→</span></a></li>
+          <li class="menu__item"><a class="menu__link" href="offres.html" data-page="offres"><span class="menu__num t-mono">02</span><span class="menu__text"><span>Nos offres</span></span><span class="menu__arrow" aria-hidden="true">→</span></a></li>
+          <li class="menu__item"><a class="menu__link" href="a-propos.html" data-page="about"><span class="menu__num t-mono">03</span><span class="menu__text"><span>Qui sommes-nous</span></span><span class="menu__arrow" aria-hidden="true">→</span></a></li>
+          <li class="menu__item"><a class="menu__link" href="index.html#projets" data-page="projects"><span class="menu__num t-mono">04</span><span class="menu__text"><span>Projets</span></span><span class="menu__arrow" aria-hidden="true">→</span></a></li>
+          <li class="menu__item"><a class="menu__link" href="index.html#arcade" data-page="arcade"><span class="menu__num t-mono">05</span><span class="menu__text"><span>Arcade</span></span><span class="menu__arrow" aria-hidden="true">→</span></a></li>
+          <li class="menu__item"><a class="menu__link" href="contact.html" data-page="contact"><span class="menu__num t-mono">06</span><span class="menu__text"><span>Contact</span></span><span class="menu__arrow" aria-hidden="true">→</span></a></li>
         </ol>
       </nav>
-      <div class="menu__preview" aria-hidden="true"><img src="assets/img/menu-accueil.webp" alt="" width="640" height="800" loading="lazy" decoding="async"></div>
       <div class="menu__foot">
-        <p class="t-mono"><a class="link" href="mailto:bonjour@gjs-agence.fr" data-config="email">bonjour@gjs-agence.fr</a></p>
-        <p class="t-mono"><a class="link" href="tel:+33100000000" data-config="phone">+33 1 00 00 00 00</a></p>
-        <ul aria-label="Réseaux sociaux"><li><a class="t-mono link" href="https://www.linkedin.com/" data-social="LinkedIn" target="_blank" rel="noopener">LinkedIn<span class="sr-only"> (nouvel onglet)</span></a></li><li><a class="t-mono link" href="https://www.instagram.com/" data-social="Instagram" target="_blank" rel="noopener">Instagram<span class="sr-only"> (nouvel onglet)</span></a></li><li><a class="t-mono link" href="https://www.tiktok.com/" data-social="TikTok" target="_blank" rel="noopener">TikTok<span class="sr-only"> (nouvel onglet)</span></a></li></ul>
-        <p class="t-mono t-muted" aria-hidden="true">48.8566° N — 2.3522° E</p>
+        <p><a class="link" href="mailto:bonjour@gjs-agence.fr" data-config="email">bonjour@gjs-agence.fr</a></p>
+        <p><a class="link" href="tel:+33100000000" data-config="phone">+33 1 00 00 00 00</a></p>
+        <ul aria-label="Réseaux sociaux"><li><a class="link" href="https://www.linkedin.com/" data-social="LinkedIn" target="_blank" rel="noopener">LinkedIn<span class="sr-only"> (nouvel onglet)</span></a></li><li><a class="link" href="https://www.instagram.com/" data-social="Instagram" target="_blank" rel="noopener">Instagram<span class="sr-only"> (nouvel onglet)</span></a></li><li><a class="link" href="https://www.tiktok.com/" data-social="TikTok" target="_blank" rel="noopener">TikTok<span class="sr-only"> (nouvel onglet)</span></a></li></ul>
       </div>
     </div>
   </div>
 
   <div class="page-transition" aria-hidden="true">
-    <div class="page-transition__curtain"></div>
+    <div class="page-transition__curtain starfield"></div>
     <div class="page-transition__content">
       <p class="page-transition__name"><span class="page-transition__name-ghost" data-transition-ghost></span><span class="page-transition__name-fill" data-transition-name></span></p>
       <div class="page-transition__ship"><svg class="ship" viewBox="0 0 200 80" aria-hidden="true" focusable="false"><path class="ship__flame" d="M36 31 L0 40 L36 49 Z" filter="url(#gjs-glow)"/><path class="ship__fin" d="M74 29 L54 5 L68 5 L106 29 Z"/><path class="ship__fin" d="M74 51 L54 75 L68 75 L106 51 Z"/><path class="ship__hull" d="M32 29 L122 24 C160 27 186 33 199 40 C186 47 160 53 122 56 L32 51 Z"/><path class="ship__glass" d="M132 32.5 C151 33.5 166 36.5 175 40 C166 43.5 151 46.5 132 47.5 Z"/><path class="ship__line" d="M46 40 H122 M58 33 V47 M84 32 V48"/><rect class="ship__engine" x="27" y="32" width="8" height="16"/><circle class="ship__light" cx="114" cy="40" r="2.2"/></svg></div>
-      <p class="page-transition__label t-mono">[ Navigation ] → <span data-transition-path></span></p>
+      <p class="page-transition__label t-mono">Cap sur → <span data-transition-path></span></p>
       <p class="page-transition__label page-transition__label--right t-mono">GJS — En route</p>
     </div>
   </div>
@@ -333,40 +333,38 @@
         </section>
       </main>
 
-    <footer class="footer" data-theme="deep">
-      <div class="footer__top grid">
-        <p class="footer__title" aria-hidden="true">On construit <em class="serif">la suite</em> ?</p>
-        <div class="footer__col footer__col--contact">
-          <p class="label">[ Contact ]</p>
-          <a class="footer__mail link" href="mailto:bonjour@gjs-agence.fr" data-config="email">bonjour@gjs-agence.fr</a>
-          <a href="tel:+33100000000" data-config="phone">+33 1 00 00 00 00</a>
-          <p class="t-muted">Paris &amp; région parisienne — missions partout en France.</p>
+    <footer class="footer" data-theme="space">
+      <div class="footer__main container">
+        <div class="footer__brand">
+          <p class="footer__giant" aria-hidden="true"><span class="footer__giant-word" data-footer-logo><span>G</span><span>J</span><span>S</span></span></p>
+          <p class="footer__tagline">Agence marketing digital &amp; communication à Paris. Sites, automatisations, publicité, IA et réseaux sociaux, 100 % sur-mesure.</p>
+          <p class="footer__clock-line t-mono"><span class="dot-live" aria-hidden="true"></span>Paris <time class="footer__clock" data-paris-clock>--:--:--</time></p>
         </div>
-        <nav class="footer__col footer__col--nav" aria-label="Pied de page">
-          <p class="label">[ Plan ]</p>
-          <ul><li><a href="index.html">Accueil</a></li><li><a href="offres.html">Nos offres</a></li><li><a href="a-propos.html">Qui sommes-nous</a></li><li><a href="contact.html" aria-current="page">Contact</a></li><li><a href="index.html#arcade">Arcade</a></li></ul>
+        <nav class="footer__col" aria-label="Plan du site">
+          <p class="footer__heading">Navigation</p>
+          <ul><li><a href="index.html">Accueil</a></li><li><a href="offres.html">Nos offres</a></li><li><a href="a-propos.html">Qui sommes-nous</a></li><li><a href="index.html#projets">Projets</a></li><li><a href="index.html#arcade">Arcade</a></li><li><a href="contact.html" aria-current="page">Contact</a></li></ul>
         </nav>
-        <div class="footer__col footer__col--social">
-          <p class="label">[ Réseaux ]</p>
-          <ul><li><a href="https://www.linkedin.com/" data-social="LinkedIn" target="_blank" rel="noopener">LinkedIn<span class="sr-only"> (nouvel onglet)</span></a></li><li><a href="https://www.instagram.com/" data-social="Instagram" target="_blank" rel="noopener">Instagram<span class="sr-only"> (nouvel onglet)</span></a></li><li><a href="https://www.tiktok.com/" data-social="TikTok" target="_blank" rel="noopener">TikTok<span class="sr-only"> (nouvel onglet)</span></a></li></ul>
+        <div class="footer__col">
+          <p class="footer__heading">Expertises</p>
+          <ul><li><a href="offres.html#site">Sites web & SEO</a></li><li><a href="offres.html#automatisation">Automatisations</a></li><li><a href="offres.html#ads">Campagnes publicitaires</a></li><li><a href="offres.html#ia">Agents IA</a></li><li><a href="offres.html#social">Réseaux sociaux</a></li></ul>
         </div>
-        <div class="footer__col footer__col--time">
-          <p class="label">[ Paris ]</p>
-          <time class="footer__clock" data-paris-clock>--:--:--</time>
-          <p class="t-mono t-muted">48.8566° N — 2.3522° E</p>
+        <nav class="footer__col" aria-label="Informations légales et RGPD">
+          <p class="footer__heading">Légal &amp; RGPD</p>
+          <ul><li><a href="mentions-legales.html">Mentions légales</a></li><li><a href="politique-confidentialite.html">Confidentialité</a></li><li><a href="politique-cookies.html">Cookies</a></li><li><a href="exercer-vos-droits.html">Exercer vos droits</a></li><li><button class="footer__link" type="button" data-cookie-manage>Gérer les cookies</button></li></ul>
+        </nav>
+        <div class="footer__col">
+          <p class="footer__heading">Contact</p>
+          <ul>
+            <li><a href="mailto:bonjour@gjs-agence.fr" data-config="email">bonjour@gjs-agence.fr</a></li>
+            <li><a href="tel:+33100000000" data-config="phone">+33 1 00 00 00 00</a></li>
+            <li><a href="https://www.linkedin.com/" data-social="LinkedIn" target="_blank" rel="noopener">LinkedIn<span class="sr-only"> (nouvel onglet)</span></a></li><li><a href="https://www.instagram.com/" data-social="Instagram" target="_blank" rel="noopener">Instagram<span class="sr-only"> (nouvel onglet)</span></a></li><li><a href="https://www.tiktok.com/" data-social="TikTok" target="_blank" rel="noopener">TikTok<span class="sr-only"> (nouvel onglet)</span></a></li>
+          </ul>
         </div>
       </div>
-      <div class="footer__bottom wrap t-mono">
-        <p>© <span data-year>2026</span> GJS — Sur-mesure uniquement.</p>
-        <ul>
-          <li><a href="mentions-legales.html">Mentions légales</a></li>
-          <li><a href="politique-confidentialite.html">Confidentialité</a></li>
-          <li><button class="footer__link" type="button" data-cookie-manage>Gérer les cookies</button></li>
-          <li><a href="#main" data-scroll-top>Retour en haut ↑</a></li>
-        </ul>
-      </div>
-      <div class="footer__giant" aria-hidden="true">
-        <span class="footer__giant-word" data-footer-logo><span>G</span><span>J</span><span>S</span></span>
+      <div class="footer__bottom container">
+        <p>© <span data-year>2026</span> GJS — Tous droits réservés.</p>
+        <p>Conçu et développé à Paris, entre deux orbites.</p>
+        <a href="#main" data-scroll-top>Retour en haut <span aria-hidden="true">↑</span></a>
       </div>
     </footer>
     </div>

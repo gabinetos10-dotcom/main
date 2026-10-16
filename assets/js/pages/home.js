@@ -7,7 +7,6 @@
 
 import { env, $, $$, clamp, store, trapFocus } from '../core/utils.js';
 import { lockScroll, unlockScroll } from '../core/scroll.js';
-import { refreshCursor } from '../core/cursor.js';
 import { yieldToMain } from '../core/utils.js';
 
 const { gsap, ScrollTrigger, Flip } = window;
@@ -31,7 +30,7 @@ function initHero(scope, root) {
       toggle.setAttribute('aria-pressed', String(paused));
     }
     if (media) media.dataset.cursorLabel = paused ? 'Play' : 'Pause';
-    refreshCursor();
+    // (curseur personnalisé retiré en v2)
   };
 
   const play = () => {

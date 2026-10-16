@@ -1,6 +1,6 @@
 /* ==========================================================================
    GJS — TRANSITION DE PAGE
-   Un rideau bleu nuit monte, un mini vaisseau le traverse en dévoilant le nom
+   Un rideau « nuit chaude » monte, un mini vaisseau le traverse en dévoilant le nom
    de la page suivante dans son sillage, puis le rideau sort par le haut.
    Mouvement réduit : fondu court, sans vaisseau.
    ========================================================================== */
@@ -17,6 +17,8 @@ const NAMES = {
   contact: 'Contact',
   'mentions-legales': 'Mentions légales',
   'politique-confidentialite': 'Confidentialité',
+  'politique-cookies': 'Cookies',
+  'exercer-vos-droits': 'Vos droits',
 };
 
 export function pageSlug(path = '') {

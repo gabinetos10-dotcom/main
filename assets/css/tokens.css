@@ -1,99 +1,146 @@
 /* ==========================================================================
-   GJS — TOKENS
-   Couleurs, typographies, échelles fluides, easings, durées, z-index.
+   GJS — TOKENS (v2 « orbite chaude »)
+   Couleurs, typographies, échelles fluides, grille, easings, z-index.
    Toute valeur de design passe par ces variables : aucune couleur en dur ailleurs.
+
+   Règles de contraste (WCAG 2.2 AA, mesurées) :
+   - fonds clairs (crème, gris) : texte --ink 14:1, --ink-2 5,8:1, accent texte --rust 5,5:1 ;
+     --copper seulement pour les grands titres (3,1:1), --gold jamais en texte.
+   - fond espace : texte --cream 15:1, --cream-2 7,5:1, accents --gold 8,9:1 et --copper 4,9:1.
+   - boutons or : texte --ink 8,2:1.
    ========================================================================== */
 
-/* Polices auto-hébergées (licence SIL OFL 1.1 — voir /assets/fonts/OFL-*.txt).
-   Clash Display & General Sans sont servies par Fontshare (cf. <head>) ;
-   le README explique comment les auto-héberger elles aussi. */
+/* Polices auto-hébergées (licence SIL OFL 1.1 — voir /assets/fonts/OFL-*.txt). */
 @font-face {
-  font-family: "Instrument Serif";
-  src: url("../fonts/InstrumentSerif-Italic.woff2") format("woff2");
-  font-style: italic;
-  font-weight: 400;
-  font-display: swap;
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-
-@font-face {
-  font-family: "JetBrains Mono";
-  src: url("../fonts/JetBrainsMono-Variable.woff2") format("woff2");
+  font-family: "League Spartan";
+  src: url("../fonts/LeagueSpartan-Variable-latin.woff2") format("woff2");
   font-style: normal;
-  font-weight: 100 800;
+  font-weight: 100 900;
   font-display: swap;
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
-/* Fallbacks métriquement proches pour limiter le CLS pendant le swap. */
+@font-face {
+  font-family: "League Spartan";
+  src: url("../fonts/LeagueSpartan-Variable-latin-ext.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: "Archivo Narrow";
+  src: url("../fonts/ArchivoNarrow-Variable-latin.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "Archivo Narrow";
+  src: url("../fonts/ArchivoNarrow-Variable-latin-ext.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/* Fallbacks calés sur les métriques mesurées (largeur de texte et hauteurs
+   d'Arial / Liberation Sans) pour limiter le décalage pendant le swap. */
 @font-face {
   font-family: "GJS Display Fallback";
-  src: local("Arial Narrow Bold"), local("ArialNarrow-Bold"), local("Helvetica Neue Condensed Bold"), local("Arial Bold"), local("Arial");
-  size-adjust: 96%;
-  ascent-override: 92%;
-  descent-override: 22%;
+  src: local("Arial Bold"), local("Arial-BoldMT"), local("Liberation Sans Bold"), local("Arial");
+  font-weight: 700 900;
+  size-adjust: 90%;
+  ascent-override: 78%;
+  descent-override: 24%;
   line-gap-override: 0%;
 }
 
 @font-face {
   font-family: "GJS Text Fallback";
-  src: local("Helvetica Neue"), local("Arial"), local("Roboto");
-  size-adjust: 101%;
-  ascent-override: 96%;
-  descent-override: 24%;
+  src: local("Arial"), local("ArialMT"), local("Liberation Sans"), local("Helvetica");
+  size-adjust: 82.5%;
+  ascent-override: 126%;
+  descent-override: 37.5%;
   line-gap-override: 0%;
 }
 
 :root {
-  /* ---- Palette ------------------------------------------------------- */
-  --night-950: #03060F;
-  --night-900: #060B1E;
-  --night-800: #0B1433;
-  --night-700: #13204D;
-  --night-500: #24387A;
-  --black: #000000;
-  --paper: #F2F1EC;
-  --white: #FFFFFF;
-  --signal: #5B85FF;              /* glow, focus, états actifs — < 5 % de la surface */
-  --signal-soft: rgba(91, 133, 255, 0.28);
-  --danger: #FF6B5B;              /* uniquement messages d'erreur de formulaire */
+  /* ---- Palette de marque --------------------------------------------- */
+  --grey: #E5E7E6;                /* gris lunaire : sections alternées */
+  --cream: #EEE6D8;               /* crème sable : fond principal */
+  --gold: #DAAB3A;                /* or : CTA, étoiles, états actifs */
+  --copper: #B67332;              /* cuivre : grands titres, planètes */
+  --rust: #93441A;                /* rouille : accent texte sur fond clair */
 
-  /* ---- Thème courant (piloté au scroll par JS sur <body>) ------------- */
-  --bg: var(--night-900);
-  --fg: var(--white);
-  --fg-2: rgba(255, 255, 255, 0.64);
-  --line: rgba(255, 255, 255, 0.14);
-  --focus: var(--signal);
+  /* ---- Dérivées ------------------------------------------------------- */
+  --ink: #1F1812;                 /* encre brune : texte sur fond clair */
+  --ink-2: #5D564D;               /* texte secondaire sur fond clair */
+  --space: #16100C;               /* nuit chaude : sections « espace » */
+  --space-2: #231912;             /* surfaces sur fond espace */
+  --space-3: #3A2A1D;             /* bordures et états sur fond espace */
+  --cream-2: #A9A297;             /* texte secondaire sur fond espace */
+  --sand: #E4D9C5;                /* surfaces sur fond crème */
+  --white: #FFFDF8;
+  --gold-soft: rgba(218, 171, 58, 0.32);
+  --danger-light: #B3261E;        /* erreurs sur fond clair */
+  --danger-dark: #FF9A80;         /* erreurs sur fond espace */
+
+  /* ---- Thème courant (redéfini par [data-theme]) ---------------------- */
+  --bg: var(--cream);
+  --surface: var(--sand);
+  --fg: var(--ink);
+  --fg-2: var(--ink-2);
+  --accent: var(--rust);          /* accent lisible en texte */
+  --accent-deco: var(--copper);   /* accent décoratif / grands titres */
+  --line: rgba(31, 24, 18, 0.14);
+  --line-strong: rgba(31, 24, 18, 0.56);
+  --focus: var(--rust);
+  --danger: var(--danger-light);
 
   /* ---- Typographies --------------------------------------------------- */
-  --font-display: "Clash Display", "GJS Display Fallback", "Arial Narrow", Arial, sans-serif;
-  --font-text: "General Sans", "GJS Text Fallback", "Helvetica Neue", Arial, sans-serif;
-  --font-serif: "Instrument Serif", "Iowan Old Style", "Times New Roman", serif;
-  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --font-display: "League Spartan", "GJS Display Fallback", "Arial Black", Arial, sans-serif;
+  --font-text: "Archivo Narrow", "GJS Text Fallback", "Arial Narrow", Arial, sans-serif;
+  /* Libellés techniques (HUD, compteurs) : même famille que le texte, en capitales espacées */
+  --font-mono: var(--font-text);
 
-  --tracking-display: -0.04em;
-  --tracking-mono: 0.08em;
-  --leading-display: 0.85;
+  --tracking-display: -0.02em;
+  --tracking-label: 0.14em;
+  --tracking-mono: 0.12em;
+  --leading-display: 0.98;
 
-  /* Échelle fluide (360 px → 1920 px) */
-  --fs-mono: clamp(0.6875rem, 0.66rem + 0.08vw, 0.75rem);           /* 11 → 12 px */
-  --fs-small: clamp(0.8125rem, 0.78rem + 0.15vw, 0.9375rem);
-  --fs-body: clamp(1rem, 0.94rem + 0.3vw, 1.1875rem);               /* 16 → 19 px */
-  --fs-lead: clamp(1.25rem, 1.05rem + 0.9vw, 1.875rem);
-  --fs-h4: clamp(1.5rem, 1.2rem + 1.4vw, 2.5rem);
-  --fs-h3: clamp(2rem, 1.4rem + 2.8vw, 4.25rem);
-  --fs-h2: clamp(3rem, 1.6rem + 6.4vw, 9.5rem);
-  --fs-h1: clamp(3.4rem, 1.4rem + 9vw, 13rem);
-  --fs-manifesto: clamp(2.1rem, 1rem + 5.2vw, 7.2rem);              /* 5 → 7 vw */
-  --fs-giant: clamp(6rem, 20vw, 22vw);                                /* 18 → 22 vw */
+  /* Échelle fluide (360 px → 1440 px) */
+  --fs-label: 0.8125rem;                                             /* 13 px */
+  --fs-mono: 0.8125rem;
+  --fs-small: 0.9375rem;                                             /* 15 px */
+  --fs-body: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);              /* 17 → 19 px */
+  --fs-lead: clamp(1.1875rem, 1.05rem + 0.55vw, 1.5rem);              /* 19 → 24 px */
+  --fs-h4: clamp(1.1875rem, 1.1rem + 0.35vw, 1.4375rem);              /* 19 → 23 px */
+  --fs-h3: clamp(1.4375rem, 1.2rem + 0.95vw, 2.125rem);               /* 23 → 34 px */
+  --fs-h2: clamp(2rem, 1.35rem + 2.7vw, 3.75rem);                     /* 32 → 60 px */
+  --fs-h1: clamp(2.5rem, 1.45rem + 4.4vw, 5.5rem);                    /* 40 → 88 px */
+  --fs-display: clamp(2.75rem, 1.4rem + 5.6vw, 6.5rem);               /* 44 → 104 px */
+  --fs-giant: clamp(4.5rem, 1rem + 14vw, 12rem);
 
-  /* ---- Grille --------------------------------------------------------- */
+  /* ---- Grille : UN seul conteneur, mêmes marges partout --------------- */
+  --container: 1280px;                                               /* largeur utile max */
+  --pad: clamp(20px, 5vw, 64px);                                     /* marge latérale */
+  --margin: var(--pad);                                              /* alias historique */
   --cols: 4;
-  --margin: clamp(16px, 4vw, 72px);
-  --gutter: clamp(12px, 1.6vw, 28px);
-  --header-h: clamp(64px, 5vw + 40px, 96px);
-  --radius-card: 24px;
-  --section-pad: clamp(96px, 16vh, 220px);
+  --gutter: clamp(16px, 2vw, 32px);
+  --section-y: clamp(80px, 9vw, 144px);                              /* respiration verticale */
+  --section-pad: var(--section-y);
+  --stack: clamp(32px, 4vw, 56px);                                   /* titre de section → contenu */
+  --header-h: 88px;                                                  /* hauteur réservée au header */
+  --radius-s: 10px;
+  --radius: 18px;
+  --radius-l: 28px;
+  --radius-card: var(--radius);
+  --shadow-1: 0 1px 2px rgba(31, 24, 18, 0.06), 0 6px 18px rgba(31, 24, 18, 0.06);
+  --shadow-2: 0 2px 6px rgba(31, 24, 18, 0.08), 0 18px 42px rgba(31, 24, 18, 0.12);
 
   /* ---- Motion --------------------------------------------------------- */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
@@ -113,7 +160,7 @@
   --z-transition: 400;
   --z-loader: 500;
   --z-egg: 600;
-  --z-cursor: 900;
+  --z-grid: 900;
   --z-grain: 1000;
 }
 
@@ -125,20 +172,93 @@
   :root { --cols: 12; }
 }
 
-/* Thèmes locaux : un composant peut forcer sa palette quel que soit le fond du body. */
+@media (max-width: 767px) {
+  :root { --header-h: 76px; }
+}
+
+/* ---- Thèmes de section ----------------------------------------------------
+   Chaque section porte son fond : on voit d'un coup d'œil où commence et
+   finit un bloc d'information.                                              */
+
+[data-theme="cream"],
+.theme-cream {
+  --bg: var(--cream);
+  --surface: var(--sand);
+  --fg: var(--ink);
+  --fg-2: var(--ink-2);
+  --accent: var(--rust);
+  --accent-deco: var(--copper);
+  --line: rgba(31, 24, 18, 0.14);
+  --line-strong: rgba(31, 24, 18, 0.56);
+  --focus: var(--rust);
+  --danger: var(--danger-light);
+}
+
+[data-theme="grey"],
+.theme-grey {
+  --bg: var(--grey);
+  --surface: var(--white);
+  --fg: var(--ink);
+  --fg-2: var(--ink-2);
+  --accent: var(--rust);
+  --accent-deco: var(--copper);
+  --line: rgba(31, 24, 18, 0.14);
+  --line-strong: rgba(31, 24, 18, 0.56);
+  --focus: var(--rust);
+  --danger: var(--danger-light);
+}
+
+[data-theme="space"],
+.theme-space {
+  --bg: var(--space);
+  --surface: var(--space-2);
+  --fg: var(--cream);
+  --fg-2: var(--cream-2);
+  --accent: var(--gold);
+  --accent-deco: var(--copper);
+  --line: rgba(238, 230, 216, 0.14);
+  --line-strong: rgba(238, 230, 216, 0.5);
+  --focus: var(--gold);
+  --danger: var(--danger-dark);
+}
+
+[data-theme="gold"],
+.theme-gold {
+  --bg: var(--gold);
+  --surface: #E4BB59;
+  --fg: var(--space);
+  --fg-2: #3B2C1C;
+  --accent: var(--space);
+  --accent-deco: var(--rust);
+  --line: rgba(22, 16, 12, 0.2);
+  --line-strong: rgba(22, 16, 12, 0.6);
+  --focus: var(--space);
+  --danger: #7A1410;
+}
+
+/* Alias v1 (balisage généré par JS : jeux, easter eggs) */
 .theme-night,
 [data-theme-local="night"] {
-  --fg: var(--white);
-  --fg-2: rgba(255, 255, 255, 0.64);
-  --line: rgba(255, 255, 255, 0.14);
-  --focus: var(--signal);
+  --bg: var(--space);
+  --surface: var(--space-2);
+  --fg: var(--cream);
+  --fg-2: var(--cream-2);
+  --accent: var(--gold);
+  --line: rgba(238, 230, 216, 0.14);
+  --line-strong: rgba(238, 230, 216, 0.5);
+  --focus: var(--gold);
+  --danger: var(--danger-dark);
 }
 
 .theme-paper,
 [data-theme-local="paper"] {
-  --fg: var(--night-950);
-  --fg-2: rgba(3, 6, 15, 0.68);
-  --line: rgba(3, 6, 15, 0.16);
-  --focus: var(--night-500);
-  --danger: #B3261E;
+  --bg: var(--cream);
+  --surface: var(--sand);
+  --fg: var(--ink);
+  --fg-2: var(--ink-2);
+  --accent: var(--rust);
+  --line: rgba(31, 24, 18, 0.14);
+  --line-strong: rgba(31, 24, 18, 0.56);
+  --focus: var(--rust);
+  --danger: var(--danger-light);
 }
