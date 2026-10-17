@@ -36,7 +36,11 @@ python3 -m http.server 8000      # macOS / Linux, puis http://localhost:8000
 py -m http.server 8000           # Windows (Python de python.org)
 ```
 
-Le fichier `serve.json` désactive les « clean URLs » de `serve` pour que les liens `offres.html`, `contact.html`… restent identiques en local et en production.
+Le fichier `serve.json` règle `serve` pour ce site :
+- les adresses gardent leur `.html` (`offres.html`, `contact.html`…), comme en production ;
+- l'accueil est servi à la racine, http://localhost:3000 ;
+- un dossier sans page affiche la page 404 du site, et non une liste de fichiers ;
+- le navigateur revérifie chaque fichier : après une mise à jour, il ne garde pas l'ancienne version en cache.
 
 ### C. Avec VS Code
 
@@ -46,6 +50,11 @@ Installez l'extension **Live Server**, ouvrez le dossier du site, clic droit sur
 
 - **Netlify Drop** : glissez le dossier du site sur https://app.netlify.com/drop → une URL publique est générée en quelques secondes.
 - **GitHub Pages** (dépôt public, ou offre payante pour un dépôt privé) : dans le dépôt, Settings › Pages › Source « Deploy from a branch », branche `claude/eager-gauss-qymcxp`, dossier `/ (root)`. Le site sera servi sous `https://<compte>.github.io/main/` : tout fonctionne, sauf la page 404 personnalisée qui attend la racine d'un domaine (voir ci-dessous).
+
+### L'accueil ne s'affiche pas ?
+
+- **Une liste de fichiers (« Index of… ») s'affiche à la place de l'accueil** : vous avez une copie antérieure au 17 octobre 2026. Son `serve.json` empêchait `serve` d'ouvrir l'accueil à la racine. Téléchargez la version à jour, ou ouvrez directement http://localhost:3000/index.html.
+- **Le site ressemble encore à l'ancienne version** : rechargez la page sans le cache (Ctrl+F5 sous Windows, Cmd+Maj+R sur Mac).
 
 ### Toujours peu d'animations ?
 
@@ -135,6 +144,10 @@ Chaque module de `pages/` exporte `{ init(scope, container), intro(scope, contai
 
 
 **Revue contradictoire de la v2** — un relecteur indépendant a passé le site au crible des 9 demandes (28 constats). Corrigés : capsule du header renforcée (visible aussi sur les sections sombres), footer mobile ramené de 1 439 à 906 px (desktop 789 px), loader et transitions raccourcis (≈ 2,3 s à la 1re visite, ≈ 1,2 s par changement de page), méthode unifiée en 5 étapes (une seule source pour l'Accueil et les Offres), filtres de projets qui mettent en avant au lieu de masquer (grille toujours pleine), témoignages entiers, sommaire légal entièrement visible, noms d'expertises identiques partout, configurateur sans présélection et avec les mêmes délais que le formulaire, détail des expertises replié sur mobile, plus aucun élément qui se déplace avec la souris (bouton magnétique et parallaxe au pointeur retirés ; seuls les yeux du robot suivent le pointeur), bandeau défilant avec bouton pause, couleurs du jeu Lead Rush ramenées à la palette, mention RGPD du formulaire alignée sur la politique de confidentialité. Laissé au choix du client : afficher ou non le bandeau cookies tant qu'aucun traceur soumis à consentement n'est actif (il est affiché par défaut).
+
+**Correctif du 17 octobre 2026 (accueil sous `npx serve .`)** — http://localhost:3000 affichait une liste de fichiers au lieu de l'accueil. En désactivant les clean URLs, `serve.json` désactivait aussi la recherche de `index.html` à la racine. Les tests ouvraient toujours `/index.html`, ce qui avait masqué le problème. Corrections :
+- `serve.json` réécrit `/` en `/index.html`, désactive les listes de dossiers et demande la revalidation du cache ;
+- le site reconnaît `/` comme l'accueil : depuis la racine, le lien « Accueil » et les ancres `index.html#…` font défiler la page sans relancer de transition.
 
 ---
 
@@ -324,6 +337,7 @@ Tests automatisés (Playwright + Chromium) exécutés pendant la refonte, librai
 | `prefers-reduced-motion` | Textes d'intro visibles sur toutes les pages, pas de parallaxe ni de défilement doux, vidéo en pause, frises remplies, jeux jouables |
 | Navigation Barba : 2 tours complets des 9 pages (desktop et mobile, menu mobile inclus) + ouverture/fermeture d'un jeu | Compteurs de ScrollTriggers et de tweens identiques d'un tour à l'autre (pas de fuite), 1 seule feuille de style de page chargée, aucune modale ni verrou de défilement restant, 0 erreur |
 | Ancres entre pages (ex. footer → `offres.html#ads`) | Arrivée sur le bloc visé, sous le header |
+| Accueil à la racine avec `npx serve .` (`serve` 14.2.6 installé à neuf), 1re visite réelle sur desktop et mobile | Loader complet, vidéo lancée, bandeau cookies affiché, page parcourue jusqu'en bas (gestes tactiles sur mobile) sans élément resté invisible, 0 erreur. Depuis `/` : « Accueil » et `index.html#arcade` sans transition inutile, aller-retour `/` → Offres → retour OK. Les dossiers renvoient la page 404 du site |
 | Formulaires : contact (79 vérifications : champs requis, erreurs, mailto, POST JSON, échec réseau, pré-remplissage, piège anti-spam) et « Exercer vos droits » | OK |
 | Arcade et easter eggs : 3 jeux au clavier et au tactile, pause, fin, record, focus ; Konami, « gjs », console, 7 clics | OK |
 | Sans JavaScript / ouverture en `file://` | Page lisible, navigation visible, panneaux d'onglets dépliés, formulaires en `mailto:` ; message d'aide en `file://` |

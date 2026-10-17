@@ -10,7 +10,6 @@ import { env, clamp } from './utils.js';
 const { gsap } = window;
 
 const NAMES = {
-  '': 'Accueil',
   index: 'Accueil',
   offres: 'Nos offres',
   'a-propos': 'Qui sommes-nous',
@@ -21,9 +20,10 @@ const NAMES = {
   'exercer-vos-droits': 'Vos droits',
 };
 
+// « / » et « /index.html » désignent la même page (accueil servi à la racine)
 export function pageSlug(path = '') {
   const last = path.split('?')[0].split('#')[0].replace(/\/+$/, '').split('/').pop() || '';
-  return last.replace(/\.html?$/, '');
+  return last.replace(/\.html?$/, '') || 'index';
 }
 
 export function pageName(path) {
@@ -61,7 +61,8 @@ export function curtainIn(path) {
   const name = pageName(path);
   nameFill.textContent = name;
   nameGhost.textContent = name;
-  pathLabel.textContent = `/${pageSlug(path) || 'accueil'}`;
+  const slug = pageSlug(path);
+  pathLabel.textContent = `/${slug === 'index' ? 'accueil' : slug}`;
   nameFill.style.setProperty('--reveal', env.reducedMotion ? '130%' : '-10%');
 
   return new Promise((resolve) => {
