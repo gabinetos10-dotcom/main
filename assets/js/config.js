@@ -40,7 +40,7 @@ export const CONFIG = Object.freeze({
   AVAILABILITY: 'Disponible pour nouveaux projets',
 
   /** Loader : durées en secondes. */
-  LOADER: { min: 1.6, max: 2.6, short: 0.6 },
+  LOADER: { min: 2.5, max: 4, short: 1 },
 
   /**
    * Mesure d'audience — chargée UNIQUEMENT après consentement (catégorie "analytics").

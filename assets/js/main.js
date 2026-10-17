@@ -1,7 +1,7 @@
 /* ==========================================================================
    GJS — BOOTSTRAP
-   Ordre : plugins GSAP → scroll (Lenis) → UI persistante (header, menu,
-   robots, cookies, grille, easter eggs) → loader → page courante → Barba.
+   Ordre : plugins GSAP → scroll (Lenis) → UI persistante (curseur, menu,
+   cookies, grille, easter eggs) → loader → page courante → Barba.
 
    Cycle de vie d'une page (chaque module de /pages expose init/intro/destroy) :
      init(scope, container)   préparation (DOM, états initiaux, interactions)
@@ -14,6 +14,7 @@ import { createScope } from './core/scope.js';
 import { initScroll, resetScroll, scrollTo, resizeScroll, lockScroll, unlockScroll } from './core/scroll.js';
 import { createReveals, setInitialTheme } from './core/reveal.js';
 import { runLoader } from './core/loader.js';
+import { initCursor } from './core/cursor.js';
 import { refreshMagnetic } from './core/magnetic.js';
 import { createMarquee } from './core/marquee.js';
 import { initMenu, closeMenu, menuIsOpen, setCurrentPage, showHeader } from './core/menu.js';
@@ -21,8 +22,7 @@ import { initTransition, curtainIn, curtainOut, pageSlug } from './core/transiti
 import { syncHead } from './core/head.js';
 import { initCookies, maybeShowBanner } from './core/cookies.js';
 import { initFooter, hydrateConfig } from './core/footer.js';
-import { initTabs } from './core/tabs.js';
-import { initRobots, initChromeRobots } from './core/robot.js';
+import { initCta } from './core/cta.js';
 import { initAccordions } from './core/accordion.js';
 import { initGridOverlay } from './core/grid.js';
 import { initEasterEggs } from './easter-egg.js';
@@ -79,9 +79,8 @@ async function mountPage(container) {
   // Tout ce qui crée des tweens persistants (quickTo…) passe par le contexte de page
   scope.add(() => {
     initFooter(scope, container);
+    initCta(scope, container);
     initAccordions(scope, container);
-    initTabs(scope, container);
-    initRobots(scope, container);
     container.querySelectorAll('[data-marquee]').forEach((el) => createMarquee(el, scope));
   });
 
@@ -173,10 +172,8 @@ function focusNewPage(container, url) {
   main.setAttribute('tabindex', '-1');
   main.focus({ preventScroll: true });
   announce(`Page chargée : ${document.title}`);
-  // Barba ne transmet pas toujours l'ancre dans data.next.url : on lit aussi l'adresse
-  const hash = ((url && url.hash) || window.location.hash || '').replace('#', '');
-  if (hash) {
-    const target = document.getElementById(decodeURIComponent(hash));
+  if (url && url.hash) {
+    const target = document.getElementById(url.hash.replace('#', ''));
     if (target) setTimeout(() => scrollTo(target, { immediate: false }), 250);
   }
 }
@@ -228,7 +225,7 @@ async function boot() {
   initScroll();
   initTransition();
   initMenu();
-  initChromeRobots();
+  initCursor();
   initGridOverlay();
   initCookies({ showBanner: false });
   initEasterEggs();

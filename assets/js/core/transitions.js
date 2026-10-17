@@ -1,6 +1,6 @@
 /* ==========================================================================
    GJS — TRANSITION DE PAGE
-   Un rideau « nuit chaude » monte, un mini vaisseau le traverse en dévoilant le nom
+   Un rideau bleu nuit monte, un mini vaisseau le traverse en dévoilant le nom
    de la page suivante dans son sillage, puis le rideau sort par le haut.
    Mouvement réduit : fondu court, sans vaisseau.
    ========================================================================== */
@@ -16,8 +16,6 @@ const NAMES = {
   contact: 'Contact',
   'mentions-legales': 'Mentions légales',
   'politique-confidentialite': 'Confidentialité',
-  'politique-cookies': 'Cookies',
-  'exercer-vos-droits': 'Vos droits',
 };
 
 // « / » et « /index.html » désignent la même page (accueil servi à la racine)
@@ -89,10 +87,9 @@ export function curtainIn(path) {
 
     gsap.set(root, { autoAlpha: 1 });
     gsap.set(ship, { autoAlpha: 1, x: -shipW * 2 });
-    // Rideau court (≈ 0,7 s) : le vaisseau traverse pendant la montée
-    tl.fromTo(curtain, { yPercent: 100 }, { yPercent: 0, duration: 0.45, ease: 'expo.inOut' }, 0)
-      .fromTo(content, { yPercent: 100 }, { yPercent: 0, duration: 0.45, ease: 'expo.inOut' }, 0)
-      .to(pose, { p: 1, duration: 0.6, ease: 'power1.inOut', onUpdate: update }, 0.1);
+    tl.fromTo(curtain, { yPercent: 100 }, { yPercent: 0, duration: 0.6, ease: 'expo.inOut' }, 0)
+      .fromTo(content, { yPercent: 100 }, { yPercent: 0, duration: 0.6, ease: 'expo.inOut' }, 0)
+      .to(pose, { p: 1, duration: 0.85, ease: 'power1.inOut', onUpdate: update }, 0.22);
   });
 }
 
@@ -111,7 +108,7 @@ export function curtainOut(onReveal) {
       tl.add(() => onReveal && onReveal(), 0).to(root, { autoAlpha: 0, duration: 0.3, ease: 'none' }, 0);
       return;
     }
-    tl.to([curtain, content], { yPercent: -100, duration: 0.55, ease: 'expo.inOut' }, 0.02)
-      .add(() => onReveal && onReveal(), 0.2);
+    tl.to([curtain, content], { yPercent: -100, duration: 0.7, ease: 'expo.inOut' }, 0.05)
+      .add(() => onReveal && onReveal(), 0.3);
   });
 }

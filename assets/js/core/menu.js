@@ -1,10 +1,8 @@
 /* ==========================================================================
-   GJS — HEADER « CAPSULE » & MENU MOBILE
-   Header : navigation visible dès 1024 px, page courante marquée
-   (aria-current), fond renforcé dès qu'on défile, masqué au scroll vers le
-   bas puis réapparaît au scroll vers le haut.
-   Menu (< 1024 px) : plein écran, focus piégé, Échap pour fermer,
-   aria-expanded synchronisé ; il se ferme seul si l'écran s'élargit.
+   GJS — HEADER & MENU PLEIN ÉCRAN
+   Header : masqué au scroll vers le bas, réapparaît au scroll vers le haut.
+   Menu : fond noir, liens géants numérotés, aperçu image qui suit le curseur,
+   focus piégé, Échap pour fermer, aria-expanded synchronisé.
    ========================================================================== */
 
 import { onScroll, lockScroll, unlockScroll, getScroll } from './scroll.js';
@@ -21,9 +19,7 @@ let releaseFocus = null;
 let lastY = 0;
 
 function onHeaderScroll(y) {
-  if (!header) return;
-  header.classList.toggle('is-scrolled', y > 24);
-  if (isOpen) return;
+  if (isOpen || !header) return;
   const delta = y - lastY;
   if (y < 120) header.classList.remove('is-hidden');
   else if (delta > 6) header.classList.add('is-hidden');
@@ -38,17 +34,17 @@ export function showHeader() {
 
 function buildTimeline() {
   const links = menu.querySelectorAll('.menu__text > span');
-  const nums = menu.querySelectorAll('.menu__num, .menu__item');
-  const extras = menu.querySelectorAll('.menu__foot > *');
+  const nums = menu.querySelectorAll('.menu__num');
+  const extras = menu.querySelectorAll('.menu__label, .menu__foot > *');
   const t = gsap.timeline({ paused: true, defaults: { ease: 'expo.out' } });
   if (env.reducedMotion) {
     t.fromTo(menu, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.3, ease: 'none' });
     return t;
   }
-  t.fromTo(menu.querySelector('.menu__bg'), { clipPath: 'inset(0% 0% 100% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 0.8, ease: 'expo.inOut' }, 0)
-    .fromTo(links, { yPercent: 115 }, { yPercent: 0, duration: 1, stagger: 0.05 }, 0.36)
-    .fromTo(nums, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.6, stagger: 0.04 }, 0.36)
-    .fromTo(extras, { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: 0.8, stagger: 0.05 }, 0.55);
+  t.fromTo(menu.querySelector('.menu__bg'), { clipPath: 'inset(0% 0% 100% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 0.9, ease: 'expo.inOut' }, 0)
+    .fromTo(links, { yPercent: 115 }, { yPercent: 0, duration: 1.1, stagger: 0.06 }, 0.42)
+    .fromTo(nums, { autoAlpha: 0, x: -12 }, { autoAlpha: 1, x: 0, duration: 0.8, stagger: 0.06 }, 0.55)
+    .fromTo(extras, { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: 0.8, stagger: 0.05 }, 0.6);
   return t;
 }
 
@@ -79,6 +75,7 @@ export function closeMenu({ immediate = false, restoreFocus = true } = {}) {
   if (releaseFocus) { releaseFocus(); releaseFocus = null; }
   if (restoreFocus) toggle.focus({ preventScroll: true });
   unlockScroll('menu');
+  hidePreview(true);
   return new Promise((resolve) => {
     const finish = () => { menu.hidden = true; resolve(); };
     if (immediate || !tl) { if (tl) tl.pause(0); finish(); return; }
@@ -89,9 +86,33 @@ export function closeMenu({ immediate = false, restoreFocus = true } = {}) {
 
 export const menuIsOpen = () => isOpen;
 
+/* ---------- Aperçu qui suit le curseur ------------------------------------ */
+
+let preview;
+let previewImg;
+let qx;
+let qy;
+let previewSrc = '';
+
+function showPreview(src) {
+  if (!preview || !env.finePointer) return;
+  if (src !== previewSrc) {
+    previewSrc = src;
+    previewImg.src = src;
+    if (!env.reducedMotion) gsap.fromTo(previewImg, { scale: 1.25 }, { scale: 1, duration: 0.9, ease: 'expo.out' });
+  }
+  gsap.to(preview, { autoAlpha: 1, scale: 1, duration: 0.5, ease: 'expo.out', overwrite: 'auto' });
+}
+
+function hidePreview(immediate = false) {
+  if (!preview) return;
+  gsap.to(preview, { autoAlpha: 0, scale: 0.85, duration: immediate ? 0 : 0.4, ease: 'power2.out', overwrite: 'auto' });
+}
+
 /** Marque le lien de la page courante (aria-current). */
 export function setCurrentPage(namespace) {
-  document.querySelectorAll('.menu__link, .header__link, .header__cta').forEach((link) => {
+  if (!menu) return;
+  menu.querySelectorAll('.menu__link').forEach((link) => {
     if (link.dataset.page === namespace) link.setAttribute('aria-current', 'page');
     else link.removeAttribute('aria-current');
   });
@@ -110,8 +131,16 @@ export function initMenu() {
     if (e.key === 'Escape' && isOpen) { e.preventDefault(); closeMenu(); }
   });
 
-  // Passage en desktop : la navigation est dans le header, le menu se ferme
-  const desktop = window.matchMedia('(min-width: 1024px)');
-  desktop.addEventListener('change', (e) => { if (e.matches && isOpen) closeMenu({ restoreFocus: false }); });
-  onHeaderScroll(getScroll());
+  preview = menu.querySelector('.menu__preview');
+  previewImg = preview && preview.querySelector('img');
+  if (preview && env.finePointer) {
+    gsap.set(preview, { autoAlpha: 0, scale: 0.85, xPercent: -50, yPercent: -50 });
+    qx = gsap.quickTo(preview, 'x', { duration: 0.7, ease: 'power3.out' });
+    qy = gsap.quickTo(preview, 'y', { duration: 0.7, ease: 'power3.out' });
+    menu.addEventListener('pointermove', (e) => { qx(e.clientX); qy(e.clientY); });
+    menu.querySelectorAll('.menu__link').forEach((link) => {
+      link.addEventListener('pointerenter', () => showPreview(link.dataset.preview));
+      link.addEventListener('pointerleave', () => hidePreview());
+    });
+  }
 }

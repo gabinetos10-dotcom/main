@@ -1,11 +1,9 @@
 /* ==========================================================================
    GJS ARCADE — COQUE COMMUNE DES MINI-JEUX
-   Modale plein écran (.arcade-modal, ciel étoilé) : écran titre → règles →
-   3-2-1 → partie → pause (Échap / P) → écran de fin (score, record, CTA).
+   Modale plein écran (CRT, scanlines) : écran titre → règles → 3-2-1 →
+   partie → pause (Échap / P) → écran de fin (score, record, conversion, CTA).
    Scroll Lenis stoppé pendant le jeu, boucles détruites à la fermeture,
    focus piégé et restitué, reste de la page inerte.
-   Les panneaux s'animent en opacité seulement (jamais visibility) : le
-   bouton à focaliser reste focalisable pendant l'animation.
 
    Contrat d'un jeu (module avec export create(api)) :
      create(api) → { start(), pause(), resume(), destroy() }
@@ -16,7 +14,7 @@
 
 import { lockScroll, unlockScroll } from '../core/scroll.js';
 import { trapFocus, setInertOutside, announce, env } from '../core/utils.js';
-import { sound, getBest, prefersTouch, loadGameFonts } from './utils.js';
+import { sound, getBest, prefersTouch } from './utils.js';
 
 const { gsap } = window;
 
@@ -55,32 +53,20 @@ export function ensureStyles() {
   });
 }
 
-/** Pastille robot du header (même marque, même place que le logo). */
-function brandMark() {
-  const svg = document.querySelector('.header__logo-mark svg');
-  if (!svg) return '<span class="arcade-modal__mark-letter">G</span>';
-  const clone = svg.cloneNode(true);
-  clone.removeAttribute('data-robot');
-  return clone.outerHTML;
-}
-
-const PAUSE_LABEL = 'Pause <kbd aria-hidden="true">P</kbd>';
-const RESUME_LABEL = 'Reprendre <kbd aria-hidden="true">P</kbd>';
-
 function template(id, def) {
   return `
-    <div class="arcade-modal__sky" aria-hidden="true"></div>
-    <div class="arcade-modal__bar">
-      <p class="arcade-modal__brand"><span class="arcade-modal__mark" aria-hidden="true">${brandMark()}</span><span class="arcade-modal__brand-name">Arcade</span><span class="arcade-modal__brand-num">Jeu ${def.num} / 03</span></p>
-      <div class="arcade-modal__hud" data-hud></div>
-      <div class="arcade-modal__tools">
-        <button class="btn btn--secondary btn--sm arcade-modal__tool" type="button" data-arcade-sound aria-pressed="false">Son : off</button>
-        <button class="btn btn--secondary btn--sm arcade-modal__tool" type="button" data-arcade-pause aria-keyshortcuts="P" hidden>${PAUSE_LABEL}</button>
-        <button class="btn btn--secondary btn--sm arcade-modal__tool" type="button" data-arcade-close aria-keyshortcuts="Escape">Quitter <kbd aria-hidden="true">Échap</kbd></button>
+    <div class="arcade__crt" aria-hidden="true"></div>
+    <header class="arcade__bar">
+      <p class="arcade__brand t-mono"><span class="dot-live" aria-hidden="true"></span> GJS Arcade — Jeu ${def.num}</p>
+      <div class="arcade__hud t-mono" data-hud></div>
+      <div class="arcade__tools">
+        <button class="arcade__tool t-mono" type="button" data-arcade-sound aria-pressed="false">Son : off</button>
+        <button class="arcade__tool t-mono" type="button" data-arcade-pause hidden>Pause [P]</button>
+        <button class="arcade__tool t-mono" type="button" data-arcade-close>Quitter [Échap]</button>
       </div>
-    </div>
-    <div class="arcade-modal__stage arcade-modal__stage--${id}" data-stage tabindex="-1"></div>
-    <div class="arcade-modal__screen" data-screen></div>
+    </header>
+    <div class="arcade__stage arcade__stage--${id}" data-stage data-cursor="game" tabindex="-1"></div>
+    <div class="arcade__screen" data-screen></div>
     <p class="sr-only" aria-live="polite" data-arcade-live></p>
     <p class="sr-only" aria-live="assertive" data-arcade-alert></p>`;
 }
@@ -93,11 +79,10 @@ function bestLabel(id) {
 export async function openGame(id, opener) {
   const def = GAMES[id];
   if (!def || session) return;
-  await Promise.all([ensureStyles(), loadGameFonts()]);
-  if (session || document.querySelector('.arcade-modal, .hunt')) return;
+  await ensureStyles();
 
   const root = document.createElement('div');
-  root.className = `arcade-modal arcade-modal--${id}`;
+  root.className = `arcade arcade--${id}`;
   root.setAttribute('role', 'dialog');
   root.setAttribute('aria-modal', 'true');
   root.setAttribute('aria-label', `GJS Arcade — ${def.title}`);
@@ -140,8 +125,6 @@ export async function openGame(id, opener) {
     if (a === 'cta') closeGame({ restoreFocus: false });
   });
   state.onKey = (e) => {
-    // « G » affiche la grille de mise en page (core/grid.js) : inutile en jeu
-    if ((e.key === 'g' || e.key === 'G') && !e.metaKey && !e.ctrlKey && !e.altKey) e.stopPropagation();
     if (e.key === 'Escape') {
       e.preventDefault();
       if (state.mode === 'playing') togglePause(state);
@@ -172,8 +155,7 @@ function setScreen(state, html, { focus } = {}) {
   const { screen } = state.el;
   screen.innerHTML = html;
   screen.hidden = !html;
-  // Opacité seulement : un élément en visibility:hidden ne peut pas recevoir le focus
-  if (html && !env.reducedMotion) gsap.from(screen.querySelectorAll('.arcade-screen > *'), { y: 24, opacity: 0, stagger: 0.06, duration: 0.6, ease: 'expo.out', clearProps: 'transform,opacity' });
+  if (html && !env.reducedMotion) gsap.from(screen.querySelectorAll('.arcade-screen > *'), { y: 24, autoAlpha: 0, stagger: 0.06, duration: 0.6, ease: 'expo.out' });
   if (focus) {
     const target = screen.querySelector(focus);
     if (target) requestAnimationFrame(() => target.focus());
@@ -186,17 +168,16 @@ function showTitle(state) {
   state.el.pause.hidden = true;
   setScreen(state, `
     <div class="arcade-screen arcade-screen--title">
-      <p class="label">Insert coin</p>
+      <p class="label label--signal">Jeu ${def.num} / 03 — Insert coin</p>
       <h2 class="arcade-screen__title t-display">${def.title}</h2>
       <ol class="arcade-screen__rules">${def.rules.map((r) => `<li>${r}</li>`).join('')}</ol>
-      <p class="arcade-screen__best"><span>Record</span> ${bestLabel(id)}</p>
+      <p class="arcade-screen__best t-mono">Record : ${bestLabel(id)}</p>
       <div class="arcade-screen__actions">
-        <button class="btn btn--primary" type="button" data-action="start">Jouer <span class="btn__arrow" aria-hidden="true">→</span></button>
-        <button class="btn btn--secondary" type="button" data-action="quit">Quitter</button>
+        <button class="btn btn--light" type="button" data-action="start">Jouer <span class="btn__arrow" aria-hidden="true">→</span></button>
+        <button class="btn btn--ghost" type="button" data-action="quit">Quitter</button>
       </div>
-      <p class="arcade-screen__hint t-mono">Échap ou P : pause · son coupé par défaut</p>
-    </div>
-    <span class="arcade-screen__planet planet planet--ring" aria-hidden="true"></span>`);
+      <p class="arcade-screen__hint t-mono">Échap / P : pause — son désactivé par défaut</p>
+    </div>`);
 }
 
 function createGame(state) {
@@ -235,7 +216,7 @@ function startCountdown(state) {
     setScreen(state, `<div class="arcade-screen arcade-screen--count"><p class="arcade-count" aria-hidden="true">${steps[i]}</p></div>`);
     state.el.live.textContent = steps[i] === 'GO' ? 'Partez !' : steps[i];
     if (steps[i] === 'GO') sound.go(); else sound.count();
-    if (!env.reducedMotion) gsap.fromTo(state.el.screen.querySelector('.arcade-count'), { scale: 1.6, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.45, ease: 'expo.out' });
+    if (!env.reducedMotion) gsap.fromTo(state.el.screen.querySelector('.arcade-count'), { scale: 1.6, autoAlpha: 0 }, { scale: 1, autoAlpha: 1, duration: 0.45, ease: 'expo.out' });
     state.timers.push(setTimeout(() => show(i + 1), i === steps.length - 1 ? 420 : 650));
   };
   show(0);
@@ -245,22 +226,22 @@ function togglePause(state) {
   if (state.mode === 'playing') {
     state.mode = 'paused';
     state.game.pause();
-    state.el.pause.innerHTML = RESUME_LABEL;
+    state.el.pause.textContent = 'Reprendre [P]';
     setScreen(state, `
       <div class="arcade-screen arcade-screen--pause">
-        <p class="label">Pause</p>
-        <h2 class="arcade-screen__title t-display">On souffle. <span class="accent">Deux secondes.</span></h2>
+        <p class="label label--signal">Pause</p>
+        <h2 class="arcade-screen__title t-display">On souffle. <em class="serif">Deux secondes.</em></h2>
         <div class="arcade-screen__actions">
-          <button class="btn btn--primary" type="button" data-action="resume">Reprendre</button>
-          <button class="btn btn--secondary" type="button" data-action="replay">Recommencer</button>
-          <button class="btn btn--secondary" type="button" data-action="quit">Quitter</button>
+          <button class="btn btn--light" type="button" data-action="resume">Reprendre</button>
+          <button class="btn btn--ghost" type="button" data-action="replay">Recommencer</button>
+          <button class="btn btn--ghost" type="button" data-action="quit">Quitter</button>
         </div>
       </div>`, { focus: '[data-action="resume"]' });
     state.el.live.textContent = 'Jeu en pause.';
   } else if (state.mode === 'paused') {
     setScreen(state, '');
     state.mode = 'playing';
-    state.el.pause.innerHTML = PAUSE_LABEL;
+    state.el.pause.textContent = 'Pause [P]';
     state.el.stage.focus({ preventScroll: true });
     state.game.resume();
     state.el.live.textContent = 'Reprise.';
@@ -273,15 +254,15 @@ function showEnd(state, result) {
   const cta = result.cta || { label: 'Parlons de votre projet', href: 'contact.html' };
   setScreen(state, `
     <div class="arcade-screen arcade-screen--end ${result.won ? 'is-won' : 'is-lost'}">
-      <p class="label">${result.won ? 'Mission accomplie' : 'Game over'}</p>
+      <p class="label label--signal">${result.won ? 'Mission accomplie' : 'Game over'}${result.isRecord ? ' — Nouveau record !' : ''}</p>
       <h2 class="arcade-screen__title t-display">${result.title}</h2>
       ${result.detail ? `<p class="arcade-screen__detail">${result.detail}</p>` : ''}
-      <p class="arcade-screen__score"><span class="arcade-screen__chip">${result.scoreLabel || `Score : ${result.score}`}</span><span class="arcade-screen__chip">Record : ${bestLabel(state.id)}</span>${result.isRecord ? '<span class="arcade-screen__chip arcade-screen__chip--record">Nouveau record !</span>' : ''}</p>
+      <p class="arcade-screen__score t-mono">${result.scoreLabel || `Score : ${result.score}`} — Record : ${bestLabel(state.id)}</p>
       <p class="arcade-screen__message">${result.message || 'GJS vous évite ça.'}</p>
       <div class="arcade-screen__actions">
-        <a class="btn btn--primary" href="${cta.href}" data-action="cta">${cta.label} <span class="btn__arrow" aria-hidden="true">→</span></a>
-        <button class="btn btn--secondary" type="button" data-action="replay">Rejouer</button>
-        <button class="btn btn--secondary" type="button" data-action="quit">Quitter</button>
+        <a class="btn btn--light" href="${cta.href}" data-action="cta">${cta.label} <span class="btn__arrow" aria-hidden="true">→</span></a>
+        <button class="btn btn--ghost" type="button" data-action="replay">Rejouer</button>
+        <button class="btn btn--ghost" type="button" data-action="quit">Quitter</button>
       </div>
     </div>`, { focus: '[data-action="replay"]' });
   state.el.alert.textContent = `${result.won ? 'Gagné' : 'Perdu'}. ${result.title.replace(/<[^>]+>/g, '')} ${result.scoreLabel || ''}`;

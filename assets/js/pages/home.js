@@ -1,38 +1,42 @@
 /* ==========================================================================
-   GJS — PAGE ACCUEIL (v2)
-   Hero vidéo (pause accessible, parallaxe légère, robot) · Expertises en
-   onglets animés · Projets filtrables (mise en avant) + panneau de détail (Flip) ·
-   Méthode (frise remplie au scroll + vaisseau) · Arcade (records) ·
-   Carrousel de témoignages (glisser, flèches, boutons).
-   Tout passe par `scope` : Barba détruit le scope à chaque navigation.
+   GJS — PAGE ACCUEIL
+   Hero vidéo · Manifeste au scrub · Services horizontaux épinglés ·
+   Projets (distorsion + panneau Flip) · Méthode (trajectoire SVG) ·
+   Arcade (records) · Carrousel de témoignages draggable avec inertie.
    ========================================================================== */
 
-import { env, $, $$, clamp, store, trapFocus, announce, yieldToMain } from '../core/utils.js';
-import { lockScroll, unlockScroll, scrollTo } from '../core/scroll.js';
+import { env, $, $$, clamp, store, trapFocus } from '../core/utils.js';
+import { lockScroll, unlockScroll } from '../core/scroll.js';
+import { refreshCursor } from '../core/cursor.js';
+import { yieldToMain } from '../core/utils.js';
 
 const { gsap, ScrollTrigger, Flip } = window;
 
-/* ---------- 1. Hero -------------------------------------------------------- */
+/* ---------- Hero ----------------------------------------------------------- */
 
 function initHero(scope, root) {
   const hero = $('.hero', root);
+  const media = $('[data-hero-media]', root);
   const video = $('[data-hero-video]', root);
   const toggle = $('[data-video-toggle]', root);
-  const label = toggle && $('[data-video-label]', toggle);
+  const sound = $('[data-video-sound]', root);
   if (!hero || !video) return;
 
   let userPaused = false;
 
   const renderUI = () => {
-    if (!toggle) return;
     const paused = video.paused;
-    if (label) label.textContent = paused ? 'Lecture' : 'Pause';
-    toggle.classList.toggle('is-paused', paused);
+    if (toggle) {
+      toggle.textContent = paused ? 'Lire la vidéo' : 'Pause vidéo';
+      toggle.setAttribute('aria-pressed', String(paused));
+    }
+    if (media) media.dataset.cursorLabel = paused ? 'Play' : 'Pause';
+    refreshCursor();
   };
 
   const play = () => {
     const p = video.play();
-    if (p && p.catch) p.catch(() => renderUI());
+    if (p && p.catch) p.catch(() => { renderUI(); });
   };
 
   // Économie de données : on coupe le téléchargement, le poster reste affiché
@@ -42,22 +46,30 @@ function initHero(scope, root) {
     video.querySelectorAll('source').forEach((s) => s.remove());
     video.load();
     video.dataset.disabled = 'true';
-    if (toggle) toggle.closest('.hero__controls').hidden = true;
+    if (toggle) toggle.hidden = true;
+    if (sound) sound.hidden = true;
   } else if (env.reducedMotion) {
     // Mouvement réduit : pas de lecture automatique, l'utilisateur choisit
-    video.removeAttribute('autoplay');
     video.pause();
     userPaused = true;
   } else {
     play();
   }
 
+  const togglePlay = () => {
+    if (video.dataset.disabled) return;
+    if (video.paused) { userPaused = false; play(); } else { userPaused = true; video.pause(); }
+  };
+
   scope.on(video, 'play', renderUI);
   scope.on(video, 'pause', renderUI);
-  if (toggle) {
-    scope.on(toggle, 'click', () => {
-      if (video.dataset.disabled) return;
-      if (video.paused) { userPaused = false; play(); } else { userPaused = true; video.pause(); }
+  if (toggle) scope.on(toggle, 'click', togglePlay);
+  if (media) scope.on(media, 'click', togglePlay);
+  if (sound) {
+    scope.on(sound, 'click', () => {
+      video.muted = !video.muted;
+      sound.textContent = video.muted ? 'Son : coupé' : 'Son : activé';
+      sound.setAttribute('aria-pressed', String(!video.muted));
     });
   }
 
@@ -67,211 +79,256 @@ function initHero(scope, root) {
     if (!entry.isIntersecting) video.pause();
     else if (!userPaused) play();
   });
+
   renderUI();
 
-  if (env.reducedMotion) return;
-
-  // Parallaxe douce au scroll : la vidéo descend, la planète remonte
-  const planetWrap = $('[data-hero-planet]', hero);
-  const st = { trigger: hero, start: 'top top', end: 'bottom top', scrub: true };
-  gsap.to(video, { yPercent: 14, ease: 'none', scrollTrigger: st });
-  if (planetWrap) gsap.to(planetWrap, { yPercent: -18, ease: 'none', scrollTrigger: { ...st } });
-  // (v2 : plus aucun effet qui suit la souris, à la demande du client)
+  // La vidéo se rétrécit en carte, le titre part en parallaxe inverse
+  if (!env.reducedMotion) {
+    const scale = window.innerWidth < 768 ? 0.86 : 0.72;
+    gsap.timeline({
+      scrollTrigger: {
+        trigger: hero,
+        start: 'top top',
+        end: () => `+=${window.innerHeight * 0.9}`,
+        scrub: 0.4,
+        invalidateOnRefresh: true,
+      },
+    })
+      .to(media, { scale, borderRadius: `${24 / scale}px`, ease: 'none' }, 0)
+      .to($('.hero__content', root), { yPercent: -85, autoAlpha: 0, ease: 'none' }, 0)
+      .to($$('.hero__corners, .hero__controls', root), { autoAlpha: 0, ease: 'none', duration: 0.4 }, 0);
+  }
 }
 
-/* ---------- 4. Expertises : onglets -------------------------------------- */
+/* ---------- Manifeste : mots de 15 % → 100 % ------------------------------- */
 
-function initExpertise(scope, root) {
-  const group = $('[data-levers]', root);
-  if (!group) return;
-  const list = $('[role="tablist"]', group);
+function wrapWords(node) {
+  Array.from(node.childNodes).forEach((child) => {
+    if (child.nodeType === Node.TEXT_NODE) {
+      const parts = child.textContent.split(/(\s+)/);
+      const frag = document.createDocumentFragment();
+      parts.forEach((part) => {
+        if (!part) return;
+        if (/^\s+$/.test(part)) { frag.appendChild(document.createTextNode(part)); return; }
+        const span = document.createElement('span');
+        span.className = 'mw';
+        span.textContent = part;
+        frag.appendChild(span);
+      });
+      child.replaceWith(frag);
+    } else if (child.nodeType === Node.ELEMENT_NODE && !child.classList.contains('manifesto__img')) {
+      wrapWords(child);
+    }
+  });
+}
 
-  // Orientation annoncée : verticale en desktop, horizontale (défilante) sinon
-  const mq = window.matchMedia('(min-width: 1024px)');
-  const orient = () => list.setAttribute('aria-orientation', mq.matches ? 'vertical' : 'horizontal');
-  orient();
-  scope.on(mq, 'change', orient);
+function initManifesto(scope, root) {
+  const text = $('[data-manifesto]', root);
+  if (!text || env.reducedMotion) return;
+  wrapWords(text);
+  const words = $$('.mw', text);
+  const images = $$('.manifesto__img', text);
+  gsap.fromTo(words, { opacity: 0.15 }, {
+    opacity: 1,
+    ease: 'none',
+    stagger: 0.06,
+    scrollTrigger: { trigger: text, start: 'top 78%', end: 'bottom 52%', scrub: 0.5 },
+  });
+  gsap.fromTo(images, { scale: 0.2, rotate: -12 }, {
+    scale: 1,
+    rotate: 0,
+    ease: 'back.out(1.6)',
+    stagger: 0.2,
+    scrollTrigger: { trigger: text, start: 'top 70%', end: 'bottom 60%', scrub: 0.8 },
+  });
+}
 
-  // Liste défilante (mobile) : on masque le dégradé de bord quand on est au bout
-  const edge = () => {
-    list.classList.toggle('is-scrolled', list.scrollLeft > 4);
-    list.classList.toggle('is-end', list.scrollLeft + list.clientWidth >= list.scrollWidth - 4);
-  };
-  scope.on(list, 'scroll', edge, { passive: true });
-  scope.resize(list, edge);
+/* ---------- Services : horizontal épinglé (desktop) / cartes empilées ------ */
 
-  const reveal = (tab) => {
-    if (list.scrollWidth <= list.clientWidth + 1) return;
-    const left = tab.offsetLeft - (list.clientWidth - tab.offsetWidth) / 2;
-    list.scrollTo({ left: clamp(left, 0, list.scrollWidth - list.clientWidth), behavior: env.reducedMotion ? 'auto' : 'smooth' });
-  };
+function initServices(scope, root) {
+  const section = $('.services', root);
+  if (!section) return;
+  const pin = $('.services__pin', section);
+  const track = $('.services__track', section);
+  const panels = $$('.service', section);
+  const bar = $('.services__bar', section);
+  const counter = $('[data-services-current]', section);
 
-  scope.on(group, 'tabs:change', (e) => {
-    const { panel, tab } = e.detail;
-    reveal(tab);
-    scope.add(() => {
-      if (env.reducedMotion) {
-        gsap.fromTo(panel, { opacity: 0 }, { opacity: 1, duration: 0.35, overwrite: true });
-        return;
-      }
-      const media = $('[data-levers-media]', panel);
+  scope.mm.add('(min-width: 1024px)', () => {
+    const distance = () => Math.max(0, track.scrollWidth - window.innerWidth);
+    const tween = gsap.to(track, {
+      x: () => -distance(),
+      ease: 'none',
+      scrollTrigger: {
+        trigger: section,
+        start: 'top top',
+        end: () => `+=${distance()}`,
+        pin,
+        scrub: 0.7,
+        invalidateOnRefresh: true,
+        anticipatePin: 1,
+        onUpdate: (self) => {
+          bar.style.setProperty('--progress', self.progress.toFixed(4));
+          const n = clamp(Math.round(self.progress * (panels.length - 1)) + 1, 1, panels.length);
+          counter.textContent = String(n).padStart(2, '0');
+        },
+      },
+    });
+
+    panels.forEach((panel) => {
+      const media = $('[data-service-media]', panel);
       const img = media && $('img', media);
-      const body = $('[data-levers-body]', panel);
-      if (media) {
-        gsap.fromTo(media, { clipPath: 'inset(0% 0% 0% 42% round 18px)' }, { clipPath: 'inset(0% 0% 0% 0% round 18px)', duration: 0.9, ease: 'expo.out', overwrite: true, clearProps: 'clipPath' });
+      const num = $('.service__num', panel);
+      if (media && !env.reducedMotion) {
+        gsap.fromTo(media, { clipPath: 'inset(0% 0% 0% 100%)' }, {
+          clipPath: 'inset(0% 0% 0% 0%)',
+          ease: 'none',
+          scrollTrigger: { trigger: panel, containerAnimation: tween, start: 'left 92%', end: 'left 35%', scrub: true },
+        });
+        if (img) {
+          gsap.fromTo(img, { scale: 1.35 }, {
+            scale: 1,
+            ease: 'none',
+            scrollTrigger: { trigger: panel, containerAnimation: tween, start: 'left 92%', end: 'right 40%', scrub: true },
+          });
+        }
       }
-      if (img) gsap.fromTo(img, { scale: 1.14 }, { scale: 1, duration: 1.2, ease: 'expo.out', overwrite: true });
-      if (body) gsap.fromTo(body.children, { y: 22, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, stagger: 0.05, ease: 'power3.out', overwrite: true });
+      if (num && !env.reducedMotion) {
+        gsap.fromTo(num, { x: 140 }, {
+          x: -140,
+          ease: 'none',
+          scrollTrigger: { trigger: panel, containerAnimation: tween, start: 'left right', end: 'right left', scrub: true },
+        });
+      }
+    });
+  });
+
+  scope.mm.add('(max-width: 1023px)', () => {
+    if (env.reducedMotion) return;
+    panels.forEach((panel, i) => {
+      const next = panels[i + 1];
+      if (!next) return;
+      gsap.to(panel, {
+        scale: 0.92,
+        opacity: 0.45,
+        ease: 'none',
+        scrollTrigger: { trigger: next, start: 'top bottom', end: 'top 30%', scrub: true },
+      });
     });
   });
 }
 
-/* ---------- 5. Projets : filtres + panneau --------------------------------- */
+/* ---------- Projets : distorsion au survol + panneau Flip ------------------ */
 
-/* Les projets hors filtre s'estompent au lieu de disparaître : la grille garde
-   ses 3 colonnes pleines (pas de carte orpheline, pas de saut de hauteur). */
-function initFilters(scope, root) {
-  const grid = $('[data-projects]', root);
-  const buttons = $$('[data-filter]', root);
-  if (!grid || !buttons.length) return;
-  const items = $$('.project', grid);
-  let active = 'all';
-
-  const matches = (item, filter) => filter === 'all' || item.dataset.cats.split(' ').includes(filter);
-  const nameOf = (btn) => btn.firstChild.textContent.trim();
-
-  const apply = (filter, btn) => {
-    if (filter === active) return;
-    active = filter;
-    buttons.forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
-    const shown = items.filter((it) => matches(it, filter));
-    items.forEach((it) => it.classList.toggle('is-dimmed', !shown.includes(it)));
-    const n = shown.length;
-    const s = n > 1 ? 's' : '';
-    announce(`${n} projet${s} mis en avant${filter === 'all' ? '' : ` : ${nameOf(btn)}`}.`);
-  };
-
-  buttons.forEach((btn) => scope.on(btn, 'click', () => apply(btn.dataset.filter, btn)));
-}
-
-function initPanel(scope, root) {
+function initProjects(scope, root) {
   const projects = $$('[data-project]', root);
   const dialog = $('[data-project-panel]', root);
   if (!projects.length || !dialog) return;
   const panelMedia = $('[data-panel-media]', dialog);
   const panelContent = $('[data-panel-content]', dialog);
+  const displacement = document.querySelector('#gjs-distort feDisplacementMap');
   let current = -1;
   let release = null;
   let trigger = null;
   let busy = false;
 
-  // « Projet suivant » parcourt les projets mis en avant par le filtre actif
-  const visible = () => projects.filter((p) => !p.classList.contains('is-dimmed'));
+  // Distorsion SVG (desktop uniquement)
+  if (env.finePointer && !env.reducedMotion && displacement) {
+    projects.forEach((project) => {
+      const btn = $('.project__trigger', project);
+      scope.on(btn, 'pointerenter', () => {
+        btn.classList.add('is-distorting');
+        gsap.timeline({ overwrite: true })
+          .to(displacement, { attr: { scale: 38 }, duration: 0.35, ease: 'power2.out' })
+          .to(displacement, { attr: { scale: 0 }, duration: 0.9, ease: 'power3.out', onComplete: () => btn.classList.remove('is-distorting') });
+      });
+      scope.on(btn, 'pointerleave', () => {
+        gsap.to(displacement, { attr: { scale: 0 }, duration: 0.3, overwrite: true, onComplete: () => btn.classList.remove('is-distorting') });
+      });
+    });
+  }
 
   const fill = (index) => {
     const project = projects[index];
-    panelContent.innerHTML = $('.project__detail', project).innerHTML;
+    const detail = $('.project__detail', project);
+    panelContent.innerHTML = detail.innerHTML;
     const title = $('.project-panel__title', panelContent);
     if (title) title.id = 'project-panel-title';
     const picture = $('picture', project).cloneNode(true);
     const img = $('img', picture);
     img.removeAttribute('loading');
-    img.removeAttribute('class');
-    img.sizes = '(min-width: 1024px) 56vw, 100vw';
+    img.sizes = '(min-width: 1024px) 58vw, 100vw';
+    img.alt = $('img', project).alt;
     panelMedia.replaceChildren(picture);
   };
 
   const open = (index, fromBtn) => {
-    if (busy || dialog.open) return;
+    if (busy) return;
     busy = true;
     current = index;
     trigger = fromBtn;
     const cardMedia = $('.project__media', projects[index]);
     fill(index);
     lockScroll('project');
-    // Même identifiant Flip pour la vignette et le média du panneau, posé AVANT
-    // la capture : sinon Flip attribue un identifiant automatique et n'anime rien.
-    projects.forEach((p) => { delete $('.project__media', p).dataset.flipId; });
-    cardMedia.dataset.flipId = 'project-media';
-    panelMedia.dataset.flipId = 'project-media';
-    const state = !env.reducedMotion && Flip ? Flip.getState(cardMedia) : null;
+    const state = Flip.getState(cardMedia);
     dialog.showModal();
     dialog.scrollTop = 0;
-    // Le focus va sur « Fermer » ; aucune animation n'utilise visibility sur un
-    // élément focalisable (le navigateur lui retirerait le focus).
-    release = trapFocus(dialog, { restore: false, initial: $('[data-panel-close]', dialog) });
-    scope.add(() => {
-      if (!state) {
-        gsap.fromTo(dialog, { opacity: 0 }, { opacity: 1, duration: 0.3, onComplete: () => { busy = false; } });
-        return;
-      }
-      gsap.fromTo(dialog, { '--panel-alpha': 0 }, { '--panel-alpha': 1, duration: 0.6, ease: 'power2.out' });
-      Flip.from(state, {
-        targets: panelMedia,
-        duration: 1,
-        ease: 'expo.inOut',
-        // Transformations seules (même ratio 4/3) : le média reste dans la grille,
-        // le texte ne saute pas de colonne pendant l'animation.
-        scale: true,
-        onComplete: () => { busy = false; gsap.set(panelMedia, { clearProps: 'all' }); },
-      });
-      gsap.from(panelContent.children, { y: 36, autoAlpha: 0, stagger: 0.06, duration: 0.85, ease: 'expo.out', delay: 0.4 });
-      gsap.from($$('.project-panel__nav, .panel__close', dialog), { opacity: 0, duration: 0.5, delay: 0.6 });
+    release = trapFocus(dialog, { restore: false });
+    if (env.reducedMotion) {
+      gsap.fromTo(dialog, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.3, onComplete: () => { busy = false; } });
+      return;
+    }
+    gsap.fromTo(dialog, { backgroundColor: 'rgba(0,0,0,0)' }, { backgroundColor: 'rgba(0,0,0,1)', duration: 0.6, ease: 'power2.out' });
+    panelMedia.dataset.flipId = 'project-media';
+    cardMedia.dataset.flipId = 'project-media';
+    Flip.from(state, {
+      targets: panelMedia,
+      duration: 1.1,
+      ease: 'expo.inOut',
+      absolute: true,
+      onComplete: () => { busy = false; gsap.set(panelMedia, { clearProps: 'all' }); },
     });
+    gsap.from(panelContent.children, { y: 40, autoAlpha: 0, stagger: 0.07, duration: 0.9, ease: 'expo.out', delay: 0.45 });
+    gsap.from($$('.project-panel__nav, .panel__close', dialog), { autoAlpha: 0, duration: 0.6, delay: 0.7 });
   };
 
   const finish = () => {
-    if (dialog.open) dialog.close();
-    gsap.killTweensOf([dialog, panelMedia, panelContent.children]);
+    dialog.close();
     gsap.set([dialog, panelMedia], { clearProps: 'all' });
     unlockScroll('project');
     if (release) { release(); release = null; }
-    if (trigger && document.contains(trigger)) {
-      trigger.focus({ preventScroll: true });
-      // « Projet suivant » a pu changer de carte : on la ramène à l'écran
-      const card = trigger.closest('.project');
-      const r = card && card.getBoundingClientRect();
-      if (r && (r.bottom < 0 || r.top > window.innerHeight)) scrollTo(card, { offset: -120, immediate: env.reducedMotion });
-    }
+    if (trigger) trigger.focus({ preventScroll: true });
     busy = false;
   };
 
   const close = () => {
     if (!dialog.open || busy) return;
     busy = true;
-    scope.add(() => {
-      if (env.reducedMotion || !Flip) {
-        gsap.to(dialog, { opacity: 0, duration: 0.25, onComplete: finish });
-        return;
-      }
-      const cardMedia = $('.project__media', projects[current]);
-      gsap.to(panelContent.children, { autoAlpha: 0, y: -16, duration: 0.3, stagger: 0.02 });
-      gsap.to(dialog, { '--panel-alpha': 0, duration: 0.7, delay: 0.2 });
-      Flip.fit(panelMedia, cardMedia, { duration: 0.8, ease: 'expo.inOut', scale: true, onComplete: finish });
-    });
+    if (env.reducedMotion) {
+      gsap.to(dialog, { autoAlpha: 0, duration: 0.25, onComplete: finish });
+      return;
+    }
+    const cardMedia = $('.project__media', projects[current]);
+    gsap.to(panelContent.children, { autoAlpha: 0, y: -20, duration: 0.3, stagger: 0.02 });
+    gsap.to(dialog, { backgroundColor: 'rgba(0,0,0,0)', duration: 0.8, delay: 0.2 });
+    Flip.fit(panelMedia, cardMedia, { duration: 0.85, ease: 'expo.inOut', absolute: true, onComplete: finish });
   };
 
   const next = () => {
     if (busy) return;
-    const list = visible();
-    const pos = list.indexOf(projects[current]);
-    const index = projects.indexOf(list[(pos + 1) % list.length]);
+    const index = (current + 1) % projects.length;
     busy = true;
-    scope.add(() => {
-      gsap.to([panelMedia, panelContent], {
-        autoAlpha: 0,
-        duration: env.reducedMotion ? 0.15 : 0.3,
-        onComplete: () => {
-          current = index;
-          trigger = $('.project__trigger', projects[index]);
-          fill(index);
-          dialog.scrollTop = 0;
-          gsap.to([panelMedia, panelContent], { autoAlpha: 1, duration: 0.4, onComplete: () => { busy = false; } });
-          if (!env.reducedMotion) gsap.from(panelContent.children, { y: 26, autoAlpha: 0, stagger: 0.05, duration: 0.7, ease: 'expo.out' });
-          const name = $('.project-panel__title', panelContent);
-          if (name) announce(`${name.textContent} affiché.`);
-        },
-      });
+    gsap.to([panelMedia, panelContent], {
+      autoAlpha: 0,
+      duration: 0.3,
+      onComplete: () => {
+        current = index;
+        trigger = $('.project__trigger', projects[index]);
+        fill(index);
+        dialog.scrollTop = 0;
+        gsap.to([panelMedia, panelContent], { autoAlpha: 1, duration: 0.5, onComplete: () => { busy = false; } });
+        if (!env.reducedMotion) gsap.from(panelContent.children, { y: 30, autoAlpha: 0, stagger: 0.06, duration: 0.8, ease: 'expo.out' });
+      },
     });
   };
 
@@ -285,90 +342,95 @@ function initPanel(scope, root) {
     else if (e.target.closest('[data-panel-next]')) next();
   });
   // Navigation Barba pendant que le panneau est ouvert : on le ferme sans animation
-  scope.on(document, 'gjs:before-leave', () => { if (dialog.open) finish(); });
+  const onLeave = () => { if (dialog.open) finish(); };
+  scope.on(document, 'gjs:before-leave', onLeave);
   scope.cleanup(() => { if (dialog.open) finish(); });
 }
 
-/* ---------- 7. Méthode : frise + vaisseau --------------------------------- */
+/* ---------- Méthode : trajectoire dessinée + vaisseau ---------------------- */
 
 function initMethod(scope, root) {
   const section = $('[data-method]', root);
   if (!section) return;
-  const track = $('[data-method-track]', section);
-  const rail = $('[data-method-rail]', section);
-  const fill = $('[data-method-fill]', section);
-  const ship = $('[data-method-ship]', section);
+  const track = $('.method__track', section);
+  const svg = $('.method__svg', section);
+  const path = $('.method__path', section);
+  const bgPath = $('.method__path-bg', section);
+  const ship = $('.method__ship', section);
   const steps = $$('.method__step', section);
   const dots = steps.map((s) => $('.method__dot', s));
-
-  // Mouvement réduit : frise déjà remplie (CSS), toutes les étapes actives, pas de vaisseau
-  if (env.reducedMotion) {
-    steps.forEach((s) => s.classList.add('is-active'));
-    return;
-  }
-
-  let horizontal = true;
   let length = 0;
-  let size = 0;
-  let stops = [];
+  let fractions = [];
   let progress = 0;
 
-  const measure = () => {
-    horizontal = window.innerWidth >= 1024;
-    const box = rail.getBoundingClientRect();
-    length = horizontal ? box.width : box.height;
-    size = ship.offsetWidth;
-    stops = dots.map((d) => {
+  const build = () => {
+    const box = track.getBoundingClientRect();
+    if (!box.width) return;
+    svg.setAttribute('viewBox', `0 0 ${box.width} ${box.height}`);
+    const pts = dots.map((d) => {
       const r = d.getBoundingClientRect();
-      return horizontal ? r.left + r.width / 2 - box.left : r.top + r.height / 2 - box.top;
+      return { x: r.left + r.width / 2 - box.left, y: r.top + r.height / 2 - box.top };
     });
+    const all = [{ x: pts[0].x + box.width * 0.08, y: 0 }, ...pts, { x: pts[pts.length - 1].x - box.width * 0.1, y: box.height }];
+    // Tracé : courbes de Bézier passant exactement par chaque point d'étape.
+    // La position de chaque étape (fraction de longueur) se déduit de la longueur
+    // du préfixe du tracé qui s'arrête sur elle : 4 mesures au lieu d'un échantillonnage.
+    const segments = [`M${all[0].x.toFixed(1)},${all[0].y.toFixed(1)}`];
+    for (let i = 1; i < all.length; i += 1) {
+      const a = all[i - 1];
+      const b = all[i];
+      const dy = (b.y - a.y) * 0.55;
+      segments.push(`C${a.x.toFixed(1)},${(a.y + dy).toFixed(1)} ${b.x.toFixed(1)},${(b.y - dy).toFixed(1)} ${b.x.toFixed(1)},${b.y.toFixed(1)}`);
+    }
+    const d = segments.join(' ');
+    path.setAttribute('d', d);
+    bgPath.setAttribute('d', d);
+    length = path.getTotalLength();
+    path.style.strokeDasharray = `${length}`;
+    const probe = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    probe.setAttribute('visibility', 'hidden');
+    svg.appendChild(probe);
+    fractions = pts.map((_, i) => {
+      probe.setAttribute('d', segments.slice(0, i + 2).join(' '));
+      return length ? probe.getTotalLength() / length : 0;
+    });
+    probe.remove();
+    update(progress);
   };
 
   const update = (p) => {
     progress = p;
     if (!length) return;
-    const travel = Math.max(0, length - size);
-    const center = size / 2 + p * travel;
-    if (horizontal) {
-      gsap.set(ship, { x: center, y: 1, xPercent: -50, yPercent: -50, rotation: 0 });
-      gsap.set(fill, { scaleX: clamp(center / length, 0, 1), scaleY: 1 });
-    } else {
-      gsap.set(ship, { x: 1, y: center, xPercent: -50, yPercent: -50, rotation: 90 });
-      gsap.set(fill, { scaleY: clamp(center / length, 0, 1), scaleX: 1 });
-    }
-    const nose = center + size / 2;
-    steps.forEach((step, i) => step.classList.toggle('is-active', stops[i] <= nose));
+    path.style.strokeDashoffset = `${length * (1 - p)}`;
+    const at = Math.min(length * p, length - 1);
+    const pt = path.getPointAtLength(at);
+    const ahead = path.getPointAtLength(Math.min(at + 2, length));
+    const angle = (Math.atan2(ahead.y - pt.y, ahead.x - pt.x) * 180) / Math.PI;
+    gsap.set(ship, { x: pt.x, y: pt.y, xPercent: -50, yPercent: -50, rotation: angle });
+    steps.forEach((step, i) => step.classList.toggle('is-active', p >= fractions[i] - 0.005));
   };
 
   ScrollTrigger.create({
     trigger: track,
-    start: 'top 72%',
-    end: 'bottom 60%',
-    scrub: 0.6,
+    start: 'top 65%',
+    end: 'bottom 75%',
+    scrub: env.reducedMotion ? true : 0.6,
     onUpdate: (self) => update(self.progress),
-    onRefresh: (self) => { measure(); update(self.progress); },
+    onRefresh: (self) => { progress = self.progress; build(); },
   });
-  measure();
-  update(progress);
+  if (!length) build();
 }
 
-/* ---------- 8. Arcade : records + aperçus ---------------------------------- */
+/* ---------- Arcade : records ---------------------------------------------- */
 
-function renderScores(root) {
+function initArcade(root) {
   $$('[data-highscore]', root).forEach((el) => {
     const best = store.get(`gjs-arcade-${el.dataset.highscore}`);
     if (best && best.score !== undefined) el.textContent = best.label || String(best.score);
   });
 }
 
-function initArcade(scope, root) {
-  const section = $('#arcade', root);
-  renderScores(root);
-  scope.on(document, 'gjs:highscore', () => renderScores(root));
-  if (section) scope.intersect(section, (entry) => section.classList.toggle('is-inview', entry.isIntersecting), { rootMargin: '80px' });
-}
-
-/* ---------- 9. Témoignages : carrousel ------------------------------------ */
+/* ---------- Témoignages : carrousel draggable avec inertie ---------------- */
 
 function initCarousel(scope, root) {
   const carousel = $('[data-carousel]', root);
@@ -377,7 +439,6 @@ function initCarousel(scope, root) {
   const track = $('[data-carousel-track]', carousel);
   const slides = $$('.quote', track);
   const status = $('[data-carousel-current]', carousel);
-  const bar = $('[data-carousel-bar]', carousel);
   const pos = { x: 0 };
   let index = 0;
   let dragging = false;
@@ -390,31 +451,23 @@ function initCarousel(scope, root) {
 
   const offsets = () => slides.map((s) => s.offsetLeft - slides[0].offsetLeft);
   const apply = () => gsap.set(track, { x: pos.x });
-  const minX = () => Math.min(0, viewport.clientWidth - track.scrollWidth);
+  const minX = () => -offsets()[slides.length - 1];
 
-  // Les cartes entièrement visibles (1 sur mobile, 2 dès 768 px) restent
-  // lisibles par les lecteurs d'écran ; les autres sont masquées.
-  const setActive = (target = pos.x) => {
-    const offs = offsets();
-    const left = -target;
-    const right = left + viewport.clientWidth;
+  const setActive = () => {
     slides.forEach((s, i) => {
-      const inView = offs[i] >= left - 2 && offs[i] + s.offsetWidth <= right + 2;
       s.classList.toggle('is-active', i === index);
-      s.setAttribute('aria-hidden', String(!inView && i !== index));
+      s.setAttribute('aria-hidden', String(i !== index));
     });
     status.textContent = String(index + 1).padStart(2, '0');
-    if (bar) bar.style.transform = `scaleX(${(index + 1) / slides.length})`;
   };
 
   const goTo = (i, immediate = false) => {
-    index = (i + slides.length) % slides.length;
-    // La dernière carte reste calée à droite : pas de vide après elle
-    const target = Math.max(-offsets()[index], minX());
+    index = clamp(i, 0, slides.length - 1);
+    const target = -offsets()[index];
     gsap.killTweensOf(pos);
     if (immediate || env.reducedMotion) { pos.x = target; apply(); }
-    else scope.add(() => gsap.to(pos, { x: target, duration: 0.9, ease: 'expo.out', onUpdate: apply }));
-    setActive(target);
+    else gsap.to(pos, { x: target, duration: 1, ease: 'expo.out', onUpdate: apply });
+    setActive();
   };
 
   scope.on(viewport, 'pointerdown', (e) => {
@@ -434,34 +487,30 @@ function initCarousel(scope, root) {
     if (!dragging) return;
     const now = performance.now();
     const dx = e.clientX - startX;
-    if (Math.abs(dx) > 5) moved = true;
-    let nextX = startPos + dx;
+    if (Math.abs(dx) > 4) moved = true;
+    let next = startPos + dx;
     // Résistance élastique aux extrémités
-    if (nextX > 0) nextX *= 0.35;
-    if (nextX < minX()) nextX = minX() + (nextX - minX()) * 0.35;
-    pos.x = nextX;
+    if (next > 0) next *= 0.35;
+    if (next < minX()) next = minX() + (next - minX()) * 0.35;
+    pos.x = next;
     apply();
-    velocity = (e.clientX - lastX) / Math.max(1, now - lastT); // px/ms
+    const dt = Math.max(1, now - lastT);
+    velocity = (e.clientX - lastX) / dt; // px/ms
     lastX = e.clientX;
     lastT = now;
   });
 
-  const release = (e) => {
+  const release = () => {
     if (!dragging) return;
     dragging = false;
     viewport.classList.remove('is-dragging');
-    if (!moved) {
-      // Simple clic sur une carte voisine : on y va
-      const hit = slides.findIndex((s) => { const r = s.getBoundingClientRect(); return e.clientX >= r.left && e.clientX <= r.right; });
-      goTo(hit >= 0 ? hit : index);
-      return;
-    }
-    // Projection inertielle puis aimantation sur la carte la plus proche
-    const projected = clamp(pos.x + velocity * 320, minX(), 0);
-    let nearest = index;
+    // Projection inertielle puis aimantation sur la diapositive la plus proche
+    const projected = pos.x + velocity * 320;
+    const list = offsets();
+    let nearest = 0;
     let best = Infinity;
-    offsets().forEach((o, i) => {
-      const d = Math.abs(Math.max(-o, minX()) - projected);
+    list.forEach((o, i) => {
+      const d = Math.abs(-o - projected);
       if (d < best) { best = d; nearest = i; }
     });
     goTo(nearest);
@@ -469,6 +518,7 @@ function initCarousel(scope, root) {
 
   scope.on(viewport, 'pointerup', release);
   scope.on(viewport, 'pointercancel', release);
+  scope.on(viewport, 'click', (e) => { if (moved) { e.preventDefault(); e.stopPropagation(); } }, true);
   scope.on($('[data-carousel-prev]', carousel), 'click', () => goTo(index - 1));
   scope.on($('[data-carousel-next]', carousel), 'click', () => goTo(index + 1));
   scope.on(carousel, 'keydown', (e) => {
@@ -484,12 +534,14 @@ function initCarousel(scope, root) {
 export default {
   async init(scope, root) {
     // Chaque bloc dans sa propre tâche (et dans le contexte GSAP de la page)
-    const steps = [initHero, initExpertise, initFilters, initPanel, initMethod, initArcade, initCarousel];
+    const steps = [initHero, initManifesto, initServices, initProjects, initMethod, initCarousel];
     for (const step of steps) {
       if (scope.destroyed) return;
       scope.add(() => step(scope, root));
       await yieldToMain();
     }
+    initArcade(root);
+    scope.on(document, 'gjs:highscore', () => initArcade(root));
   },
   destroy() {},
 };

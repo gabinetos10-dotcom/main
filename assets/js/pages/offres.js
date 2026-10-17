@@ -1,220 +1,109 @@
 /* ==========================================================================
-   GJS — PAGE NOS OFFRES (v2)
-   - Liens internes [data-jump] (pastilles du hero, sommaire, « Ajouter à mon
-     besoin ») : défilement Lenis avec la marge du header, focus déplacé.
-   - Expertises : sommaire collant + scrollspy (aria-current="true"), onglets
-     (core/tabs.js) animés au changement.
-   - Méthode : rail qui se remplit au scroll, étapes activées au passage.
-   - Configurateur : synthèse animée → contact.html?besoins=…&delai=…&objectif=…
-   - Mobile : le détail de chaque expertise se replie (details), ouvert sur desktop
-   Tout passe par le scope de page (détruit à chaque navigation Barba).
+   GJS — PAGE NOS OFFRES
+   Hero « pack » barré · Expertises empilées en sticky · Timeline horizontale
+   épinglée · Configurateur de besoin → contact pré-rempli.
    ========================================================================== */
 
 import { env, $, $$, announce } from '../core/utils.js';
-import { scrollTo } from '../core/scroll.js';
 
 const { gsap, ScrollTrigger } = window;
 
 /* ---------- Hero ----------------------------------------------------------- */
 
 function heroIntro(root, tl) {
-  const title = $('.offers-hero__title', root);
-  const scene = $('[data-hero-scene]', root);
-  if (title) tl.add(() => title.classList.add('is-struck'), env.reducedMotion ? 0.3 : 1.15);
-  if (!scene) return;
+  const lines = $$('[data-hero-line] > span', root);
+  const path = $('.offers-hero__scribble path', root);
+  const strike = $('.offers-hero__strike', root);
+  if (!lines.length) return;
+  const length = path ? path.getTotalLength() : 0;
+  if (path) gsap.set(path, { strokeDasharray: length, strokeDashoffset: length });
   if (env.reducedMotion) {
-    tl.from(scene, { opacity: 0, duration: 0.6 }, 0.2);
+    tl.from(lines, { opacity: 0, duration: 0.6 }, 0.1);
+    if (path) tl.set(path, { strokeDashoffset: 0 }, 0.5);
     return;
   }
-  tl.from($('.offers-hero__planet-wrap', scene), { scale: 0.7, opacity: 0, duration: 1.4, ease: 'expo.out' }, 0.25)
-    .from($('.offers-hero__orbit', scene), { scale: 0.85, opacity: 0, duration: 1.4, ease: 'expo.out' }, 0.35)
-    .from($('[data-hero-robot]', scene), { y: 80, opacity: 0, duration: 1.3, ease: 'expo.out' }, 0.55)
-    .from($$('.offers-hero__star', scene), { scale: 0, opacity: 0, duration: 0.8, stagger: 0.1, ease: 'back.out(2)' }, 0.8);
+  tl.from(lines, { yPercent: 112, duration: 1.2, stagger: 0.12, ease: 'gjs' }, 0.1);
+  if (path) tl.to(path, { strokeDashoffset: 0, duration: 0.9, ease: 'power3.inOut' }, 0.95);
+  if (strike) tl.to(strike, { opacity: 0.45, duration: 0.6 }, 1.4);
 }
 
+/* ---------- Expertises : pile sticky ------------------------------------- */
 
-/* ---------- Liens internes -------------------------------------------------- */
+function initStack(scope, root) {
+  const panels = $$('[data-expertise]', root);
+  if (!panels.length) return;
 
-function jumpTo(target, { focus = target } = {}) {
-  const margin = parseFloat(getComputedStyle(target).scrollMarginTop) || 0;
-  const y = Math.max(0, target.getBoundingClientRect().top + window.scrollY - margin);
-  scrollTo(y);
-  history.replaceState(history.state, '', `#${target.id}`);
-  if (focus) {
-    if (!focus.matches('a, button, input, select, textarea, [tabindex]')) focus.setAttribute('tabindex', '-1');
-    focus.focus({ preventScroll: true });
-  }
-}
+  // Une section plus haute que l'écran colle quand son bas atteint le bas de
+  // l'écran : tout son contenu est lisible avant que la suivante ne la recouvre.
+  const setTops = () => {
+    panels.forEach((panel) => {
+      const top = Math.min(0, window.innerHeight - panel.offsetHeight);
+      panel.style.setProperty('--sticky-top', `${top}px`);
+    });
+  };
+  setTops();
+  scope.resize(panels, setTops);
+  scope.on(window, 'resize', setTops);
 
-function initJumps(scope, root) {
-  const form = $('[data-configurator]', root);
-  $$('a[data-jump]', root).forEach((link) => {
-    scope.on(link, 'click', (e) => {
-      if (e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
-      const target = document.getElementById(decodeURIComponent(link.hash.slice(1)));
-      if (!target) return;
-      e.preventDefault();
-      const add = link.dataset.configAdd;
-      if (add && form) {
-        const input = $(`input[name="besoins"][value="${CSS.escape(add)}"]`, form);
-        if (input) {
-          if (!input.checked) {
-            input.checked = true;
-            input.dispatchEvent(new Event('change', { bubbles: true }));
-          }
-          announce(`${input.dataset.label} ajouté à votre besoin.`);
-          jumpTo(target, { focus: input });
-          return;
-        }
-      }
-      jumpTo(target);
+  if (env.reducedMotion) return;
+  panels.forEach((panel, i) => {
+    const next = panels[i + 1];
+    if (!next) return;
+    gsap.to($('.expertise__inner', panel), {
+      scale: 0.94,
+      opacity: 0.35,
+      ease: 'none',
+      scrollTrigger: { trigger: next, start: 'top bottom', end: 'top top', scrub: true },
     });
   });
 }
 
-/* Arrivée par Barba sur offres.html#ancre (footer, accueil) : Barba ne transmet
-   pas le hash dans data.next.url, donc main.js ne défile pas jusqu'à la cible.
-   On se place nous-mêmes sur la cible avant la levée du rideau (au chargement
-   direct, le navigateur s'en charge déjà). Le focus passe sur la cible dès que
-   main.js a fini de placer le sien sur <main>. */
-function initArrival(scope, root) {
-  if (!document.documentElement.classList.contains('is-transitioning')) return;
-  const id = decodeURIComponent(window.location.hash.slice(1));
-  const target = id ? document.getElementById(id) : null;
-  if (!target || !root.contains(target)) return;
-  const place = () => {
-    const margin = parseFloat(getComputedStyle(target).scrollMarginTop) || 0;
-    scrollTo(Math.max(0, target.getBoundingClientRect().top + window.scrollY - margin), { immediate: true });
-  };
-  place();
-  // La mise en page peut encore bouger juste après (polices, styles, titres
-  // découpés) : on suit la cible tant que le visiteur n'a pas repris la main.
-  let follow = true;
-  const stop = () => { follow = false; };
-  ['wheel', 'touchstart', 'pointerdown', 'keydown'].forEach((type) => scope.on(window, type, stop, { passive: true, once: true }));
-  scope.resize(root, () => { if (follow) place(); });
-  scope.timeout(stop, 2500);
-  const main = $('main', root);
-  if (!main) return;
-  const moveFocus = () => {
-    if (!document.documentElement.classList.contains('is-transitioning') && document.activeElement === main) {
-      if (!target.hasAttribute('tabindex')) target.setAttribute('tabindex', '-1');
-      target.focus({ preventScroll: true });
-    }
-  };
-  scope.on(main, 'focus', () => scope.timeout(moveFocus, 0), { once: true });
-}
-
-/* ---------- Expertises : détail replié sur mobile ------------------------- */
-
-function initMore(scope, root) {
-  const blocks = $$('[data-expertise-more]', root);
-  if (!blocks.length) return;
-  const desktop = window.matchMedia('(min-width: 1024px)');
-  const sync = () => blocks.forEach((d) => { d.open = desktop.matches; });
-  sync();
-  scope.on(desktop, 'change', sync);
-  // Sur desktop, le résumé est masqué : on empêche toute fermeture accidentelle
-  blocks.forEach((d) => scope.on(d.querySelector('summary'), 'click', (e) => { if (desktop.matches) e.preventDefault(); }));
-  // Le scrollspy et les ancres dépendent de la hauteur des blocs
-  blocks.forEach((d) => scope.on(d, 'toggle', () => window.ScrollTrigger && window.ScrollTrigger.refresh()));
-}
-
-/* ---------- Expertises : scrollspy + onglets ------------------------------ */
-
-function initSpy(scope, root) {
-  const nav = $('[data-spy]', root);
-  const blocks = $$('[data-expertise]', root);
-  if (!nav || !blocks.length) return;
-  const links = $$('[data-spy-link]', nav);
-  const marker = $('.expertises__marker', nav);
-  let active = '';
-
-  const place = () => {
-    const link = links.find((a) => a.dataset.spyLink === active);
-    nav.classList.toggle('has-current', Boolean(link));
-    if (!link || !marker) return;
-    const navBox = nav.getBoundingClientRect();
-    const box = link.getBoundingClientRect();
-    marker.style.setProperty('--marker-y', `${(box.top - navBox.top).toFixed(1)}px`);
-    marker.style.setProperty('--marker-h', `${box.height.toFixed(1)}px`);
-  };
-
-  const setActive = (id) => {
-    if (id === active) return;
-    active = id;
-    links.forEach((a) => {
-      if (a.dataset.spyLink === id) a.setAttribute('aria-current', 'true');
-      else a.removeAttribute('aria-current');
-    });
-    blocks.forEach((b) => b.classList.toggle('is-current', b.id === id));
-    place();
-  };
-
-  scope.mm.add('(min-width: 1024px)', () => {
-    blocks.forEach((block, i) => {
-      ScrollTrigger.create({
-        trigger: block,
-        start: 'top 45%',
-        end: 'bottom 45%',
-        onToggle: (self) => {
-          if (self.isActive) setActive(block.id);
-          // Avant le premier bloc : aucun lien courant
-          else if (i === 0 && self.direction < 0) setActive('');
-        },
-      });
-    });
-    const resize = () => place();
-    window.addEventListener('resize', resize);
-    return () => {
-      window.removeEventListener('resize', resize);
-      setActive('');
-    };
-  });
-}
-
-function initTabsMotion(scope, root) {
-  $$('.expertise [data-tabs]', root).forEach((group) => {
-    scope.on(group, 'tabs:change', (e) => {
-      const panel = e.detail && e.detail.panel;
-      if (!panel) return;
-      const items = panel.querySelectorAll('li, .expertise__not');
-      gsap.killTweensOf(items);
-      if (env.reducedMotion) {
-        gsap.fromTo(items, { opacity: 0 }, { opacity: 1, duration: 0.25, clearProps: 'opacity' });
-        return;
-      }
-      gsap.fromTo(items, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.5, stagger: 0.035, ease: 'power3.out', clearProps: 'opacity,transform' });
-    });
-  });
-}
-
-/* ---------- Méthode : rail qui se remplit -------------------------------- */
+/* ---------- Process : timeline horizontale épinglée ---------------------- */
 
 function initProcess(scope, root) {
   const section = $('[data-process]', root);
   if (!section) return;
-  const timeline = $('.process__timeline', section);
-  const rail = $('.process__rail', section);
-  const steps = $$('[data-step]', section);
-  if (!timeline || !rail) return;
+  const pin = $('.process__pin', section);
+  const track = $('.process__track', section);
+  const line = $('.process__line', section);
+  const steps = $$('.process__step', section);
 
-  ScrollTrigger.create({
-    trigger: timeline,
-    start: 'top 65%',
-    end: 'bottom 65%',
-    scrub: env.reducedMotion ? true : 0.6,
-    onUpdate: (self) => rail.style.setProperty('--progress', self.progress.toFixed(4)),
-    onRefresh: (self) => rail.style.setProperty('--progress', self.progress.toFixed(4)),
+  scope.mm.add('(min-width: 1024px)', () => {
+    const distance = () => Math.max(0, track.scrollWidth - window.innerWidth);
+    const tween = gsap.to(track, {
+      x: () => -distance(),
+      ease: 'none',
+      scrollTrigger: {
+        trigger: section,
+        start: 'top top',
+        end: () => `+=${distance()}`,
+        pin,
+        scrub: 0.7,
+        invalidateOnRefresh: true,
+        anticipatePin: 1,
+        onUpdate: (self) => line.style.setProperty('--progress', self.progress.toFixed(4)),
+      },
+    });
+    if (!env.reducedMotion) {
+      steps.forEach((step) => {
+        gsap.from(step.children, {
+          y: 40,
+          opacity: 0,
+          stagger: 0.06,
+          ease: 'power3.out',
+          scrollTrigger: { trigger: step, containerAnimation: tween, start: 'left 85%', toggleActions: 'play none none reverse' },
+        });
+      });
+    }
   });
 
-  steps.forEach((step) => {
+  scope.mm.add('(max-width: 1023px)', () => {
     ScrollTrigger.create({
-      trigger: step,
-      start: 'top 65%',
-      onEnter: () => step.classList.add('is-active'),
-      onLeaveBack: () => step.classList.remove('is-active'),
-      onRefresh: (self) => step.classList.toggle('is-active', self.progress > 0),
+      trigger: track,
+      start: 'top 70%',
+      end: 'bottom 70%',
+      scrub: true,
+      onUpdate: (self) => line.style.setProperty('--progress', self.progress.toFixed(4)),
     });
   });
 }
@@ -232,32 +121,18 @@ function initConfigurator(scope, root) {
   const sentence = $('[data-config-sentence]', form);
   const submit = $('[data-config-submit]', form);
   const hint = $('[data-config-hint]', form);
-  const summary = $('[data-config-summary]', form);
-  const robot = $('[data-config-robot]', form);
-  const progress = $$('[data-progress]', form);
   const defaultHint = hint.textContent;
   let last = '';
-  let hop = null;
 
-  const read = () => ({
-    needs: $$('input[name="besoins"]:checked', form),
-    horizon: $('input[name="horizon"]:checked', form),
-    goal: $('input[name="objectif"]:checked', form),
-  });
-
-  const celebrate = () => {
-    if (env.reducedMotion) return;
-    if (hop) hop.kill();
-    hop = gsap.timeline()
-      .fromTo(robot, { y: 0, rotation: 0 }, { y: -12, rotation: -6, duration: 0.18, ease: 'power2.out' })
-      .to(robot, { y: 0, rotation: 0, duration: 0.5, ease: 'bounce.out' })
-      .fromTo(summary, { boxShadow: '0 0 0 0 rgba(218, 171, 58, 0.55)' }, { boxShadow: '0 0 0 14px rgba(218, 171, 58, 0)', duration: 0.7, ease: 'power2.out', clearProps: 'boxShadow' }, 0);
+  const read = () => {
+    const needs = $$('input[name="besoins"]:checked', form);
+    const horizon = $('input[name="horizon"]:checked', form);
+    const goal = $('input[name="objectif"]:checked', form);
+    return { needs, horizon, goal };
   };
 
-  const render = ({ animate = true } = {}) => {
+  const render = () => {
     const { needs, horizon, goal } = read();
-    const done = { besoins: needs.length > 0, horizon: Boolean(horizon), objectif: Boolean(goal) };
-    progress.forEach((li) => li.classList.toggle('is-done', done[li.dataset.progress]));
     let html;
     if (!needs.length) {
       html = '<span class="is-empty">Cochez au moins une expertise : la synthèse se compose ici.</span>';
@@ -265,59 +140,45 @@ function initConfigurator(scope, root) {
     } else {
       const what = joinFr(needs.map((n) => n.dataset.phrase));
       const why = goal ? goal.dataset.phrase : 'faire décoller votre activité';
-      const when = horizon ? horizon.dataset.phrase : 'à votre rythme';
-      html = `Vous voulez <span class="accent">${what}</span> pour <span class="accent">${why}</span>, <span class="accent">${when}</span>. On s’en occupe.`;
+      const when = horizon ? horizon.dataset.phrase : 'sans urgence';
+      html = `Vous voulez <em class="serif">${what}</em> pour <em class="serif">${why}</em>, <em class="serif">${when}</em>. On s’en occupe.`;
       submit.removeAttribute('aria-disabled');
       hint.textContent = defaultHint;
-      hint.classList.remove('is-error');
     }
     if (html === last) return;
     last = html;
     sentence.innerHTML = html;
-    if (!animate) return;
-    const parts = sentence.querySelectorAll('.accent, .is-empty');
-    gsap.killTweensOf([sentence, ...parts]);
-    if (env.reducedMotion) {
-      gsap.fromTo(parts, { opacity: 0 }, { opacity: 1, duration: 0.3 });
-    } else {
-      gsap.fromTo(sentence, { y: 12 }, { y: 0, duration: 0.6, ease: 'expo.out', clearProps: 'transform' });
-      gsap.fromTo(parts, { opacity: 0 }, { opacity: 1, duration: 0.45, stagger: 0.06, ease: 'power2.out' });
+    if (!env.reducedMotion) {
+      gsap.fromTo(sentence.querySelectorAll('em, .is-empty'), { yPercent: 40, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.6, stagger: 0.05, ease: 'expo.out' });
     }
-    celebrate();
   };
 
-  scope.on(form, 'change', () => render());
+  scope.on(form, 'change', render);
   scope.on(form, 'submit', (e) => {
     e.preventDefault();
     const { needs, horizon, goal } = read();
     if (!needs.length) {
       hint.textContent = 'Choisissez au moins une expertise pour recevoir une proposition.';
-      hint.classList.add('is-error');
       announce(hint.textContent, 'assertive');
       $('input[name="besoins"]', form).focus();
       return;
     }
     const params = new URLSearchParams();
     params.set('besoins', needs.map((n) => n.value).join(','));
-    if (horizon) params.set('delai', horizon.value);
+    if (horizon) params.set('horizon', horizon.value);
     if (goal) params.set('objectif', goal.value);
     const url = `contact.html?${params.toString()}`;
     if (window.barba && typeof window.barba.go === 'function') window.barba.go(url);
     else window.location.href = url;
   });
-  scope.cleanup(() => { if (hop) hop.kill(); });
-  render({ animate: false });
+  render();
 }
 
 /* ---------- Cycle de vie --------------------------------------------------- */
 
 export default {
   init(scope, root) {
-    initArrival(scope, root);
-    initJumps(scope, root);
-    initMore(scope, root);
-    initSpy(scope, root);
-    initTabsMotion(scope, root);
+    initStack(scope, root);
     initProcess(scope, root);
     initConfigurator(scope, root);
   },

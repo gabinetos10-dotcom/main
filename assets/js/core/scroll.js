@@ -36,7 +36,7 @@ export function initScroll() {
       autoRaf: false,
       anchors: false,
       autoResize: true,
-      prevent: (node) => Boolean(node.closest && node.closest('[data-lenis-prevent], .arcade-modal, .menu, dialog')),
+      prevent: (node) => Boolean(node.closest && node.closest('[data-lenis-prevent], .arcade, .menu, dialog')),
     });
     lenis.on('scroll', () => {
       ScrollTrigger.update();
@@ -119,8 +119,7 @@ export function scrollTo(target, { offset = 0, immediate = false, duration = 1.4
   else {
     const el = typeof target === 'string' ? document.querySelector(target) : target;
     if (!el) return;
-    // Comme Lenis, on respecte scroll-margin-top (la cible ne passe pas sous le header)
-    y = el.getBoundingClientRect().top + window.scrollY - (parseFloat(getComputedStyle(el).scrollMarginTop) || 0);
+    y = el.getBoundingClientRect().top + window.scrollY;
   }
   window.scrollTo({ top: y + offset, behavior: immediate || env.reducedMotion ? 'auto' : 'smooth' });
 }

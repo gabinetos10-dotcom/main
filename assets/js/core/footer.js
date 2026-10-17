@@ -60,7 +60,7 @@ export function initFooter(scope, container) {
     }
   });
 
-  // « GJS » : les lettres montent quand le logo entre dans l'écran
+  // « GJS » géant : les lettres montent quand le footer entre dans l'écran
   const giant = footer.querySelector('.footer__giant-word');
   if (giant) {
     if (!env.reducedMotion) {
@@ -69,8 +69,7 @@ export function initFooter(scope, container) {
           yPercent: 0,
           ease: 'none',
           stagger: 0.08,
-          // Le logo est en haut du footer v2 : l'animation finit dès qu'il est bien visible
-          scrollTrigger: { trigger: giant, start: 'top 98%', end: 'top 70%', scrub: 0.6 },
+          scrollTrigger: { trigger: footer, start: 'top bottom', end: 'bottom bottom', scrub: 0.6 },
         });
       });
     }

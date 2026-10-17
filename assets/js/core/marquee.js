@@ -4,9 +4,7 @@
      <div class="marquee__track"><div class="marquee__group">…</div></div>
    </div>
    La vitesse et le sens suivent la vélocité du scroll ; un léger skew
-   accompagne les accélérations. Pause automatique hors viewport, au survol,
-   au focus, et bouton pause/lecture (WCAG 2.2.2 : tout contenu qui défile
-   plus de 5 s doit pouvoir être arrêté).
+   accompagne les accélérations. Pause automatique hors viewport.
    ========================================================================== */
 
 import { getVelocity, getDirection } from './scroll.js';
@@ -42,30 +40,8 @@ export function createMarquee(el, scope) {
   let speedBoost = 0;
   let dir = 1;
   let active = true;
-  let paused = false;
-  let hovered = false;
 
   if (env.reducedMotion) return;
-
-  // Bouton pause / lecture, aligné sur la marge droite du contenu
-  const PAUSE = '<svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><rect x="3.5" y="3" width="3" height="10" rx="1"/><rect x="9.5" y="3" width="3" height="10" rx="1"/></svg>';
-  const PLAY = '<svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M5 3.2v9.6a.6.6 0 0 0 .9.5l7.6-4.8a.6.6 0 0 0 0-1L5.9 2.7a.6.6 0 0 0-.9.5Z"/></svg>';
-  const toggle = document.createElement('button');
-  toggle.type = 'button';
-  toggle.className = 'marquee__toggle';
-  const render = () => {
-    toggle.setAttribute('aria-pressed', String(paused));
-    toggle.setAttribute('aria-label', paused ? 'Reprendre le défilement' : 'Mettre en pause le défilement');
-    toggle.innerHTML = paused ? PLAY : PAUSE;
-  };
-  render();
-  el.appendChild(toggle);
-  scope.cleanup(() => toggle.remove());
-  scope.on(toggle, 'click', () => { paused = !paused; render(); });
-  scope.on(el, 'pointerenter', () => { hovered = true; });
-  scope.on(el, 'pointerleave', () => { hovered = false; });
-  scope.on(el, 'focusin', () => { hovered = true; });
-  scope.on(el, 'focusout', () => { hovered = false; });
 
   scope.resize(el, () => { groupW = fill(); });
   scope.intersect(el, (entry) => { active = entry.isIntersecting; }, { rootMargin: '100px' });
@@ -74,7 +50,7 @@ export function createMarquee(el, scope) {
   const setSkew = gsap.quickSetter(track, 'skewX', 'deg');
 
   scope.ticker((time, deltaMs) => {
-    if (!active || paused || hovered) return;
+    if (!active) return;
     const dt = Math.min(deltaMs / 1000, 0.05);
     const v = getVelocity();
     // Le sens s'inverse quand on remonte la page

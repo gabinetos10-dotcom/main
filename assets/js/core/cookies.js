@@ -21,13 +21,9 @@ const loaded = new Set();
 
 function readConsent() {
   const saved = store.get(KEY);
-  if (!saved) return null;
+  if (!saved || saved.v !== CONFIG.CONSENT_VERSION) return null;
   const age = (Date.now() - new Date(saved.date).getTime()) / 86400000;
-  // Choix périmé (6 mois) ou d'une ancienne version : on l'efface et on redemande
-  if (saved.v !== CONFIG.CONSENT_VERSION || !Number.isFinite(age) || age > CONFIG.CONSENT_MAX_AGE_DAYS) {
-    store.remove(KEY);
-    return null;
-  }
+  if (!Number.isFinite(age) || age > CONFIG.CONSENT_MAX_AGE_DAYS) return null;
   return saved;
 }
 

@@ -7,27 +7,43 @@
    data-delay="0.2"           décalage (s) dans l'intro
    data-parallax="0.2"        profondeur de parallaxe (négatif = sens inverse)
    data-counter="140"         compteur (+ data-prefix, data-suffix, data-decimals)
-   data-theme="cream|grey|space|gold"  fond de section (CSS), barre d'adresse mobile
+   data-theme="night|black|paper|deep"  couleur du body quand la section est au centre
    ========================================================================== */
 
 import { split } from './splitText.js';
 import { env, $$, formatNumber } from './utils.js';
 
-const { gsap } = window;
+const { gsap, ScrollTrigger } = window;
 
-/* v2 : chaque section porte son propre fond (CSS [data-theme]) ; le JS ne
-   repeint plus le body au scroll. On garde l'API pour la barre d'adresse mobile. */
-const THEME_COLOR = { cream: '#EEE6D8', grey: '#E5E7E6', space: '#16100C', gold: '#DAAB3A' };
+export const THEMES = {
+  night: { '--bg': '#060B1E', '--fg': '#FFFFFF', '--fg-2': 'rgba(255, 255, 255, 0.64)', '--line': 'rgba(255, 255, 255, 0.14)', '--focus': '#5B85FF', '--danger': '#FF6B5B' },
+  deep: { '--bg': '#03060F', '--fg': '#FFFFFF', '--fg-2': 'rgba(255, 255, 255, 0.62)', '--line': 'rgba(255, 255, 255, 0.13)', '--focus': '#5B85FF', '--danger': '#FF6B5B' },
+  black: { '--bg': '#000000', '--fg': '#FFFFFF', '--fg-2': 'rgba(255, 255, 255, 0.62)', '--line': 'rgba(255, 255, 255, 0.16)', '--focus': '#5B85FF', '--danger': '#FF6B5B' },
+  paper: { '--bg': '#F2F1EC', '--fg': '#03060F', '--fg-2': 'rgba(3, 6, 15, 0.68)', '--line': 'rgba(3, 6, 15, 0.16)', '--focus': '#24387A', '--danger': '#B3261E' },
+};
 
-export function setTheme(name) {
+let currentTheme = 'night';
+
+export function setTheme(name, immediate = false) {
+  const theme = THEMES[name];
+  if (!theme || (name === currentTheme && !immediate)) return;
+  currentTheme = name;
+  document.body.dataset.currentTheme = name;
+  document.documentElement.style.colorScheme = name === 'paper' ? 'light' : 'dark';
   const meta = document.querySelector('meta[name="theme-color"]');
-  if (meta && THEME_COLOR[name]) meta.setAttribute('content', THEME_COLOR[name]);
+  if (meta) meta.setAttribute('content', theme['--bg']);
+  gsap.to(document.body, {
+    ...theme,
+    duration: immediate || env.reducedMotion ? 0 : 0.8,
+    ease: 'power2.out',
+    overwrite: true,
+  });
 }
 
-/** Couleur de la barre d'adresse : celle de la première section de la page. */
+/** Thème initial d'une page : celui de sa première section. */
 export function setInitialTheme(container) {
-  const first = container.querySelector('main [data-theme]');
-  setTheme(first ? first.dataset.theme : 'cream');
+  const first = container.querySelector('[data-theme]');
+  setTheme(first ? first.dataset.theme : 'night', true);
 }
 
 const EASE = 'gjs';
@@ -67,7 +83,7 @@ function fadeReveal(el, { intro, tl }) {
   const delay = parseFloat(el.dataset.delay || 0);
   const vars = env.reducedMotion
     ? { opacity: 0, duration: 0.6 }
-    : { opacity: 0, y: 28, duration: 1, ease: 'power3.out', clearProps: 'transform,translate' };
+    : { opacity: 0, y: 28, duration: 1, ease: 'power3.out' };
   if (intro) tl.from(el, vars, delay);
   else gsap.from(el, { ...vars, scrollTrigger: { trigger: el, start: 'top 90%', once: true } });
 }
@@ -77,7 +93,7 @@ function staggerReveal(el, { intro, tl }) {
   const items = Array.from(el.children);
   const vars = env.reducedMotion
     ? { opacity: 0, duration: 0.5, stagger: 0.04 }
-    : { opacity: 0, y: 32, duration: 0.9, ease: 'power3.out', stagger: 0.07, clearProps: 'transform,translate' };
+    : { opacity: 0, y: 32, duration: 0.9, ease: 'power3.out', stagger: 0.07 };
   if (intro) tl.from(items, vars, delay);
   else gsap.from(items, { ...vars, scrollTrigger: { trigger: el, start: 'top 88%', once: true } });
 }
@@ -143,6 +159,17 @@ function counter(el) {
   });
 }
 
+function themeTriggers(container) {
+  $$('[data-theme]', container).forEach((section) => {
+    ScrollTrigger.create({
+      trigger: section,
+      start: 'top 55%',
+      end: 'bottom 55%',
+      onToggle: (self) => { if (self.isActive) setTheme(section.dataset.theme); },
+    });
+  });
+}
+
 /**
  * Crée toutes les animations génériques d'une page.
  * Doit être appelé dans scope.add() pour être détruit avec la page.
@@ -163,6 +190,7 @@ export function createReveals(container, { phase = 'all' } = {}) {
   if (phase !== 'intro') {
     $$('[data-parallax]', container).forEach(parallax);
     $$('[data-counter]', container).forEach(counter);
+    themeTriggers(container);
   }
 
   return tl;

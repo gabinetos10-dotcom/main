@@ -1,10 +1,9 @@
 /* ==========================================================================
    GJS — EASTER EGGS
    1. Code Konami (↑↑↓↓←→←→BA) → mode Hyperespace + code promo secret
-   2. Taper « gjs » hors champ de saisie → le « GJS » du logo fait un tonneau
+   2. Taper « gjs » hors champ de saisie → le logo du header fait un tonneau
    3. Message ASCII dans la console
-   4. 7 clics sur le « GJS » du footer → mini-défi caché (chasse au vaisseau)
-   Couleurs v2 : or #DAAB3A, crème #EEE6D8 et cuivre sur nuit chaude #16100C.
+   4. 7 clics sur le « GJS » géant du footer → mini-défi caché (chasse au vaisseau)
    ========================================================================== */
 
 import { CONFIG } from './config.js';
@@ -13,8 +12,6 @@ import { lockScroll, unlockScroll } from './core/scroll.js';
 
 const { gsap } = window;
 
-// Palette de la console (les feuilles de style n'y ont pas cours)
-const CONSOLE = { space: '#16100C', cream: '#EEE6D8', cream2: '#A9A297', gold: '#DAAB3A' };
 const KONAMI = ['arrowup', 'arrowup', 'arrowdown', 'arrowdown', 'arrowleft', 'arrowright', 'arrowleft', 'arrowright', 'b', 'a'];
 let hyperspaceRunning = false;
 
@@ -30,13 +27,12 @@ function consoleMessage() {
     '  ╚═════╝  ╚════╝ ╚══════╝',
   ].join('\n');
   /* eslint-disable no-console */
-  const C = CONSOLE;
-  console.log(`%c${art}`, `color:${C.gold};background:${C.space};padding:8px 12px;font-family:monospace;font-size:11px;line-height:1.1;text-shadow:0 0 8px rgba(218,171,58,.55)`);
+  console.log(`%c${art}`, 'color:#5B85FF;font-family:monospace;font-size:11px;line-height:1.1;text-shadow:0 0 8px rgba(91,133,255,.6)');
   console.log(
     `%cVous lisez notre code ?%c Écrivez-nous : ${CONFIG.EMAIL}\n%c(Indice : les vieux codes de console marchent encore ici. ↑↑↓↓…)`,
-    `color:${C.cream};background:${C.space};padding:4px 8px;font-weight:700`,
-    `color:${C.gold};background:${C.space};padding:4px 8px;font-weight:600`,
-    `color:${C.cream2};font-style:italic`,
+    'color:#fff;background:#060B1E;padding:4px 8px;font-weight:600',
+    'color:#5B85FF;background:#060B1E;padding:4px 8px',
+    'color:#8a93b3;font-style:italic',
   );
   /* eslint-enable no-console */
 }
@@ -52,14 +48,12 @@ function barrelRoll() {
     gsap.fromTo(logo, { opacity: 0.2 }, { opacity: 1, duration: 0.6 });
     return;
   }
-  // Traînée : copies fantômes (or) qui suivent la rotation avec retard,
-  // posées exactement sur le « GJS » quelle que soit la taille de la pastille.
+  // Traînée : copies fantômes qui suivent la rotation avec retard
   const ghosts = [];
   for (let i = 1; i <= 4; i += 1) {
     const ghost = logo.cloneNode(true);
     ghost.classList.add('header__logo-ghost');
     ghost.setAttribute('aria-hidden', 'true');
-    Object.assign(ghost.style, { left: `${logo.offsetLeft}px`, top: `${logo.offsetTop}px`, translate: 'none', margin: '0' });
     logo.parentNode.insertBefore(ghost, logo);
     ghosts.push(ghost);
   }
@@ -86,9 +80,7 @@ function warpCanvas(duration) {
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   };
   resize();
-  // Étoiles crème, une sur cinq dorée
-  const STAR_COLORS = ['rgba(238,230,216,0.9)', 'rgba(238,230,216,0.9)', 'rgba(238,230,216,0.75)', 'rgba(238,230,216,0.9)', 'rgba(218,171,58,0.95)'];
-  const stars = Array.from({ length: 420 }, (_, i) => ({ x: rand(-1, 1), y: rand(-1, 1), z: rand(0.05, 1), c: STAR_COLORS[i % STAR_COLORS.length] }));
+  const stars = Array.from({ length: 420 }, () => ({ x: rand(-1, 1), y: rand(-1, 1), z: rand(0.05, 1) }));
   const state = { speed: 0 };
   gsap.timeline()
     .to(state, { speed: 1.6, duration: duration * 0.35, ease: 'power2.in' })
@@ -97,9 +89,9 @@ function warpCanvas(duration) {
     const dt = Math.min(deltaMs / 1000, 0.05);
     const w = window.innerWidth;
     const h = window.innerHeight;
-    ctx.fillStyle = 'rgba(22,16,12,0.35)';
+    ctx.fillStyle = 'rgba(3,6,15,0.35)';
     ctx.fillRect(0, 0, w, h);
-    ctx.lineCap = 'round';
+    ctx.strokeStyle = 'rgba(255,255,255,0.9)';
     for (const s of stars) {
       const pz = s.z;
       s.z -= state.speed * dt;
@@ -109,7 +101,6 @@ function warpCanvas(duration) {
       const px = w / 2 + (s.x / pz) * w * 0.5;
       const py = h / 2 + (s.y / pz) * h * 0.5;
       ctx.lineWidth = (1 - s.z) * 2.2;
-      ctx.strokeStyle = s.c;
       ctx.beginPath();
       ctx.moveTo(px, py);
       ctx.lineTo(sx, sy);
@@ -146,14 +137,14 @@ function secretModal() {
   dialog.className = 'egg-modal';
   dialog.setAttribute('aria-labelledby', 'egg-title');
   dialog.innerHTML = `
-    <p class="label">Accès déverrouillé</p>
-    <h2 class="egg-modal__title t-display" id="egg-title">Vous avez <span class="accent">trouvé</span> la porte dérobée.</h2>
-    <p class="egg-modal__text">−10 % sur votre premier audit. Mentionnez ce code dans votre message :</p>
+    <p class="label label--signal">[ ACCÈS DÉVERROUILLÉ ] — MODE HYPERESPACE</p>
+    <h2 class="egg-modal__title t-display" id="egg-title">Vous avez <em class="serif">trouvé</em> la porte dérobée.</h2>
+    <p class="egg-modal__text">-10 % sur votre premier audit. Mentionnez ce code dans votre message :</p>
     <p class="egg-modal__code"><code>${CONFIG.PROMO_CODE}</code></p>
     <div class="egg-modal__actions">
-      <button type="button" class="btn btn--primary" data-egg-copy>Copier le code</button>
-      <a class="btn btn--secondary" href="contact.html?code=${encodeURIComponent(CONFIG.PROMO_CODE)}" data-egg-close-nav>L’utiliser maintenant <span class="btn__arrow" aria-hidden="true">→</span></a>
-      <button type="button" class="egg-modal__close label label--plain" data-egg-close aria-keyshortcuts="Escape">Fermer</button>
+      <button type="button" class="btn btn--light" data-egg-copy>Copier le code</button>
+      <a class="btn btn--ghost" href="contact.html?code=${encodeURIComponent(CONFIG.PROMO_CODE)}" data-egg-close-nav>L'utiliser maintenant →</a>
+      <button type="button" class="egg-modal__close label" data-egg-close>Fermer [Échap]</button>
     </div>
     <p class="sr-only" aria-live="polite" data-egg-feedback></p>`;
   document.body.appendChild(dialog);
@@ -161,8 +152,7 @@ function secretModal() {
   dialog.showModal();
   const release = trapFocus(dialog, { restore: true });
   if (!env.reducedMotion) {
-    // Opacité seulement : le bouton « Copier » reçoit le focus pendant l'animation
-    gsap.from(dialog.children, { y: 30, opacity: 0, stagger: 0.07, duration: 0.8, ease: 'expo.out', clearProps: 'transform,opacity' });
+    gsap.from(dialog.children, { y: 30, autoAlpha: 0, stagger: 0.07, duration: 0.8, ease: 'expo.out' });
   }
   const close = () => {
     release();
@@ -187,7 +177,7 @@ function secretModal() {
 }
 
 function hyperspace() {
-  if (hyperspaceRunning || document.querySelector('.arcade-modal, .hunt, .egg-modal')) return;
+  if (hyperspaceRunning || document.querySelector('.arcade, .egg-modal')) return;
   hyperspaceRunning = true;
   announce('Code Konami détecté. Passage en hyperespace.', 'assertive');
   if (env.reducedMotion) {
@@ -218,7 +208,7 @@ export function initEasterEggs() {
 
   document.addEventListener('keydown', (e) => {
     if (isTypingTarget(e.target) || e.metaKey || e.ctrlKey || e.altKey) return;
-    if (document.querySelector('.arcade-modal, .hunt')) return; // les flèches servent aux jeux
+    if (document.querySelector('.arcade')) return; // les flèches servent aux jeux
     const key = e.key.toLowerCase();
 
     konami = key === KONAMI[konami] ? konami + 1 : (key === KONAMI[0] ? 1 : 0);

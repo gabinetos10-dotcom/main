@@ -46,7 +46,7 @@ export function initGridOverlay() {
       toggle();
     }
     if (key !== 'g') return;
-    if (window.innerWidth < 1024 || document.querySelector('.arcade-modal')) return;
+    if (window.innerWidth < 1024 || document.querySelector('.arcade')) return;
     pending = setTimeout(() => { pending = 0; toggle(); }, 320);
   });
 }

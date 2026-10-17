@@ -41,7 +41,6 @@ class Starfield {
         layer,
         phase: Math.random() * Math.PI * 2,
         twinkle: rand(0.8, 2.6),
-        gold: Math.random() < 0.14,
       });
     }
   }
@@ -86,7 +85,7 @@ class Starfield {
         const k = 1 + this.warp * dt * 9 * (0.4 + layer.size);
         const nx = cx + dx * k;
         const ny = cy + dy * k;
-        ctx.strokeStyle = `rgba(238,230,216,${layer.alpha})`;
+        ctx.strokeStyle = `rgba(255,255,255,${layer.alpha})`;
         ctx.lineWidth = layer.size;
         ctx.beginPath();
         ctx.moveTo(s.x - (nx - s.x) * this.warp * 4, s.y - (ny - s.y) * this.warp * 4);
@@ -102,7 +101,7 @@ class Starfield {
         s.x -= layer.speed * dt;
         if (s.x < -2) { s.x = w + 2; s.y = Math.random() * h; }
         const a = layer.alpha * (0.55 + 0.45 * Math.sin(time * s.twinkle + s.phase));
-        ctx.fillStyle = s.gold ? `rgba(218,171,58,${a})` : `rgba(238,230,216,${a})`;
+        ctx.fillStyle = `rgba(255,255,255,${a})`;
         ctx.fillRect(s.x, s.y, layer.size, layer.size);
       }
     }
@@ -118,7 +117,7 @@ class Starfield {
       p.vx *= 0.97;
       p.vy *= 0.97;
       const r = p.size * (0.4 + p.life);
-      ctx.fillStyle = p.life > 0.6 ? `rgba(255,236,190,${p.life})` : `rgba(218,140,50,${p.life * 1.4})`;
+      ctx.fillStyle = p.life > 0.6 ? `rgba(255,255,255,${p.life})` : `rgba(91,133,255,${p.life * 1.4})`;
       ctx.beginPath();
       ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
       ctx.fill();
@@ -139,8 +138,10 @@ function trackLoading(video) {
 
   if (document.fonts && document.fonts.load) {
     add(Promise.all([
-      document.fonts.load('800 100px "League Spartan"'),
-      document.fonts.load('400 16px "Archivo Narrow"'),
+      document.fonts.load('600 100px "Clash Display"'),
+      document.fonts.load('400 16px "General Sans"'),
+      document.fonts.load('400 12px "JetBrains Mono"'),
+      document.fonts.load('italic 400 40px "Instrument Serif"'),
     ]), 0.45);
   }
 
@@ -317,8 +318,8 @@ export function runLoader({ video = null } = {}) {
     }
 
     if (mode === 'full') {
-      const hold = skip ? 0.05 : 0.2;
-      const warp = skip ? 0.25 : 0.45;
+      const hold = skip ? 0.05 : 0.35;
+      const warp = skip ? 0.3 : 0.6;
       tl.add(() => {}, hold);
       tl.to(stars, { warp: 1, duration: warp, ease: 'power2.in' });
       tl.to(el.word, { scale: 1.18, duration: warp, ease: 'power2.in' }, '<');
@@ -326,16 +327,16 @@ export function runLoader({ video = null } = {}) {
       tl.set(el.scene, { autoAlpha: 0 });
       tl.to(el.flash, { opacity: 0, duration: 0.4, ease: 'power2.out' });
       tl.add(resolveReveal, '<');
-      tl.to(el.top, { yPercent: -100, duration: 0.9, ease: 'expo.inOut' }, '<');
-      tl.to(el.bottom, { yPercent: 100, duration: 0.9, ease: 'expo.inOut' }, '<');
+      tl.to(el.top, { yPercent: -100, duration: 1.15, ease: 'expo.inOut' }, '<');
+      tl.to(el.bottom, { yPercent: 100, duration: 1.15, ease: 'expo.inOut' }, '<');
       return;
     }
 
     // Version courte : GJS déjà là, les volets s'ouvrent
-    tl.to(el.scene, { autoAlpha: 0, duration: 0.2, ease: 'power1.out' }, 0.03);
-    tl.add(resolveReveal, 0.08);
-    tl.to(el.top, { yPercent: -100, duration: 0.6, ease: 'expo.inOut' }, 0.08);
-    tl.to(el.bottom, { yPercent: 100, duration: 0.6, ease: 'expo.inOut' }, 0.08);
+    tl.to(el.scene, { autoAlpha: 0, duration: 0.25, ease: 'power1.out' }, 0.05);
+    tl.add(resolveReveal, 0.12);
+    tl.to(el.top, { yPercent: -100, duration: 0.8, ease: 'expo.inOut' }, 0.12);
+    tl.to(el.bottom, { yPercent: 100, duration: 0.8, ease: 'expo.inOut' }, 0.12);
   }
 
   if (el.skip) {

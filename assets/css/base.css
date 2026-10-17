@@ -1,8 +1,6 @@
 /* ==========================================================================
    GJS — BASE
    Reset, typographie de base, accessibilité, grain, overlay de grille, Lenis.
-   Hiérarchie : titres League Spartan, texte Archivo Narrow, un seul sur-titre
-   (.label) par section, accent de titre en cuivre (.accent).
    ========================================================================== */
 
 *,
@@ -20,8 +18,8 @@ html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
   scrollbar-gutter: stable;
-  color-scheme: light;
-  background: var(--cream);
+  color-scheme: dark;
+  background: var(--night-950);
 }
 
 body {
@@ -31,9 +29,9 @@ body {
   font-family: var(--font-text);
   font-size: var(--fs-body);
   font-weight: 400;
-  line-height: 1.6;
+  line-height: 1.55;
   font-kerning: normal;
-  font-feature-settings: "kern", "liga";
+  font-feature-settings: "kern", "liga", "ss01";
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
@@ -98,8 +96,8 @@ em {
 }
 
 ::selection {
-  background: var(--gold);
-  color: var(--ink);
+  background: var(--signal);
+  color: var(--night-950);
 }
 
 [hidden] {
@@ -110,7 +108,7 @@ em {
 
 .t-display {
   font-family: var(--font-display);
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: var(--tracking-display);
   line-height: var(--leading-display);
   text-wrap: balance;
@@ -118,96 +116,69 @@ em {
 
 .t-giant {
   font-family: var(--font-display);
-  font-weight: 800;
+  font-weight: 600;
   font-size: var(--fs-giant);
-  letter-spacing: -0.04em;
-  line-height: 0.82;
+  letter-spacing: -0.05em;
+  line-height: 0.8;
 }
 
 .t-h1 { font-size: var(--fs-h1); }
 .t-h2 { font-size: var(--fs-h2); }
-.t-h3 { font-size: var(--fs-h3); line-height: 1.05; }
-.t-h4 { font-size: var(--fs-h4); line-height: 1.15; letter-spacing: -0.01em; }
+.t-h3 { font-size: var(--fs-h3); }
+.t-h4 { font-size: var(--fs-h4); line-height: 1; letter-spacing: -0.02em; }
 
-/* Accent de titre : 1 ou 2 mots, en cuivre (grands corps uniquement) */
-.accent,
+/* Accent éditorial : 1 ou 2 mots par titre */
 .serif {
-  font-style: normal;
-  color: var(--accent-deco);
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.015em;
+  font-size: 1.04em;
 }
 
 .t-lead {
   font-size: var(--fs-lead);
-  line-height: 1.45;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
   font-weight: 500;
-  color: var(--fg-2);
-  max-width: 60ch;
 }
 
-/* Sur-titre de section : un seul par bloc */
+.t-mono,
 .label {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.6em;
-  font-family: var(--font-text);
-  font-size: var(--fs-label);
-  font-weight: 600;
-  line-height: 1.4;
-  letter-spacing: var(--tracking-label);
-  text-transform: uppercase;
-  color: var(--accent);
-}
-
-.label::before {
-  content: "";
-  flex-shrink: 0;
-  width: 0.62em;
-  height: 0.62em;
-  background: var(--gold);
-  clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%);
-}
-
-.label--plain::before { display: none; }
-.label--signal { color: var(--accent); }
-
-/* Petites mentions techniques (compteurs, métadonnées) */
-.t-mono {
-  font-family: var(--font-text);
+  font-family: var(--font-mono);
   font-size: var(--fs-mono);
-  font-weight: 600;
+  font-weight: 400;
   line-height: 1.5;
   letter-spacing: var(--tracking-mono);
   text-transform: uppercase;
-  font-variant-numeric: tabular-nums;
 }
+
+.label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75em;
+  color: var(--fg-2);
+}
+
+.label--signal { color: var(--signal); }
 
 .t-muted { color: var(--fg-2); }
 
-/* Contour typographique (grands numéros décoratifs) */
+/* Contour typographique (numéros géants) */
 .t-outline {
   color: transparent;
-  -webkit-text-stroke: 1.5px var(--accent-deco);
+  -webkit-text-stroke: 1px var(--fg);
   paint-order: stroke fill;
 }
 
-/* Texte courant : longueur de ligne confortable */
-.measure { max-width: 65ch; }
-
 /* Marqueur de contenu à remplacer — volontairement visible */
 .placeholder-tag {
-  display: inline-block;
-  padding: 1px 6px;
-  border-radius: 4px;
-  /* Fond plein : lisible quel que soit le fond (6,7:1) */
-  background: var(--rust);
-  font-family: var(--font-text);
-  font-size: 11px;
-  font-weight: 700;
+  font-family: var(--font-mono);
+  font-size: 10px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--white);
+  color: var(--focus);
   white-space: nowrap;
-  vertical-align: middle;
 }
 
 /* ---- Accessibilité ------------------------------------------------------ */
@@ -231,11 +202,12 @@ em {
   left: 12px;
   z-index: calc(var(--z-loader) + 1);
   padding: 14px 20px;
-  border-radius: 999px;
-  background: var(--gold);
-  color: var(--ink);
-  font-weight: 700;
-  font-size: 15px;
+  background: var(--white);
+  color: var(--night-950);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: var(--tracking-mono);
+  text-transform: uppercase;
   transform: translateY(-200%);
   transition: transform var(--dur-micro) var(--ease-out-expo);
 }
@@ -250,16 +222,9 @@ em {
 
 :focus-visible {
   outline: 2px solid var(--focus);
-  outline-offset: 3px;
-  box-shadow: 0 0 0 6px var(--gold-soft);
-  border-radius: 4px;
-}
-
-/* Conteneurs qui reçoivent le focus par programme (main, scène de jeu,
-   bloc ciblé par une ancre) : pas d'anneau de focus sur toute leur surface */
-[tabindex="-1"]:focus-visible {
-  outline: none;
-  box-shadow: none;
+  outline-offset: 4px;
+  box-shadow: 0 0 0 6px var(--signal-soft);
+  border-radius: 2px;
 }
 
 /* Le texte splitté reste lisible par les lecteurs d'écran (copie .sr-only) */
@@ -286,7 +251,7 @@ em {
   inset: -180px;
   z-index: var(--z-grain);
   pointer-events: none;
-  opacity: 0.035;
+  opacity: 0.05;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1.2 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   background-size: 180px 180px;
   animation: grain 1s steps(1) infinite;
@@ -310,21 +275,18 @@ em {
 .grid-overlay {
   position: fixed;
   inset: 0;
-  z-index: var(--z-grid);
+  z-index: calc(var(--z-cursor) - 1);
   pointer-events: none;
   display: grid;
   grid-template-columns: repeat(var(--cols), 1fr);
   column-gap: var(--gutter);
-  width: 100%;
-  max-width: calc(var(--container) + 2 * var(--pad));
-  margin-inline: auto;
-  padding-inline: var(--pad);
+  padding-inline: var(--margin);
 }
 
 .grid-overlay span {
   position: relative;
-  background: rgba(218, 171, 58, 0.08);
-  border-inline: 1px solid rgba(182, 115, 50, 0.4);
+  background: rgba(91, 133, 255, 0.07);
+  border-inline: 1px solid rgba(91, 133, 255, 0.28);
 }
 
 .grid-overlay span::before {
@@ -332,10 +294,10 @@ em {
   position: absolute;
   top: calc(var(--header-h) + 8px);
   left: 6px;
-  font-size: 11px;
-  font-weight: 700;
+  font-family: var(--font-mono);
+  font-size: 10px;
   letter-spacing: 0.08em;
-  color: var(--rust);
+  color: var(--signal);
 }
 
 .grid-overlay__info {
@@ -343,15 +305,14 @@ em {
   bottom: 16px;
   left: 50%;
   translate: -50% 0;
-  padding: 6px 12px;
-  border-radius: 999px;
-  background: var(--space);
-  border: 1px solid var(--gold);
-  font-size: 11px;
-  font-weight: 700;
+  padding: 6px 10px;
+  background: var(--night-950);
+  border: 1px solid var(--signal);
+  font-family: var(--font-mono);
+  font-size: 10px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--gold);
+  color: var(--signal);
 }
 
 /* ---- Lenis -------------------------------------------------------------- */
@@ -378,17 +339,11 @@ html.is-scroll-locked body {
   overflow: hidden;
 }
 
-/* Les calques plein écran (menu, jeux, modales, rideau) sont sombres : la
-   gouttière réservée à la barre de défilement prend la même couleur. */
-html.is-scroll-locked {
-  background: var(--space);
-}
-
 /* ---- Sans JS : on garde un site lisible -------------------------------- */
 
 .no-js .loader,
 .no-js .page-transition,
-.is-degraded [data-cookie-manage],
+.no-js .cursor,
 .no-js [data-menu-toggle],
 .no-js [data-launch-game],
 .no-js [data-cookie-manage],
@@ -396,24 +351,16 @@ html.is-scroll-locked {
   display: none !important;
 }
 
-/* Sans JS : onglets dépliés, tous les panneaux visibles */
-.no-js [role="tablist"] {
-  display: none !important;
+.no-js [data-theme="paper"] {
+  background: var(--paper);
+  --fg: var(--night-950);
+  --fg-2: rgba(3, 6, 15, 0.68);
+  --line: rgba(3, 6, 15, 0.16);
+  color: var(--fg);
 }
 
-.no-js .tabs__panel[hidden] {
-  display: block !important;
-}
-
-/* Sans JS, le menu mobile n'existe pas : la navigation du header passe à la ligne */
-.no-js .header__nav {
-  display: block !important;
-  overflow-x: auto;
-}
-
-.no-js .header__bar {
-  flex-wrap: wrap;
-  border-radius: var(--radius);
+.no-js [data-theme="black"] {
+  background: var(--black);
 }
 
 /* ---- Mouvement réduit -------------------------------------------------- */
@@ -432,9 +379,7 @@ html.is-scroll-locked {
   *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
-    /* 0s et non 0,01 ms : une transition, même infime, fausse les valeurs de
-       départ lues par GSAP (les intros restaient à opacité 0). */
-    transition-duration: 0s !important;
+    transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
 }
@@ -452,20 +397,20 @@ html.is-scroll-locked {
   max-width: 760px;
   margin-inline: auto;
   padding: 20px 22px;
-  border-radius: var(--radius);
-  background: var(--space);
-  color: var(--cream);
-  border: 1px solid var(--gold);
-  box-shadow: 0 18px 60px rgba(22, 16, 12, 0.35);
+  background: var(--night-950);
+  color: var(--white);
+  border: 1px solid var(--signal);
+  box-shadow: 0 0 60px rgba(91, 133, 255, 0.25);
   font-size: var(--fs-small);
   line-height: 1.5;
 }
 
 .file-notice__title {
-  font-family: var(--font-display);
-  font-size: 1.125rem;
-  font-weight: 700;
-  color: var(--gold);
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono);
+  letter-spacing: var(--tracking-mono);
+  text-transform: uppercase;
+  color: var(--signal);
 }
 
 .file-notice ol {
@@ -476,18 +421,19 @@ html.is-scroll-locked {
 }
 
 .file-notice code {
-  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  font-family: var(--font-mono);
   padding: 1px 6px;
-  border-radius: 4px;
-  background: var(--space-3);
+  background: var(--night-800);
 }
 
 .file-notice__close {
   justify-self: start;
   min-height: 44px;
-  padding: 0 20px;
-  border-radius: 999px;
-  background: var(--gold);
-  color: var(--ink);
-  font-weight: 700;
+  padding: 0 18px;
+  background: var(--white);
+  color: var(--night-950);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: var(--tracking-mono);
+  text-transform: uppercase;
 }

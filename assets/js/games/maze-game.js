@@ -14,7 +14,7 @@
      et y revenir une fois capturé.
    ========================================================================== */
 
-import { createLoop, createCanvas, createInput, createPad, createParticles, saveBest, palette, alpha, FONTS } from './utils.js';
+import { createLoop, createCanvas, createInput, createPad, createParticles, saveBest } from './utils.js';
 import { pick } from '../core/utils.js';
 
 const MAP = [
@@ -49,14 +49,11 @@ const HOME = [10, 9];
 const DIRS = { left: [-1, 0], right: [1, 0], up: [0, -1], down: [0, 1] };
 const DIR_LIST = [[0, -1], [-1, 0], [0, 1], [1, 0]];
 
-// Teintes des ennemis, tirées de la palette (corail, gris lunaire, brique, sable) :
-// distinctes entre elles, du joueur (or) et des murs (cuivre), lisibles sur la
-// nuit chaude (contraste ≥ 3:1, ΔE ≥ 19) ; la forme double la couleur.
 const ENEMIES = [
-  { id: 'google', name: 'Algorithme Google', hint: 'vous poursuit sans relâche', color: '#FF9A80', shape: 'diamond', behavior: 'chase', start: [10, 7], release: 1.2 },
-  { id: 'concurrent', name: 'Concurrent', hint: 'vise 4 cases devant vous', color: '#E5E7E6', shape: 'triangle', behavior: 'ambush', start: [9, 9], release: 3.5 },
-  { id: 'rebond', name: 'Taux de rebond', hint: 'imprévisible', color: '#C9563A', shape: 'circle', behavior: 'random', start: [10, 9], release: 6.5 },
-  { id: 'budget', name: 'Budget gaspillé', hint: 'patrouille, puis fonce', color: '#CDB28A', shape: 'hexagon', behavior: 'patrol', start: [11, 9], release: 9.5 },
+  { id: 'google', name: 'Algorithme Google', hint: 'vous poursuit sans relâche', color: '#FF6B5B', shape: 'diamond', behavior: 'chase', start: [10, 7], release: 1.2 },
+  { id: 'concurrent', name: 'Concurrent', hint: 'vise 4 cases devant vous', color: '#F5B841', shape: 'triangle', behavior: 'ambush', start: [9, 9], release: 3.5 },
+  { id: 'rebond', name: 'Taux de rebond', hint: 'imprévisible', color: '#59E0B5', shape: 'circle', behavior: 'random', start: [10, 9], release: 6.5 },
+  { id: 'budget', name: 'Budget gaspillé', hint: 'patrouille, puis fonce', color: '#FF8FD1', shape: 'hexagon', behavior: 'patrol', start: [11, 9], release: 9.5 },
 ];
 const PATROL = [[15, 13], [19, 15], [19, 19], [13, 17]];
 
@@ -95,9 +92,8 @@ export function create(api) {
     <div class="maze-board" data-board></div>
     <aside class="maze-legend" aria-label="Légende">
       <p class="label">Ennemis</p>
-      <ul class="maze-legend__list">${ENEMIES.map((e) => `<li class="maze-legend__item"><span class="maze-legend__swatch maze-legend__swatch--${e.shape}" style="--c:${e.color}"></span><span><strong>${e.name}</strong><span class="maze-legend__hint">${e.hint}</span></span></li>`).join('')}
-        <li class="maze-legend__item maze-legend__item--ally"><span class="maze-legend__swatch maze-legend__swatch--power"></span><span><strong>Agent IA</strong><span class="maze-legend__hint">6 s pour capturer les ennemis</span></span></li>
-        <li class="maze-legend__item maze-legend__item--ally"><span class="maze-legend__swatch maze-legend__swatch--player"></span><span><strong>Vous, GJS</strong><span class="maze-legend__hint">collectez les leads</span></span></li>
+      <ul>${ENEMIES.map((e) => `<li><span class="maze-legend__swatch maze-legend__swatch--${e.shape}" style="--c:${e.color}"></span><span><strong>${e.name}</strong><br><span class="t-muted">${e.hint}</span></span></li>`).join('')}
+        <li><span class="maze-legend__swatch maze-legend__swatch--power"></span><span><strong>Agent IA</strong><br><span class="t-muted">6 s pour capturer les ennemis</span></span></li>
       </ul>
     </aside>
     <p class="maze-tooltip t-mono" data-tooltip hidden></p>`;
@@ -106,24 +102,6 @@ export function create(api) {
   const view = createCanvas(board, 'maze-canvas');
   const { ctx } = view;
   const particles = createParticles();
-  const P = palette();
-  const C = {
-    bg: P.space,
-    wall: P.copper,
-    door: alpha(P.cream, 0.6),
-    lead: P.cream2, // crème atténué : distinct des ennemis (gris lunaire, sable, cuivre, corail)
-    power: P.gold,
-    powerText: P.ink,
-    timer: alpha(P.gold, 0.11),
-    timerHot: alpha(P.danger, 0.16),
-    eyes: P.space,
-    fright: P.gold,
-    blink: P.cream,
-    eaten: P.cream,
-    player: P.gold,
-    playerRing: P.cream,
-    playerText: P.ink,
-  };
   const toExit = distanceMap(EXIT);
   const toHome = distanceMap(HOME);
 
@@ -152,13 +130,12 @@ export function create(api) {
   const layout = () => {
     const { w, h } = view.size;
     g.ts = Math.max(8, Math.floor(Math.min(w / W, h / H)));
-    // Plateau calé en haut à gauche : même bord gauche que le logo et les titres
-    g.ox = 0;
-    g.oy = 0;
+    g.ox = Math.floor((w - g.ts * W) / 2);
+    g.oy = Math.floor((h - g.ts * H) / 2);
     prerenderWalls();
   };
 
-  // Murs pré-rendus (contours fins cuivre, halo doux) dans un canvas hors écran
+  // Murs pré-rendus (contours fins bleu signal) dans un canvas hors écran
   function prerenderWalls() {
     const dpr = view.size.dpr;
     const off = document.createElement('canvas');
@@ -167,9 +144,9 @@ export function create(api) {
     const c = off.getContext('2d');
     c.scale(dpr, dpr);
     const ts = g.ts;
-    c.strokeStyle = C.wall;
-    c.lineWidth = Math.max(1.25, ts / 12);
-    c.shadowColor = C.wall;
+    c.strokeStyle = '#5B85FF';
+    c.lineWidth = Math.max(1, ts / 14);
+    c.shadowColor = '#5B85FF';
     c.shadowBlur = ts / 3;
     c.lineCap = 'round';
     c.beginPath();
@@ -188,7 +165,7 @@ export function create(api) {
     c.stroke();
     // Porte de la base
     c.shadowBlur = 0;
-    c.strokeStyle = C.door;
+    c.strokeStyle = 'rgba(255,255,255,0.6)';
     c.setLineDash([3, 3]);
     c.beginPath();
     c.moveTo(10 * ts, 8.5 * ts);
@@ -355,13 +332,13 @@ export function create(api) {
     if (won) sound.win(); else sound.hit();
     if (!won) {
       const [x, y] = posOf(player);
-      particles.burst(g.ox + (x + 0.5) * g.ts, g.oy + (y + 0.5) * g.ts, { count: 70, colors: [C.player, enemy.color], speed: 260, size: 3, life: 1 });
+      particles.burst(g.ox + (x + 0.5) * g.ts, g.oy + (y + 0.5) * g.ts, { count: 70, colors: ['#FFFFFF', enemy.color], speed: 260, size: 3, life: 1 });
     }
     endTimer = setTimeout(() => {
       loop.stop();
       api.end(won ? {
         won: true,
-        title: 'Vous avez tenu 60 s. <span class="accent">Nous, on tient sur la durée.</span>',
+        title: 'Vous avez tenu 60 s. <em class="serif">Nous, on tient sur la durée.</em>',
         detail: `${s.collected} leads collectés, ${s.captures} ennemi${s.captures > 1 ? 's' : ''} capturé${s.captures > 1 ? 's' : ''}, +1 000 points de survie.`,
         score: final,
         scoreLabel: `Score : ${final}`,
@@ -370,7 +347,7 @@ export function create(api) {
         cta: { label: 'Générer de vrais leads', href: 'contact.html?besoins=ads,ia&objectif=leads' },
       } : {
         won: false,
-        title: `Mangé par <span class="accent">${enemy.name}</span>.`,
+        title: `Mangé par <em class="serif">${enemy.name}</em>.`,
         detail: `Vous avez tenu ${time} s et collecté ${s.collected} leads.`,
         score: final,
         scoreLabel: `Score : ${final}`,
@@ -385,7 +362,7 @@ export function create(api) {
 
   const hud = () => {
     const left = Math.max(0, DURATION - s.elapsed);
-    api.hud(`<span>Temps <strong>00:${String(Math.ceil(left)).padStart(2, '0')}</strong></span><span>Leads <strong>${s.collected}</strong></span><span>Score <strong>${s.score}</strong></span>${s.fright > 0 ? '<span class="arcade-modal__power">Agent IA</span>' : ''}`);
+    api.hud(`<span>Temps <strong>00:${String(Math.ceil(left)).padStart(2, '0')}</strong></span><span>Leads ${s.collected}</span><span>Score ${s.score}</span>${s.fright > 0 ? '<span class="hud-shield">Agent IA</span>' : ''}`);
   };
 
   const update = (dt) => {
@@ -410,7 +387,7 @@ export function create(api) {
         s.score += gain;
         s.captures += 1;
         sound.coin();
-        particles.burst(g.ox + (pp[0] + 0.5) * g.ts, g.oy + (pp[1] + 0.5) * g.ts, { count: 30, colors: [e.color, C.power], speed: 200, size: 3, life: 0.7 });
+        particles.burst(g.ox + (pp[0] + 0.5) * g.ts, g.oy + (pp[1] + 0.5) * g.ts, { count: 30, colors: [e.color, '#5B85FF'], speed: 200, size: 3, life: 0.7 });
         api.live(`${e.name} capturé : plus ${gain} points.`);
       } else {
         api.alert(`Mangé par ${e.name}.`);
@@ -447,18 +424,17 @@ export function create(api) {
   const render = () => {
     const { w, h } = view.size;
     const ts = g.ts;
-    // Fond transparent : le ciel étoilé de la modale reste visible autour du plateau
     ctx.clearRect(0, 0, w, h);
-    ctx.fillStyle = alpha(P.space, 0.72);
-    ctx.fillRect(g.ox, g.oy, ts * W, ts * H);
+    ctx.fillStyle = '#000';
+    ctx.fillRect(0, 0, w, h);
 
     // Timer géant en arrière-plan
     const left = Math.max(0, Math.ceil(DURATION - s.elapsed));
-    ctx.font = `800 ${Math.round(ts * 9)}px ${FONTS.display}`;
+    ctx.font = `600 ${Math.round(ts * 9)}px "Clash Display", "Arial Narrow", sans-serif`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillStyle = left <= 10 ? C.timerHot : C.timer;
-    ctx.fillText(String(left).padStart(2, '0'), g.ox + (ts * W) / 2, g.oy + (ts * H) / 2 + ts * 0.5);
+    ctx.fillStyle = left <= 10 ? 'rgba(255,107,91,0.16)' : 'rgba(91,133,255,0.13)';
+    ctx.fillText(String(left).padStart(2, '0'), w / 2, h / 2 + ts * 0.5);
 
     if (g.walls) ctx.drawImage(g.walls, g.ox, g.oy, ts * W, ts * H);
 
@@ -466,7 +442,7 @@ export function create(api) {
     const cy = (y) => g.oy + (y + 0.5) * ts;
 
     // Leads
-    ctx.fillStyle = C.lead;
+    ctx.fillStyle = 'rgba(255,255,255,0.85)';
     const ls = Math.max(2, ts * 0.14);
     leads.forEach((k) => {
       const [x, y] = k.split(',').map(Number);
@@ -481,17 +457,17 @@ export function create(api) {
     const pulse = 0.75 + 0.25 * Math.sin(s.elapsed * 6);
     powers.forEach((k) => {
       const [x, y] = k.split(',').map(Number);
-      ctx.fillStyle = C.power;
-      ctx.shadowColor = C.power;
+      ctx.fillStyle = '#5B85FF';
+      ctx.shadowColor = '#5B85FF';
       ctx.shadowBlur = ts * 0.8;
       ctx.beginPath();
       ctx.arc(cx(x), cy(y), ts * 0.32 * pulse, 0, Math.PI * 2);
       ctx.fill();
       ctx.shadowBlur = 0;
       if (ts >= 18) {
-        ctx.fillStyle = C.powerText;
-        ctx.font = `800 ${Math.round(ts * 0.32)}px ${FONTS.display}`;
-        ctx.fillText('IA', cx(x), cy(y) + ts * 0.04);
+        ctx.fillStyle = '#03060F';
+        ctx.font = `700 ${Math.round(ts * 0.3)}px "JetBrains Mono", monospace`;
+        ctx.fillText('IA', cx(x), cy(y) + 1);
       }
     });
 
@@ -507,7 +483,7 @@ export function create(api) {
       if (e.mode !== 'eaten') {
         const blink = e.frightened && s.fright < 1.5 && Math.floor(s.elapsed * 8) % 2 === 0;
         if (e.frightened) {
-          ctx.strokeStyle = blink ? C.blink : C.fright;
+          ctx.strokeStyle = blink ? '#FFFFFF' : '#5B85FF';
           ctx.lineWidth = 2;
           ctx.setLineDash([3, 3]);
           drawShape(e.shape, px, py, r);
@@ -525,8 +501,8 @@ export function create(api) {
       // Yeux (regard dans la direction du mouvement)
       const ex = (e.dx || 0) * r * 0.25;
       const ey = (e.dy || 0) * r * 0.25;
-      ctx.fillStyle = e.frightened ? C.fright : C.eyes;
-      if (e.mode === 'eaten') ctx.fillStyle = C.eaten;
+      ctx.fillStyle = e.frightened ? '#5B85FF' : '#03060F';
+      if (e.mode === 'eaten') ctx.fillStyle = '#FFFFFF';
       ctx.fillRect(px - r * 0.38 + ex, py - r * 0.12 + ey, r * 0.24, r * 0.24);
       ctx.fillRect(px + r * 0.14 + ex, py - r * 0.12 + ey, r * 0.24, r * 0.24);
     });
@@ -538,19 +514,19 @@ export function create(api) {
       if (x > W - 0.5) x -= W;
       const px = cx(x);
       const py = cy(y);
-      ctx.fillStyle = C.player;
-      ctx.shadowColor = C.player;
-      ctx.shadowBlur = ts * 0.6;
+      ctx.fillStyle = '#FFFFFF';
+      ctx.shadowColor = '#FFFFFF';
+      ctx.shadowBlur = ts * 0.5;
       ctx.beginPath();
       ctx.arc(px, py, ts * 0.42, 0, Math.PI * 2);
       ctx.fill();
       ctx.shadowBlur = 0;
-      ctx.strokeStyle = C.playerRing;
-      ctx.lineWidth = Math.max(1.5, ts * 0.06);
+      ctx.strokeStyle = '#5B85FF';
+      ctx.lineWidth = Math.max(1.5, ts * 0.07);
       ctx.stroke();
-      ctx.fillStyle = C.playerText;
-      ctx.font = `800 ${Math.round(ts * (ts >= 24 ? 0.3 : 0.44))}px ${FONTS.display}`;
-      ctx.fillText(ts >= 24 ? 'GJS' : 'G', px, py + ts * 0.05);
+      ctx.fillStyle = '#03060F';
+      ctx.font = `700 ${Math.round(ts * (ts >= 24 ? 0.28 : 0.42))}px "Clash Display", "Arial Narrow", sans-serif`;
+      ctx.fillText(ts >= 24 ? 'GJS' : 'G', px, py + 1);
     }
 
     particles.render(ctx);

@@ -7,51 +7,30 @@
    Collision AABB avec hitbox réduite pour rester équitable.
    ========================================================================== */
 
-import { createLoop, createCanvas, createInput, createPad, createParticles, saveBest, wrapText, palette, alpha, mix, FONTS } from './utils.js';
-import { damp, pick, rand, formatNumber } from '../core/utils.js';
+import { createLoop, createCanvas, createInput, createPad, createParticles, saveBest, wrapText } from './utils.js';
+import { damp, pick, rand } from '../core/utils.js';
 
 const BAD = [
   ['Site non responsive', 'Plus de la moitié du trafic web est mobile : un site non responsive fait fuir la majorité de vos visiteurs.'],
-  ['Chargement 8\u00a0s', 'Au-delà de 3 secondes d’attente, plus de la moitié des visiteurs mobiles abandonnent la page avant de l’avoir vue.'],
+  ['Chargement 8 s', 'Au-delà de 3 secondes d’attente, plus de la moitié des visiteurs mobiles abandonnent la page avant de l’avoir vue.'],
   ['Pop-up intrusive', 'Google pénalise les interstitiels intrusifs sur mobile — et vos visiteurs, eux, ferment simplement l’onglet.'],
   ['Keyword stuffing', 'Bourrer une page de mots-clés est sanctionné par Google : vous perdez des positions au lieu d’en gagner.'],
   ['Pas de HTTPS', 'Sans HTTPS, le navigateur affiche « Non sécurisé » : la confiance et le référencement s’effondrent.'],
   ['Cookies non conformes RGPD', 'La CNIL sanctionne les bandeaux où refuser est plus difficile qu’accepter — et les amendes font mal.'],
-  ['Images de 5\u00a0Mo', 'Des images non optimisées plombent le chargement, le SEO et le forfait data de vos visiteurs.'],
+  ['Images de 5 Mo', 'Des images non optimisées plombent le chargement, le SEO et le forfait data de vos visiteurs.'],
   ['Achat de followers', 'Les faux abonnés n’achètent rien, écrasent votre taux d’engagement et peuvent faire suspendre le compte.'],
   ['Spam emailing', 'Envoyer sans consentement, c’est finir en spam — et s’exposer à des sanctions au titre du RGPD.'],
   ['Campagne sans tracking', 'Sans suivi des conversions, impossible de savoir quelle campagne rapporte : vous payez pour deviner.'],
 ];
 const GOOD = ['Core Web Vitals', 'Balises Hn', 'Alt text', 'Consentement RGPD', 'A/B test', 'Automatisation'];
 
-/** Couleurs de la route, calculées depuis les tokens de marque. */
-function colors() {
-  const p = palette();
-  return {
-    bg: p.space,
-    road: p.space2,
-    line: alpha(p.cream, 0.55),
-    dash: alpha(p.gold, 0.5),
-    star: (a) => alpha(p.cream, a),
-    bad: p.danger,
-    badFill: mix(p.space2, p.danger, 0.16),
-    good: p.gold,
-    goodFill: mix(p.space2, p.gold, 0.16),
-    text: p.cream,
-    car: p.space,
-    carLine: p.cream,
-    glass: alpha(p.gold, 0.3),
-    beam0: alpha(p.gold, 0),
-    beam1: alpha(p.gold, 0.26),
-    shield: (a) => alpha(p.gold, a),
-    flash: (a) => alpha(p.danger, a),
-    copper: p.copper,
-  };
-}
+const C = {
+  bg: '#000000', road: '#050913', line: 'rgba(255,255,255,0.75)', dash: 'rgba(91,133,255,0.55)',
+  bad: '#FF6B5B', badFill: '#1C0707', good: '#5B85FF', goodFill: '#07112E', white: '#FFFFFF', car: '#03060F',
+};
 
 export function create(api) {
   const { stage, sound } = api;
-  const C = colors();
   stage.classList.add('race-stage');
   const view = createCanvas(stage, 'race-canvas');
   const { ctx } = view;
@@ -100,7 +79,7 @@ export function create(api) {
   };
 
   const hud = () => {
-    api.hud(`<span>Score <strong>${score()}</strong></span><span>Vitesse <strong>${Math.round(s.speed / 4)}</strong> km/h</span>${s.shield > 0 ? `<span class="arcade-modal__power">Bouclier <strong>${formatNumber(s.shield, 1)}</strong> s</span>` : ''}`);
+    api.hud(`<span>Score <strong>${score()}</strong></span><span>${Math.round(s.speed / 4)} km/h</span>${s.shield > 0 ? `<span class="hud-shield">Bouclier ${s.shield.toFixed(1)} s</span>` : ''}`);
   };
 
   const crash = (obj) => {
@@ -108,7 +87,7 @@ export function create(api) {
     s.shake = 0.5;
     s.flash = 1;
     sound.hit();
-    particles.burst(s.x, g.carY + g.carH / 2, { count: api.reduced ? 20 : 90, colors: [C.bad, C.text, C.good], speed: 420, size: 4, life: 1.1 });
+    particles.burst(s.x, g.carY + g.carH / 2, { count: api.reduced ? 20 : 90, colors: ['#FF6B5B', '#FFFFFF', '#5B85FF'], speed: 420, size: 4, life: 1.1 });
     const final = score();
     const isRecord = saveBest('race', final, `${final} pts`);
     api.alert(`Collision avec « ${obj.label} ».`);
@@ -116,10 +95,10 @@ export function create(api) {
       loop.stop();
       api.end({
         won: false,
-        title: `Collision : <span class="accent">« ${obj.label} »</span>.`,
+        title: `Collision : <em class="serif">« ${obj.label} »</em>.`,
         detail: obj.info,
         score: final,
-        scoreLabel: `Score : ${final} — ${formatNumber(s.distance / 1000, 1)} km parcourus`,
+        scoreLabel: `Score : ${final} — ${(s.distance / 1000).toFixed(1)} km parcourus`,
         isRecord,
         message: 'GJS vous évite ça.',
         cta: { label: 'Demander un audit', href: 'contact.html?besoins=site&objectif=visibilite' },
@@ -164,13 +143,13 @@ export function create(api) {
         s.bonus += 100;
         s.shield = 3;
         sound.coin();
-        particles.burst(laneX(o.lane), o.y + o.h / 2, { count: 30, colors: [C.good, C.text], speed: 260, size: 3, life: 0.8 });
+        particles.burst(laneX(o.lane), o.y + o.h / 2, { count: 30, colors: ['#5B85FF', '#FFFFFF'], speed: 260, size: 3, life: 0.8 });
         api.live(`Bonne pratique : ${o.label}. Plus 100 points et bouclier 3 secondes.`);
         s.objects.splice(i, 1);
       } else if (s.shield > 0) {
         s.bonus += 50;
         sound.blip();
-        particles.burst(laneX(o.lane), o.y + o.h / 2, { count: 40, colors: [C.bad, C.text], speed: 300, size: 3, life: 0.8 });
+        particles.burst(laneX(o.lane), o.y + o.h / 2, { count: 40, colors: ['#FF6B5B', '#FFFFFF'], speed: 300, size: 3, life: 0.8 });
         s.objects.splice(i, 1);
       } else {
         crash(o);
@@ -197,8 +176,8 @@ export function create(api) {
     const left = x - w / 2;
     // Faisceaux des phares
     const beam = ctx.createLinearGradient(0, y - h * 1.6, 0, y);
-    beam.addColorStop(0, C.beam0);
-    beam.addColorStop(1, C.beam1);
+    beam.addColorStop(0, 'rgba(91,133,255,0)');
+    beam.addColorStop(1, 'rgba(91,133,255,0.32)');
     ctx.fillStyle = beam;
     ctx.beginPath();
     ctx.moveTo(left + w * 0.18, y + 4);
@@ -208,7 +187,7 @@ export function create(api) {
     ctx.fill();
     // Carrosserie GJS : flèche effilée, ailerons arrière
     ctx.fillStyle = C.car;
-    ctx.strokeStyle = C.carLine;
+    ctx.strokeStyle = C.white;
     ctx.lineWidth = 1.5;
     ctx.beginPath();
     ctx.moveTo(x, y);
@@ -220,7 +199,7 @@ export function create(api) {
     ctx.fill();
     ctx.stroke();
     // Cockpit
-    ctx.fillStyle = C.glass;
+    ctx.fillStyle = 'rgba(91,133,255,0.28)';
     ctx.beginPath();
     ctx.ellipse(x, y + h * 0.36, w * 0.2, h * 0.14, 0, 0, Math.PI * 2);
     ctx.fill();
@@ -243,7 +222,7 @@ export function create(api) {
     ctx.fillRect(left + w * 0.75, y + h - 4, w * 0.2, 3);
     if (s.shield > 0) {
       const pulse = 0.55 + 0.45 * Math.sin(s.elapsed * 14);
-      ctx.strokeStyle = C.shield(s.shield < 1 ? pulse : 0.9);
+      ctx.strokeStyle = `rgba(91,133,255,${s.shield < 1 ? pulse : 0.9})`;
       ctx.lineWidth = 2;
       ctx.shadowColor = C.good;
       ctx.shadowBlur = 18;
@@ -254,26 +233,6 @@ export function create(api) {
     }
   };
 
-  // Libellé : taille réduite jusqu'à ce que le mot le plus long tienne (mis en cache)
-  const labelCache = new Map();
-  const fitLabel = (o, w, bad) => {
-    const key = `${o.label}|${Math.round(w)}`;
-    if (labelCache.has(key)) return labelCache.get(key);
-    const text = bad ? o.label.toUpperCase() : `+ ${o.label}`;
-    const max = w - (bad ? 30 : 20); // les témoins d'alerte occupent les bords
-    let size = Math.max(11, Math.min(16, g.laneW / 10));
-    const setFont = () => {
-      ctx.font = `600 ${size}px ${FONTS.text}`;
-      if ('letterSpacing' in ctx) ctx.letterSpacing = bad ? `${(size * 0.06).toFixed(2)}px` : '0px';
-    };
-    setFont();
-    const widest = () => Math.max(...text.split(' ').map((word) => ctx.measureText(word).width));
-    while (size > 8 && widest() > max) { size -= 0.5; setFont(); }
-    const fit = { size, lines: wrapText(ctx, text, max).slice(0, 3) };
-    labelCache.set(key, fit);
-    return fit;
-  };
-
   const drawObject = (o) => {
     const w = g.laneW * 0.86;
     const x = laneX(o.lane) - w / 2;
@@ -282,26 +241,23 @@ export function create(api) {
     ctx.strokeStyle = bad ? C.bad : C.good;
     ctx.lineWidth = 1.5;
     if (!bad) { ctx.shadowColor = C.good; ctx.shadowBlur = 16; }
-    roundRect(x, o.y, w, o.h, bad ? Math.min(12, o.h / 4) : o.h / 2);
+    roundRect(x, o.y, w, o.h, bad ? 2 : o.h / 2);
     ctx.fill();
     ctx.stroke();
     ctx.shadowBlur = 0;
-    const { size, lines } = fitLabel(o, w, bad);
-    ctx.font = `600 ${size}px ${FONTS.text}`;
-    if ('letterSpacing' in ctx) ctx.letterSpacing = bad ? `${(size * 0.06).toFixed(2)}px` : '0px';
-    ctx.fillStyle = C.text;
+    const size = Math.max(10, Math.min(14, g.laneW / 11));
+    ctx.font = `500 ${size}px "JetBrains Mono", monospace`;
+    ctx.fillStyle = C.white;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
+    const text = bad ? o.label.toUpperCase() : `+ ${o.label}`;
+    const lines = wrapText(ctx, text, w - 16).slice(0, 3);
     const lh = size * 1.25;
     lines.forEach((line, i) => ctx.fillText(line, x + w / 2, o.y + o.h / 2 + (i - (lines.length - 1) / 2) * lh));
-    if ('letterSpacing' in ctx) ctx.letterSpacing = '0px';
     if (bad) {
-      // Témoins d'alerte, à l'intérieur des coins arrondis
       ctx.fillStyle = C.bad;
-      roundRect(x + 6, o.y + 10, 3, o.h - 20, 1.5);
-      ctx.fill();
-      roundRect(x + w - 9, o.y + 10, 3, o.h - 20, 1.5);
-      ctx.fill();
+      ctx.fillRect(x, o.y, 4, o.h);
+      ctx.fillRect(x + w - 4, o.y, 4, o.h);
     }
   };
 
@@ -313,7 +269,7 @@ export function create(api) {
     // Bas-côtés : traînées d'étoiles
     stars.forEach((st) => {
       const x = st.x < 0.5 ? st.x * 2 * g.roadX : g.roadX + g.roadW + (st.x - 0.5) * 2 * g.roadX;
-      ctx.fillStyle = C.star(0.15 + st.v * 0.35);
+      ctx.fillStyle = `rgba(255,255,255,${0.15 + st.v * 0.35})`;
       ctx.fillRect(x, st.y * g.h, 1, 4 + st.v * (s.speed / 60));
     });
     // Route
@@ -340,7 +296,7 @@ export function create(api) {
     if (!s.crashed || Math.floor(s.flash * 20) % 2 === 0) drawCar(s.x, g.carY);
     particles.render(ctx);
     if (s.flash > 0) {
-      ctx.fillStyle = C.flash(s.flash * 0.25);
+      ctx.fillStyle = `rgba(255,107,91,${s.flash * 0.25})`;
       ctx.fillRect(-10, -10, g.w + 20, g.h + 20);
     }
     ctx.restore();

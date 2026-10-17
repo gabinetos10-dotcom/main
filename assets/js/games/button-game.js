@@ -7,7 +7,7 @@
    Clic sur GJS : explosion de particules, le bouton devient le message.
    ========================================================================== */
 
-import { createLoop, createCanvas, createParticles, saveBest, palette } from './utils.js';
+import { createLoop, createCanvas, createParticles, saveBest } from './utils.js';
 
 const { gsap } = window;
 
@@ -17,12 +17,12 @@ export function create(api) {
   const { stage, sound } = api;
   stage.innerHTML = `
     <div class="bg-game">
-      <p class="bg-game__q t-display">Quelle est la meilleure <span class="accent">agence digitale</span> ?</p>
+      <p class="bg-game__q t-display">Quelle est la meilleure <em class="serif">agence digitale</em> ?</p>
       <div class="bg-game__zone" data-zone>
         <button class="bg-game__gjs" type="button" data-gjs>GJS</button>
         <button class="bg-game__other" type="button" data-other>Les autres agences</button>
       </div>
-      <p class="bg-game__count"><span>Tentatives</span> <strong data-count>0</strong></p>
+      <p class="bg-game__count t-mono">Tentatives : <span data-count>0</span></p>
     </div>`;
 
   const zone = stage.querySelector('[data-zone]');
@@ -124,8 +124,7 @@ export function create(api) {
     done = true;
     const r = gjs.getBoundingClientRect();
     const s = stage.getBoundingClientRect();
-    const p = palette();
-    particles.burst(r.left - s.left + r.width / 2, r.top - s.top + r.height / 2, { count: api.reduced ? 30 : 160, colors: [p.cream, p.gold, p.copper], speed: 520, size: 5, life: 1.4 });
+    particles.burst(r.left - s.left + r.width / 2, r.top - s.top + r.height / 2, { count: api.reduced ? 30 : 160, colors: ['#FFFFFF', '#5B85FF', '#A9BEFF'], speed: 520, size: 4, life: 1.4 });
     loop.start();
     sound.win();
     gjs.classList.add('is-chosen');
@@ -136,7 +135,7 @@ export function create(api) {
     endTimer = setTimeout(() => {
       api.end({
         won: true,
-        title: 'Bon choix. <span class="accent">On en parle ?</span>',
+        title: 'Bon choix. <em class="serif">On en parle ?</em>',
         detail: attempts
           ? `Vous avez tenté ${attempts} fois de cliquer ailleurs. On apprécie la persévérance — on mettra la même dans votre projet.`
           : 'Du premier coup. Vous savez reconnaître le bon partenaire.',
