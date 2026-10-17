@@ -9,6 +9,7 @@
    data-counter="140"         compteur (+ data-prefix, data-suffix, data-decimals)
    data-reveal="zoom|rise"    zoom avant (0,82 → 1) / montée avec léger zoom
    data-zoom-scroll           l'image d'un .media dézoome en continu au défilement
+   data-enter="zoom"          (sur une section) arrive en carte arrondie et s'agrandit
    data-theme="night|deep|ice|cyan"  fond de la section (CSS) ; meta theme-color suivie
    ========================================================================== */
 
@@ -153,6 +154,18 @@ function scrollZoom(el) {
   });
 }
 
+// Section qui « se pose » : elle arrive comme une carte arrondie et s'agrandit
+// jusqu'à pleine largeur (jamais sur une section qui contient un épinglage).
+function sectionEnter(el) {
+  if (env.reducedMotion) return;
+  gsap.fromTo(el, { scale: 0.94, borderRadius: 48 }, {
+    scale: 1,
+    borderRadius: 0,
+    ease: 'none',
+    scrollTrigger: { trigger: el, start: 'top bottom', end: 'top 50%', scrub: true },
+  });
+}
+
 function lineDraw(el, { intro, tl }) {
   const vars = { scaleX: 0, transformOrigin: '0% 50%', duration: 1.4, ease: 'expo.out' };
   if (intro) tl.from(el, vars, parseFloat(el.dataset.delay || 0));
@@ -221,6 +234,7 @@ export function createReveals(container, { phase = 'all' } = {}) {
   if (phase !== 'intro') {
     $$('[data-parallax]', container).forEach(parallax);
     $$('[data-zoom-scroll]', container).forEach(scrollZoom);
+    $$('[data-enter="zoom"]', container).forEach(sectionEnter);
     $$('[data-counter]', container).forEach(counter);
     themeTriggers(container);
   }

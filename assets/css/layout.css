@@ -330,6 +330,11 @@ button:focus-visible .roll__b {
   display: none;
 }
 
+/* Sur la page Contact, le CTA indique qu'on y est */
+.header__cta[aria-current="page"] {
+  box-shadow: 0 0 0 3px rgba(85, 213, 224, 0.35), 0 10px 30px rgba(85, 213, 224, 0.28);
+}
+
 .header__burger {
   display: inline-flex;
   align-items: center;
@@ -428,27 +433,35 @@ button:focus-visible .roll__b {
 }
 
 /* ---- Footer : compact, lisible, GJS en majesté --------------------------
-   1. GJS géant + promesse + CTA ; 2. quatre colonnes ; 3. barre de bas.    */
+   Bloc GJS (logo géant, promesse, CTA) à gauche, quatre colonnes nommées à
+   droite, barre de bas de page. Une seule rangée sur desktop.              */
 
 .footer {
   position: relative;
   overflow: clip;
-  padding-top: clamp(48px, 5vw, 76px);
+  padding-top: clamp(48px, 5vw, 80px);
 }
 
-.footer__top {
+.footer__main {
   display: grid;
-  gap: 24px;
-  padding-bottom: clamp(32px, 3.4vw, 48px);
-  border-bottom: 1px solid var(--line);
+  gap: 40px var(--gutter);
+  padding-bottom: clamp(36px, 4vw, 56px);
+}
+
+.footer__brand {
+  display: grid;
+  align-content: start;
+  justify-items: start;
+  gap: 16px;
 }
 
 .footer__wordmark {
   display: flex;
   align-items: flex-end;
   gap: 0.02em;
+  margin-bottom: 6px;
   font-family: var(--font-display);
-  font-size: clamp(7.5rem, 3rem + 10.5vw, 13rem);
+  font-size: clamp(6.5rem, 3rem + 7.5vw, 11rem);
   line-height: 0.74;
   letter-spacing: 0;
   color: var(--cyan);
@@ -503,30 +516,28 @@ button:focus-visible .roll__b {
   box-shadow: 0 0 10px var(--cyan);
 }
 
-.footer__pitch {
-  display: grid;
-  gap: 18px;
-  align-content: end;
-  justify-items: start;
-}
-
 .footer__pitch-title {
   font-family: var(--font-display);
-  font-size: var(--fs-h3);
-  line-height: 0.95;
+  font-size: var(--fs-h4);
+  line-height: 1;
   text-transform: uppercase;
 }
 
 .footer__pitch-text {
-  max-width: 44ch;
+  max-width: 42ch;
   color: var(--fg-2);
+  font-size: var(--fs-small);
+}
+
+.footer__brand .btn {
+  margin-top: 4px;
 }
 
 .footer__cols {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 32px var(--gutter);
-  padding-block: clamp(32px, 3.4vw, 48px);
+  align-content: start;
 }
 
 .footer__col {
@@ -638,14 +649,13 @@ button:focus-visible .roll__b {
 }
 
 @media (min-width: 1024px) {
-  .footer__top {
+  .footer__main {
     grid-template-columns: repeat(12, minmax(0, 1fr));
-    column-gap: var(--gutter);
-    align-items: end;
+    align-items: start;
   }
 
-  .footer__wordmark { grid-column: 1 / span 6; }
-  .footer__pitch { grid-column: 8 / -1; }
+  .footer__brand { grid-column: 1 / span 4; }
+  .footer__cols { grid-column: 6 / -1; padding-top: 10px; }
 }
 
 @media (max-width: 479px) {

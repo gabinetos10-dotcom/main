@@ -3,7 +3,9 @@
 Site statique complet, sans build : HTML5 sémantique, CSS (custom properties, aucun framework), JavaScript en modules ES natifs.
 Librairies épinglées via CDN (avec empreintes SRI) : **GSAP 3.13.0** (ScrollTrigger, SplitText, Flip, CustomEase), **Lenis 1.3.26**, **Barba.js 2.10.3**. Mini-jeux en **Canvas 2D** natif.
 
-> Les seuls contenus provisoires sont les **médias** (images, vidéo) et les **textes signalés `[À REMPLACER]`** (étiquette visible en bleu dans les pages). Rien d'autre n'est un placeholder.
+> Les seuls contenus provisoires sont les **médias** (images, vidéo) et les **textes signalés `[À REMPLACER]`** (commentaires HTML et petites étiquettes « … d'exemple » dans les pages). Rien d'autre n'est un placeholder.
+>
+> **Version actuelle : v3 « orbite cyan »** (17 octobre 2026), refonte de la v1 selon les 8 demandes du client (voir §4). La v2 (palette chaude, robots), refusée, reste consultable dans l'historique git (commit `20efa8b`).
 
 ---
 
@@ -36,7 +38,11 @@ python3 -m http.server 8000      # macOS / Linux, puis http://localhost:8000
 py -m http.server 8000           # Windows (Python de python.org)
 ```
 
-Le fichier `serve.json` désactive les « clean URLs » de `serve` pour que les liens `offres.html`, `contact.html`… restent identiques en local et en production.
+Le fichier `serve.json` règle `serve` pour ce site :
+- les adresses gardent leur `.html` (`offres.html`, `contact.html`…), comme en production ;
+- l'accueil est servi à la racine, http://localhost:3000 ;
+- un dossier sans page affiche la page 404 du site, et non une liste de fichiers ;
+- le navigateur revérifie chaque fichier : après une mise à jour, il ne garde pas l'ancienne version en cache.
 
 ### C. Avec VS Code
 
@@ -47,51 +53,53 @@ Installez l'extension **Live Server**, ouvrez le dossier du site, clic droit sur
 - **Netlify Drop** : glissez le dossier du site sur https://app.netlify.com/drop → une URL publique est générée en quelques secondes.
 - **GitHub Pages** (dépôt public, ou offre payante pour un dépôt privé) : dans le dépôt, Settings › Pages › Source « Deploy from a branch », branche `claude/eager-gauss-qymcxp`, dossier `/ (root)`. Le site sera servi sous `https://<compte>.github.io/main/` : tout fonctionne, sauf la page 404 personnalisée qui attend la racine d'un domaine (voir ci-dessous).
 
+### L'accueil ne s'affiche pas ?
+
+- **Une liste de fichiers (« Index of… ») s'affiche à la place de l'accueil** : vous avez une copie antérieure au 17 octobre 2026. Son `serve.json` empêchait `serve` d'ouvrir l'accueil à la racine. Téléchargez la version à jour, ou ouvrez directement http://localhost:3000/index.html.
+- **Le site ressemble encore à l'ancienne version** : rechargez la page sans le cache (Ctrl+F5 sous Windows, Cmd+Maj+R sur Mac).
+
 ### Toujours peu d'animations ?
 
 - **Réglage « réduire les animations » du système** (Windows 11 : Paramètres › Accessibilité › Effets visuels › Effets d'animation ; Windows 10 : Paramètres › Options d'ergonomie › Affichage › Afficher les animations dans Windows ; macOS : Réglages › Accessibilité › Affichage › Réduire les animations). Le site le respecte volontairement : scroll natif, fondus simples, loader court, vidéo en pause. Réactivez les animations du système pour voir la version complète.
 - **Réseau filtré ou bloqueur de contenu** empêchant jsDelivr : le site bascule alors aussitôt en version statique (message dans la console). Testez sur une autre connexion ou auto-hébergez les librairies (§9).
-- **Sur un écran tactile**, le curseur custom et les distorsions au survol sont désactivés (c'est voulu).
 
-Une connexion internet est nécessaire (librairies jsDelivr et polices Fontshare) — voir §9 pour tout auto-héberger.
+Une connexion internet est nécessaire pour les librairies d'animation (jsDelivr). Les polices, images et vidéos sont hébergées avec le site (§9 pour auto-héberger aussi les librairies).
 
 La page `404.html` utilise des chemins absolus (`/assets/…`) : elle doit être servie à la racine du domaine (comportement par défaut de Netlify, Vercel, `serve`, Apache avec `ErrorDocument 404 /404.html`, etc.).
 
 ---
 
-## 2. Direction artistique (moodboard)
+## 2. Direction artistique v3 « orbite cyan »
 
-1. Nuit profonde : bleu nuit `#060B1E` → noir → blanc cassé `#F2F1EC`, le `body` change de teinte au scroll.
-2. Un seul signal lumineux, `#5B85FF`, réservé aux glows, focus et états actifs (< 5 % de la surface).
-3. Typographie éditoriale massive (Clash Display, jusqu'à 22vw) contre micro-labels techniques en JetBrains Mono.
-4. Un ou deux mots par titre en Instrument Serif italique : la tension sans / serif.
-5. Grilles asymétriques, éléments qui débordent, rotations de 2-4°, numérotation `[01] — …`.
-6. Le vaisseau GJS comme fil rouge : loader, transitions, trajectoire de la méthode, succès du formulaire, 404, easter eggs.
-7. Matière : grain SVG à 8 fps sur tout le site, scanlines CRT dans l'Arcade.
-8. Motion à easing expo, reveals masqués ligne par ligne, images révélées par clip-path, parallaxe à 3 profondeurs.
-9. Le jeu comme preuve : chaque mini-jeu se termine sur un message de conversion.
-10. Zéro template : pas de cartes ombrées en grille de 3, pas de gradient « IA », pas d'icônes décoratives.
+1. **Univers de la v1 conservé** : nuit spatiale, vaisseau GJS en fil rouge (loader, transitions, trajectoire de la méthode, 404, easter eggs), grain discret.
+2. **Palette plus marquante** : nuit `#050A1A` / nuit profonde `#02050E`, **cyan `#55D5E0`** (CTA, accents, états actifs, halos), glace `#EAF2F3` pour les sections claires, bleu électrique `#4C7DFF` en dégradés. Sur fond clair, l'accent texte passe en cyan profond `#0B6E78` (contraste AA mesuré) ; un bloc par page peut être entièrement cyan.
+3. **Typographies** : titres en **Bebas Neue** (capitales hautes et serrées), texte en **Archivo Narrow** ; libellés en Archivo Narrow 700 capitales espacées. Plus d'italique serif ni de police mono.
+4. **Grille unique** : un seul conteneur (1 360 px utiles, marges 20 → 80 px) partagé par le header, toutes les sections et le footer ; grille 12 / 6 / 4 colonnes ; mêmes en-têtes de section partout (sur-titre, titre sur 8 colonnes, texte d'appui sur 4).
+5. **Information allégée** : un seul sur-titre par section, plus de libellés techniques en série, cartes de même taille, aucune rotation ni décalage en escalier.
+6. **Mouvement, zoom, transitions** au survol, au focus, au clic et au défilement — **jamais au pointeur** : pages qui reculent puis se posent en zoom, rideau + vaisseau entre les pages, sections qui arrivent en carte et s'agrandissent, images qui dézooment, cartes empilées, compteurs, frises qui se remplissent, libellés de boutons qui « roulent ». Tout est coupé en `prefers-reduced-motion`.
+7. **Header en capsule** de verre sombre : logo GJS avec orbite animée, pastille cyan qui glisse d'un lien à l'autre, progression de lecture, CTA cyan, menu plein écran qui s'ouvre en cercle.
+8. **Footer compact** : GJS en grand, promesse + CTA à gauche, quatre colonnes claires à droite (Navigation, Expertises, Légal & RGPD, Contact), barre de bas de page.
 
 ---
 
 ## 3. Arborescence
 
 ```
-/index.html  /offres.html  /a-propos.html  /contact.html
-/mentions-legales.html  /politique-confidentialite.html  /404.html
+/index.html  /offres.html  /a-propos.html  /contact.html  /404.html
+/mentions-legales.html  /politique-confidentialite.html  /politique-cookies.html  /exercer-vos-droits.html
 /robots.txt  /sitemap.xml  /site.webmanifest  /favicon.svg  /serve.json
 /lancer-le-site.bat (Windows)  /lancer-le-site.command (macOS / Linux)
 /assets/css/   tokens.css · base.css · layout.css · components.css · games.css (chargé à la demande)
                pages/ home.css · offres.css · about.css · contact.css · legal.css · error.css
 /assets/js/    main.js (bootstrap, Barba, cycle de vie) · config.js (CONFIG central) · easter-egg.js
-               core/  loader · cursor · transitions · scroll · splitText · magnetic · marquee · menu · cookies
-                      reveal (reveals & thèmes) · scope (anti-fuite) · head (sync <head>) · footer · cta
-                      accordion · grid (touche G) · utils
+               core/  loader · transitions (rideau + zoom des pages) · scroll · splitText · marquee
+                      menu (header, pastille, menu plein écran) · cookies · reveal (révélations, zoom, thèmes)
+                      scope (anti-fuite) · head (sync <head>) · footer · cta · accordion · grid (touche G) · utils
                pages/ home · offres · about · contact · legal · error   (chargés à la demande)
                games/ arcade (coque) · button-game · race-game · maze-game · ship-hunt · utils
 /assets/img/   placeholders AVIF + WebP (srcset), og-image.jpg, icons/
 /assets/video/ hero.mp4 · hero.webm · hero-poster.jpg
-/assets/fonts/ Instrument Serif Italic + JetBrains Mono (OFL, auto-hébergées)
+/assets/fonts/ Bebas Neue + Archivo Narrow (OFL, auto-hébergées)
 ```
 
 ### Cycle de vie des pages
@@ -103,37 +111,48 @@ Chaque module de `pages/` exporte `{ init(scope, container), intro(scope, contai
 
 | Attribut | Effet |
 |---|---|
-| `data-split="lines\|chars"` | Reveal de texte masqué (SplitText, lisible par les lecteurs d'écran) |
-| `data-reveal="fade\|stagger\|image\|line"` | Fondu, cascade d'enfants, image par clip-path + scale, trait |
-| `data-intro` + `data-delay` | Joué à l'entrée de page (après loader / rideau) au lieu du scroll |
-| `data-parallax="0.15"` | Parallaxe (profondeur, négatif = sens inverse) |
+| `data-split="lines\|chars"` | Titre révélé ligne par ligne derrière un masque (SplitText, lisible par les lecteurs d'écran) |
+| `data-reveal="fade\|stagger\|image\|line\|zoom\|rise"` | Fondu, cascade, image (rideau + dézoom), trait, zoom avant, montée avec léger zoom (`data-reveal-items` pour une cascade de cartes) |
+| `data-intro` + `data-delay` | Joué à l'entrée de page (après loader / rideau) au lieu du défilement |
+| `data-zoom-scroll="1.2"` | L'image d'un `.media` dézoome en continu pendant le défilement |
+| `data-enter="zoom"` | La section arrive en carte arrondie et s'agrandit jusqu'à pleine largeur |
+| `data-parallax="0.15"` | Parallaxe au défilement (profondeur, négatif = sens inverse) |
 | `data-counter="140"` (+ `data-prefix`, `data-suffix`, `data-decimals`) | Compteur animé |
-| `data-theme="night\|black\|paper\|deep"` | Couleur du body quand la section passe au centre |
-| `data-magnetic="0.35"` (+ `data-magnetic-radius`, `[data-magnetic-inner]`) | Élément magnétique |
-| `data-marquee` (+ `data-speed`, `data-direction`) | Marquee réactif à la vélocité du scroll |
-| `data-cursor="view\|play\|drag\|game"` (+ `data-cursor-label`) | État du curseur custom |
+| `data-theme="night\|deep\|ice\|cyan"` | Fond et couleurs de la section (et couleur de la barre du navigateur) |
+| `data-marquee` (+ `data-speed`, `data-direction`) | Bandeau défilant réactif à la vitesse du défilement, avec bouton pause |
 | `data-launch-game="button\|race\|maze"` | Ouvre un jeu de l'Arcade |
 | `data-config="email\|phone\|booking\|availability"`, `data-social="LinkedIn"` | Synchronisé avec `CONFIG` |
 
+Classes d'interaction au survol / focus (CSS) : `.card--hover` (élévation + liseré cyan), `.media--zoom` (zoom de l'image), `.media--shine` (reflet), `.btn` (aplat qui monte, flèche qui avance, libellé qui roule), `.arrow-link`.
+
 ---
 
-## 4. Plan de build suivi
+## 4. Historique
 
-1. **Fondations** — tokens, typos, grille 12/6/4, grain, Lenis + ticker GSAP, Barba avec init/destroy.
-2. **Loader + hero** — champ d'étoiles canvas, vaisseau SVG, « GJS » révélé dans le sillage, compteur calé sur le chargement réel, hyperespace, flash, volets ; vidéo hero qui se rétrécit en carte.
-3. **Navigation** — header masqué/réaffiché au scroll, menu plein écran avec aperçu, curseur, transition rideau + vaisseau.
-4. **Accueil** — manifeste au scrub, services horizontaux épinglés (empilés sur mobile), marquees, mosaïque projets + panneau Flip, chiffres, trajectoire de méthode, Arcade, carrousel draggable, CTA, footer.
-5. **Offres** (pile sticky, timeline épinglée, configurateur), **À propos** (G·J·S, équipe, valeurs, timeline, coulisses Flip), **Contact** (formulaire 4 étapes).
-6. **Arcade** — 3 jeux.
-7. **Easter eggs**.
-8. **Passe qualité** — responsive, accessibilité (axe-core), RGPD, SEO, performance (Lighthouse).
-9. **Recette** — voir §10.
+**v1** (15 octobre 2026) — site complet selon le brief : loader vaisseau, hero vidéo, menu plein écran, transitions Barba, 3 pages + 2 pages légales + 404, Arcade (3 jeux), 4 easter eggs, bandeau cookies, SEO, accessibilité, performance. Puis lanceurs locaux et message d'aide en `file://`.
+
+**v2** (16-17 octobre 2026) — refonte « espace chaud & robots », **refusée par le client**. Conservée dans l'historique git (commit `20efa8b`).
+
+**v3 « orbite cyan »** (17 octobre 2026) — repart de la v1 (commit `1b3ee42` et lanceurs) ; chaque demande et sa réponse :
+
+| Demande du client | Réponse |
+|---|---|
+| Information moins brouillon ; éléments pas à la même marge, déséquilibres | Un seul conteneur et une seule grille pour tout le site (header, sections, footer : mêmes bords, écart mesuré ≤ 1,5 px de 360 à 1 920 px) ; en-têtes de section identiques partout ; un sur-titre par section ; plus de libellés techniques en série ; cartes et images de même taille ; plus aucune rotation, aucun décalage en escalier |
+| Renforcer l'interaction (mouvements, zoom, transitions) | Pages qui reculent et se posent en zoom, rideau + vaisseau entre les pages, sections qui arrivent en carte et s'agrandissent, images qui dézooment, leviers en cartes empilées qui reculent, panneau projet qui s'ouvre en zoom depuis la vignette, compteurs, frise de méthode parcourue par le vaisseau, menu qui s'ouvre en cercle, pastille du header, boutons dont le libellé roule, cartes qui s'élèvent, reflets et zooms au survol |
+| Palette plus marquante, bleu plus clair type `#55D5E0` | Nuit + **cyan `#55D5E0`** + glace ; un bloc entièrement cyan par page ; images recolorées (les bleus deviennent cyan), nouvelle vidéo hero et image de partage, favicon et icônes |
+| Enlever l'effet sur le curseur | Curseur personnalisé supprimé, ainsi que tout ce qui suivait la souris (boutons aimantés, titre CTA, aperçu du menu) : les mouvements naissent du survol, du clic et du défilement |
+| Titres type Bebas Neue, texte type Archivo Narrow | Bebas Neue et Archivo Narrow, auto-hébergées et préchargées, avec polices de repli calées sur leurs métriques |
+| Header plus design et stylé | Capsule de verre sombre alignée sur le contenu : logo GJS + orbite animée, pastille cyan qui glisse d'un lien à l'autre, fil de progression de lecture, CTA cyan, bouton menu animé |
+| Footer moins gros, plus compréhensible, GJS impactant | GJS en très grand (cyan, orbite, lettres qui montent), promesse + CTA, quatre colonnes nommées (Navigation, Expertises, Légal & RGPD, Contact) sur une seule rangée, barre de bas de page ; hauteur mesurée ramenée de 924 à 550 px sur ordinateur (1 440 px de large) et de 1 329 à 960 px sur mobile |
+| Rédiger les pages RGPD et les intégrer au footer | Mentions légales, Politique de confidentialité, Politique de cookies, Exercer vos droits (formulaire) : colonne « Légal & RGPD » du footer + bouton « Gérer les cookies », liens depuis le bandeau cookies et le menu |
+
+**Correctif du 17 octobre 2026 (accueil sous `npx serve .`)** — http://localhost:3000 affichait une liste de fichiers au lieu de l'accueil : `serve.json` désactivait, avec les clean URLs, la recherche de `index.html` à la racine. Corrigé (réécriture `/` → `/index.html`, listes de dossiers désactivées, revalidation du cache) ; le site reconnaît aussi `/` comme l'accueil.
 
 ---
 
 ## 5. Médias à remplacer
 
-Toutes les images sont servies en `<picture>` : **AVIF** puis **WebP**, avec `srcset` et `width`/`height`. Pour chaque base ci-dessous, fournir un fichier par largeur et par format, nommé `base-LARGEUR.avif` / `base-LARGEUR.webp` (ou `base.avif` / `base.webp` quand une seule largeur est listée). Les visuels actuels sont des compositions génératives marquées `[À REMPLACER]`.
+Toutes les images sont servies en `<picture>` : **AVIF** puis **WebP**, avec `srcset` et `width`/`height`. Pour chaque base ci-dessous, fournir un fichier par largeur et par format, nommé `base-LARGEUR.avif` / `base-LARGEUR.webp` (ou `base.avif` / `base.webp` quand une seule largeur est listée). Les visuels actuels sont des compositions génératives marquées `[À REMPLACER]` (petite légende dans l'image), recolorées dans la palette v3. La vidéo hero (planète annelée bleu-cyan, 12 s en boucle) a été régénérée pour la v3, sans légende incrustée.
 
 Pensez à mettre à jour les attributs `alt` dans le HTML (ils décrivent déjà le contenu attendu).
 
@@ -204,7 +223,7 @@ npx sharp-cli -i projet-01.jpg -o assets/img/projet-01-1600.webp resize 1600 -f 
 | Fichier | Format / dimensions | Rôle |
 |---|---|---|
 | `assets/img/og-image.jpg` | JPEG 1200×630, ≤ 200 Ko | Partage réseaux sociaux (Open Graph / Twitter) |
-| `favicon.svg` | SVG carré | Favicon (le « G » + point signal actuel peut être conservé) |
+| `favicon.svg` | SVG carré | Favicon (le « G » + point cyan actuel peut être conservé) |
 | `assets/img/icons/apple-touch-icon.png` | PNG 180×180 | iOS |
 | `assets/img/icons/icon-192.png`, `icon-512.png` | PNG | Manifeste PWA |
 | `assets/img/icons/icon-maskable-512.png` | PNG 512×512, logo dans les 80 % centraux | Icône « maskable » Android |
@@ -243,7 +262,7 @@ Les textes juridiques sont une base structurée conforme au RGPD et aux recomman
 | `SOCIALS` | Réseaux `{ label, url }` ; supprimer une ligne masque le lien | LinkedIn, Instagram, TikTok |
 | `PROMO_CODE` | Code débloqué par le mode Hyperespace | `HYPERGJS` |
 | `AVAILABILITY` | Statut affiché dans le hero et sur Contact | « Disponible pour nouveaux projets » |
-| `LOADER` | Durées du loader (`min` 2,5 s, `max` 4 s, `short` 1 s) | |
+| `LOADER` | Durées du loader (`min` 1,6 s, `max` 2,6 s, `short` 0,6 s) | |
 | `ANALYTICS` | Script de mesure chargé **uniquement après consentement** : `{ src, attrs }` | `null` |
 | `CONSENT_VERSION` | À incrémenter quand un traceur est ajouté (le choix est redemandé) | `1` |
 | `CONSENT_MAX_AGE_DAYS` | Validité du choix cookies | `182` (6 mois, CNIL) |
@@ -287,16 +306,10 @@ Protection anti-spam : champ piège `website` (honeypot) — s'il est rempli, ri
 
 ## 9. Polices, librairies et RGPD
 
-- **Instrument Serif** (italique) et **JetBrains Mono** sont auto-hébergées (licence OFL incluse dans `assets/fonts/`) et préchargées.
-- **Clash Display** et **General Sans** sont chargées depuis Fontshare (CSS asynchrone, `font-display: swap`). Pour un site 100 % sans transfert vers des tiers, téléchargez-les sur fontshare.com (licence ITF Free Font License), placez `ClashDisplay-Variable.woff2` et `GeneralSans-Variable.woff2` dans `assets/fonts/`, supprimez les deux balises Fontshare (et les `preconnect`) des pages, puis ajoutez dans `tokens.css` :
-
-```css
-@font-face { font-family: "Clash Display"; src: url("../fonts/ClashDisplay-Variable.woff2") format("woff2"); font-weight: 200 700; font-display: swap; }
-@font-face { font-family: "General Sans"; src: url("../fonts/GeneralSans-Variable.woff2") format("woff2"); font-weight: 200 700; font-display: swap; }
-```
-
+- **Bebas Neue** (titres) et **Archivo Narrow** (texte, variable 400-700) sont auto-hébergées en WOFF2 (sous-ensembles latin et latin étendu, licence SIL OFL incluse dans `assets/fonts/`) et préchargées. Aucune police n'est chargée depuis un service tiers.
 - Les librairies JS viennent de jsDelivr avec intégrité SRI. Pour les auto-héberger, copiez les fichiers `dist/` des paquets npm `gsap@3.13.0`, `lenis@1.3.26`, `@barba/core@2.10.3` et remplacez les URL (les empreintes SRI restent valides, les fichiers sont identiques).
-- **Bandeau cookies** sur-mesure : « Tout refuser », « Personnaliser » et « Tout accepter » ont le même poids visuel ; aucun script de mesure avant consentement ; choix conservé 6 mois ; lien « Gérer les cookies » dans le footer et sur la page Confidentialité. Les seuls stockages actifs par défaut sont fonctionnels (`gjs-consent`, `gjs-visited`, `gjs-arcade-*`) et listés dans la politique de confidentialité.
+- **Pages RGPD** (toutes reliées dans le footer, colonne « Légal & RGPD ») : `mentions-legales.html`, `politique-confidentialite.html`, `politique-cookies.html`, `exercer-vos-droits.html` (formulaire qui prépare un email pré-rempli vers `CONFIG.EMAIL`, rien n'est envoyé par le site).
+- **Bandeau cookies** sur-mesure : « Tout refuser », « Personnaliser » et « Tout accepter » ont le même poids visuel ; aucun script de mesure avant consentement ; choix conservé 6 mois puis effacé et redemandé ; bouton « Gérer les cookies » dans le footer. Les seuls stockages actifs par défaut sont fonctionnels (`gjs-consent`, `gjs-visited`, `gjs-arcade-*`) et listés dans la politique de cookies.
 
 ---
 
