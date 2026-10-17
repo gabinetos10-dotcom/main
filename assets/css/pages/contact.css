@@ -145,7 +145,9 @@
   border-radius: 22px;
   background: var(--bg);
   color: var(--fg);
-  box-shadow: var(--shadow-1);
+  /* 2e ombre : bande couleur de la carte au-dessus du HUD, pour que le texte
+     ne défile pas dans l'espace entre le header et la barre d'étapes */
+  box-shadow: var(--shadow-1), 0 -24px 0 0 var(--surface);
   transition: top 0.6s var(--ease-out-expo);
 }
 

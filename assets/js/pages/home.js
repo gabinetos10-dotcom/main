@@ -1,7 +1,7 @@
 /* ==========================================================================
    GJS — PAGE ACCUEIL (v2)
    Hero vidéo (pause accessible, parallaxe légère, robot) · Expertises en
-   onglets animés · Projets filtrables (GSAP Flip) + panneau de détail ·
+   onglets animés · Projets filtrables (mise en avant) + panneau de détail (Flip) ·
    Méthode (frise remplie au scroll + vaisseau) · Arcade (records) ·
    Carrousel de témoignages (glisser, flèches, boutons).
    Tout passe par `scope` : Barba détruit le scope à chaque navigation.
@@ -76,25 +76,7 @@ function initHero(scope, root) {
   const st = { trigger: hero, start: 'top top', end: 'bottom top', scrub: true };
   gsap.to(video, { yPercent: 14, ease: 'none', scrollTrigger: st });
   if (planetWrap) gsap.to(planetWrap, { yPercent: -18, ease: 'none', scrollTrigger: { ...st } });
-
-  // Pointeur : la planète et le robot se décalent en sens opposés (profondeur)
-  if (!env.finePointer) return;
-  const planet = $('.planet', hero);
-  const bot = $('[data-hero-robot]', hero);
-  if (!planet || !bot) return;
-  const opts = { duration: 1.1, ease: 'power3.out' };
-  const px = gsap.quickTo(planet, 'x', opts);
-  const py = gsap.quickTo(planet, 'y', opts);
-  const rx = gsap.quickTo(bot, 'x', opts);
-  const ry = gsap.quickTo(bot, 'y', opts);
-  scope.on(hero, 'pointermove', (e) => {
-    const r = hero.getBoundingClientRect();
-    const nx = (e.clientX - r.left) / r.width - 0.5;
-    const ny = (e.clientY - r.top) / r.height - 0.5;
-    px(nx * -26); py(ny * -18);
-    rx(nx * 16); ry(ny * 12);
-  });
-  scope.on(hero, 'pointerleave', () => { px(0); py(0); rx(0); ry(0); });
+  // (v2 : plus aucun effet qui suit la souris, à la demande du client)
 }
 
 /* ---------- 4. Expertises : onglets -------------------------------------- */
@@ -144,15 +126,16 @@ function initExpertise(scope, root) {
   });
 }
 
-/* ---------- 5. Projets : filtres Flip + panneau --------------------------- */
+/* ---------- 5. Projets : filtres + panneau --------------------------------- */
 
+/* Les projets hors filtre s'estompent au lieu de disparaître : la grille garde
+   ses 3 colonnes pleines (pas de carte orpheline, pas de saut de hauteur). */
 function initFilters(scope, root) {
   const grid = $('[data-projects]', root);
   const buttons = $$('[data-filter]', root);
   if (!grid || !buttons.length) return;
   const items = $$('.project', grid);
   let active = 'all';
-  let flip = null;
 
   const matches = (item, filter) => filter === 'all' || item.dataset.cats.split(' ').includes(filter);
   const nameOf = (btn) => btn.firstChild.textContent.trim();
@@ -162,36 +145,13 @@ function initFilters(scope, root) {
     active = filter;
     buttons.forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
     const shown = items.filter((it) => matches(it, filter));
-
-    scope.add(() => {
-      if (flip) { flip.progress(1); flip.kill(); flip = null; }
-      const animate = !env.reducedMotion && Flip;
-      const state = animate ? Flip.getState(items) : null;
-      const h0 = grid.offsetHeight;
-      items.forEach((it) => { it.style.display = shown.includes(it) ? '' : 'none'; });
-      if (!animate) {
-        gsap.fromTo(shown, { opacity: 0 }, { opacity: 1, duration: 0.3, overwrite: true });
-        return;
-      }
-      const h1 = grid.offsetHeight;
-      flip = Flip.from(state, {
-        duration: 0.7,
-        ease: 'expo.out',
-        absoluteOnLeave: true,
-        onEnter: (els) => gsap.fromTo(els, { opacity: 0, scale: 0.92 }, { opacity: 1, scale: 1, duration: 0.55, delay: 0.12, ease: 'power3.out' }),
-        onLeave: (els) => gsap.to(els, { opacity: 0, scale: 0.92, duration: 0.3, ease: 'power2.in' }),
-        onComplete: () => { flip = null; },
-      });
-      if (h0 !== h1) flip.fromTo(grid, { height: h0 }, { height: h1, duration: 0.7, ease: 'expo.out', clearProps: 'height' }, 0);
-    });
-
+    items.forEach((it) => it.classList.toggle('is-dimmed', !shown.includes(it)));
     const n = shown.length;
     const s = n > 1 ? 's' : '';
-    announce(`${n} projet${s} affiché${s}${filter === 'all' ? '' : ` : ${nameOf(btn)}`}.`);
+    announce(`${n} projet${s} mis en avant${filter === 'all' ? '' : ` : ${nameOf(btn)}`}.`);
   };
 
   buttons.forEach((btn) => scope.on(btn, 'click', () => apply(btn.dataset.filter, btn)));
-  scope.cleanup(() => { if (flip) flip.kill(); });
 }
 
 function initPanel(scope, root) {
@@ -205,7 +165,8 @@ function initPanel(scope, root) {
   let trigger = null;
   let busy = false;
 
-  const visible = () => projects.filter((p) => p.style.display !== 'none');
+  // « Projet suivant » parcourt les projets mis en avant par le filtre actif
+  const visible = () => projects.filter((p) => !p.classList.contains('is-dimmed'));
 
   const fill = (index) => {
     const project = projects[index];
@@ -431,10 +392,16 @@ function initCarousel(scope, root) {
   const apply = () => gsap.set(track, { x: pos.x });
   const minX = () => Math.min(0, viewport.clientWidth - track.scrollWidth);
 
-  const setActive = () => {
+  // Les cartes entièrement visibles (1 sur mobile, 2 dès 768 px) restent
+  // lisibles par les lecteurs d'écran ; les autres sont masquées.
+  const setActive = (target = pos.x) => {
+    const offs = offsets();
+    const left = -target;
+    const right = left + viewport.clientWidth;
     slides.forEach((s, i) => {
+      const inView = offs[i] >= left - 2 && offs[i] + s.offsetWidth <= right + 2;
       s.classList.toggle('is-active', i === index);
-      s.setAttribute('aria-hidden', String(i !== index));
+      s.setAttribute('aria-hidden', String(!inView && i !== index));
     });
     status.textContent = String(index + 1).padStart(2, '0');
     if (bar) bar.style.transform = `scaleX(${(index + 1) / slides.length})`;
@@ -447,7 +414,7 @@ function initCarousel(scope, root) {
     gsap.killTweensOf(pos);
     if (immediate || env.reducedMotion) { pos.x = target; apply(); }
     else scope.add(() => gsap.to(pos, { x: target, duration: 0.9, ease: 'expo.out', onUpdate: apply }));
-    setActive();
+    setActive(target);
   };
 
   scope.on(viewport, 'pointerdown', (e) => {

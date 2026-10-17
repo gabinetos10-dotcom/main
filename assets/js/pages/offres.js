@@ -5,7 +5,8 @@
    - Expertises : sommaire collant + scrollspy (aria-current="true"), onglets
      (core/tabs.js) animés au changement.
    - Méthode : rail qui se remplit au scroll, étapes activées au passage.
-   - Configurateur : synthèse animée → contact.html?besoins=…&horizon=…&objectif=…
+   - Configurateur : synthèse animée → contact.html?besoins=…&delai=…&objectif=…
+   - Mobile : le détail de chaque expertise se replie (details), ouvert sur desktop
    Tout passe par le scope de page (détruit à chaque navigation Barba).
    ========================================================================== */
 
@@ -31,24 +32,6 @@ function heroIntro(root, tl) {
     .from($$('.offers-hero__star', scene), { scale: 0, opacity: 0, duration: 0.8, stagger: 0.1, ease: 'back.out(2)' }, 0.8);
 }
 
-/* Légère profondeur au survol du hero (pointeur fin, mouvement autorisé) */
-function initHeroDepth(scope, root) {
-  const hero = $('.offers-hero', root);
-  const layers = $$('[data-hero-depth]', root);
-  if (!hero || !layers.length || env.reducedMotion || !env.finePointer) return;
-  const movers = layers.map((el) => ({
-    depth: parseFloat(el.dataset.heroDepth) || 0.5,
-    x: gsap.quickTo(el, 'x', { duration: 0.9, ease: 'power3.out' }),
-    y: gsap.quickTo(el, 'y', { duration: 0.9, ease: 'power3.out' }),
-  }));
-  scope.on(hero, 'pointermove', (e) => {
-    const box = hero.getBoundingClientRect();
-    const nx = (e.clientX - box.left) / box.width - 0.5;
-    const ny = (e.clientY - box.top) / box.height - 0.5;
-    movers.forEach((m) => { m.x(nx * 24 * m.depth); m.y(ny * 18 * m.depth); });
-  });
-  scope.on(hero, 'pointerleave', () => movers.forEach((m) => { m.x(0); m.y(0); }));
-}
 
 /* ---------- Liens internes -------------------------------------------------- */
 
@@ -120,6 +103,21 @@ function initArrival(scope, root) {
     }
   };
   scope.on(main, 'focus', () => scope.timeout(moveFocus, 0), { once: true });
+}
+
+/* ---------- Expertises : détail replié sur mobile ------------------------- */
+
+function initMore(scope, root) {
+  const blocks = $$('[data-expertise-more]', root);
+  if (!blocks.length) return;
+  const desktop = window.matchMedia('(min-width: 1024px)');
+  const sync = () => blocks.forEach((d) => { d.open = desktop.matches; });
+  sync();
+  scope.on(desktop, 'change', sync);
+  // Sur desktop, le résumé est masqué : on empêche toute fermeture accidentelle
+  blocks.forEach((d) => scope.on(d.querySelector('summary'), 'click', (e) => { if (desktop.matches) e.preventDefault(); }));
+  // Le scrollspy et les ancres dépendent de la hauteur des blocs
+  blocks.forEach((d) => scope.on(d, 'toggle', () => window.ScrollTrigger && window.ScrollTrigger.refresh()));
 }
 
 /* ---------- Expertises : scrollspy + onglets ------------------------------ */
@@ -267,7 +265,7 @@ function initConfigurator(scope, root) {
     } else {
       const what = joinFr(needs.map((n) => n.dataset.phrase));
       const why = goal ? goal.dataset.phrase : 'faire décoller votre activité';
-      const when = horizon ? horizon.dataset.phrase : 'sans urgence';
+      const when = horizon ? horizon.dataset.phrase : 'à votre rythme';
       html = `Vous voulez <span class="accent">${what}</span> pour <span class="accent">${why}</span>, <span class="accent">${when}</span>. On s’en occupe.`;
       submit.removeAttribute('aria-disabled');
       hint.textContent = defaultHint;
@@ -301,7 +299,7 @@ function initConfigurator(scope, root) {
     }
     const params = new URLSearchParams();
     params.set('besoins', needs.map((n) => n.value).join(','));
-    if (horizon) params.set('horizon', horizon.value);
+    if (horizon) params.set('delai', horizon.value);
     if (goal) params.set('objectif', goal.value);
     const url = `contact.html?${params.toString()}`;
     if (window.barba && typeof window.barba.go === 'function') window.barba.go(url);
@@ -317,7 +315,7 @@ export default {
   init(scope, root) {
     initArrival(scope, root);
     initJumps(scope, root);
-    initHeroDepth(scope, root);
+    initMore(scope, root);
     initSpy(scope, root);
     initTabsMotion(scope, root);
     initProcess(scope, root);

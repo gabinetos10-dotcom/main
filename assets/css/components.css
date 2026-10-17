@@ -428,6 +428,11 @@
   animation: robot-light 2.4s ease-in-out infinite;
 }
 
+/* Sur fond sombre, le trait encre de l'antenne disparaît : on l'éclaircit */
+:is([data-theme="space"], .theme-space, .theme-night) .robot:not(.robot--mark) .robot__antenna {
+  stroke: var(--cream-2);
+}
+
 .robot__mouth {
   fill: none;
   stroke: var(--gold);
@@ -1003,9 +1008,41 @@
 /* ---- Marquee ------------------------------------------------------------ */
 
 .marquee {
+  position: relative;
   overflow: hidden;
   white-space: nowrap;
   user-select: none;
+}
+
+/* Bouton pause / lecture (ajouté par core/marquee.js), sur la marge droite */
+.marquee__toggle {
+  position: absolute;
+  top: 50%;
+  right: max(var(--pad), calc((100% - var(--container)) / 2));
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--bg);
+  color: var(--fg);
+  border: 1.5px solid var(--line-strong);
+  box-shadow: 0 0 0 8px var(--bg);
+  translate: 0 -50%;
+  transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+
+.marquee__toggle svg {
+  width: 14px;
+  height: 14px;
+  fill: currentColor;
+}
+
+.marquee__toggle:hover {
+  background: var(--fg);
+  color: var(--bg);
+  border-color: var(--fg);
 }
 
 .marquee__track {

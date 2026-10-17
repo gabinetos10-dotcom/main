@@ -88,9 +88,10 @@ export function curtainIn(path) {
 
     gsap.set(root, { autoAlpha: 1 });
     gsap.set(ship, { autoAlpha: 1, x: -shipW * 2 });
-    tl.fromTo(curtain, { yPercent: 100 }, { yPercent: 0, duration: 0.6, ease: 'expo.inOut' }, 0)
-      .fromTo(content, { yPercent: 100 }, { yPercent: 0, duration: 0.6, ease: 'expo.inOut' }, 0)
-      .to(pose, { p: 1, duration: 0.85, ease: 'power1.inOut', onUpdate: update }, 0.22);
+    // Rideau court (≈ 0,7 s) : le vaisseau traverse pendant la montée
+    tl.fromTo(curtain, { yPercent: 100 }, { yPercent: 0, duration: 0.45, ease: 'expo.inOut' }, 0)
+      .fromTo(content, { yPercent: 100 }, { yPercent: 0, duration: 0.45, ease: 'expo.inOut' }, 0)
+      .to(pose, { p: 1, duration: 0.6, ease: 'power1.inOut', onUpdate: update }, 0.1);
   });
 }
 
@@ -109,7 +110,7 @@ export function curtainOut(onReveal) {
       tl.add(() => onReveal && onReveal(), 0).to(root, { autoAlpha: 0, duration: 0.3, ease: 'none' }, 0);
       return;
     }
-    tl.to([curtain, content], { yPercent: -100, duration: 0.7, ease: 'expo.inOut' }, 0.05)
-      .add(() => onReveal && onReveal(), 0.3);
+    tl.to([curtain, content], { yPercent: -100, duration: 0.55, ease: 'expo.inOut' }, 0.02)
+      .add(() => onReveal && onReveal(), 0.2);
   });
 }

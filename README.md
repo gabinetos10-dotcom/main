@@ -107,7 +107,7 @@ Chaque module de `pages/` exporte `{ init(scope, container), intro(scope, contai
 | `data-theme="cream\|grey\|space\|gold"` | Fond et palette de la section |
 | `[data-tabs]` + `role="tab"` / `role="tabpanel"` | Onglets accessibles (flèches, Début, Fin) ; sans JS tous les panneaux restent visibles |
 | `svg[data-robot]`, `[data-robot-talk]` (+ `data-messages="…\|…"`) | Robot dont les yeux suivent le pointeur ; bulle de répliques au clic, annoncée aux lecteurs d'écran |
-| `data-magnetic="0.35"` | Bouton légèrement magnétique (utilisé avec parcimonie) |
+| `data-magnetic="0.35"` | Bouton magnétique (module conservé, **non utilisé en v2** : plus aucun élément ne se déplace avec la souris) |
 | `data-marquee` (+ `data-speed`, `data-direction`) | Bande défilante réactive à la vélocité du scroll |
 | `data-launch-game="button\|race\|maze"` | Ouvre un jeu de l'Arcade |
 | `data-config="email\|phone\|booking\|availability"`, `data-social="LinkedIn"` | Synchronisé avec `CONFIG` |
@@ -133,6 +133,8 @@ Chaque module de `pages/` exporte `{ init(scope, container), intro(scope, contai
 | Footer moins gros, plus compréhensible, GJS présent | Bande d'appel à l'action avec robot, « GJS » en taille maîtrisée avec orbite, 4 colonnes claires (Navigation, Expertises, Légal & RGPD, Contact), barre de bas de page |
 | Pages RGPD intégrées au footer | Mentions légales, Confidentialité, Cookies, Exercer vos droits (avec formulaire), bouton « Gérer les cookies » — colonne « Légal & RGPD » du footer et onglets entre les 4 pages |
 
+
+**Revue contradictoire de la v2** — un relecteur indépendant a passé le site au crible des 9 demandes (28 constats). Corrigés : capsule du header renforcée (visible aussi sur les sections sombres), footer mobile ramené de 1 439 à 906 px (desktop 789 px), loader et transitions raccourcis (≈ 2,3 s à la 1re visite, ≈ 1,2 s par changement de page), méthode unifiée en 5 étapes (une seule source pour l'Accueil et les Offres), filtres de projets qui mettent en avant au lieu de masquer (grille toujours pleine), témoignages entiers, sommaire légal entièrement visible, noms d'expertises identiques partout, configurateur sans présélection et avec les mêmes délais que le formulaire, détail des expertises replié sur mobile, plus aucun élément qui se déplace avec la souris (bouton magnétique et parallaxe au pointeur retirés ; seuls les yeux du robot suivent le pointeur), bandeau défilant avec bouton pause, couleurs du jeu Lead Rush ramenées à la palette, mention RGPD du formulaire alignée sur la politique de confidentialité. Laissé au choix du client : afficher ou non le bandeau cookies tant qu'aucun traceur soumis à consentement n'est actif (il est affiché par défaut).
 
 ---
 
@@ -167,12 +169,12 @@ La vidéo actuelle est un placeholder génératif (ciel étoilé chaud, planète
 | `service-ads` | 1200×1500 | 600 / 1200 | ≤ 140 Ko | Tableau de bord de performances publicitaires en hausse |
 | `service-ia` | 1200×1500 | 600 / 1200 | ≤ 140 Ko | Interface d’un agent conversationnel qui qualifie une demande client |
 | `service-social` | 1200×1500 | 600 / 1200 | ≤ 140 Ko | Grille de publications Instagram d’une marque |
-| `projet-01` | 1600×2000 | 800 / 1600 | ≤ 180 Ko (WebP 1600 px) | Page d’accueil du site e-commerce du projet Atlas |
-| `projet-02` | 1600×1067 | 800 / 1600 | ≤ 180 Ko (WebP 1600 px) | Tableau de bord logistique automatisé du projet Borealis |
-| `projet-03` | 1200×1500 | 800 / 1200 | ≤ 140 Ko | Visuels publicitaires de la campagne Cassiopée |
+| `projet-01` | 1600×1200 | 800 / 1600 | ≤ 180 Ko (WebP 1600 px) | Page d’accueil du site e-commerce du projet Atlas |
+| `projet-02` | 1600×1200 | 800 / 1600 | ≤ 180 Ko (WebP 1600 px) | Tableau de bord logistique automatisé du projet Borealis |
+| `projet-03` | 1600×1200 | 800 / 1600 | ≤ 180 Ko (WebP 1600 px) | Visuels publicitaires de la campagne Cassiopée |
 | `projet-04` | 1600×1200 | 800 / 1600 | ≤ 180 Ko (WebP 1600 px) | Grille de contenus social media du projet Draco |
-| `projet-05` | 1600×1067 | 800 / 1600 | ≤ 180 Ko (WebP 1600 px) | Agent IA de qualification de leads du projet Eridan |
-| `projet-06` | 1200×1600 | 800 / 1200 | ≤ 140 Ko | Site vitrine animé du projet Fornax |
+| `projet-05` | 1600×1200 | 800 / 1600 | ≤ 180 Ko (WebP 1600 px) | Agent IA de qualification de leads du projet Eridan |
+| `projet-06` | 1600×1200 | 800 / 1600 | ≤ 180 Ko (WebP 1600 px) | Site vitrine animé du projet Fornax |
 | `equipe-01` | 900×1200 | 450 / 900 | ≤ 90 Ko | Portrait de Prénom Nom, Fondateur, Stratégie & SEO |
 | `equipe-02` | 900×1200 | 450 / 900 | ≤ 90 Ko | Portrait de Prénom Nom, Lead développeuse, Web & IA |
 | `equipe-03` | 900×1200 | 450 / 900 | ≤ 90 Ko | Portrait de Prénom Nom, Head of Ads, Acquisition |
@@ -237,7 +239,7 @@ Les textes juridiques ont été relus par un contradicteur juridique puis révis
 | `SOCIALS` | Réseaux `{ label, url }` ; supprimer une ligne masque le lien | LinkedIn, Instagram, TikTok |
 | `PROMO_CODE` | Code débloqué par le mode Hyperespace | `HYPERGJS` |
 | `AVAILABILITY` | Statut affiché dans le hero et sur Contact | « Disponible pour nouveaux projets » |
-| `LOADER` | Durées du loader (`min` 2,5 s, `max` 4 s, `short` 1 s) | |
+| `LOADER` | Durées du loader en secondes (`min` 1,6, `max` 2,6, `short` 0,6 pour les pages suivantes) | |
 | `ANALYTICS` | Script de mesure chargé **uniquement après consentement** : `{ src, attrs }` | `null` |
 | `CONSENT_VERSION` | À incrémenter quand un traceur est ajouté (le choix est redemandé) | `1` |
 | `CONSENT_MAX_AGE_DAYS` | Validité du choix cookies | `182` (6 mois, CNIL) |
@@ -275,7 +277,7 @@ Sans endpoint configuré, l'envoi ouvre le client mail du visiteur avec la deman
 
 Protection anti-spam : champ piège `website` (honeypot) — s'il est rempli, rien n'est envoyé. La case d'information RGPD est obligatoire et jamais pré-cochée (ce n'est pas un consentement : le traitement repose sur les mesures précontractuelles, voir la politique de confidentialité).
 
-**Pré-remplissage** : le configurateur de « Nos offres » renvoie vers `contact.html?besoins=site,ia&horizon=urgent&objectif=leads` ; le mode Hyperespace vers `contact.html?code=HYPERGJS`. Les paramètres reconnus sont `besoins` (liste ou répétés), `objectif`, `horizon` / `delai`, `code`.
+**Pré-remplissage** : le configurateur de « Nos offres » renvoie vers `contact.html?besoins=site,ia&delai=urgent&objectif=leads` (mêmes délais que le formulaire) ; le mode Hyperespace vers `contact.html?code=HYPERGJS`. Les paramètres reconnus sont `besoins` (liste ou répétés), `objectif`, `delai` (ou l'ancien `horizon`), `code`.
 
 ---
 
@@ -317,6 +319,7 @@ Tests automatisés (Playwright + Chromium) exécutés pendant la refonte, librai
 |---|---|
 | 9 pages × 5 largeurs (360, 768, 1024, 1440, 1920 px), chargement direct + défilement complet | **0** erreur console, **0** réponse HTTP en erreur, **0** image cassée, **0** débordement horizontal |
 | Alignement : bord gauche et droit de chaque titre, texte, carte, image et bloc du footer comparés à ceux du header | **0** élément hors des marges sur les 45 combinaisons (écart mesuré ≤ 1 px, de 360 à 2 560 px dans les recettes de page) |
+| Revue contradictoire : 23 vérifications ciblées après corrections (header sur fond sombre, projets, filtres, méthode, témoignages, pause du bandeau, footer, sommaire légal, offres mobile, configurateur → contact) | 22 OK ; le 23e (portraits en noir et blanc dans une fenêtre étroite avec souris) est le comportement voulu, les portraits restent en couleur sur écran tactile |
 | axe-core (WCAG 2.2 A/AA + bonnes pratiques), 9 pages à 360 / 390 / 1440 px, mouvement normal et réduit | **0** violation |
 | `prefers-reduced-motion` | Textes d'intro visibles sur toutes les pages, pas de parallaxe ni de défilement doux, vidéo en pause, frises remplies, jeux jouables |
 | Navigation Barba : 2 tours complets des 9 pages (desktop et mobile, menu mobile inclus) + ouverture/fermeture d'un jeu | Compteurs de ScrollTriggers et de tweens identiques d'un tour à l'autre (pas de fuite), 1 seule feuille de style de page chargée, aucune modale ni verrou de défilement restant, 0 erreur |
@@ -324,8 +327,8 @@ Tests automatisés (Playwright + Chromium) exécutés pendant la refonte, librai
 | Formulaires : contact (79 vérifications : champs requis, erreurs, mailto, POST JSON, échec réseau, pré-remplissage, piège anti-spam) et « Exercer vos droits » | OK |
 | Arcade et easter eggs : 3 jeux au clavier et au tactile, pause, fin, record, focus ; Konami, « gjs », console, 7 clics | OK |
 | Sans JavaScript / ouverture en `file://` | Page lisible, navigation visible, panneaux d'onglets dépliés, formulaires en `mailto:` ; message d'aide en `file://` |
-| Lighthouse desktop (Accueil, Offres, À propos, Contact, Confidentialité) | **99-100 / 100 / 100 / 100** — LCP 0,6-0,8 s, TBT 0-50 ms |
-| Lighthouse mobile (CPU ×4, 4G lente) | Accueil **95** / 100 / 100 / 100 (LCP 2,8 s, CLS 0,055 pendant l'écran de chargement), Offres **97** / 100 / 100 / 100 (LCP 2,5 s) |
+| Lighthouse desktop (Accueil, Offres, À propos, Contact) | **99-100 / 100 / 100 / 100** — LCP 0,6-0,8 s, TBT 0-10 ms |
+| Lighthouse mobile (CPU ×4, 4G lente) | Accueil **94** / 100 / 100 / 100 (LCP 2,9 s : le titre apparaît à la fin de l'intro du loader ; CLS 0,056 pendant l'écran de chargement), Offres **99** / 100 / 100 / 100 (LCP 2,1 s) |
 
 Limites connues : Lighthouse a été lancé en local avec les médias de substitution ; refaites une mesure sur l'hébergement final avec les vrais médias.
 

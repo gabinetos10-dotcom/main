@@ -317,8 +317,8 @@ export function runLoader({ video = null } = {}) {
     }
 
     if (mode === 'full') {
-      const hold = skip ? 0.05 : 0.35;
-      const warp = skip ? 0.3 : 0.6;
+      const hold = skip ? 0.05 : 0.2;
+      const warp = skip ? 0.25 : 0.45;
       tl.add(() => {}, hold);
       tl.to(stars, { warp: 1, duration: warp, ease: 'power2.in' });
       tl.to(el.word, { scale: 1.18, duration: warp, ease: 'power2.in' }, '<');
@@ -326,16 +326,16 @@ export function runLoader({ video = null } = {}) {
       tl.set(el.scene, { autoAlpha: 0 });
       tl.to(el.flash, { opacity: 0, duration: 0.4, ease: 'power2.out' });
       tl.add(resolveReveal, '<');
-      tl.to(el.top, { yPercent: -100, duration: 1.15, ease: 'expo.inOut' }, '<');
-      tl.to(el.bottom, { yPercent: 100, duration: 1.15, ease: 'expo.inOut' }, '<');
+      tl.to(el.top, { yPercent: -100, duration: 0.9, ease: 'expo.inOut' }, '<');
+      tl.to(el.bottom, { yPercent: 100, duration: 0.9, ease: 'expo.inOut' }, '<');
       return;
     }
 
     // Version courte : GJS déjà là, les volets s'ouvrent
-    tl.to(el.scene, { autoAlpha: 0, duration: 0.25, ease: 'power1.out' }, 0.05);
-    tl.add(resolveReveal, 0.12);
-    tl.to(el.top, { yPercent: -100, duration: 0.8, ease: 'expo.inOut' }, 0.12);
-    tl.to(el.bottom, { yPercent: 100, duration: 0.8, ease: 'expo.inOut' }, 0.12);
+    tl.to(el.scene, { autoAlpha: 0, duration: 0.2, ease: 'power1.out' }, 0.03);
+    tl.add(resolveReveal, 0.08);
+    tl.to(el.top, { yPercent: -100, duration: 0.6, ease: 'expo.inOut' }, 0.08);
+    tl.to(el.bottom, { yPercent: 100, duration: 0.6, ease: 'expo.inOut' }, 0.08);
   }
 
   if (el.skip) {

@@ -74,8 +74,10 @@
   gap: 16px;
 }
 
+/* « L'essentiel » ouvre le texte ; seul le sommaire reste collant à gauche */
 .legal__essentials {
   gap: 12px;
+  margin-bottom: clamp(36px, 4vw, 56px);
 }
 
 .legal__essentials-title,
@@ -143,7 +145,7 @@
   display: grid;
   grid-template-columns: 2.1em 1fr;
   align-items: center;
-  min-height: 40px;
+  min-height: 36px;
   padding: 4px 10px;
   border-radius: 10px;
   font-size: var(--fs-small);
@@ -310,8 +312,9 @@
   padding: 1px 6px;
   border-radius: 6px;
   background: var(--surface);
-  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
-  font-size: 0.86em;
+  font-family: var(--font-text);
+  font-weight: 700;
+  font-size: 0.95em;
   color: var(--fg);
 }
 

@@ -49,13 +49,14 @@ const HOME = [10, 9];
 const DIRS = { left: [-1, 0], right: [1, 0], up: [0, -1], down: [0, 1] };
 const DIR_LIST = [[0, -1], [-1, 0], [0, 1], [1, 0]];
 
-// Teintes des ennemis : distinctes entre elles, du joueur (or) et des murs
-// (cuivre), lisibles sur la nuit chaude (contraste ≥ 7:1) ; la forme double la couleur.
+// Teintes des ennemis, tirées de la palette (corail, gris lunaire, brique, sable) :
+// distinctes entre elles, du joueur (or) et des murs (cuivre), lisibles sur la
+// nuit chaude (contraste ≥ 3:1, ΔE ≥ 19) ; la forme double la couleur.
 const ENEMIES = [
   { id: 'google', name: 'Algorithme Google', hint: 'vous poursuit sans relâche', color: '#FF9A80', shape: 'diamond', behavior: 'chase', start: [10, 7], release: 1.2 },
-  { id: 'concurrent', name: 'Concurrent', hint: 'vise 4 cases devant vous', color: '#E8E1D2', shape: 'triangle', behavior: 'ambush', start: [9, 9], release: 3.5 },
-  { id: 'rebond', name: 'Taux de rebond', hint: 'imprévisible', color: '#59E0B5', shape: 'circle', behavior: 'random', start: [10, 9], release: 6.5 },
-  { id: 'budget', name: 'Budget gaspillé', hint: 'patrouille, puis fonce', color: '#C58CFF', shape: 'hexagon', behavior: 'patrol', start: [11, 9], release: 9.5 },
+  { id: 'concurrent', name: 'Concurrent', hint: 'vise 4 cases devant vous', color: '#E5E7E6', shape: 'triangle', behavior: 'ambush', start: [9, 9], release: 3.5 },
+  { id: 'rebond', name: 'Taux de rebond', hint: 'imprévisible', color: '#C9563A', shape: 'circle', behavior: 'random', start: [10, 9], release: 6.5 },
+  { id: 'budget', name: 'Budget gaspillé', hint: 'patrouille, puis fonce', color: '#CDB28A', shape: 'hexagon', behavior: 'patrol', start: [11, 9], release: 9.5 },
 ];
 const PATROL = [[15, 13], [19, 15], [19, 19], [13, 17]];
 
@@ -110,7 +111,7 @@ export function create(api) {
     bg: P.space,
     wall: P.copper,
     door: alpha(P.cream, 0.6),
-    lead: P.cream2, // crème atténué : distinct de l'ennemi « Concurrent » (#E8E1D2)
+    lead: P.cream2, // crème atténué : distinct des ennemis (gris lunaire, sable, cuivre, corail)
     power: P.gold,
     powerText: P.ink,
     timer: alpha(P.gold, 0.11),

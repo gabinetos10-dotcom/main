@@ -185,9 +185,14 @@
 }
 
 .member__img {
-  filter: grayscale(1) contrast(1.05);
   transform: scale(1.01);
   transition: filter 0.6s var(--ease-out-expo), transform 0.8s var(--ease-out-expo);
+}
+
+/* Noir et blanc → couleur au survol : seulement là où le survol existe
+   (sur écran tactile, les portraits restent en couleur) */
+@media (hover: hover) and (pointer: fine) {
+  .member__img { filter: grayscale(1) contrast(1.05); }
 }
 
 .member:hover .member__img,
@@ -195,6 +200,7 @@
   filter: grayscale(0) contrast(1);
   transform: scale(1.05);
 }
+
 
 .member__body {
   display: grid;
@@ -281,6 +287,44 @@
     opacity: 1;
     transform: none;
   }
+}
+
+/* Mobile (< 600 px) : cartes horizontales compactes (portrait à gauche, texte à
+   droite), y compris avec une souris : placé après le bloc « survol » pour primer. */
+@media (max-width: 599px) {
+  .member {
+    grid-template-columns: 104px minmax(0, 1fr);
+    grid-template-rows: auto 1fr;
+    grid-template-areas: "media body" "media mission";
+  }
+
+  .member__media {
+    grid-area: media;
+    aspect-ratio: auto;
+    height: 100%;
+    min-height: 136px;
+  }
+
+  .member__body {
+    grid-area: body;
+    padding: 14px 16px 2px;
+  }
+
+  .member__mission {
+    grid-area: mission;
+    align-self: start;
+    margin: 0;
+    padding: 6px 16px 14px;
+    background: none;
+    color: inherit;
+    opacity: 1;
+    transform: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    pointer-events: auto;
+  }
+
+  .member__mission-label { color: var(--accent); }
 }
 
 .member:has(.member__link:focus-visible) {
@@ -555,6 +599,35 @@
 
   .timeline__body { grid-column: 4 / span 7; }
   .timeline__dot { top: calc(var(--tl-pad) + var(--tl-year) * 0.4); }
+}
+
+/* Desktop : titre collant à gauche (4 colonnes), frise sur les 7 colonnes de
+   droite ; la frise garde ses propres lignes de colonnes (7) alignées sur la page. */
+@media (min-width: 1024px) {
+  .trajectory__layout {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--gutter);
+    align-items: start;
+  }
+
+  .trajectory__layout > .section-head {
+    grid-column: 1 / span 4;
+    position: sticky;
+    top: calc(var(--header-h) + 24px);
+    margin-bottom: 0;
+  }
+
+  .trajectory__layout > .timeline {
+    grid-column: 6 / span 7;
+    --cols: 7;
+    --tl-y: 2;
+    --tl-start: 3;
+  }
+
+  .trajectory__layout .timeline__body {
+    grid-column: 3 / -1;
+  }
 }
 
 /* ---- 6. Coulisses -------------------------------------------------------- */

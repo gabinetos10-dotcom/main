@@ -204,7 +204,7 @@
                   <fieldset class="contact-form__group">
                     <legend class="contact-form__q">Ce qu’il vous faut <span class="req" aria-hidden="true">*</span><span class="sr-only"> (obligatoire)</span> <span class="contact-form__q-hint">plusieurs choix possibles</span></legend>
                     <div class="contact-form__choices" data-group="besoins" data-required-group>
-                        <label class="choice"><input type="checkbox" id="besoins-site" name="besoins" value="site" aria-describedby="besoins-error"><span class="choice__box">Création de site web<span class="choice__mark" aria-hidden="true"></span></span></label>
+                        <label class="choice"><input type="checkbox" id="besoins-site" name="besoins" value="site" aria-describedby="besoins-error"><span class="choice__box">Sites web & SEO<span class="choice__mark" aria-hidden="true"></span></span></label>
                         <label class="choice"><input type="checkbox" id="besoins-automatisation" name="besoins" value="automatisation" aria-describedby="besoins-error"><span class="choice__box">Automatisations<span class="choice__mark" aria-hidden="true"></span></span></label>
                         <label class="choice"><input type="checkbox" id="besoins-ads" name="besoins" value="ads" aria-describedby="besoins-error"><span class="choice__box">Campagnes publicitaires<span class="choice__mark" aria-hidden="true"></span></span></label>
                         <label class="choice"><input type="checkbox" id="besoins-ia" name="besoins" value="ia" aria-describedby="besoins-error"><span class="choice__box">Agents IA<span class="choice__mark" aria-hidden="true"></span></span></label>
@@ -304,7 +304,7 @@
                     <button class="btn btn--primary contact-form__submit" type="submit" data-form-submit><span data-submit-label>Envoyer ma demande</span><span class="btn__arrow" aria-hidden="true">→</span></button>
                     <p class="contact-form__remaining" data-form-remaining hidden></p>
                   </div>
-                  <p class="contact-form__privacy">Vos données servent à vous répondre, rien d’autre. Détails et droits&nbsp;: <a href="politique-confidentialite.html">politique de confidentialité</a>.</p>
+                  <p class="contact-form__privacy">Vos données servent uniquement à traiter votre demande (réponse, relance éventuelle) et sont conservées 3 ans au plus. Détails et droits&nbsp;: <a href="politique-confidentialite.html">politique de confidentialité</a>.</p>
                 </fieldset>
               </form>
 
@@ -384,22 +384,22 @@
       <div class="footer__main container">
         <div class="footer__brand">
           <p class="footer__giant" aria-hidden="true"><span class="footer__giant-word" data-footer-logo><span>G</span><span>J</span><span>S</span></span></p>
-          <p class="footer__tagline">Agence marketing digital &amp; communication à Paris. Sites, automatisations, publicité, IA et réseaux sociaux, 100 % sur-mesure.</p>
+          <p class="footer__tagline">Agence marketing digital &amp; communication à Paris.<span class="footer__tagline-more"> Sites, automatisations, publicité, IA et réseaux sociaux, 100 % sur-mesure.</span></p>
           <p class="footer__clock-line t-mono"><span class="dot-live" aria-hidden="true"></span>Paris <time class="footer__clock" data-paris-clock>--:--:--</time></p>
         </div>
-        <nav class="footer__col" aria-label="Plan du site">
+        <nav class="footer__col footer__col--nav" aria-label="Plan du site">
           <p class="footer__heading">Navigation</p>
           <ul><li><a href="index.html">Accueil</a></li><li><a href="offres.html">Nos offres</a></li><li><a href="a-propos.html">Qui sommes-nous</a></li><li><a href="index.html#projets">Projets</a></li><li><a href="index.html#arcade">Arcade</a></li><li><a href="contact.html" aria-current="page">Contact</a></li></ul>
         </nav>
-        <div class="footer__col">
+        <div class="footer__col footer__col--expertises">
           <p class="footer__heading">Expertises</p>
           <ul><li><a href="offres.html#site">Sites web & SEO</a></li><li><a href="offres.html#automatisation">Automatisations</a></li><li><a href="offres.html#ads">Campagnes publicitaires</a></li><li><a href="offres.html#ia">Agents IA</a></li><li><a href="offres.html#social">Réseaux sociaux</a></li></ul>
         </div>
-        <nav class="footer__col" aria-label="Informations légales et RGPD">
+        <nav class="footer__col footer__col--legal" aria-label="Informations légales et RGPD">
           <p class="footer__heading">Légal &amp; RGPD</p>
           <ul><li><a href="mentions-legales.html">Mentions légales</a></li><li><a href="politique-confidentialite.html">Confidentialité</a></li><li><a href="politique-cookies.html">Cookies</a></li><li><a href="exercer-vos-droits.html">Exercer vos droits</a></li><li><button class="footer__link" type="button" data-cookie-manage>Gérer les cookies</button></li></ul>
         </nav>
-        <div class="footer__col">
+        <div class="footer__col footer__col--contact">
           <p class="footer__heading">Contact</p>
           <ul>
             <li><a href="mailto:bonjour@gjs-agence.fr" data-config="email">bonjour@gjs-agence.fr</a></li>
@@ -410,7 +410,7 @@
       </div>
       <div class="footer__bottom container">
         <p>© <span data-year>2026</span> GJS — Tous droits réservés.</p>
-        <p>Conçu et développé à Paris, entre deux orbites.</p>
+        <p class="footer__made">Conçu et développé à Paris, entre deux orbites.</p>
         <a href="#main" data-scroll-top>Retour en haut <span aria-hidden="true">↑</span></a>
       </div>
     </footer>

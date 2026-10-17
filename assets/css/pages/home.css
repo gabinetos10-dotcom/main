@@ -85,15 +85,13 @@
   margin-top: 4px;
 }
 
+/* Simple mention (pas une pilule : elle ne doit pas ressembler à un 3e bouton) */
 .hero__status {
   display: inline-flex;
   align-items: center;
   gap: 12px;
   min-height: 36px;
-  padding: 4px 16px 4px 14px;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--space-2) 70%, transparent);
+  padding: 4px 0;
   font-size: var(--fs-small);
   font-weight: 600;
   color: var(--fg);
@@ -447,6 +445,13 @@
   }
 }
 
+/* 1024-1199 px : la colonne du panneau est trop étroite pour image + texte côte à côte */
+@media (min-width: 1024px) and (max-width: 1199px) {
+  .levers__panel {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
 @media (min-width: 1024px) {
   .levers__tabs {
     grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
@@ -516,11 +521,26 @@
   display: flex;
 }
 
+/* Hors filtre : estompé mais toujours consultable (la grille reste stable).
+   L'effet porte sur la carte intérieure : le <li> est animé par GSAP à
+   l'apparition, une transition CSS sur son opacité fausserait l'animation. */
+.project.is-dimmed .project__card {
+  opacity: 0.38;
+  filter: grayscale(1);
+}
+
+.project.is-dimmed:hover .project__card,
+.project.is-dimmed:focus-within .project__card {
+  opacity: 0.85;
+  filter: none;
+}
+
 .project__card {
   flex: 1;
   gap: 0;
   padding: 0;
   overflow: hidden;
+  transition: transform 0.5s var(--ease-out-expo), box-shadow 0.5s var(--ease-out-expo), border-color 0.3s, opacity 0.45s var(--ease-out-expo), filter 0.45s var(--ease-out-expo);
 }
 
 .project__media {
@@ -902,6 +922,14 @@
   max-width: 34ch;
 }
 
+.method__when {
+  color: var(--fg-2);
+}
+
+.method__more {
+  margin-top: var(--stack);
+}
+
 /* Mouvement réduit : frise remplie, pas de vaisseau */
 .is-reduced-motion .method__ship { display: none; }
 .is-reduced-motion .method__fill { transform: none; }
@@ -924,7 +952,7 @@
   }
 
   .method__steps {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: var(--gutter);
   }
 
@@ -1408,11 +1436,8 @@
 }
 
 @media (min-width: 768px) {
-  .quote { width: calc((100cqw - var(--gutter)) * 0.72); }
-}
-
-@media (min-width: 1024px) {
-  .quote { width: calc((100cqw - var(--gutter)) * 0.62); }
+  /* Deux témoignages entiers, jamais une carte coupée au bord du contenu */
+  .quote { width: calc((100cqw - var(--gutter)) / 2); }
 }
 
 /* ---- Sans JS (ou librairies indisponibles) ------------------------------- */
