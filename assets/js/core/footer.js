@@ -1,7 +1,7 @@
 /* ==========================================================================
    GJS — FOOTER (par page) + SYNCHRONISATION CONFIG
-   Heure de Paris en direct, « GJS » géant révélé au scroll, retour en haut,
-   compteur de clics secret sur le logo géant (easter egg n° 4).
+   Heure de Paris en direct, « GJS » révélé au scroll (lettres qui montent),
+   retour en haut, compteur de clics secret sur le logo (easter egg n° 4).
    ========================================================================== */
 
 import { CONFIG } from '../config.js';
@@ -60,27 +60,29 @@ export function initFooter(scope, container) {
     }
   });
 
-  // « GJS » géant : les lettres montent quand le footer entre dans l'écran
-  const giant = footer.querySelector('.footer__giant-word');
-  if (giant) {
+  // « GJS » : les lettres montent une à une quand le footer entre dans l'écran
+  const mark = footer.querySelector('[data-footer-logo]');
+  if (mark) {
+    const letters = mark.querySelectorAll('.footer__letter');
     if (!env.reducedMotion) {
       scope.add(() => {
-        gsap.fromTo(giant.querySelectorAll('span'), { yPercent: 70 }, {
+        gsap.fromTo(letters, { yPercent: 60, opacity: 0.2 }, {
           yPercent: 0,
+          opacity: 1,
           ease: 'none',
-          stagger: 0.08,
-          scrollTrigger: { trigger: footer, start: 'top bottom', end: 'bottom bottom', scrub: 0.6 },
+          stagger: 0.12,
+          scrollTrigger: { trigger: footer, start: 'top bottom', end: 'top 45%', scrub: 0.6 },
         });
       });
     }
     // Easter egg : 7 clics rapides sur le logo géant
     let clicks = 0;
     let timer = 0;
-    scope.on(giant, 'click', () => {
+    scope.on(mark, 'click', () => {
       clicks += 1;
       clearTimeout(timer);
       timer = setTimeout(() => { clicks = 0; }, 2500);
-      if (!env.reducedMotion) gsap.fromTo(giant, { scale: 0.985 }, { scale: 1, duration: 0.4, ease: 'elastic.out(1, 0.4)' });
+      if (!env.reducedMotion) gsap.fromTo(mark, { scale: 0.97 }, { scale: 1, duration: 0.5, ease: 'elastic.out(1, 0.4)' });
       if (clicks >= 7) {
         clicks = 0;
         document.dispatchEvent(new CustomEvent('gjs:egg-footer'));

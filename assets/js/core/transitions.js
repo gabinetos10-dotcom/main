@@ -1,13 +1,14 @@
 /* ==========================================================================
    GJS — TRANSITION DE PAGE
-   Un rideau bleu nuit monte, un mini vaisseau le traverse en dévoilant le nom
-   de la page suivante dans son sillage, puis le rideau sort par le haut.
-   Mouvement réduit : fondu court, sans vaisseau.
+   La page sortante recule (zoom arrière), un rideau nuit monte, un mini
+   vaisseau le traverse en écrivant le nom de la page suivante en cyan, puis
+   le rideau sort par le haut pendant que la nouvelle page se pose (zoom avant).
+   Mouvement réduit : fondu court, sans vaisseau ni zoom.
    ========================================================================== */
 
 import { env, clamp } from './utils.js';
 
-const { gsap } = window;
+const { gsap, ScrollTrigger } = window;
 
 const NAMES = {
   index: 'Accueil',
@@ -16,6 +17,8 @@ const NAMES = {
   contact: 'Contact',
   'mentions-legales': 'Mentions légales',
   'politique-confidentialite': 'Confidentialité',
+  'politique-cookies': 'Cookies',
+  'exercer-vos-droits': 'Vos droits',
 };
 
 // « / » et « /index.html » désignent la même page (accueil servi à la racine)
@@ -87,9 +90,9 @@ export function curtainIn(path) {
 
     gsap.set(root, { autoAlpha: 1 });
     gsap.set(ship, { autoAlpha: 1, x: -shipW * 2 });
-    tl.fromTo(curtain, { yPercent: 100 }, { yPercent: 0, duration: 0.6, ease: 'expo.inOut' }, 0)
-      .fromTo(content, { yPercent: 100 }, { yPercent: 0, duration: 0.6, ease: 'expo.inOut' }, 0)
-      .to(pose, { p: 1, duration: 0.85, ease: 'power1.inOut', onUpdate: update }, 0.22);
+    tl.fromTo(curtain, { yPercent: 100 }, { yPercent: 0, duration: 0.55, ease: 'expo.inOut' }, 0)
+      .fromTo(content, { yPercent: 100 }, { yPercent: 0, duration: 0.55, ease: 'expo.inOut' }, 0)
+      .to(pose, { p: 1, duration: 0.72, ease: 'power1.inOut', onUpdate: update }, 0.18);
   });
 }
 
@@ -108,7 +111,40 @@ export function curtainOut(onReveal) {
       tl.add(() => onReveal && onReveal(), 0).to(root, { autoAlpha: 0, duration: 0.3, ease: 'none' }, 0);
       return;
     }
-    tl.to([curtain, content], { yPercent: -100, duration: 0.7, ease: 'expo.inOut' }, 0.05)
-      .add(() => onReveal && onReveal(), 0.3);
+    tl.to([curtain, content], { yPercent: -100, duration: 0.65, ease: 'expo.inOut' }, 0.05)
+      .add(() => onReveal && onReveal(), 0.28);
+  });
+}
+
+/* ---- Zoom des pages ------------------------------------------------------
+   Jamais pendant qu'une section est épinglée : un transform sur le conteneur
+   ferait sauter l'élément fixé. Les propriétés sont toujours nettoyées.     */
+
+const pinActive = () => ScrollTrigger.getAll().some((t) => t.pin && t.isActive);
+
+/** La page sortante recule pendant que le rideau monte. */
+export function pageOut(container) {
+  if (!container || env.reducedMotion) return Promise.resolve();
+  if (pinActive()) return gsap.to(container, { opacity: 0.35, duration: 0.5, ease: 'power2.in' }).then();
+  const originY = window.scrollY + window.innerHeight / 2;
+  return gsap.to(container, {
+    scale: 0.92,
+    y: -24,
+    opacity: 0.4,
+    transformOrigin: `50% ${originY}px`,
+    duration: 0.55,
+    ease: 'expo.inOut',
+  }).then();
+}
+
+/** La nouvelle page se pose : léger zoom avant pendant que le rideau sort. */
+export function pageIn(container) {
+  if (!container || env.reducedMotion) return;
+  gsap.fromTo(container, { scale: 1.06, opacity: 0.6, transformOrigin: `50% ${window.innerHeight / 2}px` }, {
+    scale: 1,
+    opacity: 1,
+    duration: 1.1,
+    ease: 'expo.out',
+    clearProps: 'transform,transformOrigin,opacity,scale',
   });
 }

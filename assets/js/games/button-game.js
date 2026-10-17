@@ -124,7 +124,7 @@ export function create(api) {
     done = true;
     const r = gjs.getBoundingClientRect();
     const s = stage.getBoundingClientRect();
-    particles.burst(r.left - s.left + r.width / 2, r.top - s.top + r.height / 2, { count: api.reduced ? 30 : 160, colors: ['#FFFFFF', '#5B85FF', '#A9BEFF'], speed: 520, size: 4, life: 1.4 });
+    particles.burst(r.left - s.left + r.width / 2, r.top - s.top + r.height / 2, { count: api.reduced ? 30 : 160, colors: ['#FFFFFF', '#55D5E0', '#A6EEF3'], speed: 520, size: 4, life: 1.4 });
     loop.start();
     sound.win();
     gjs.classList.add('is-chosen');

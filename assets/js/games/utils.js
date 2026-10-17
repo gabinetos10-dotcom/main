@@ -196,7 +196,7 @@ export const sound = {
 export function createParticles() {
   const list = [];
   return {
-    burst(x, y, { count = 40, colors = ['#FFFFFF', '#5B85FF'], speed = 320, size = 3, life = 1 } = {}) {
+    burst(x, y, { count = 40, colors = ['#FFFFFF', '#55D5E0'], speed = 320, size = 3, life = 1 } = {}) {
       for (let i = 0; i < count; i += 1) {
         const a = Math.random() * Math.PI * 2;
         const v = speed * (0.3 + Math.random() * 0.7);

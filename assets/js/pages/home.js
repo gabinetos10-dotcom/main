@@ -1,14 +1,14 @@
 /* ==========================================================================
-   GJS — PAGE ACCUEIL
-   Hero vidéo · Manifeste au scrub · Services horizontaux épinglés ·
-   Projets (distorsion + panneau Flip) · Méthode (trajectoire SVG) ·
-   Arcade (records) · Carrousel de témoignages draggable avec inertie.
+   GJS — PAGE ACCUEIL (v3)
+   Hero vidéo (zoom d'arrivée, se range en carte au défilement) · Manifeste au
+   scrub · Leviers en cartes empilées (la précédente recule) · Projets
+   (distorsion au survol + panneau qui s'ouvre en zoom depuis la carte) ·
+   Trajectoire de la méthode · Arcade (records) · Carrousel de témoignages.
+   Aucun effet ne suit le pointeur.
    ========================================================================== */
 
-import { env, $, $$, clamp, store, trapFocus } from '../core/utils.js';
+import { env, $, $$, clamp, store, trapFocus, yieldToMain } from '../core/utils.js';
 import { lockScroll, unlockScroll } from '../core/scroll.js';
-import { refreshCursor } from '../core/cursor.js';
-import { yieldToMain } from '../core/utils.js';
 
 const { gsap, ScrollTrigger, Flip } = window;
 
@@ -30,8 +30,6 @@ function initHero(scope, root) {
       toggle.textContent = paused ? 'Lire la vidéo' : 'Pause vidéo';
       toggle.setAttribute('aria-pressed', String(paused));
     }
-    if (media) media.dataset.cursorLabel = paused ? 'Play' : 'Pause';
-    refreshCursor();
   };
 
   const play = () => {
@@ -64,11 +62,10 @@ function initHero(scope, root) {
   scope.on(video, 'play', renderUI);
   scope.on(video, 'pause', renderUI);
   if (toggle) scope.on(toggle, 'click', togglePlay);
-  if (media) scope.on(media, 'click', togglePlay);
   if (sound) {
     scope.on(sound, 'click', () => {
       video.muted = !video.muted;
-      sound.textContent = video.muted ? 'Son : coupé' : 'Son : activé';
+      sound.textContent = video.muted ? 'Son : coupé' : 'Son : activé';
       sound.setAttribute('aria-pressed', String(!video.muted));
     });
   }
@@ -82,25 +79,25 @@ function initHero(scope, root) {
 
   renderUI();
 
-  // La vidéo se rétrécit en carte, le titre part en parallaxe inverse
+  // Au défilement : la vidéo recule en carte arrondie, le texte monte et s'efface
   if (!env.reducedMotion) {
-    const scale = window.innerWidth < 768 ? 0.86 : 0.72;
+    const small = window.innerWidth < 768;
     gsap.timeline({
       scrollTrigger: {
         trigger: hero,
         start: 'top top',
-        end: () => `+=${window.innerHeight * 0.9}`,
-        scrub: 0.4,
+        end: 'bottom top',
+        scrub: 0.5,
         invalidateOnRefresh: true,
       },
     })
-      .to(media, { scale, borderRadius: `${24 / scale}px`, ease: 'none' }, 0)
-      .to($('.hero__content', root), { yPercent: -85, autoAlpha: 0, ease: 'none' }, 0)
-      .to($$('.hero__corners, .hero__controls', root), { autoAlpha: 0, ease: 'none', duration: 0.4 }, 0);
+      .to(media, { scale: small ? 0.9 : 0.84, borderRadius: small ? 24 : 40, ease: 'none' }, 0)
+      .to($('.hero__inner', root), { yPercent: -30, autoAlpha: 0, ease: 'none' }, 0)
+      .to($('.hero__foot', root), { autoAlpha: 0, ease: 'none', duration: 0.3 }, 0);
   }
 }
 
-/* ---------- Manifeste : mots de 15 % → 100 % ------------------------------- */
+/* ---------- Manifeste : les mots s'allument au fil de la lecture ---------- */
 
 function wrapWords(node) {
   Array.from(node.childNodes).forEach((child) => {
@@ -128,89 +125,44 @@ function initManifesto(scope, root) {
   wrapWords(text);
   const words = $$('.mw', text);
   const images = $$('.manifesto__img', text);
-  gsap.fromTo(words, { opacity: 0.15 }, {
-    opacity: 1,
+  // Les mots passent du gris (≥ 3:1, texte large) au blanc : lisibles à tout moment
+  gsap.fromTo(words, { color: '#5D6A84' }, {
+    color: '#FFFFFF',
     ease: 'none',
     stagger: 0.06,
     scrollTrigger: { trigger: text, start: 'top 78%', end: 'bottom 52%', scrub: 0.5 },
   });
-  gsap.fromTo(images, { scale: 0.2, rotate: -12 }, {
+  // Les pastilles d'image grossissent (zoom) à mesure qu'on lit
+  gsap.fromTo(images, { scale: 0.2 }, {
     scale: 1,
-    rotate: 0,
     ease: 'back.out(1.6)',
     stagger: 0.2,
     scrollTrigger: { trigger: text, start: 'top 70%', end: 'bottom 60%', scrub: 0.8 },
   });
 }
 
-/* ---------- Services : horizontal épinglé (desktop) / cartes empilées ------ */
+/* ---------- Leviers : la carte recouverte recule (zoom arrière) ----------- */
 
 function initServices(scope, root) {
-  const section = $('.services', root);
-  if (!section) return;
-  const pin = $('.services__pin', section);
-  const track = $('.services__track', section);
-  const panels = $$('.service', section);
-  const bar = $('.services__bar', section);
-  const counter = $('[data-services-current]', section);
-
-  scope.mm.add('(min-width: 1024px)', () => {
-    const distance = () => Math.max(0, track.scrollWidth - window.innerWidth);
-    const tween = gsap.to(track, {
-      x: () => -distance(),
-      ease: 'none',
-      scrollTrigger: {
-        trigger: section,
-        start: 'top top',
-        end: () => `+=${distance()}`,
-        pin,
-        scrub: 0.7,
-        invalidateOnRefresh: true,
-        anticipatePin: 1,
-        onUpdate: (self) => {
-          bar.style.setProperty('--progress', self.progress.toFixed(4));
-          const n = clamp(Math.round(self.progress * (panels.length - 1)) + 1, 1, panels.length);
-          counter.textContent = String(n).padStart(2, '0');
-        },
-      },
-    });
-
-    panels.forEach((panel) => {
-      const media = $('[data-service-media]', panel);
-      const img = media && $('img', media);
-      const num = $('.service__num', panel);
-      if (media && !env.reducedMotion) {
-        gsap.fromTo(media, { clipPath: 'inset(0% 0% 0% 100%)' }, {
-          clipPath: 'inset(0% 0% 0% 0%)',
+  const items = $$('.service', root);
+  if (!items.length || env.reducedMotion) return;
+  scope.mm.add('(min-width: 768px)', () => {
+    items.forEach((item, i) => {
+      const next = items[i + 1];
+      const card = $('.service__card', item);
+      const img = $('.service__media img', item);
+      // L'image dézoome pendant que la carte arrive
+      if (img) {
+        gsap.fromTo(img, { scale: 1.25 }, {
+          scale: 1,
           ease: 'none',
-          scrollTrigger: { trigger: panel, containerAnimation: tween, start: 'left 92%', end: 'left 35%', scrub: true },
-        });
-        if (img) {
-          gsap.fromTo(img, { scale: 1.35 }, {
-            scale: 1,
-            ease: 'none',
-            scrollTrigger: { trigger: panel, containerAnimation: tween, start: 'left 92%', end: 'right 40%', scrub: true },
-          });
-        }
-      }
-      if (num && !env.reducedMotion) {
-        gsap.fromTo(num, { x: 140 }, {
-          x: -140,
-          ease: 'none',
-          scrollTrigger: { trigger: panel, containerAnimation: tween, start: 'left right', end: 'right left', scrub: true },
+          scrollTrigger: { trigger: item, start: 'top bottom', end: 'top 25%', scrub: true },
         });
       }
-    });
-  });
-
-  scope.mm.add('(max-width: 1023px)', () => {
-    if (env.reducedMotion) return;
-    panels.forEach((panel, i) => {
-      const next = panels[i + 1];
       if (!next) return;
-      gsap.to(panel, {
-        scale: 0.92,
-        opacity: 0.45,
+      gsap.to(card, {
+        scale: 0.9 - (items.length - i) * 0.008,
+        '--dim': 0.55,
         ease: 'none',
         scrollTrigger: { trigger: next, start: 'top bottom', end: 'top 30%', scrub: true },
       });
@@ -232,14 +184,14 @@ function initProjects(scope, root) {
   let trigger = null;
   let busy = false;
 
-  // Distorsion SVG (desktop uniquement)
+  // Distorsion SVG au survol (desktop) : une onde traverse l'image puis se calme
   if (env.finePointer && !env.reducedMotion && displacement) {
     projects.forEach((project) => {
       const btn = $('.project__trigger', project);
       scope.on(btn, 'pointerenter', () => {
         btn.classList.add('is-distorting');
         gsap.timeline({ overwrite: true })
-          .to(displacement, { attr: { scale: 38 }, duration: 0.35, ease: 'power2.out' })
+          .to(displacement, { attr: { scale: 32 }, duration: 0.35, ease: 'power2.out' })
           .to(displacement, { attr: { scale: 0 }, duration: 0.9, ease: 'power3.out', onComplete: () => btn.classList.remove('is-distorting') });
       });
       scope.on(btn, 'pointerleave', () => {
@@ -278,12 +230,13 @@ function initProjects(scope, root) {
       gsap.fromTo(dialog, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.3, onComplete: () => { busy = false; } });
       return;
     }
-    gsap.fromTo(dialog, { backgroundColor: 'rgba(0,0,0,0)' }, { backgroundColor: 'rgba(0,0,0,1)', duration: 0.6, ease: 'power2.out' });
+    gsap.fromTo(dialog, { backgroundColor: 'rgba(2,5,14,0)' }, { backgroundColor: 'rgba(2,5,14,1)', duration: 0.6, ease: 'power2.out' });
     panelMedia.dataset.flipId = 'project-media';
     cardMedia.dataset.flipId = 'project-media';
+    // L'image de la carte s'agrandit jusqu'à sa place dans le panneau
     Flip.from(state, {
       targets: panelMedia,
-      duration: 1.1,
+      duration: 1.05,
       ease: 'expo.inOut',
       absolute: true,
       onComplete: () => { busy = false; gsap.set(panelMedia, { clearProps: 'all' }); },
@@ -310,7 +263,7 @@ function initProjects(scope, root) {
     }
     const cardMedia = $('.project__media', projects[current]);
     gsap.to(panelContent.children, { autoAlpha: 0, y: -20, duration: 0.3, stagger: 0.02 });
-    gsap.to(dialog, { backgroundColor: 'rgba(0,0,0,0)', duration: 0.8, delay: 0.2 });
+    gsap.to(dialog, { backgroundColor: 'rgba(2,5,14,0)', duration: 0.8, delay: 0.2 });
     Flip.fit(panelMedia, cardMedia, { duration: 0.85, ease: 'expo.inOut', absolute: true, onComplete: finish });
   };
 
@@ -327,7 +280,10 @@ function initProjects(scope, root) {
         fill(index);
         dialog.scrollTop = 0;
         gsap.to([panelMedia, panelContent], { autoAlpha: 1, duration: 0.5, onComplete: () => { busy = false; } });
-        if (!env.reducedMotion) gsap.from(panelContent.children, { y: 30, autoAlpha: 0, stagger: 0.06, duration: 0.8, ease: 'expo.out' });
+        if (!env.reducedMotion) {
+          gsap.fromTo(panelMedia, { scale: 1.08 }, { scale: 1, duration: 0.9, ease: 'expo.out', clearProps: 'transform' });
+          gsap.from(panelContent.children, { y: 30, autoAlpha: 0, stagger: 0.06, duration: 0.8, ease: 'expo.out' });
+        }
       },
     });
   };
@@ -347,78 +303,60 @@ function initProjects(scope, root) {
   scope.cleanup(() => { if (dialog.open) finish(); });
 }
 
-/* ---------- Méthode : trajectoire dessinée + vaisseau ---------------------- */
+/* ---------- Méthode : la frise se remplit, le vaisseau la parcourt -------- */
 
 function initMethod(scope, root) {
   const section = $('[data-method]', root);
   if (!section) return;
   const track = $('.method__track', section);
-  const svg = $('.method__svg', section);
-  const path = $('.method__path', section);
-  const bgPath = $('.method__path-bg', section);
-  const ship = $('.method__ship', section);
+  const fill = $('[data-method-fill]', section);
+  const ship = $('[data-method-ship]', section);
   const steps = $$('.method__step', section);
   const dots = steps.map((s) => $('.method__dot', s));
-  let length = 0;
-  let fractions = [];
+  const rail = $('.method__rail', section);
+  let positions = [];
+  let horizontal = true;
   let progress = 0;
 
-  const build = () => {
-    const box = track.getBoundingClientRect();
-    if (!box.width) return;
-    svg.setAttribute('viewBox', `0 0 ${box.width} ${box.height}`);
-    const pts = dots.map((d) => {
+  const measure = () => {
+    horizontal = window.matchMedia('(min-width: 1024px)').matches;
+    const box = rail.getBoundingClientRect();
+    const length = horizontal ? box.width : box.height;
+    positions = dots.map((d) => {
       const r = d.getBoundingClientRect();
-      return { x: r.left + r.width / 2 - box.left, y: r.top + r.height / 2 - box.top };
+      const center = horizontal ? r.left + r.width / 2 - box.left : r.top + r.height / 2 - box.top;
+      return length ? center / length : 0;
     });
-    const all = [{ x: pts[0].x + box.width * 0.08, y: 0 }, ...pts, { x: pts[pts.length - 1].x - box.width * 0.1, y: box.height }];
-    // Tracé : courbes de Bézier passant exactement par chaque point d'étape.
-    // La position de chaque étape (fraction de longueur) se déduit de la longueur
-    // du préfixe du tracé qui s'arrête sur elle : 4 mesures au lieu d'un échantillonnage.
-    const segments = [`M${all[0].x.toFixed(1)},${all[0].y.toFixed(1)}`];
-    for (let i = 1; i < all.length; i += 1) {
-      const a = all[i - 1];
-      const b = all[i];
-      const dy = (b.y - a.y) * 0.55;
-      segments.push(`C${a.x.toFixed(1)},${(a.y + dy).toFixed(1)} ${b.x.toFixed(1)},${(b.y - dy).toFixed(1)} ${b.x.toFixed(1)},${b.y.toFixed(1)}`);
-    }
-    const d = segments.join(' ');
-    path.setAttribute('d', d);
-    bgPath.setAttribute('d', d);
-    length = path.getTotalLength();
-    path.style.strokeDasharray = `${length}`;
-    const probe = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    probe.setAttribute('visibility', 'hidden');
-    svg.appendChild(probe);
-    fractions = pts.map((_, i) => {
-      probe.setAttribute('d', segments.slice(0, i + 2).join(' '));
-      return length ? probe.getTotalLength() / length : 0;
-    });
-    probe.remove();
     update(progress);
   };
 
   const update = (p) => {
     progress = p;
-    if (!length) return;
-    path.style.strokeDashoffset = `${length * (1 - p)}`;
-    const at = Math.min(length * p, length - 1);
-    const pt = path.getPointAtLength(at);
-    const ahead = path.getPointAtLength(Math.min(at + 2, length));
-    const angle = (Math.atan2(ahead.y - pt.y, ahead.x - pt.x) * 180) / Math.PI;
-    gsap.set(ship, { x: pt.x, y: pt.y, xPercent: -50, yPercent: -50, rotation: angle });
-    steps.forEach((step, i) => step.classList.toggle('is-active', p >= fractions[i] - 0.005));
+    const box = rail.getBoundingClientRect();
+    if (horizontal) {
+      gsap.set(fill, { scaleX: p, scaleY: 1 });
+      gsap.set(ship, { x: p * box.width, y: 0 });
+    } else {
+      gsap.set(fill, { scaleY: p, scaleX: 1 });
+      gsap.set(ship, { y: p * box.height, x: 0 });
+    }
+    steps.forEach((step, i) => step.classList.toggle('is-active', p >= positions[i] - 0.01));
   };
+
+  if (env.reducedMotion) {
+    steps.forEach((step) => step.classList.add('is-active'));
+    return;
+  }
 
   ScrollTrigger.create({
     trigger: track,
-    start: 'top 65%',
-    end: 'bottom 75%',
-    scrub: env.reducedMotion ? true : 0.6,
+    start: 'top 70%',
+    end: 'bottom 55%',
+    scrub: 0.6,
     onUpdate: (self) => update(self.progress),
-    onRefresh: (self) => { progress = self.progress; build(); },
+    onRefresh: (self) => { progress = self.progress; measure(); },
   });
-  if (!length) build();
+  measure();
 }
 
 /* ---------- Arcade : records ---------------------------------------------- */
@@ -430,7 +368,7 @@ function initArcade(root) {
   });
 }
 
-/* ---------- Témoignages : carrousel draggable avec inertie ---------------- */
+/* ---------- Témoignages : carrousel (glisser, flèches, clavier) ----------- */
 
 function initCarousel(scope, root) {
   const carousel = $('[data-carousel]', root);
@@ -439,6 +377,9 @@ function initCarousel(scope, root) {
   const track = $('[data-carousel-track]', carousel);
   const slides = $$('.quote', track);
   const status = $('[data-carousel-current]', carousel);
+  const bar = $('[data-carousel-bar]', carousel);
+  const prev = $('[data-carousel-prev]', carousel);
+  const nextBtn = $('[data-carousel-next]', carousel);
   const pos = { x: 0 };
   let index = 0;
   let dragging = false;
@@ -451,23 +392,38 @@ function initCarousel(scope, root) {
 
   const offsets = () => slides.map((s) => s.offsetLeft - slides[0].offsetLeft);
   const apply = () => gsap.set(track, { x: pos.x });
-  const minX = () => -offsets()[slides.length - 1];
+  // Dernière position utile : la dernière carte collée au bord droit
+  const maxShift = () => Math.max(0, track.scrollWidth - viewport.clientWidth + 16);
+  const lastIndex = () => {
+    const list = offsets();
+    const max = maxShift();
+    const i = list.findIndex((o) => o >= max - 1);
+    return i === -1 ? slides.length - 1 : i;
+  };
+  const targetOf = (i) => -Math.min(offsets()[i], maxShift());
 
-  const setActive = () => {
-    slides.forEach((s, i) => {
-      s.classList.toggle('is-active', i === index);
-      s.setAttribute('aria-hidden', String(i !== index));
+  // Une carte entièrement hors de la fenêtre est masquée aux technologies d'assistance
+  const setActive = (x = targetOf(index)) => {
+    const width = viewport.clientWidth;
+    slides.forEach((s) => {
+      const left = s.offsetLeft - slides[0].offsetLeft + x;
+      const visible = left + s.offsetWidth > 8 && left < width - 8;
+      s.setAttribute('aria-hidden', String(!visible));
     });
     status.textContent = String(index + 1).padStart(2, '0');
+    const last = lastIndex();
+    if (bar) bar.style.setProperty('--progress', ((index + 1) / (last + 1)).toFixed(3));
+    if (prev) prev.disabled = index <= 0;
+    if (nextBtn) nextBtn.disabled = index >= last;
   };
 
   const goTo = (i, immediate = false) => {
-    index = clamp(i, 0, slides.length - 1);
-    const target = -offsets()[index];
+    index = clamp(i, 0, lastIndex());
+    const target = targetOf(index);
     gsap.killTweensOf(pos);
     if (immediate || env.reducedMotion) { pos.x = target; apply(); }
     else gsap.to(pos, { x: target, duration: 1, ease: 'expo.out', onUpdate: apply });
-    setActive();
+    setActive(target);
   };
 
   scope.on(viewport, 'pointerdown', (e) => {
@@ -490,8 +446,9 @@ function initCarousel(scope, root) {
     if (Math.abs(dx) > 4) moved = true;
     let next = startPos + dx;
     // Résistance élastique aux extrémités
+    const min = -maxShift();
     if (next > 0) next *= 0.35;
-    if (next < minX()) next = minX() + (next - minX()) * 0.35;
+    if (next < min) next = min + (next - min) * 0.35;
     pos.x = next;
     apply();
     const dt = Math.max(1, now - lastT);
@@ -504,23 +461,22 @@ function initCarousel(scope, root) {
     if (!dragging) return;
     dragging = false;
     viewport.classList.remove('is-dragging');
-    // Projection inertielle puis aimantation sur la diapositive la plus proche
+    // Projection inertielle puis aimantation sur la carte la plus proche
     const projected = pos.x + velocity * 320;
-    const list = offsets();
     let nearest = 0;
     let best = Infinity;
-    list.forEach((o, i) => {
-      const d = Math.abs(-o - projected);
+    for (let i = 0; i <= lastIndex(); i += 1) {
+      const d = Math.abs(targetOf(i) - projected);
       if (d < best) { best = d; nearest = i; }
-    });
+    }
     goTo(nearest);
   };
 
   scope.on(viewport, 'pointerup', release);
   scope.on(viewport, 'pointercancel', release);
   scope.on(viewport, 'click', (e) => { if (moved) { e.preventDefault(); e.stopPropagation(); } }, true);
-  scope.on($('[data-carousel-prev]', carousel), 'click', () => goTo(index - 1));
-  scope.on($('[data-carousel-next]', carousel), 'click', () => goTo(index + 1));
+  if (prev) scope.on(prev, 'click', () => goTo(index - 1));
+  if (nextBtn) scope.on(nextBtn, 'click', () => goTo(index + 1));
   scope.on(carousel, 'keydown', (e) => {
     if (e.key === 'ArrowLeft') { e.preventDefault(); goTo(index - 1); }
     if (e.key === 'ArrowRight') { e.preventDefault(); goTo(index + 1); }
@@ -542,6 +498,11 @@ export default {
     }
     initArcade(root);
     scope.on(document, 'gjs:highscore', () => initArcade(root));
+  },
+  intro(scope, root, tl) {
+    // Arrivée : la vidéo dézoome doucement pendant que le titre monte
+    const video = $('[data-hero-video]', root);
+    if (video && !env.reducedMotion) tl.fromTo(video, { scale: 1.18 }, { scale: 1, duration: 2.2, ease: 'expo.out', clearProps: 'transform' }, 0);
   },
   destroy() {},
 };

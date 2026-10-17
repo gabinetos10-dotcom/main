@@ -58,10 +58,13 @@ export async function syncHead(html) {
     document.head.appendChild(script);
   });
 
-  // CSS de page : on charge celles qui manquent avant d'afficher la page
+  // CSS de page : on charge celles qui manquent avant d'afficher la page, puis on
+  // retire celles des pages précédentes (sinon leurs sélecteurs fuient d'une page à l'autre)
+  const wanted = new Set(Array.from(doc.head.querySelectorAll('link[rel="stylesheet"][data-page-style]'))
+    .map((l) => new URL(l.getAttribute('href'), document.baseURI).href));
   const present = new Set(Array.from(document.querySelectorAll('link[rel="stylesheet"]')).map((l) => l.href));
-  const missing = Array.from(doc.head.querySelectorAll('link[rel="stylesheet"][data-page-style]'))
-    .map((l) => new URL(l.getAttribute('href'), document.baseURI).href)
-    .filter((href) => !present.has(href));
-  await Promise.all(missing.map(loadStyle));
+  await Promise.all([...wanted].filter((href) => !present.has(href)).map(loadStyle));
+  document.head.querySelectorAll('link[rel="stylesheet"][data-page-style]').forEach((l) => {
+    if (!wanted.has(l.href)) l.remove();
+  });
 }

@@ -50,9 +50,9 @@ const DIRS = { left: [-1, 0], right: [1, 0], up: [0, -1], down: [0, 1] };
 const DIR_LIST = [[0, -1], [-1, 0], [0, 1], [1, 0]];
 
 const ENEMIES = [
-  { id: 'google', name: 'Algorithme Google', hint: 'vous poursuit sans relâche', color: '#FF6B5B', shape: 'diamond', behavior: 'chase', start: [10, 7], release: 1.2 },
+  { id: 'google', name: 'Algorithme Google', hint: 'vous poursuit sans relâche', color: '#FF8A7A', shape: 'diamond', behavior: 'chase', start: [10, 7], release: 1.2 },
   { id: 'concurrent', name: 'Concurrent', hint: 'vise 4 cases devant vous', color: '#F5B841', shape: 'triangle', behavior: 'ambush', start: [9, 9], release: 3.5 },
-  { id: 'rebond', name: 'Taux de rebond', hint: 'imprévisible', color: '#59E0B5', shape: 'circle', behavior: 'random', start: [10, 9], release: 6.5 },
+  { id: 'rebond', name: 'Taux de rebond', hint: 'imprévisible', color: '#B79CFF', shape: 'circle', behavior: 'random', start: [10, 9], release: 6.5 },
   { id: 'budget', name: 'Budget gaspillé', hint: 'patrouille, puis fonce', color: '#FF8FD1', shape: 'hexagon', behavior: 'patrol', start: [11, 9], release: 9.5 },
 ];
 const PATROL = [[15, 13], [19, 15], [19, 19], [13, 17]];
@@ -144,9 +144,9 @@ export function create(api) {
     const c = off.getContext('2d');
     c.scale(dpr, dpr);
     const ts = g.ts;
-    c.strokeStyle = '#5B85FF';
+    c.strokeStyle = '#55D5E0';
     c.lineWidth = Math.max(1, ts / 14);
-    c.shadowColor = '#5B85FF';
+    c.shadowColor = '#55D5E0';
     c.shadowBlur = ts / 3;
     c.lineCap = 'round';
     c.beginPath();
@@ -387,7 +387,7 @@ export function create(api) {
         s.score += gain;
         s.captures += 1;
         sound.coin();
-        particles.burst(g.ox + (pp[0] + 0.5) * g.ts, g.oy + (pp[1] + 0.5) * g.ts, { count: 30, colors: [e.color, '#5B85FF'], speed: 200, size: 3, life: 0.7 });
+        particles.burst(g.ox + (pp[0] + 0.5) * g.ts, g.oy + (pp[1] + 0.5) * g.ts, { count: 30, colors: [e.color, '#55D5E0'], speed: 200, size: 3, life: 0.7 });
         api.live(`${e.name} capturé : plus ${gain} points.`);
       } else {
         api.alert(`Mangé par ${e.name}.`);
@@ -430,10 +430,10 @@ export function create(api) {
 
     // Timer géant en arrière-plan
     const left = Math.max(0, Math.ceil(DURATION - s.elapsed));
-    ctx.font = `600 ${Math.round(ts * 9)}px "Clash Display", "Arial Narrow", sans-serif`;
+    ctx.font = `400 ${Math.round(ts * 10)}px "Bebas Neue", "Arial Narrow", sans-serif`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillStyle = left <= 10 ? 'rgba(255,107,91,0.16)' : 'rgba(91,133,255,0.13)';
+    ctx.fillStyle = left <= 10 ? 'rgba(255,138,122,0.16)' : 'rgba(85,213,224,0.13)';
     ctx.fillText(String(left).padStart(2, '0'), w / 2, h / 2 + ts * 0.5);
 
     if (g.walls) ctx.drawImage(g.walls, g.ox, g.oy, ts * W, ts * H);
@@ -457,16 +457,16 @@ export function create(api) {
     const pulse = 0.75 + 0.25 * Math.sin(s.elapsed * 6);
     powers.forEach((k) => {
       const [x, y] = k.split(',').map(Number);
-      ctx.fillStyle = '#5B85FF';
-      ctx.shadowColor = '#5B85FF';
+      ctx.fillStyle = '#55D5E0';
+      ctx.shadowColor = '#55D5E0';
       ctx.shadowBlur = ts * 0.8;
       ctx.beginPath();
       ctx.arc(cx(x), cy(y), ts * 0.32 * pulse, 0, Math.PI * 2);
       ctx.fill();
       ctx.shadowBlur = 0;
       if (ts >= 18) {
-        ctx.fillStyle = '#03060F';
-        ctx.font = `700 ${Math.round(ts * 0.3)}px "JetBrains Mono", monospace`;
+        ctx.fillStyle = '#02050E';
+        ctx.font = `700 ${Math.round(ts * 0.32)}px "Archivo Narrow", "Arial Narrow", sans-serif`;
         ctx.fillText('IA', cx(x), cy(y) + 1);
       }
     });
@@ -483,7 +483,7 @@ export function create(api) {
       if (e.mode !== 'eaten') {
         const blink = e.frightened && s.fright < 1.5 && Math.floor(s.elapsed * 8) % 2 === 0;
         if (e.frightened) {
-          ctx.strokeStyle = blink ? '#FFFFFF' : '#5B85FF';
+          ctx.strokeStyle = blink ? '#FFFFFF' : '#55D5E0';
           ctx.lineWidth = 2;
           ctx.setLineDash([3, 3]);
           drawShape(e.shape, px, py, r);
@@ -501,7 +501,7 @@ export function create(api) {
       // Yeux (regard dans la direction du mouvement)
       const ex = (e.dx || 0) * r * 0.25;
       const ey = (e.dy || 0) * r * 0.25;
-      ctx.fillStyle = e.frightened ? '#5B85FF' : '#03060F';
+      ctx.fillStyle = e.frightened ? '#55D5E0' : '#02050E';
       if (e.mode === 'eaten') ctx.fillStyle = '#FFFFFF';
       ctx.fillRect(px - r * 0.38 + ex, py - r * 0.12 + ey, r * 0.24, r * 0.24);
       ctx.fillRect(px + r * 0.14 + ex, py - r * 0.12 + ey, r * 0.24, r * 0.24);
@@ -521,11 +521,11 @@ export function create(api) {
       ctx.arc(px, py, ts * 0.42, 0, Math.PI * 2);
       ctx.fill();
       ctx.shadowBlur = 0;
-      ctx.strokeStyle = '#5B85FF';
+      ctx.strokeStyle = '#55D5E0';
       ctx.lineWidth = Math.max(1.5, ts * 0.07);
       ctx.stroke();
-      ctx.fillStyle = '#03060F';
-      ctx.font = `700 ${Math.round(ts * (ts >= 24 ? 0.28 : 0.42))}px "Clash Display", "Arial Narrow", sans-serif`;
+      ctx.fillStyle = '#02050E';
+      ctx.font = `400 ${Math.round(ts * (ts >= 24 ? 0.34 : 0.5))}px "Bebas Neue", "Arial Narrow", sans-serif`;
       ctx.fillText(ts >= 24 ? 'GJS' : 'G', px, py + 1);
     }
 

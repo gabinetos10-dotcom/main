@@ -1,5 +1,5 @@
 /* ==========================================================================
-   GJS — BASE
+   GJS — BASE (v3)
    Reset, typographie de base, accessibilité, grain, overlay de grille, Lenis.
    ========================================================================== */
 
@@ -24,14 +24,13 @@ html {
 
 body {
   min-height: 100svh;
-  background-color: var(--bg);
+  background-color: var(--night-900);
   color: var(--fg);
   font-family: var(--font-text);
   font-size: var(--fs-body);
   font-weight: 400;
   line-height: 1.55;
   font-kerning: normal;
-  font-feature-settings: "kern", "liga", "ss01";
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
@@ -95,9 +94,13 @@ em {
   font-style: normal;
 }
 
+strong {
+  font-weight: 700;
+}
+
 ::selection {
-  background: var(--signal);
-  color: var(--night-950);
+  background: var(--cyan);
+  color: var(--ink);
 }
 
 [hidden] {
@@ -106,78 +109,103 @@ em {
 
 /* ---- Typographie -------------------------------------------------------- */
 
+/* Titres : Bebas Neue, capitales hautes et serrées */
 .t-display {
   font-family: var(--font-display);
-  font-weight: 600;
+  font-weight: 400;
   letter-spacing: var(--tracking-display);
   line-height: var(--leading-display);
+  text-transform: uppercase;
   text-wrap: balance;
 }
 
 .t-giant {
   font-family: var(--font-display);
-  font-weight: 600;
+  font-weight: 400;
   font-size: var(--fs-giant);
-  letter-spacing: -0.05em;
-  line-height: 0.8;
+  letter-spacing: 0;
+  line-height: 0.82;
+  text-transform: uppercase;
 }
 
 .t-h1 { font-size: var(--fs-h1); }
 .t-h2 { font-size: var(--fs-h2); }
-.t-h3 { font-size: var(--fs-h3); }
-.t-h4 { font-size: var(--fs-h4); line-height: 1; letter-spacing: -0.02em; }
+.t-h3 { font-size: var(--fs-h3); line-height: 0.95; }
+.t-h4 { font-size: var(--fs-h4); line-height: 1; }
 
-/* Accent éditorial : 1 ou 2 mots par titre */
+/* Accent : 1 à 3 mots par titre, en cyan (cyan profond sur fond clair) */
+.accent,
 .serif {
-  font-family: var(--font-serif);
-  font-style: italic;
-  font-weight: 400;
-  letter-spacing: -0.015em;
-  font-size: 1.04em;
+  color: var(--accent);
+  font-style: normal;
+}
+
+/* Variante contour : lettres évidées, liseré cyan */
+.t-outline,
+.accent--outline {
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--accent-fill);
+  paint-order: stroke fill;
 }
 
 .t-lead {
   font-size: var(--fs-lead);
-  line-height: 1.3;
-  letter-spacing: -0.01em;
+  line-height: 1.35;
   font-weight: 500;
+  color: var(--fg-2);
 }
 
 .t-mono,
 .label {
-  font-family: var(--font-mono);
-  font-size: var(--fs-mono);
-  font-weight: 400;
-  line-height: 1.5;
+  font-family: var(--font-text);
+  font-size: var(--fs-label);
+  font-weight: 700;
+  line-height: 1.4;
   letter-spacing: var(--tracking-mono);
   text-transform: uppercase;
 }
 
+/* Sur-titre de section : un seul par bloc, petit carré cyan en tête */
 .label {
   display: inline-flex;
   align-items: center;
   gap: 0.75em;
-  color: var(--fg-2);
+  letter-spacing: var(--tracking-label);
+  color: var(--accent);
 }
 
-.label--signal { color: var(--signal); }
+.label::before {
+  content: "";
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  background: var(--accent-fill);
+  box-shadow: 0 0 12px var(--cyan-glow);
+}
+
+.label--plain::before {
+  display: none;
+}
+
+.label--signal { color: var(--accent); }
 
 .t-muted { color: var(--fg-2); }
 
-/* Contour typographique (numéros géants) */
-.t-outline {
-  color: transparent;
-  -webkit-text-stroke: 1px var(--fg);
-  paint-order: stroke fill;
-}
-
-/* Marqueur de contenu à remplacer — volontairement visible */
+/* Marqueur de contenu d'exemple — discret, un par bloc au maximum */
 .placeholder-tag {
-  font-family: var(--font-mono);
-  font-size: 10px;
+  display: inline-flex;
+  align-items: center;
+  min-height: 22px;
+  padding: 0 8px;
+  border: 1px dashed var(--line-strong);
+  border-radius: 999px;
+  font-family: var(--font-text);
+  font-size: 11px;
+  font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--focus);
+  color: var(--fg-2);
   white-space: nowrap;
 }
 
@@ -202,10 +230,11 @@ em {
   left: 12px;
   z-index: calc(var(--z-loader) + 1);
   padding: 14px 20px;
-  background: var(--white);
-  color: var(--night-950);
-  font-family: var(--font-mono);
-  font-size: 12px;
+  border-radius: 999px;
+  background: var(--cyan);
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 700;
   letter-spacing: var(--tracking-mono);
   text-transform: uppercase;
   transform: translateY(-200%);
@@ -222,9 +251,13 @@ em {
 
 :focus-visible {
   outline: 2px solid var(--focus);
-  outline-offset: 4px;
-  box-shadow: 0 0 0 6px var(--signal-soft);
-  border-radius: 2px;
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Cible de focus programmatique (main, titres d'ancre) : pas d'anneau */
+[tabindex="-1"]:focus-visible {
+  outline: none;
 }
 
 /* Le texte splitté reste lisible par les lecteurs d'écran (copie .sr-only) */
@@ -235,8 +268,8 @@ em {
 .line-mask,
 .word-mask,
 .char-mask {
-  padding-block: 0.12em;
-  margin-block: -0.12em;
+  padding-block: 0.1em;
+  margin-block: -0.1em;
 }
 
 .char-mask,
@@ -251,7 +284,7 @@ em {
   inset: -180px;
   z-index: var(--z-grain);
   pointer-events: none;
-  opacity: 0.05;
+  opacity: 0.04;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1.2 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   background-size: 180px 180px;
   animation: grain 1s steps(1) infinite;
@@ -275,18 +308,21 @@ em {
 .grid-overlay {
   position: fixed;
   inset: 0;
-  z-index: calc(var(--z-cursor) - 1);
+  z-index: var(--z-grid);
   pointer-events: none;
   display: grid;
   grid-template-columns: repeat(var(--cols), 1fr);
   column-gap: var(--gutter);
-  padding-inline: var(--margin);
+  width: 100%;
+  max-width: calc(var(--container) + 2 * var(--pad));
+  margin-inline: auto;
+  padding-inline: var(--pad);
 }
 
 .grid-overlay span {
   position: relative;
-  background: rgba(91, 133, 255, 0.07);
-  border-inline: 1px solid rgba(91, 133, 255, 0.28);
+  background: rgba(85, 213, 224, 0.07);
+  border-inline: 1px solid rgba(85, 213, 224, 0.3);
 }
 
 .grid-overlay span::before {
@@ -294,10 +330,10 @@ em {
   position: absolute;
   top: calc(var(--header-h) + 8px);
   left: 6px;
-  font-family: var(--font-mono);
   font-size: 10px;
+  font-weight: 700;
   letter-spacing: 0.08em;
-  color: var(--signal);
+  color: var(--cyan);
 }
 
 .grid-overlay__info {
@@ -306,13 +342,14 @@ em {
   left: 50%;
   translate: -50% 0;
   padding: 6px 10px;
+  border-radius: 999px;
   background: var(--night-950);
-  border: 1px solid var(--signal);
-  font-family: var(--font-mono);
-  font-size: 10px;
+  border: 1px solid var(--cyan);
+  font-size: 11px;
+  font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--signal);
+  color: var(--cyan);
 }
 
 /* ---- Lenis -------------------------------------------------------------- */
@@ -343,24 +380,17 @@ html.is-scroll-locked body {
 
 .no-js .loader,
 .no-js .page-transition,
-.no-js .cursor,
 .no-js [data-menu-toggle],
 .no-js [data-launch-game],
 .no-js [data-cookie-manage],
-.no-js .hero__controls {
+.no-js .hero__controls,
+.no-js .scroll-progress {
   display: none !important;
 }
 
-.no-js [data-theme="paper"] {
-  background: var(--paper);
-  --fg: var(--night-950);
-  --fg-2: rgba(3, 6, 15, 0.68);
-  --line: rgba(3, 6, 15, 0.16);
-  color: var(--fg);
-}
-
-.no-js [data-theme="black"] {
-  background: var(--black);
+/* Version dégradée (librairies indisponibles) : mêmes règles que sans JS */
+.is-degraded [data-cookie-manage] {
+  display: none !important;
 }
 
 /* ---- Mouvement réduit -------------------------------------------------- */
@@ -379,7 +409,7 @@ html.is-scroll-locked body {
   *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+    transition-duration: 0s !important;
     scroll-behavior: auto !important;
   }
 }
@@ -397,20 +427,21 @@ html.is-scroll-locked body {
   max-width: 760px;
   margin-inline: auto;
   padding: 20px 22px;
+  border-radius: var(--radius);
   background: var(--night-950);
   color: var(--white);
-  border: 1px solid var(--signal);
-  box-shadow: 0 0 60px rgba(91, 133, 255, 0.25);
+  border: 1px solid var(--cyan);
+  box-shadow: 0 0 60px rgba(85, 213, 224, 0.25);
   font-size: var(--fs-small);
   line-height: 1.5;
 }
 
 .file-notice__title {
-  font-family: var(--font-mono);
-  font-size: var(--fs-mono);
+  font-size: var(--fs-label);
+  font-weight: 700;
   letter-spacing: var(--tracking-mono);
   text-transform: uppercase;
-  color: var(--signal);
+  color: var(--cyan);
 }
 
 .file-notice ol {
@@ -421,19 +452,21 @@ html.is-scroll-locked body {
 }
 
 .file-notice code {
-  font-family: var(--font-mono);
   padding: 1px 6px;
+  border-radius: 6px;
   background: var(--night-800);
+  font-weight: 700;
 }
 
 .file-notice__close {
   justify-self: start;
   min-height: 44px;
-  padding: 0 18px;
-  background: var(--white);
-  color: var(--night-950);
-  font-family: var(--font-mono);
-  font-size: 12px;
+  padding: 0 20px;
+  border-radius: 999px;
+  background: var(--cyan);
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 700;
   letter-spacing: var(--tracking-mono);
   text-transform: uppercase;
 }

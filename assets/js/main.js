@@ -1,7 +1,8 @@
 /* ==========================================================================
    GJS — BOOTSTRAP
-   Ordre : plugins GSAP → scroll (Lenis) → UI persistante (curseur, menu,
+   Ordre : plugins GSAP → scroll (Lenis) → UI persistante (header, menu,
    cookies, grille, easter eggs) → loader → page courante → Barba.
+   v3 : aucun effet ne suit le pointeur (curseur, aimants retirés).
 
    Cycle de vie d'une page (chaque module de /pages expose init/intro/destroy) :
      init(scope, container)   préparation (DOM, états initiaux, interactions)
@@ -14,11 +15,9 @@ import { createScope } from './core/scope.js';
 import { initScroll, resetScroll, scrollTo, resizeScroll, lockScroll, unlockScroll } from './core/scroll.js';
 import { createReveals, setInitialTheme } from './core/reveal.js';
 import { runLoader } from './core/loader.js';
-import { initCursor } from './core/cursor.js';
-import { refreshMagnetic } from './core/magnetic.js';
 import { createMarquee } from './core/marquee.js';
 import { initMenu, closeMenu, menuIsOpen, setCurrentPage, showHeader } from './core/menu.js';
-import { initTransition, curtainIn, curtainOut, pageSlug } from './core/transitions.js';
+import { initTransition, curtainIn, curtainOut, pageSlug, pageOut, pageIn } from './core/transitions.js';
 import { syncHead } from './core/head.js';
 import { initCookies, maybeShowBanner } from './core/cookies.js';
 import { initFooter, hydrateConfig } from './core/footer.js';
@@ -113,7 +112,6 @@ async function introPage() {
     if (page.intro) page.intro(scope, container, tl);
     tl.play();
   });
-  refreshMagnetic();
   // 2. Le reste (reveals au scroll, compteurs, thèmes) dans une tâche suivante
   await yieldToMain();
   if (scope.destroyed) return;
@@ -172,8 +170,10 @@ function focusNewPage(container, url) {
   main.setAttribute('tabindex', '-1');
   main.focus({ preventScroll: true });
   announce(`Page chargée : ${document.title}`);
-  if (url && url.hash) {
-    const target = document.getElementById(url.hash.replace('#', ''));
+  // Barba ne transmet pas toujours l'ancre dans data.next.url : on lit aussi l'adresse
+  const hash = ((url && url.hash) || window.location.hash || '').replace('#', '');
+  if (hash) {
+    const target = document.getElementById(decodeURIComponent(hash));
     if (target) setTimeout(() => scrollTo(target, { immediate: false }), 250);
   }
 }
@@ -194,7 +194,11 @@ function initBarba() {
         document.documentElement.classList.add('is-transitioning');
         lockScroll('transition');
         document.dispatchEvent(new CustomEvent('gjs:before-leave'));
-        await curtainIn(data.next.url.path || data.next.url.href);
+        // La page sortante recule (zoom arrière) pendant que le rideau monte
+        await Promise.all([
+          curtainIn(data.next.url.path || data.next.url.href),
+          pageOut(data.current.container),
+        ]);
         if (menuIsOpen()) await closeMenu({ immediate: true, restoreFocus: false });
       },
       afterLeave() {
@@ -207,9 +211,9 @@ function initBarba() {
         showHeader();
         await mountPage(data.next.container);
       },
-      async enter() {
+      async enter(data) {
         unlockScroll('transition');
-        await curtainOut(() => introPage());
+        await curtainOut(() => { pageIn(data.next.container); introPage(); });
       },
       after(data) {
         document.documentElement.classList.remove('is-transitioning');
@@ -225,7 +229,6 @@ async function boot() {
   initScroll();
   initTransition();
   initMenu();
-  initCursor();
   initGridOverlay();
   initCookies({ showBanner: false });
   initEasterEggs();

@@ -25,8 +25,8 @@ const BAD = [
 const GOOD = ['Core Web Vitals', 'Balises Hn', 'Alt text', 'Consentement RGPD', 'A/B test', 'Automatisation'];
 
 const C = {
-  bg: '#000000', road: '#050913', line: 'rgba(255,255,255,0.75)', dash: 'rgba(91,133,255,0.55)',
-  bad: '#FF6B5B', badFill: '#1C0707', good: '#5B85FF', goodFill: '#07112E', white: '#FFFFFF', car: '#03060F',
+  bg: '#000000', road: '#050A1A', line: 'rgba(255,255,255,0.75)', dash: 'rgba(85,213,224,0.55)',
+  bad: '#FF8A7A', badFill: '#1C0707', good: '#55D5E0', goodFill: '#06222B', white: '#FFFFFF', car: '#02050E',
 };
 
 export function create(api) {
@@ -87,7 +87,7 @@ export function create(api) {
     s.shake = 0.5;
     s.flash = 1;
     sound.hit();
-    particles.burst(s.x, g.carY + g.carH / 2, { count: api.reduced ? 20 : 90, colors: ['#FF6B5B', '#FFFFFF', '#5B85FF'], speed: 420, size: 4, life: 1.1 });
+    particles.burst(s.x, g.carY + g.carH / 2, { count: api.reduced ? 20 : 90, colors: ['#FF8A7A', '#FFFFFF', '#55D5E0'], speed: 420, size: 4, life: 1.1 });
     const final = score();
     const isRecord = saveBest('race', final, `${final} pts`);
     api.alert(`Collision avec « ${obj.label} ».`);
@@ -143,13 +143,13 @@ export function create(api) {
         s.bonus += 100;
         s.shield = 3;
         sound.coin();
-        particles.burst(laneX(o.lane), o.y + o.h / 2, { count: 30, colors: ['#5B85FF', '#FFFFFF'], speed: 260, size: 3, life: 0.8 });
+        particles.burst(laneX(o.lane), o.y + o.h / 2, { count: 30, colors: ['#55D5E0', '#FFFFFF'], speed: 260, size: 3, life: 0.8 });
         api.live(`Bonne pratique : ${o.label}. Plus 100 points et bouclier 3 secondes.`);
         s.objects.splice(i, 1);
       } else if (s.shield > 0) {
         s.bonus += 50;
         sound.blip();
-        particles.burst(laneX(o.lane), o.y + o.h / 2, { count: 40, colors: ['#FF6B5B', '#FFFFFF'], speed: 300, size: 3, life: 0.8 });
+        particles.burst(laneX(o.lane), o.y + o.h / 2, { count: 40, colors: ['#FF8A7A', '#FFFFFF'], speed: 300, size: 3, life: 0.8 });
         s.objects.splice(i, 1);
       } else {
         crash(o);
@@ -176,8 +176,8 @@ export function create(api) {
     const left = x - w / 2;
     // Faisceaux des phares
     const beam = ctx.createLinearGradient(0, y - h * 1.6, 0, y);
-    beam.addColorStop(0, 'rgba(91,133,255,0)');
-    beam.addColorStop(1, 'rgba(91,133,255,0.32)');
+    beam.addColorStop(0, 'rgba(85,213,224,0)');
+    beam.addColorStop(1, 'rgba(85,213,224,0.32)');
     ctx.fillStyle = beam;
     ctx.beginPath();
     ctx.moveTo(left + w * 0.18, y + 4);
@@ -199,7 +199,7 @@ export function create(api) {
     ctx.fill();
     ctx.stroke();
     // Cockpit
-    ctx.fillStyle = 'rgba(91,133,255,0.28)';
+    ctx.fillStyle = 'rgba(85,213,224,0.28)';
     ctx.beginPath();
     ctx.ellipse(x, y + h * 0.36, w * 0.2, h * 0.14, 0, 0, Math.PI * 2);
     ctx.fill();
@@ -222,7 +222,7 @@ export function create(api) {
     ctx.fillRect(left + w * 0.75, y + h - 4, w * 0.2, 3);
     if (s.shield > 0) {
       const pulse = 0.55 + 0.45 * Math.sin(s.elapsed * 14);
-      ctx.strokeStyle = `rgba(91,133,255,${s.shield < 1 ? pulse : 0.9})`;
+      ctx.strokeStyle = `rgba(85,213,224,${s.shield < 1 ? pulse : 0.9})`;
       ctx.lineWidth = 2;
       ctx.shadowColor = C.good;
       ctx.shadowBlur = 18;
@@ -246,7 +246,7 @@ export function create(api) {
     ctx.stroke();
     ctx.shadowBlur = 0;
     const size = Math.max(10, Math.min(14, g.laneW / 11));
-    ctx.font = `500 ${size}px "JetBrains Mono", monospace`;
+    ctx.font = `700 ${size}px "Archivo Narrow", "Arial Narrow", sans-serif`;
     ctx.fillStyle = C.white;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
@@ -296,7 +296,7 @@ export function create(api) {
     if (!s.crashed || Math.floor(s.flash * 20) % 2 === 0) drawCar(s.x, g.carY);
     particles.render(ctx);
     if (s.flash > 0) {
-      ctx.fillStyle = `rgba(255,107,91,${s.flash * 0.25})`;
+      ctx.fillStyle = `rgba(255,138,122,${s.flash * 0.25})`;
       ctx.fillRect(-10, -10, g.w + 20, g.h + 20);
     }
     ctx.restore();

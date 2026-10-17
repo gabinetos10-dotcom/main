@@ -129,7 +129,7 @@ export function trapFocus(root, { extra = [], initial = null, restore = true } =
 /** Rend inertes les zones hors modale (lecteurs d'écran + clavier). `except` : élément ou tableau. */
 export function setInertOutside(except, inert) {
   const kept = [].concat(except).filter(Boolean);
-  const keep = new Set([...kept, ...$$('.grain, .cursor, #a11y-status, #a11y-alert')]);
+  const keep = new Set([...kept, ...$$('.grain, #a11y-status, #a11y-alert')]);
   Array.from(document.body.children).forEach((el) => {
     if (keep.has(el) || kept.some((k) => el.contains(k)) || el.tagName === 'SCRIPT' || el.tagName === 'TEMPLATE') return;
     if (inert) {

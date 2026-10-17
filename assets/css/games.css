@@ -191,10 +191,11 @@
 }
 
 .arcade-screen__message {
-  font-family: var(--font-serif);
-  font-style: italic;
-  font-size: clamp(1.8rem, 1rem + 2vw, 3rem);
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 1.2rem + 2.6vw, 3.6rem);
   line-height: 1;
+  text-transform: uppercase;
+  color: var(--cyan);
 }
 
 .arcade-screen__actions {
@@ -210,12 +211,12 @@
 
 .arcade-count {
   font-family: var(--font-display);
-  font-weight: 600;
+  font-weight: 400;
   font-size: clamp(8rem, 30vw, 22rem);
   line-height: 0.8;
-  letter-spacing: -0.06em;
+  letter-spacing: 0.01em;
   color: var(--white);
-  text-shadow: 0 0 60px rgba(91, 133, 255, 0.7);
+  text-shadow: 0 0 60px rgba(85, 213, 224, 0.7);
 }
 
 .arcade-screen--end.is-lost .label--signal {
@@ -251,7 +252,7 @@
   min-width: 44px;
   min-height: 44px;
   border: 1px solid var(--signal);
-  background: rgba(6, 11, 30, 0.75);
+  background: rgba(5, 10, 26, 0.75);
   color: var(--white);
   font-size: 22px;
   touch-action: none;
@@ -299,17 +300,17 @@
   background: var(--white);
   color: var(--night-950);
   font-family: var(--font-display);
-  font-weight: 600;
-  font-size: clamp(3rem, 8vw, 8rem);
-  letter-spacing: -0.05em;
+  font-weight: 400;
+  font-size: clamp(3.4rem, 9vw, 9rem);
+  letter-spacing: 0.02em;
   line-height: 0.9;
-  box-shadow: 0 0 0 1px var(--white), 0 0 60px rgba(91, 133, 255, 0.5);
+  box-shadow: 0 0 0 1px var(--white), 0 0 60px rgba(85, 213, 224, 0.5);
   transition: background-color 0.4s, box-shadow 0.4s;
 }
 
 .bg-game__gjs:hover {
   background: var(--signal);
-  box-shadow: 0 0 0 1px var(--signal), 0 0 90px rgba(91, 133, 255, 0.9);
+  box-shadow: 0 0 0 1px var(--signal), 0 0 90px rgba(85, 213, 224, 0.9);
 }
 
 .bg-game__gjs.is-chosen {
@@ -320,11 +321,11 @@
 .bg-game__gjs span {
   display: block;
   margin-top: 8px;
-  font-family: var(--font-serif);
-  font-style: italic;
-  font-weight: 400;
-  font-size: 0.6em;
-  letter-spacing: -0.02em;
+  font-family: var(--font-text);
+  font-weight: 700;
+  font-size: 0.22em;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 
 .bg-game__other {
@@ -449,7 +450,7 @@
   position: fixed;
   inset: 0;
   z-index: var(--z-egg);
-  background: rgba(3, 6, 15, 0.55);
+  background: rgba(2, 5, 14, 0.55);
   color: var(--white);
   --fg: var(--white);
   --bg: var(--night-950);
@@ -512,7 +513,7 @@
   padding: clamp(24px, 4vw, 48px);
   background: var(--night-950);
   border: 1px solid var(--signal);
-  box-shadow: 0 0 60px rgba(91, 133, 255, 0.25);
+  box-shadow: 0 0 60px rgba(85, 213, 224, 0.25);
 }
 
 .hunt__result h2 {

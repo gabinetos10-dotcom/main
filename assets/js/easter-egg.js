@@ -27,11 +27,11 @@ function consoleMessage() {
     '  ╚═════╝  ╚════╝ ╚══════╝',
   ].join('\n');
   /* eslint-disable no-console */
-  console.log(`%c${art}`, 'color:#5B85FF;font-family:monospace;font-size:11px;line-height:1.1;text-shadow:0 0 8px rgba(91,133,255,.6)');
+  console.log(`%c${art}`, 'color:#55D5E0;font-family:monospace;font-size:11px;line-height:1.1;text-shadow:0 0 8px rgba(85,213,224,.6)');
   console.log(
     `%cVous lisez notre code ?%c Écrivez-nous : ${CONFIG.EMAIL}\n%c(Indice : les vieux codes de console marchent encore ici. ↑↑↓↓…)`,
-    'color:#fff;background:#060B1E;padding:4px 8px;font-weight:600',
-    'color:#5B85FF;background:#060B1E;padding:4px 8px',
+    'color:#fff;background:#050A1A;padding:4px 8px;font-weight:600',
+    'color:#55D5E0;background:#050A1A;padding:4px 8px',
     'color:#8a93b3;font-style:italic',
   );
   /* eslint-enable no-console */
@@ -89,7 +89,7 @@ function warpCanvas(duration) {
     const dt = Math.min(deltaMs / 1000, 0.05);
     const w = window.innerWidth;
     const h = window.innerHeight;
-    ctx.fillStyle = 'rgba(3,6,15,0.35)';
+    ctx.fillStyle = 'rgba(2,5,14,0.35)';
     ctx.fillRect(0, 0, w, h);
     ctx.strokeStyle = 'rgba(255,255,255,0.9)';
     for (const s of stars) {

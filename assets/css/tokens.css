@@ -1,105 +1,164 @@
 /* ==========================================================================
-   GJS — TOKENS
-   Couleurs, typographies, échelles fluides, easings, durées, z-index.
+   GJS — TOKENS (v3 « orbite cyan »)
+   Couleurs, typographies, échelles fluides, grille, easings, z-index.
    Toute valeur de design passe par ces variables : aucune couleur en dur ailleurs.
+
+   Contrastes mesurés (WCAG 2.2 AA) :
+   - fond nuit #050A1A : blanc 19,7:1, brume #A3B1C6 9,1:1, cyan #55D5E0 11,3:1 ;
+   - fond glace #EAF2F3 : encre 17,4:1, encre-2 #44506A 7,1:1, cyan profond #0B6E78 5,3:1
+     (le cyan vif n'y sert qu'en aplat décoratif) ;
+   - fond cyan : encre 11,3:1, texte secondaire #0B3A40 7,1:1 ;
+   - bouton cyan : texte encre 11,3:1.
    ========================================================================== */
 
-/* Polices auto-hébergées (licence SIL OFL 1.1 — voir /assets/fonts/OFL-*.txt).
-   Clash Display & General Sans sont servies par Fontshare (cf. <head>) ;
-   le README explique comment les auto-héberger elles aussi. */
+/* Polices auto-hébergées (licence SIL OFL 1.1 — voir /assets/fonts/OFL-*.txt). */
 @font-face {
-  font-family: "Instrument Serif";
-  src: url("../fonts/InstrumentSerif-Italic.woff2") format("woff2");
-  font-style: italic;
+  font-family: "Bebas Neue";
+  src: url("../fonts/BebasNeue-Regular-latin.woff2") format("woff2");
+  font-style: normal;
   font-weight: 400;
   font-display: swap;
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
 @font-face {
-  font-family: "JetBrains Mono";
-  src: url("../fonts/JetBrainsMono-Variable.woff2") format("woff2");
+  font-family: "Bebas Neue";
+  src: url("../fonts/BebasNeue-Regular-latin-ext.woff2") format("woff2");
   font-style: normal;
-  font-weight: 100 800;
+  font-weight: 400;
+  font-display: swap;
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: "Archivo Narrow";
+  src: url("../fonts/ArchivoNarrow-Variable-latin.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400 700;
   font-display: swap;
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
-/* Fallbacks métriquement proches pour limiter le CLS pendant le swap. */
+@font-face {
+  font-family: "Archivo Narrow";
+  src: url("../fonts/ArchivoNarrow-Variable-latin-ext.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/* Fallbacks calés sur les métriques mesurées (largeur de texte et hauteurs
+   comparées à Arial / Liberation Sans) : le texte ne saute pas au chargement. */
 @font-face {
   font-family: "GJS Display Fallback";
-  src: local("Arial Narrow Bold"), local("ArialNarrow-Bold"), local("Helvetica Neue Condensed Bold"), local("Arial Bold"), local("Arial");
-  size-adjust: 96%;
-  ascent-override: 92%;
-  descent-override: 22%;
+  src: local("Arial Bold"), local("Arial-BoldMT"), local("Liberation Sans Bold"), local("Arial");
+  font-weight: 400;
+  size-adjust: 57.2%;
+  ascent-override: 157.3%;
+  descent-override: 52.4%;
   line-gap-override: 0%;
 }
 
 @font-face {
   font-family: "GJS Text Fallback";
-  src: local("Helvetica Neue"), local("Arial"), local("Roboto");
-  size-adjust: 101%;
-  ascent-override: 96%;
-  descent-override: 24%;
+  src: local("Arial"), local("ArialMT"), local("Liberation Sans"), local("Helvetica");
+  size-adjust: 82.8%;
+  ascent-override: 125.6%;
+  descent-override: 37.4%;
   line-gap-override: 0%;
 }
 
 :root {
-  /* ---- Palette ------------------------------------------------------- */
-  --night-950: #03060F;
-  --night-900: #060B1E;
-  --night-800: #0B1433;
-  --night-700: #13204D;
-  --night-500: #24387A;
-  --black: #000000;
-  --paper: #F2F1EC;
+  /* ---- Palette de marque --------------------------------------------- */
+  --cyan: #55D5E0;                /* signature : CTA, accents, états actifs */
+  --cyan-hi: #A6EEF3;             /* survols, halos */
+  --cyan-deep: #0B6E78;           /* accent texte sur fond clair */
+  --cyan-ink: #0B3A40;            /* texte secondaire sur fond cyan */
+  --blue: #4C7DFF;                /* bleu électrique : dégradés, planètes (décoratif) */
+  --night-950: #02050E;           /* nuit profonde : footer, sections « deep » */
+  --night-900: #050A1A;           /* nuit : fond principal */
+  --night-800: #0C1838;           /* surfaces sur fond nuit */
+  --night-700: #16264F;           /* bordures marquées, états */
+  --mist: #A3B1C6;                /* texte secondaire sur fond nuit */
+  --ice: #EAF2F3;                 /* glace : sections claires */
   --white: #FFFFFF;
-  --signal: #5B85FF;              /* glow, focus, états actifs — < 5 % de la surface */
-  --signal-soft: rgba(91, 133, 255, 0.28);
-  --danger: #FF6B5B;              /* uniquement messages d'erreur de formulaire */
+  --ink: #050A1A;                 /* texte sur fond clair */
+  --ink-2: #44506A;               /* texte secondaire sur fond clair */
+  --cyan-soft: rgba(85, 213, 224, 0.16);
+  --cyan-glow: rgba(85, 213, 224, 0.45);
+  --danger-light: #B3261E;
+  --danger-dark: #FF8A7A;
 
-  /* ---- Thème courant (piloté au scroll par JS sur <body>) ------------- */
+  /* Alias v1 (jeux, easter eggs) */
+  --signal: var(--cyan);
+  --signal-soft: rgba(85, 213, 224, 0.28);
+  --paper: var(--ice);
+  --night-500: var(--night-700);
+  --black: var(--night-950);
+
+  /* ---- Thème courant (redéfini par [data-theme]) ---------------------- */
   --bg: var(--night-900);
+  --surface: var(--night-800);
   --fg: var(--white);
-  --fg-2: rgba(255, 255, 255, 0.64);
-  --line: rgba(255, 255, 255, 0.14);
-  --focus: var(--signal);
+  --fg-2: var(--mist);
+  --accent: var(--cyan);           /* accent lisible en texte */
+  --accent-fill: var(--cyan);      /* aplats décoratifs (surlignage, puces) */
+  --line: rgba(255, 255, 255, 0.12);
+  --line-strong: rgba(255, 255, 255, 0.42);
+  --focus: var(--cyan);
+  --danger: var(--danger-dark);
 
   /* ---- Typographies --------------------------------------------------- */
-  --font-display: "Clash Display", "GJS Display Fallback", "Arial Narrow", Arial, sans-serif;
-  --font-text: "General Sans", "GJS Text Fallback", "Helvetica Neue", Arial, sans-serif;
-  --font-serif: "Instrument Serif", "Iowan Old Style", "Times New Roman", serif;
-  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --font-display: "Bebas Neue", "GJS Display Fallback", Impact, "Arial Narrow", sans-serif;
+  --font-text: "Archivo Narrow", "GJS Text Fallback", "Arial Narrow", Arial, sans-serif;
+  /* Libellés techniques (compteurs, HUD) : la police de texte en capitales espacées */
+  --font-mono: var(--font-text);
+  --font-serif: var(--font-display);
 
-  --tracking-display: -0.04em;
-  --tracking-mono: 0.08em;
-  --leading-display: 0.85;
+  --tracking-display: 0.01em;
+  --tracking-label: 0.16em;
+  --tracking-mono: 0.12em;
+  --leading-display: 0.9;
 
-  /* Échelle fluide (360 px → 1920 px) */
-  --fs-mono: clamp(0.6875rem, 0.66rem + 0.08vw, 0.75rem);           /* 11 → 12 px */
-  --fs-small: clamp(0.8125rem, 0.78rem + 0.15vw, 0.9375rem);
-  --fs-body: clamp(1rem, 0.94rem + 0.3vw, 1.1875rem);               /* 16 → 19 px */
-  --fs-lead: clamp(1.25rem, 1.05rem + 0.9vw, 1.875rem);
-  --fs-h4: clamp(1.5rem, 1.2rem + 1.4vw, 2.5rem);
-  --fs-h3: clamp(2rem, 1.4rem + 2.8vw, 4.25rem);
-  --fs-h2: clamp(3rem, 1.6rem + 6.4vw, 9.5rem);
-  --fs-h1: clamp(3.4rem, 1.4rem + 9vw, 13rem);
-  --fs-manifesto: clamp(2.1rem, 1rem + 5.2vw, 7.2rem);              /* 5 → 7 vw */
-  --fs-giant: clamp(6rem, 20vw, 22vw);                                /* 18 → 22 vw */
+  /* Échelle fluide (360 px → 1920 px). Bebas Neue est étroite : titres plus grands. */
+  --fs-label: 0.8125rem;                                              /* 13 px */
+  --fs-mono: 0.8125rem;
+  --fs-small: 0.9375rem;                                              /* 15 px */
+  --fs-body: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);               /* 17 → 19 px */
+  --fs-lead: clamp(1.25rem, 1.08rem + 0.6vw, 1.625rem);                /* 20 → 26 px */
+  --fs-h4: clamp(1.625rem, 1.35rem + 1vw, 2.25rem);                    /* 26 → 36 px */
+  --fs-h3: clamp(2.25rem, 1.5rem + 2.6vw, 4rem);                       /* 36 → 64 px */
+  --fs-h2: clamp(3.25rem, 1.6rem + 6vw, 8.5rem);                       /* 52 → 136 px */
+  --fs-h1: clamp(4rem, 1.7rem + 9.6vw, 13rem);                         /* 64 → 208 px */
+  --fs-display: var(--fs-h1);
+  --fs-manifesto: clamp(2.25rem, 1.2rem + 4.4vw, 6.25rem);
+  --fs-giant: clamp(7rem, 2rem + 19vw, 20rem);
 
-  /* ---- Grille --------------------------------------------------------- */
+  /* ---- Grille : UN seul conteneur, mêmes marges partout --------------- */
+  --container: 1360px;                                                /* largeur utile max */
+  --pad: clamp(20px, 5vw, 80px);                                      /* marge latérale */
+  --margin: var(--pad);                                               /* alias v1 */
   --cols: 4;
-  --margin: clamp(16px, 4vw, 72px);
-  --gutter: clamp(12px, 1.6vw, 28px);
-  --header-h: clamp(64px, 5vw + 40px, 96px);
-  --radius-card: 24px;
-  --section-pad: clamp(96px, 16vh, 220px);
+  --gutter: clamp(16px, 2vw, 32px);
+  --section-y: clamp(96px, 10vw, 176px);                              /* respiration verticale */
+  --section-pad: var(--section-y);
+  --stack: clamp(40px, 5vw, 80px);                                    /* titre de section → contenu */
+  --header-h: 96px;                                                   /* hauteur réservée au header */
+  --radius-s: 12px;
+  --radius: 20px;
+  --radius-l: 32px;
+  --radius-card: var(--radius);
+  --shadow-1: 0 2px 8px rgba(2, 5, 14, 0.18), 0 18px 48px rgba(2, 5, 14, 0.22);
+  --shadow-glow: 0 0 0 1px rgba(85, 213, 224, 0.35), 0 18px 60px rgba(85, 213, 224, 0.22);
 
   /* ---- Motion --------------------------------------------------------- */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
   --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   --dur-micro: 0.25s;
+  --dur-hover: 0.5s;
   --dur-reveal: 1s;
   --dur-page: 1.25s;
 
@@ -113,7 +172,7 @@
   --z-transition: 400;
   --z-loader: 500;
   --z-egg: 600;
-  --z-cursor: 900;
+  --z-grid: 900;
   --z-grain: 1000;
 }
 
@@ -125,20 +184,70 @@
   :root { --cols: 12; }
 }
 
-/* Thèmes locaux : un composant peut forcer sa palette quel que soit le fond du body. */
-.theme-night,
-[data-theme-local="night"] {
-  --fg: var(--white);
-  --fg-2: rgba(255, 255, 255, 0.64);
-  --line: rgba(255, 255, 255, 0.14);
-  --focus: var(--signal);
+@media (max-width: 767px) {
+  :root { --header-h: 84px; }
 }
 
+/* ---- Thèmes de section ----------------------------------------------------
+   Chaque section porte son fond : un bloc d'information = un fond.          */
+
+[data-theme="night"],
+.theme-night,
+[data-theme-local="night"] {
+  --bg: var(--night-900);
+  --surface: var(--night-800);
+  --fg: var(--white);
+  --fg-2: var(--mist);
+  --accent: var(--cyan);
+  --accent-fill: var(--cyan);
+  --line: rgba(255, 255, 255, 0.12);
+  --line-strong: rgba(255, 255, 255, 0.42);
+  --focus: var(--cyan);
+  --danger: var(--danger-dark);
+}
+
+[data-theme="deep"],
+[data-theme="black"],
+.theme-deep {
+  --bg: var(--night-950);
+  --surface: #08102A;
+  --fg: var(--white);
+  --fg-2: var(--mist);
+  --accent: var(--cyan);
+  --accent-fill: var(--cyan);
+  --line: rgba(255, 255, 255, 0.12);
+  --line-strong: rgba(255, 255, 255, 0.42);
+  --focus: var(--cyan);
+  --danger: var(--danger-dark);
+}
+
+[data-theme="ice"],
+[data-theme="paper"],
+.theme-ice,
 .theme-paper,
 [data-theme-local="paper"] {
-  --fg: var(--night-950);
-  --fg-2: rgba(3, 6, 15, 0.68);
-  --line: rgba(3, 6, 15, 0.16);
-  --focus: var(--night-500);
-  --danger: #B3261E;
+  --bg: var(--ice);
+  --surface: var(--white);
+  --fg: var(--ink);
+  --fg-2: var(--ink-2);
+  --accent: var(--cyan-deep);
+  --accent-fill: var(--cyan);
+  --line: rgba(5, 10, 26, 0.12);
+  --line-strong: rgba(5, 10, 26, 0.5);
+  --focus: var(--cyan-deep);
+  --danger: var(--danger-light);
+}
+
+[data-theme="cyan"],
+.theme-cyan {
+  --bg: var(--cyan);
+  --surface: rgba(255, 255, 255, 0.3);
+  --fg: var(--ink);
+  --fg-2: var(--cyan-ink);
+  --accent: var(--ink);
+  --accent-fill: var(--white);
+  --line: rgba(5, 10, 26, 0.18);
+  --line-strong: rgba(5, 10, 26, 0.6);
+  --focus: var(--ink);
+  --danger: #7A1410;
 }

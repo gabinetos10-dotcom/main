@@ -7,7 +7,9 @@
    data-delay="0.2"           décalage (s) dans l'intro
    data-parallax="0.2"        profondeur de parallaxe (négatif = sens inverse)
    data-counter="140"         compteur (+ data-prefix, data-suffix, data-decimals)
-   data-theme="night|black|paper|deep"  couleur du body quand la section est au centre
+   data-reveal="zoom|rise"    zoom avant (0,82 → 1) / montée avec léger zoom
+   data-zoom-scroll           l'image d'un .media dézoome en continu au défilement
+   data-theme="night|deep|ice|cyan"  fond de la section (CSS) ; meta theme-color suivie
    ========================================================================== */
 
 import { split } from './splitText.js';
@@ -15,35 +17,32 @@ import { env, $$, formatNumber } from './utils.js';
 
 const { gsap, ScrollTrigger } = window;
 
+/* Thèmes : chaque section porte son fond en CSS ([data-theme]). Le JS ne fait
+   que synchroniser la couleur de la barre du navigateur (meta theme-color). */
 export const THEMES = {
-  night: { '--bg': '#060B1E', '--fg': '#FFFFFF', '--fg-2': 'rgba(255, 255, 255, 0.64)', '--line': 'rgba(255, 255, 255, 0.14)', '--focus': '#5B85FF', '--danger': '#FF6B5B' },
-  deep: { '--bg': '#03060F', '--fg': '#FFFFFF', '--fg-2': 'rgba(255, 255, 255, 0.62)', '--line': 'rgba(255, 255, 255, 0.13)', '--focus': '#5B85FF', '--danger': '#FF6B5B' },
-  black: { '--bg': '#000000', '--fg': '#FFFFFF', '--fg-2': 'rgba(255, 255, 255, 0.62)', '--line': 'rgba(255, 255, 255, 0.16)', '--focus': '#5B85FF', '--danger': '#FF6B5B' },
-  paper: { '--bg': '#F2F1EC', '--fg': '#03060F', '--fg-2': 'rgba(3, 6, 15, 0.68)', '--line': 'rgba(3, 6, 15, 0.16)', '--focus': '#24387A', '--danger': '#B3261E' },
+  night: '#050A1A',
+  deep: '#02050E',
+  black: '#02050E',
+  ice: '#EAF2F3',
+  paper: '#EAF2F3',
+  cyan: '#55D5E0',
 };
 
-let currentTheme = 'night';
+let currentTheme = '';
 
-export function setTheme(name, immediate = false) {
-  const theme = THEMES[name];
-  if (!theme || (name === currentTheme && !immediate)) return;
+export function setTheme(name) {
+  if (!THEMES[name] || name === currentTheme) return;
   currentTheme = name;
   document.body.dataset.currentTheme = name;
-  document.documentElement.style.colorScheme = name === 'paper' ? 'light' : 'dark';
   const meta = document.querySelector('meta[name="theme-color"]');
-  if (meta) meta.setAttribute('content', theme['--bg']);
-  gsap.to(document.body, {
-    ...theme,
-    duration: immediate || env.reducedMotion ? 0 : 0.8,
-    ease: 'power2.out',
-    overwrite: true,
-  });
+  if (meta) meta.setAttribute('content', THEMES[name]);
 }
 
 /** Thème initial d'une page : celui de sa première section. */
 export function setInitialTheme(container) {
+  currentTheme = '';
   const first = container.querySelector('[data-theme]');
-  setTheme(first ? first.dataset.theme : 'night', true);
+  setTheme(first ? first.dataset.theme : 'night');
 }
 
 const EASE = 'gjs';
@@ -83,7 +82,7 @@ function fadeReveal(el, { intro, tl }) {
   const delay = parseFloat(el.dataset.delay || 0);
   const vars = env.reducedMotion
     ? { opacity: 0, duration: 0.6 }
-    : { opacity: 0, y: 28, duration: 1, ease: 'power3.out' };
+    : { opacity: 0, y: 28, duration: 1, ease: 'power3.out', clearProps: 'transform,translate' };
   if (intro) tl.from(el, vars, delay);
   else gsap.from(el, { ...vars, scrollTrigger: { trigger: el, start: 'top 90%', once: true } });
 }
@@ -93,7 +92,7 @@ function staggerReveal(el, { intro, tl }) {
   const items = Array.from(el.children);
   const vars = env.reducedMotion
     ? { opacity: 0, duration: 0.5, stagger: 0.04 }
-    : { opacity: 0, y: 32, duration: 0.9, ease: 'power3.out', stagger: 0.07 };
+    : { opacity: 0, y: 32, duration: 0.9, ease: 'power3.out', stagger: 0.07, clearProps: 'transform,translate' };
   if (intro) tl.from(items, vars, delay);
   else gsap.from(items, { ...vars, scrollTrigger: { trigger: el, start: 'top 88%', once: true } });
 }
@@ -122,6 +121,36 @@ function imageReveal(el, { intro, tl }) {
     const t = gsap.timeline({ scrollTrigger: { trigger: el, start: 'top 85%', once: true } });
     build(t, 0);
   }
+}
+
+function zoomReveal(el, { intro, tl }) {
+  const delay = parseFloat(el.dataset.delay || 0);
+  const vars = env.reducedMotion
+    ? { opacity: 0, duration: 0.6 }
+    : { opacity: 0, scale: 0.82, duration: 1.3, ease: 'expo.out', clearProps: 'transform,scale' };
+  if (intro) tl.from(el, vars, delay);
+  else gsap.from(el, { ...vars, scrollTrigger: { trigger: el, start: 'top 88%', once: true } });
+}
+
+function riseReveal(el, { intro, tl }) {
+  const delay = parseFloat(el.dataset.delay || 0);
+  const items = el.dataset.revealItems ? Array.from(el.querySelectorAll(el.dataset.revealItems)) : [el];
+  const vars = env.reducedMotion
+    ? { opacity: 0, duration: 0.5, stagger: 0.04 }
+    : { opacity: 0, y: 70, scale: 0.94, duration: 1.2, ease: 'expo.out', stagger: 0.09, clearProps: 'transform,scale' };
+  if (intro) tl.from(items, vars, delay);
+  else gsap.from(items, { ...vars, scrollTrigger: { trigger: el, start: 'top 86%', once: true } });
+}
+
+function scrollZoom(el) {
+  if (env.reducedMotion) return;
+  const media = el.querySelector('img, video');
+  if (!media) return;
+  gsap.fromTo(media, { scale: parseFloat(el.dataset.zoomScroll) || 1.2 }, {
+    scale: 1,
+    ease: 'none',
+    scrollTrigger: { trigger: el, start: 'top bottom', end: 'bottom top', scrub: true },
+  });
 }
 
 function lineDraw(el, { intro, tl }) {
@@ -187,8 +216,11 @@ export function createReveals(container, { phase = 'all' } = {}) {
   each('[data-reveal="stagger"]', staggerReveal);
   each('[data-reveal="image"]', imageReveal);
   each('[data-reveal="line"]', lineDraw);
+  each('[data-reveal="zoom"]', zoomReveal);
+  each('[data-reveal="rise"]', riseReveal);
   if (phase !== 'intro') {
     $$('[data-parallax]', container).forEach(parallax);
+    $$('[data-zoom-scroll]', container).forEach(scrollZoom);
     $$('[data-counter]', container).forEach(counter);
     themeTriggers(container);
   }
